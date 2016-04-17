@@ -1,0 +1,21 @@
+[Database]
+Streamers:
+    {id, name, url}
+    
+Shows:
+    {id, mal_id, name, alts, latest_sub, latest_dub}
+    
+Episodes:
+    {anime_id, anime_type, episode, streamer, link, uploadtime}
+
+[Sentinel]
+Returned by gaurd functions:
+    {anime_name, anime_type, episode, streamer, link, uploadtime}
+    
+Returned by search function:
+    {anime_id} if the anime is in the database
+    {-1} if the anime is not in the database
+    
+Used by persue functions:
+    {mal_id, anime_name, anime_alts}
+    {anime_type, episode, streamer, link, uploadtime}
