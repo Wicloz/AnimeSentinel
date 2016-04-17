@@ -2,6 +2,7 @@ import pip
 import re
 import time
 
+import urllib
 from urllib.parse import urlparse
 
 try:
@@ -115,3 +116,8 @@ class Downloaders():
         #ASSUMING PAGE IS LOADED STARTING HERE
         soup = BeautifulSoup(str(r.content).replace('\\r\\n', ''), 'html.parser');
         return soup;
+
+    def download_generic (self, url):
+        response = urllib.urlopen(url)
+        soup = BeautifulSoup(response.read(), 'html.parser')
+        return soup
