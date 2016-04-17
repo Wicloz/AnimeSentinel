@@ -8,6 +8,9 @@ Shows:
 Episodes:
     {anime_id, anime_type, episode, streamer, link, uploadtime}
 
+Users:
+    {id, password, last_online, registered, username, email, mal_password, mal_email, settings}
+
 [Sentinel]
 Returned by gaurd functions:
     {anime_name, anime_type, episode, streamer, link, uploadtime}
