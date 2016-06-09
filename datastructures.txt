@@ -5,20 +5,23 @@ Streamers:
 Shows:
     {id, mal_id, name, alts, latest_sub, latest_dub}
     
+Streams:
+    {streamer_id, show_id, anime_type, link}
+    
 Episodes:
-    {anime_id, anime_type, episode, streamer, link, uploadtime}
+    {anime_id, anime_type, episode_num, streamer_id, link, uploadtime}
 
 Users:
     {id, password, last_online, registered, username, email, mal_password, mal_email, settings}
 
 [Sentinel]
-Returned by gaurd functions:
-    {anime_name, anime_type, episode, streamer, link, uploadtime}
+Returned by guard functions:
+    {anime_name, anime_type, episode_num, streamer_id, link, uploadtime}
     
 Returned by search function:
     {anime_id} if the anime is in the database
     {-1} if the anime is not in the database
     
-Used by persue functions:
+Used by pursue functions:
     {mal_id, anime_name, anime_alts}
     {anime_type, episode, streamer, link, uploadtime}
