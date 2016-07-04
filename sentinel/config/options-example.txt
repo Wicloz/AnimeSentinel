@@ -1,3 +1,0 @@
-[Keys]
-; Private key used for database authentication
-PrivateKey = some_string
