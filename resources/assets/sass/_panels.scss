@@ -2,13 +2,13 @@
 @import 'vars';
 
 .panel {
-  background-color: #222;
+  background-color: $background_colour-navs;
 }
 
 .panel-default {
   border-color: #444;
   > .panel-heading {
-    color: #eee;
+    color: $text_colour-content;
     background-color: #444;
     border-color: #444;
   }
@@ -17,18 +17,18 @@
 .panel-primary {
   border-color: #235580;
   > .panel-heading {
-    color: #eee;
+    color: $text_colour-content;
     background-color: #235580;
     border-color: #235580;
   }
 }
 
 .panel-succes {
-  border-color: #dff2Bf;
+  border-color: #dff2bf;
   > .panel-heading {
     color: #4f8a10;
-    background-color: #dff2Bf;
-    border-color: #dff2Bf;
+    background-color: #dff2bf;
+    border-color: #dff2bf;
   }
 }
 

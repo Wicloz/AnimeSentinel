@@ -5,6 +5,11 @@
 
 @endsection
 
-@section('content-main')
+@section('content-center')
+  <div class="panel panel-default">
+    <div class="panel-heading">Recently Uploaded</div>
+    <div class="panel-body">
 
+    </div>
+  </div>
 @endsection

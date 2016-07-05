@@ -28,18 +28,30 @@ h1 > a, h1 > a:focus, h1 > a:hover, h2 > a, h2 > a:focus, h2 > a:hover {
 }
 
 // Navbar Changes //
-.navbar-inverse {
+.navbar-custom {
+  border-color: $border_colour-main;
+  background-color: $background_colour-navs;
   .navbar-header {
     > .active {
       background-color: $border_colour-main;
-      color: #fff;
+      color: $text_colour-content;
     }
   }
   .navbar-nav {
-    > .active {
+    > li {
       > a {
+        background-color: transparent;
+        color: $text_colour-navs;  
+      }
+      > a:hover, a:focus {
+        background-color: transparent;
+        color: $text_colour-content;
+      }
+    }
+    > .active {
+      > a, a:hover, a:focus {
         background-color: $border_colour-main;
-        color: #fff;
+        color: $text_colour-content;
       }
     }
   }

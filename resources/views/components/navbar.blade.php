@@ -1,5 +1,5 @@
-<nav class="navbar navbar-inverse navbar-fixed-top" id="navbar">
-  <div class="container">
+<nav class="navbar navbar-custom navbar-fixed-top" id="navbar">
+  <div class="container-fluid">
     <div class="navbar-header">
       <!-- Collapsed Hamburger -->
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
@@ -18,7 +18,7 @@
       <!-- Left Side Of Navbar -->
       <ul class="nav navbar-nav">
         <li {{ "$_SERVER[REQUEST_URI]" === '/xxx' ? "class=active" : "" }}><a href="{{ url('/xxx') }}">Rencently Uploaded</a></li>
-        <li {{ "$_SERVER[REQUEST_URI]" === '/xxx' ? "class=active" : "" }}><a href="{{ url('/xxx') }}">Search Anime</a></li>
+        <li {{ "$_SERVER[REQUEST_URI]" === '/xxx' ? "class=active" : "" }}><a href="{{ url('/') }}">Search Anime</a></li>
         <li {{ "$_SERVER[REQUEST_URI]" === '/xxx' ? "class=active" : "" }}><a href="{{ url('/xxx') }}">Browse Streaming Sites</a></li>
       </ul>
 
