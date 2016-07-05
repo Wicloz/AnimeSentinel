@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'NAME HERE')
+@section('title', $show->name)
 
 @section('content-center')
   <div class="content-section">

@@ -19,4 +19,8 @@ Route::get('/news', 'PagesController@news');
 
 Route::get('/anime/recent', 'AnimeController@recent');
 Route::get('/anime/search', 'AnimeController@search');
+
 Route::get('/anime/{show}', 'AnimeController@details');
+Route::get('/anime/{show}/{anime_type}/episode-{episode_num}', 'AnimeController@episode');
+
+Route::get('/anime/{show}/{anime_type}/episode-{episode_num}/{streamer_id}', 'EpisodeController@stream');

@@ -47,4 +47,17 @@ class AnimeController extends Controller
       'show' => $show
     ]);
   }
+
+  /**
+   * Show all available video's for a certain anime episode.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function episode(Show $show, $anime_type, $episode_num) {
+    return view('anime.episode', [
+      'show' => $show,
+      'type' => $anime_type,
+      'number' => $episode_num
+    ]);
+  }
 }
