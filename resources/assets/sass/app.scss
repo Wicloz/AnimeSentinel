@@ -58,12 +58,20 @@ h1 > a, h1 > a:focus, h1 > a:hover, h2 > a, h2 > a:focus, h2 > a:hover {
 }
 
 // Content Template System //
-content-pane {
-  > pane-heading {
-
+.content-section {
+  background-color: $background_colour-content;
+  margin-bottom: 20px;
+  padding-top: 15px;
+  > .section-heading {
+    color: $text_colour-content;
+    padding: 10px 15px;
+    margin: 0px 15px;
+    background-color: $background_colour-navs;
+    font-size: 24px;
   }
-  > pane-body {
-    
+  > .section-body {
+    color: $text_colour-content;
+    padding: 15px;
   }
 }
 
@@ -74,4 +82,33 @@ content-pane {
 
 img {
   max-width: 100%;
+}
+
+.stick-to-nav {
+  margin-top: -20px;
+}
+
+.jumbotron {
+  background-color: $background_colour-elements;
+  p {
+    font-weight: 300;
+  }
+}
+
+.jumbotron-welcome {
+  background-color: transparent;
+  > .container {
+    background-color: transparentize($background_colour-elements, 0.1);
+    box-shadow: 0 0 64px $background_colour-elements;
+  }
+}
+
+.jumbotron-welcome::before {
+  content: " ";
+  position: absolute;
+  margin-top: -48px;
+  width: 100%;
+  height: 1080px;
+  z-index: -1;
+  background-image: url('../media/backgrounds/welcome.png');
 }

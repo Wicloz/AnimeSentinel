@@ -1,9 +1,9 @@
 [Database]
 Streamers:
-  {id(text), name, url}
+  {id(text), name, popularity, home, recent}
 
 Shows:
-  {id(num), mal_id, name, alts(json), latest_sub, latest_dub}
+  {id(num), mal_id, name, alts(json), description, latest_sub, latest_dub}
 
 Streams:
   {streamer_id, show_id, anime_type, link}
