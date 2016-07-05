@@ -16,5 +16,3 @@ Route::auth();
 Route::get('/', 'PagesController@home');
 Route::get('/about', 'PagesController@about');
 Route::get('/news', 'PagesController@news');
-
-Route::get('/profile', 'ProfileController@index');
