@@ -1,4 +1,5 @@
 // compressedFilenamePattern: ../../../public/css/$1.min.css
+// node node_modules\gulp\bin\gulp.js watch --production
 @import 'vars';
 @import 'navbar';
 @import 'panels';
@@ -81,6 +82,6 @@ img {
   width: 100%;
   height: 1080px;
   z-index: -1;
-  background-image: url('../media/backgrounds/welcome.png');
+  background-image: url('../../media/backgrounds/welcome.png');
   box-shadow: inset 0 0 10px $border_colour-main;
 }
