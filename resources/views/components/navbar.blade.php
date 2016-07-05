@@ -17,9 +17,9 @@
 
       <!-- Left Side Of Navbar -->
       <ul class="nav navbar-nav">
-        <li {{ "$_SERVER[REQUEST_URI]" === '/xxx' ? "class=active" : "" }}><a href="{{ url('/xxx') }}">Rencently Uploaded</a></li>
-        <li {{ "$_SERVER[REQUEST_URI]" === '/xxx' ? "class=active" : "" }}><a href="{{ url('/xxx') }}">Search Anime</a></li>
-        <li {{ "$_SERVER[REQUEST_URI]" === '/xxx' ? "class=active" : "" }}><a href="{{ url('/xxx') }}">Browse Streaming Sites</a></li>
+        <li {{ "$_SERVER[REQUEST_URI]" === '/anime/recent' ? "class=active" : "" }}><a href="{{ url('/anime/recent') }}">Recently Uploaded</a></li>
+        <li {{ "$_SERVER[REQUEST_URI]" === '/anime/search' ? "class=active" : "" }}><a href="{{ url('/anime/search') }}">Search Anime</a></li>
+        <li {{ "$_SERVER[REQUEST_URI]" === '/streamers/list' ? "class=active" : "" }}><a href="{{ url('/streamers/list') }}">Browse Streaming Sites</a></li>
         <li {{ "$_SERVER[REQUEST_URI]" === '/about' ? "class=active" : "" }}><a href="{{ url('/about') }}">About</a></li>
         <li {{ "$_SERVER[REQUEST_URI]" === '/news' ? "class=active" : "" }}><a href="{{ url('/news') }}">News</a></li>
       </ul>
