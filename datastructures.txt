@@ -1,20 +1,17 @@
 [Database]
 Streamers:
-  {id(text), name, popularity, home, recent}
+  {name, fullname, popularity, page_home, page_recent}
 
 Shows:
-  {id(num), mal_id, name, alts(json), description, latest_sub, latest_dub}
+  {id, mal_id, name, alts, description, latest_sub, latest_dub}
 
 Streams:
-  {streamer_id, show_id, anime_type, link}
+  {streamer, show_id, anime_type, link}
 
 Episodes:
-  {anime_id, anime_type, episode_num, streamer_id, link, videolink, uploadtime, resolutions(json)}
-
-Users:
-  {tbd}
+  {anime_id, anime_type, episode_num, streamer, link, videolink, uploadtime, resolutions}
 
 [Sentinel]
 'Guard', executed by a cron job. Checks all streaming sites recently uploaded page.
 'Pursue', searches all streaming sites to find all information for one anime. Used for adding new Anime.
-'Inspection', searches one streaming site for all information on all anime. Used for adding ne Streaming Sites.
+'Inspect', searches one streaming site for all information on all anime. Used for adding a new Streaming Sites.
