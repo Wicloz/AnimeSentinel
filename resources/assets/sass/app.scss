@@ -1,2 +1,118 @@
-// @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+// compressedFilenamePattern: ../../../public/css/$1.min.css
+@import 'vars';
+@import 'panels';
 
+// Main Styling //
+body {
+  font-family: 'Lato';
+  background-color: $background_colour-main;
+  color: $text_colour-navs;
+}
+
+h1, h2, h3 {
+  text-align: center;
+}
+
+h1 > a, h1 > a:focus, h1 > a:hover, h2 > a, h2 > a:focus, h2 > a:hover {
+	text-decoration: none;
+	color: inherit;
+	outline-width: 0px;
+}
+
+#content {
+  color: $text_colour-content;
+  overflow: hidden;
+}
+
+#footer {
+  border: 0px dotted $border_colour-main;
+  border-top-width: 1px;
+	background-color: $background_colour-navs;
+  padding: 15px;
+  h2 {
+    margin-top: 0px;
+    text-align: left;
+  }
+  p {
+    margin-bottom: 0px;
+  }
+}
+
+// Navbar Changes //
+.navbar-inverse {
+  .navbar-header {
+    > .active {
+      background-color: $border_colour-main;
+      color: #fff;
+    }
+  }
+  .navbar-nav {
+    > .active {
+      > a {
+        background-color: $border_colour-main;
+        color: #fff;
+      }
+    }
+  }
+}
+
+// Content Template System //
+.content-block {
+  margin-bottom: 20px;
+}
+
+.paragraph-left, .paragraph-center, .paragraph-right {
+  margin-bottom: 20px;
+  border: 0px dotted $border_colour-main;
+  border-bottom-width: 1px;
+  > .paragraph-heading {
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+  > .paragraph-subheading {
+    font-size: 12px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+  }
+  > .paragraph-body {
+    margin-bottom: 2px;
+  }
+}
+
+.paragraph-left {
+  text-align: left;
+}
+
+.paragraph-center {
+  text-align: center;
+}
+
+.paragraph-right {
+  text-align: right;
+}
+
+// Specific Modules //
+.fa-btn {
+  margin-right: 6px;
+}
+
+img {
+  max-width: 100%;
+}
+
+.img-thumbnail {
+  color: #111;
+  //background-color: #eee;
+}
+
+.stick-to-nav {
+  margin-top: -20px;
+}
+
+.jumbotron {
+  background-color: $background_colour-inline;
+}
+
+.herory-pic {
+  height: 100px;
+}
