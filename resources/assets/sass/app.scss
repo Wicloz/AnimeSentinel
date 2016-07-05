@@ -73,14 +73,14 @@ h1 > a, h1 > a:focus, h1 > a:hover, h2 > a, h2 > a:focus, h2 > a:hover {
 
 // Content Template System //
 .content-section {
-  background-color: $background_colour-content;
+  background-color: $background_colour-content1;
   margin-bottom: 20px;
   padding-top: 15px;
   > .section-heading {
     color: $text_colour-content;
     padding: 10px 15px;
     margin: 0px 15px;
-    background-color: $background_colour-navs;
+    background-color: $background_colour-content2;
     font-size: 24px;
   }
   > .section-body {
