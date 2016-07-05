@@ -60,7 +60,6 @@
       <div class="col-sm-2">
       </div>
       <div class="col-sm-8">
-        <p>AnimeSentinel, 2016</p>
       </div>
       <div class="col-sm-2">
       </div>
