@@ -1,5 +1,6 @@
 // compressedFilenamePattern: ../../../public/css/$1.min.css
 @import 'vars';
+@import 'navbar';
 @import 'panels';
 
 // Main Styling //
@@ -25,50 +26,6 @@ h1 > a, h1 > a:focus, h1 > a:hover, h2 > a, h2 > a:focus, h2 > a:hover {
 
 #footer {
 
-}
-
-// Navbar Changes //
-.navbar-custom {
-  border-color: $border_colour-main;
-  background-color: $background_colour-navs;
-  .navbar-toggle {
-    border-color: $text_colour-navs;
-    > .icon-bar {
-      background-color: $text_colour-content;
-    }
-  }
-  .navbar-header {
-    > a {
-      background-color: transparent;
-      color: $text_colour-navs;
-    }
-    > a:hover, a:focus {
-      background-color: transparent;
-      color: $text_colour-content;
-    }
-    > .active {
-      background-color: $border_colour-main;
-      color: $text_colour-content;
-    }
-  }
-  .navbar-nav {
-    > li {
-      > a {
-        background-color: transparent;
-        color: $text_colour-navs;
-      }
-      > a:hover, a:focus {
-        background-color: transparent;
-        color: $text_colour-content;
-      }
-    }
-    > .active {
-      > a, a:hover, a:focus {
-        background-color: $border_colour-main;
-        color: $text_colour-content;
-      }
-    }
-  }
 }
 
 // Content Template System //
@@ -125,4 +82,5 @@ img {
   height: 1080px;
   z-index: -1;
   background-image: url('../media/backgrounds/welcome.png');
+  box-shadow: inset 0 0 10px $border_colour-main;
 }

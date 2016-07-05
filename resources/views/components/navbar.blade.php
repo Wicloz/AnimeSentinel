@@ -21,6 +21,7 @@
         <li {{ "$_SERVER[REQUEST_URI]" === '/xxx' ? "class=active" : "" }}><a href="{{ url('/xxx') }}">Search Anime</a></li>
         <li {{ "$_SERVER[REQUEST_URI]" === '/xxx' ? "class=active" : "" }}><a href="{{ url('/xxx') }}">Browse Streaming Sites</a></li>
         <li {{ "$_SERVER[REQUEST_URI]" === '/about' ? "class=active" : "" }}><a href="{{ url('/about') }}">About</a></li>
+        <li {{ "$_SERVER[REQUEST_URI]" === '/news' ? "class=active" : "" }}><a href="{{ url('/news') }}">News</a></li>
       </ul>
 
       <!-- Right Side Of Navbar -->

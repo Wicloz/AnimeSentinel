@@ -13,12 +13,8 @@
 
 Route::auth();
 
-Route::get('/', function () {
-    return view('home');
-});
-
-Route::get('/about', function () {
-    return view('about');
-});
+Route::get('/', 'PagesController@home');
+Route::get('/about', 'PagesController@about');
+Route::get('/news', 'PagesController@news');
 
 Route::get('/profile', 'ProfileController@index');

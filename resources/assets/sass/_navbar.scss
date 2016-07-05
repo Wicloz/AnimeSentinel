@@ -1,0 +1,45 @@
+// main: app.scss
+@import 'vars';
+
+.navbar-custom {
+  border-color: $border_colour-main;
+  background-color: $background_colour-navs;
+  .navbar-toggle {
+    border-color: $text_colour-navs;
+    > .icon-bar {
+      background-color: $text_colour-content;
+    }
+  }
+  .navbar-header {
+    > a {
+      background-color: transparent;
+      color: $text_colour-navs;
+    }
+    > a:hover, a:focus {
+      background-color: transparent;
+      color: $text_colour-content;
+    }
+    > .active {
+      background-color: $border_colour-main;
+      color: $text_colour-content;
+    }
+  }
+  .navbar-nav {
+    > li {
+      > a {
+        background-color: transparent;
+        color: $text_colour-navs;
+      }
+      > a:hover, a:focus {
+        background-color: transparent;
+        color: $text_colour-content;
+      }
+    }
+    > .active {
+      > a, a:hover, a:focus {
+        background-color: $border_colour-main;
+        color: $text_colour-content;
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Http\Requests;
+
+class PagesController extends Controller
+{
+  /**
+   * Show the home page.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function home() {
+      return view('home');
+  }
+
+  /**
+   * Show the about page.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function about() {
+      return view('about');
+  }
+
+  /**
+   * Show the news page.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function news() {
+      return view('news');
+  }
+}

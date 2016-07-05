@@ -5,10 +5,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <meta name="description" content="" />
-  <meta name="keywords" content="" />
+  <meta name="description" content="">
+  <meta name="keywords" content="">
   <meta name="author" content="Wilco de Boer | Wicloz">
-  <title>AnimeSentinel - @yield('title', 'define this')</title>
+  <title>AnimeSentinel - @yield('title', 'this should not appear')</title>
 
   <!-- Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" integrity="sha384-XdYbMnZ/QjLh6iI4ogqCTaIjrFk87ip+ekIjefZch0Y+PvJ8CDYtEs1ipDmPorQ+" crossorigin="anonymous">
@@ -16,9 +16,10 @@
 
   <!-- Styles -->
   <link rel="stylesheet" href="{{ url('/') }}/css/bootstrap.min.css">
-  <link rel="stylesheet" href="{{ url('/') }}/css/app.min.css">
+  <link rel="stylesheet" href="{{ elixir('css/app.css') }}">
 
   <!-- Favicons -->
+  <!--TODO-->
 
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
   <link href="{{ url('/') }}/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
