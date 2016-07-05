@@ -15,7 +15,12 @@ class AnimeController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function search() {
-      return view('anime.search');
+    // TODO
+    $results = Show::all();
+
+    return view('anime.search', [
+      'results' => $results
+    ]);
   }
 
   /**
@@ -24,7 +29,12 @@ class AnimeController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function recent() {
-      return view('anime.recent');
+    // TODO
+    $shows = Show::all();
+
+    return view('anime.recent', [
+      'shows' => $shows
+    ]);
   }
 
   /**
@@ -33,8 +43,8 @@ class AnimeController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function details(Show $show) {
-      return view('anime.details', [
-        'show' => $show
-      ]);
+    return view('anime.details', [
+      'show' => $show
+    ]);
   }
 }

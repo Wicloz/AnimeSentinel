@@ -13,7 +13,7 @@ class PagesController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function home() {
-      return view('home');
+    return view('home');
   }
 
   /**
@@ -22,7 +22,7 @@ class PagesController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function about() {
-      return view('information.about');
+    return view('information.about');
   }
 
   /**
@@ -31,6 +31,6 @@ class PagesController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function news() {
-      return view('information.news');
+    return view('information.news');
   }
 }
