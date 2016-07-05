@@ -1,15 +1,15 @@
 [Database]
 Streamers:
-  {name, fullname, popularity, page_home, page_recent}
+  {id, name, popularity, link_home, link_recent}
 
 Shows:
   {id, mal_id, name, alts, description, latest_sub, latest_dub}
 
 Streams:
-  {streamer, show_id, anime_type, link}
+  {streamer_id, show_id, anime_type, link}
 
 Episodes:
-  {anime_id, anime_type, episode_num, streamer, link, videolink, uploadtime, resolutions}
+  {anime_id, anime_type, episode_num, streamer_id, link, videolink, uploadtime, resolutions}
 
 [Sentinel]
 'Guard', executed by a cron job. Checks all streaming sites recently uploaded page.
