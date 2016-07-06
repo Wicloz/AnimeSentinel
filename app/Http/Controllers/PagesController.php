@@ -8,15 +8,6 @@ use App\Http\Requests;
 class PagesController extends Controller
 {
   /**
-   * Show the home page.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function home() {
-    return view('home');
-  }
-
-  /**
    * Show the about page.
    *
    * @return \Illuminate\Http\Response

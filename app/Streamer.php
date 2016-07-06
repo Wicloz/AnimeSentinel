@@ -12,11 +12,13 @@ class Streamer extends Model
    * @var array
    */
   protected $fillable = [
-      'id', 'name', 'popularity', 'link_home', 'link_recent',
+    'id', 'name', 'popularity', 'link_home', 'link_recent',
   ];
 
   /**
   * Get all videos from this streamer.
+  *
+  * @return \Illuminate\Database\Eloquent\Relations\Relation
   */
   public function videos() {
     return $this->hasMany(Video::class);
@@ -24,6 +26,8 @@ class Streamer extends Model
 
   /**
   * Get all shows from this streamer.
+  *
+  * @return \Illuminate\Database\Eloquent\Relations\Relation
   */
   public function streamers() {
     return $this->belongsToMany(Show::class, 'videos');

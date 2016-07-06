@@ -21,9 +21,10 @@ class CreateVideosTable extends Migration
 
             $table->integer('episode_num');
             $table->dateTime('uploadtime');
-            $table->string('link', 1024);
+            $table->string('link_stream', 1024);
+            $table->string('link_episode', 1024);
 
-            $table->string('videolink', 2048);
+            $table->string('link_video', 2048);
             $table->string('resolution');
 
             $table->timestamps();

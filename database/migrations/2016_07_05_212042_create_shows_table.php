@@ -15,7 +15,7 @@ class CreateShowsTable extends Migration
         Schema::create('shows', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('mal_id')->default(-1);
-            $table->string('name');
+            $table->string('title');
             $table->text('alts');
             $table->text('description');
             $table->enum('show_type', [

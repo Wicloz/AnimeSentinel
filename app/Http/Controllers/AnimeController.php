@@ -9,6 +9,43 @@ use App\Video;
 
 class AnimeController extends Controller
 {
+  protected function recentShows() {
+    $recent = Video::orderBy('uploadtime', 'desc')
+              ->take(50)
+              ->get();
+    $shows = [];
+
+    foreach ($recent as $index => $video) {
+      $shows[$index] = $video->show;
+      $shows[$index]->this_episode = $video->episode_num;
+      $shows[$index]->this_translation = $video->translation_type;
+    }
+
+    return $shows;
+  }
+
+  /**
+   * Show the home page.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function home() {
+    return view('home', [
+      'shows' => $this->recentShows()
+    ]);
+  }
+
+  /**
+   * Show the 'recently updated' page.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function recent() {
+    return view('anime.recent', [
+      'shows' => $this->recentShows()
+    ]);
+  }
+
   /**
    * Show the search page for all shows.
    *
@@ -20,26 +57,6 @@ class AnimeController extends Controller
 
     return view('anime.search', [
       'results' => $results
-    ]);
-  }
-
-  /**
-   * Show the 'recently updated' page.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function recent() {
-    $recent = Video::orderBy('uploadtime', 'desc')
-              ->take(50)
-              ->get();
-    $shows = [];
-
-    foreach ($recent as $video) {
-      $shows[] = $video->show();
-    }
-
-    return view('anime.recent', [
-      'shows' => $shows
     ]);
   }
 
@@ -59,13 +76,14 @@ class AnimeController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function episode(Show $show, $anime_type, $episode_num) {
-    // TODO
-    $videos = [];
+  public function episode(Show $show, $translation_type, $episode_num) {
+    $videos = $show->videos()
+                   ->episode($translation_type, $episode_num)
+                   ->get();
 
     return view('anime.episode', [
       'show' => $show,
-      'type' => $anime_type,
+      'translation' => $translation_type,
       'number' => $episode_num,
       'videos' => $videos,
     ]);

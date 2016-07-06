@@ -3,6 +3,7 @@
 @import 'vars';
 @import 'navbar';
 @import 'panels';
+@import 'synopsy';
 
 // Main Styling //
 body {
@@ -61,6 +62,7 @@ h1 > a, h1 > a:focus, h1 > a:hover, h2 > a, h2 > a:focus, h2 > a:hover {
   margin-left: -15px;
   width: calc(100% - 30px);
   height: calc(1080px - 560px);
+  max-height: calc(100% - 20px);
   z-index: -1;
   box-shadow: 0 0 64px $text_colour-navs;
 }
@@ -72,6 +74,12 @@ h1 > a, h1 > a:focus, h1 > a:hover, h2 > a, h2 > a:focus, h2 > a:hover {
 
 img {
   max-width: 100%;
+}
+
+.img-thumbnail {
+  color: $background_colour-content2;
+  background-color: $text_colour-navs;
+  border-color: $text_colour-navs;
 }
 
 .stick-to-nav {
