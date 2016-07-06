@@ -24,7 +24,7 @@ class AnimeController extends Controller
   }
 
   /**
-   * Show the 'recently uploaded' page.
+   * Show the 'recently updated' page.
    *
    * @return \Illuminate\Http\Response
    */

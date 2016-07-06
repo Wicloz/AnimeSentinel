@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('title', 'Recently Uploaded')
+@section('title', 'Recently Updated')
 
 @section('content-center')
   <div class="content-section">
-    <div class="section-heading">Recently Uploaded</div>
+    <div class="section-heading">Recently Updated</div>
     <div class="section-body">
       <ul>
         @foreach($shows as $show)
