@@ -55,6 +55,13 @@ class AnimeController extends Controller
    */
   public function episode(Show $show, $anime_type, $episode_num) {
     // TODO
-    return 'TODO';
+    $videos = [];
+
+    return view('anime.episode', [
+      'show' => $show,
+      'type' => $anime_type,
+      'number' => $episode_num,
+      'videos' => $videos,
+    ]);
   }
 }
