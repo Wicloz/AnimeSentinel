@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', "$show->title - Episode $episode_num")
+@section('title', "$show->title - Episode $number")
 
 @section('content-center')
 

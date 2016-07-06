@@ -45,7 +45,7 @@ class Video extends Model
   /**
   * Get the full url for this videos stream page.
   *
-  * @return integer
+  * @return string
   */
   public function getEpisodeUrlAttribute() {
     return url('/anime/'.$this->show_id.'/'.$this->translation_type.'/episode-'.$this->episode_num);
@@ -54,7 +54,7 @@ class Video extends Model
   /**
   * Get the full url for the episode page related to this video.
   *
-  * @return integer
+  * @return string
   */
   public function getStreamUrlAttribute() {
     return url('/anime/'.$this->show_id.'/'.$this->translation_type.'/episode-'.$this->episode_num.'/'.$this->id);

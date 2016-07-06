@@ -20,8 +20,22 @@
   <div class="content-header">Episodes</div>
   <div class="content-generic">
     <h2>Subbed</h2>
+    {!! count($show->episodes_sub) !== 0 ? '<ul>' : 'No Episodes Found' !!}
+      @foreach($show->episodes_sub as $episode)
+        <li>
+          <a href="{{ $episode->episode_url }}">Episode {{ $episode->episode_num }}</a>
+        </li>
+      @endforeach
+    {!! count($show->episodes_sub) !== 0 ? '</ul>' : '' !!}
     <div class="content-close"></div>
     <h2>Dubbed</h2>
+    {!! count($show->episodes_dub) !== 0 ? '<ul>' : 'No Episodes Found' !!}
+      @foreach($show->episodes_dub as $episode)
+        <li>
+          <a href="{{ $episode->episode_url }}">Episode {{ $episode->episode_num }}</a>
+        </li>
+      @endforeach
+    {!! count($show->episodes_dub) !== 0 ? '</ul>' : '' !!}
     <div class="content-close"></div>
   </div>
 

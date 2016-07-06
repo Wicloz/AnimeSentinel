@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Home')
+@section('title', 'Welcome')
 
 @section('content-top')
   <div class="jumbotron jumbotron-welcome stick-to-nav">

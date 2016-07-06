@@ -71,9 +71,37 @@ class Show extends Model
   }
 
   /**
+  * Get the list of subbed episodes and their internal link.
+  *
+  * @return array
+  */
+  public function getEpisodesSubAttribute() {
+    $episodes = $this->videos()
+                     ->where('translation_type', 'sub')
+                     ->distinct('episode_num')
+                     ->orderBy('episode_num', 'asc')
+                     ->get();
+    return $episodes;
+  }
+
+  /**
+  * Get the list of dubbed episodes and their internal link.
+  *
+  * @return array
+  */
+  public function getEpisodesDubAttribute() {
+    $episodes = $this->videos()
+                     ->where('translation_type', 'dub')
+                     ->distinct('episode_num')
+                     ->orderBy('episode_num', 'asc')
+                     ->get();
+    return $episodes;
+  }
+
+  /**
   * Get the full url for this show's details page.
   *
-  * @return integer
+  * @return string
   */
   public function getDetailsUrlAttribute() {
     return url('/anime/'.$this->id);
@@ -82,7 +110,7 @@ class Show extends Model
   /**
   * Get the url to this show's MAL page.
   *
-  * @return integer
+  * @return string
   */
   public function getMalUrlAttribute() {
     return 'http://myanimelist.net/anime/'.$this->mal_id; // NOTE: MAL does not have https

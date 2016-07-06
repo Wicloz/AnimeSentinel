@@ -9,7 +9,7 @@
         <span class="icon-bar"></span>
       </button>
       <!-- Branding Image -->
-      <a class="navbar-brand {{ "$_SERVER[REQUEST_URI]" === '/' ? "active" : "" }}" href="{{ url('/') }}">
+      <a class="navbar-brand {{ "$_SERVER[REQUEST_URI]" === '/' ? 'active' : '' }}" href="{{ url('/') }}">
         AnimeSentinel
       </a>
     </div>
@@ -17,18 +17,18 @@
 
       <!-- Left Side Of Navbar -->
       <ul class="nav navbar-nav">
-        <li {{ "$_SERVER[REQUEST_URI]" === '/anime/recent' ? "class=active" : "" }}><a href="{{ url('/anime/recent') }}">Recently Updated</a></li>
-        <li {{ "$_SERVER[REQUEST_URI]" === '/anime/search' ? "class=active" : "" }}><a href="{{ url('/anime/search') }}">Search Anime</a></li>
-        <li {{ "$_SERVER[REQUEST_URI]" === '/streamers/list' ? "class=active" : "" }}><a href="{{ url('/streamers/list') }}">Browse Streaming Sites</a></li>
-        <li {{ "$_SERVER[REQUEST_URI]" === '/about' ? "class=active" : "" }}><a href="{{ url('/about') }}">About</a></li>
-        <li {{ "$_SERVER[REQUEST_URI]" === '/news' ? "class=active" : "" }}><a href="{{ url('/news') }}">News</a></li>
+        <li {{ "$_SERVER[REQUEST_URI]" === '/anime/recent' ? 'class=active' : '' }}><a href="{{ url('/anime/recent') }}">Recently Updated</a></li>
+        <li {{ "$_SERVER[REQUEST_URI]" === '/anime/search' ? 'class=active' : '' }}><a href="{{ url('/anime/search') }}">Search Anime</a></li>
+        <li {{ "$_SERVER[REQUEST_URI]" === '/streamers/list' ? 'class=active' : '' }}><a href="{{ url('/streamers/list') }}">Browse Streaming Sites</a></li>
+        <li {{ "$_SERVER[REQUEST_URI]" === '/about' ? 'class=active' : '' }}><a href="{{ url('/about') }}">About</a></li>
+        <li {{ "$_SERVER[REQUEST_URI]" === '/news' ? 'class=active' : '' }}><a href="{{ url('/news') }}">News</a></li>
       </ul>
 
       <!-- Right Side Of Navbar -->
       <ul class="nav navbar-nav navbar-right">
         @if (Auth::guest())
-          <li {{ "$_SERVER[REQUEST_URI]" === '/login' ? "class=active" : "" }}><a href="{{ url('/login') }}">Login</a></li>
-          <li {{ "$_SERVER[REQUEST_URI]" === '/register' ? "class=active" : "" }}><a href="{{ url('/register') }}">Register</a></li>
+          <li {{ "$_SERVER[REQUEST_URI]" === '/login' ? 'class=active' : '' }}><a href="{{ url('/login') }}">Login</a></li>
+          <li {{ "$_SERVER[REQUEST_URI]" === '/register' ? 'class=active' : '' }}><a href="{{ url('/register') }}">Register</a></li>
         @else
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
