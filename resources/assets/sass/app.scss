@@ -102,4 +102,7 @@ img {
   z-index: -1;
   background-image: url('../../media/backgrounds/welcome.png');
   box-shadow: inset 0 0 10px $background_colour-main;
+
+  animation:spin 4s linear infinite;
 }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
