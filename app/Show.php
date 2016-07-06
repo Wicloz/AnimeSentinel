@@ -13,7 +13,7 @@ class Show extends Model
    * @var array
    */
   protected $fillable = [
-    'mal_id', 'title', 'alts', 'description', 'show_type',
+    'mal_id', 'title', 'alts', 'description', 'show_type', 'hits',
   ];
 
   /**
