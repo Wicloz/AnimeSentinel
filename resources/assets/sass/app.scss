@@ -47,7 +47,7 @@ h1 > a, h1 > a:focus, h1 > a:hover, h2 > a, h2 > a:focus, h2 > a:hover {
 }
 
 .content-section-welcome {
-  background-color: transparentize($text_colour-content, 0.1);
+  background-color: transparentize($text_colour-navs, 0.1);
   padding: 15px;
   > .section-heading {
     margin-bottom: 15px;
@@ -62,7 +62,7 @@ h1 > a, h1 > a:focus, h1 > a:hover, h2 > a, h2 > a:focus, h2 > a:hover {
   width: calc(100% - 30px);
   height: calc(1080px - 560px);
   z-index: -1;
-  box-shadow: 0 0 64px $text_colour-content;
+  box-shadow: 0 0 64px $text_colour-navs;
 }
 
 // Specific Modules //
