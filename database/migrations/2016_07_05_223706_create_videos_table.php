@@ -17,7 +17,7 @@ class CreateVideosTable extends Migration
 
             $table->string('streamer_id');
             $table->integer('show_id')->unsigned();
-            $table->enum('anime_type', ['sub', 'dub']);
+            $table->enum('translation_type', ['sub', 'dub']);
 
             $table->integer('episode_num');
             $table->dateTime('uploadtime');
@@ -28,7 +28,7 @@ class CreateVideosTable extends Migration
 
             $table->timestamps();
 
-            $table->unique(['show_id', 'anime_type', 'episode_num', 'streamer_id']);
+            $table->index(['show_id', 'translation_type', 'episode_num', 'streamer_id']);
             $table->foreign('show_id')->references('id')->on('shows')->onDelete('cascade');
             $table->foreign('streamer_id')->references('id')->on('streamers')->onDelete('cascade');
         });

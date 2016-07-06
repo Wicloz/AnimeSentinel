@@ -29,8 +29,14 @@ class AnimeController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function recent() {
-    // TODO
-    $shows = Show::all();
+    $recent = Video::orderBy('uploadtime', 'desc')
+              ->take(50)
+              ->get();
+    $shows = [];
+
+    foreach ($recent as $video) {
+      $shows[] = $video->show();
+    }
 
     return view('anime.recent', [
       'shows' => $shows

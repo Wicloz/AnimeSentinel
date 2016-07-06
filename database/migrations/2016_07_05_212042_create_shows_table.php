@@ -18,6 +18,13 @@ class CreateShowsTable extends Migration
             $table->string('name');
             $table->text('alts');
             $table->text('description');
+            $table->enum('show_type', [
+              'tv',
+              'ova',
+              'ona',
+              'movie',
+              'special',
+            ]);
             $table->timestamps();
         });
     }
