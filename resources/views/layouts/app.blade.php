@@ -44,13 +44,13 @@
   @yield('content-top')
   <div class="container-fluid" id="content">
     <div class="row">
-      <div class="col-md-2">
+      <div id="content-left" class="col-md-2">
         @yield('content-left')
       </div>
-      <div class="col-md-8">
+      <div id="content-center" class="col-md-8">
         @yield('content-center')
       </div>
-      <div class="col-md-2">
+      <div id="content-right" class="col-md-2">
         @yield('content-right')
       </div>
     </div>
@@ -60,11 +60,11 @@
   <!-- Footer -->
   <div class="container-fluid" id="footer">
     <div class="row">
-      <div class="col-sm-2">
+      <div class="col-md-2">
       </div>
-      <div class="col-sm-8">
+      <div class="col-md-8">
       </div>
-      <div class="col-sm-2">
+      <div class="col-md-2">
       </div>
     </div>
   </div>

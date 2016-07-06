@@ -1,0 +1,47 @@
+// main: app.scss
+@import 'vars';
+
+#content {
+  color: $text_colour-content;
+}
+
+.content-left, .content-center, .content-main {
+  margin-bottom: 20px;
+}
+
+.welcome-content-wrapper {
+  background-color: transparentize($text_colour-navs, 0.1);
+  padding: 15px;
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
+.welcome-content-wrapper::before {
+  content: " ";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: $welcome_picture-height - 560px;
+  max-height: 100%;
+  z-index: -1;
+  box-shadow: 0 0 64px $text_colour-navs;
+}
+
+// Content Elements //
+
+.content-header {
+  padding: 10px 15px;
+  background-color: $background_colour-content2;
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+.content-generic {
+  background-color: $background_colour-content1;
+  margin-bottom: 15px;
+  padding: 15px;
+  > .content-close {
+    border: 1px solid $border_colour-main;
+  }
+}

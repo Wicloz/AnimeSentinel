@@ -1,2 +1,39 @@
 // main: app.scss
 @import 'vars';
+
+.synopsis-panel {
+  background-color: $background_colour-content1;
+  margin-bottom: 15px;
+  padding: 15px;
+
+  > .row > .col-sm-2 {
+    margin-bottom: 15px;
+  }
+  @media (min-width: 768px) {
+    > .row > .col-sm-2 {
+      margin-bottom: 0px;
+      padding-right: 0px;
+    }
+  }
+
+  .synopsis-thumbnail {
+    width: 100%;
+  }
+
+  .synopsis-title {
+    background-color: $background_colour-content2;
+    font-size: 24px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+  }
+
+  .synopsis-details {
+    margin-bottom: 10px;
+  }
+
+  .synopsis-episodes {
+    background-color: $background_colour-content2;
+    padding: 5px 10px;
+    font-size: 16px;
+  }
+}

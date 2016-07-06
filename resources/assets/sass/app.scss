@@ -1,9 +1,10 @@
-// compressedFilenamePattern: ../../../public/css/$1.min.css
-// node node_modules\gulp\bin\gulp.js watch
 @import 'vars';
 @import 'navbar';
 @import 'panels';
 @import 'synopsy';
+@import 'pageContent';
+
+// node node_modules\gulp\bin\gulp.js watch
 
 // Main Styling //
 body {
@@ -22,49 +23,8 @@ h1 > a, h1 > a:focus, h1 > a:hover, h2 > a, h2 > a:focus, h2 > a:hover {
 	outline-width: 0px;
 }
 
-#content {
-  color: $text_colour-content;
-}
-
 #footer {
 
-}
-
-// Content Template System //
-.content-section {
-  margin-bottom: 20px;
-  > .section-heading {
-    color: $text_colour-content;
-    padding: 10px 15px;
-    background-color: $background_colour-content2;
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
-  > .section-body {
-    color: $text_colour-content;
-    background-color: $background_colour-content1;
-    padding: 15px;
-  }
-}
-
-.content-section-welcome {
-  background-color: transparentize($text_colour-navs, 0.1);
-  padding: 15px;
-  > .section-heading {
-    margin-bottom: 15px;
-  }
-}
-
-.content-section-welcome::before {
-  content: " ";
-  position: absolute;
-  margin-top: -15px;
-  margin-left: -15px;
-  width: calc(100% - 30px);
-  height: calc(1080px - 560px);
-  max-height: calc(100% - 20px);
-  z-index: -1;
-  box-shadow: 0 0 64px $text_colour-navs;
 }
 
 // Specific Modules //
@@ -98,6 +58,13 @@ img {
   > .container {
     background-color: transparentize($background_colour-elements, 0.1);
     box-shadow: 0 0 64px $background_colour-elements;
+    margin-top: -48px;
+  }
+}
+
+@media (min-width: 768px) {
+  .jumbotron-welcome > .container {
+    margin-top: 0px;
   }
 }
 
@@ -106,7 +73,7 @@ img {
   position: absolute;
   margin-top: -48px;
   width: 100%;
-  height: 1080px;
+  height: $welcome_picture-height;
   z-index: -1;
   background-image: url('../../media/backgrounds/welcome.png');
   box-shadow: inset 0 0 10px $background_colour-main;
