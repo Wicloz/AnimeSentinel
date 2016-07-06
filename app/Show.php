@@ -71,6 +71,24 @@ class Show extends Model
   }
 
   /**
+  * Get the full url for this show's details page.
+  *
+  * @return integer
+  */
+  public function getDetailsUrlAttribute() {
+    return url('/anime/'.$this->id);
+  }
+
+  /**
+  * Get the url to this show's MAL page.
+  *
+  * @return integer
+  */
+  public function getMalUrlAttribute() {
+    return 'http://myanimelist.net/anime/'.$this->mal_id; // NOTE: MAL does not have https
+  }
+
+  /**
   * Handle caching for the shows information
   *
   * @return integer

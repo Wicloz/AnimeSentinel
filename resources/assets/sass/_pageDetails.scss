@@ -1,0 +1,25 @@
+// main: app.scss
+@import 'vars';
+
+.details-thumbnail {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.mal-widget {
+  width: 597px;
+  height: 146px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 10px;
+  // TODO: proper scaling
+
+  > iframe {
+    position: absolute;
+    top: -185px;
+    left: -242px;
+    width: 1024px;
+    height: 512px;
+    border: none;
+  }
+}

@@ -41,4 +41,22 @@ class Video extends Model
   public function scopeEpisode($query, $translation_type, $episode_num) {
     return $query->where('translation_type', $translation_type)->where('episode_num', $episode_num);
   }
+
+  /**
+  * Get the full url for this videos stream page.
+  *
+  * @return integer
+  */
+  public function getEpisodeUrlAttribute() {
+    return url('/anime/'.$this->show_id.'/'.$this->translation_type.'/episode-'.$this->episode_num);
+  }
+
+  /**
+  * Get the full url for the episode page related to this video.
+  *
+  * @return integer
+  */
+  public function getStreamUrlAttribute() {
+    return url('/anime/'.$this->show_id.'/'.$this->translation_type.'/episode-'.$this->episode_num.'/'.$this->id);
+  }
 }

@@ -24,6 +24,7 @@ class CreateVideosTable extends Migration
             $table->string('link_stream', 1024);
             $table->string('link_episode', 1024);
 
+            $table->bigInteger('hits')->default(0);
             $table->string('link_video', 2048);
             $table->string('resolution');
 

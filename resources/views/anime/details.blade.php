@@ -1,15 +1,35 @@
 @extends('layouts.app')
 @section('title', $show->title)
 
+  @section('content-left')
+    <img class="img-thumbnail details-thumbnail" src="{{ url('/media/thumbnails/'.$show->id) }}" alt="{{ $show->title }} - Thumbnail">
+    <div class="content-header">
+      <a target="_blank" href="{{ $show->mal_url }}">
+        View on MyAnimeList!
+      </a>
+    </div>
+  @endsection
+
 @section('content-center')
   <div class="content-header">{{ $show->title }}</div>
   <div class="content-generic">
-    <ul>
-      <li><a target="_blank" href="http://myanimelist.net/anime/{{ $show->mal_id }}">{{ $show->mal_id }}</a></li>
-      <li>{{ implode(', ', $show->alts) }}</li>
-      <li>{{ $show->description }}</li>
-      <li>{{ $show->latest_sub }}</li>
-      <li>{{ $show->latest_dub }}</li>
-    </ul>
+    {!! $show->description !!}
+    <div class="content-close"></div>
+  </div>
+
+  <div class="content-header">Episodes</div>
+  <div class="content-generic">
+    <h2>Subbed</h2>
+    <div class="content-close"></div>
+    <h2>Dubbed</h2>
+    <div class="content-close"></div>
+  </div>
+
+  <div class="content-header">A somewhat working iframe powered MAL widget:</div>
+  <div class="content-generic flowfix">
+    <div class="mal-widget">
+      <iframe src="{{ $show->mal_url }}"></iframe>
+    </div>
+    <div class="content-close"></div>
   </div>
 @endsection

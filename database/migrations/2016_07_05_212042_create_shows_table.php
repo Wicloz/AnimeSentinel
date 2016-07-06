@@ -25,6 +25,7 @@ class CreateShowsTable extends Migration
               'movie',
               'special',
             ]);
+            $table->bigInteger('hits')->default(0);
             $table->timestamps();
         });
     }
