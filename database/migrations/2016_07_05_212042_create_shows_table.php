@@ -18,8 +18,6 @@ class CreateShowsTable extends Migration
             $table->string('name');
             $table->text('alts');
             $table->text('description');
-            $table->integer('latest_sub')->default(-1);
-            $table->integer('latest_dub')->default(-1);
             $table->timestamps();
         });
     }
