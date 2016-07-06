@@ -23,4 +23,4 @@ Route::get('/anime/search', 'AnimeController@search');
 Route::get('/anime/{show}', 'AnimeController@details');
 Route::get('/anime/{show}/{anime_type}/episode-{episode_num}', 'AnimeController@episode');
 
-Route::get('/anime/{show}/{anime_type}/episode-{episode_num}/{streamer_id}', 'EpisodeController@stream');
+Route::get('/anime/{show}/{anime_type}/episode-{episode_num}/{video}', 'EpisodeController@stream');

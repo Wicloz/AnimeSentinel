@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Show;
-use App\Episode;
+use App\Video;
 
 class AnimeController extends Controller
 {

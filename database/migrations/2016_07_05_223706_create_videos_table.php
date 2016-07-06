@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEpisodesTable extends Migration
+class CreateVideosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,17 +12,22 @@ class CreateEpisodesTable extends Migration
      */
     public function up()
     {
-        Schema::create('episodes', function (Blueprint $table) {
+        Schema::create('videos', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('show_id')->unsigned();
-            $table->string('anime_type');
-            $table->integer('episode_num');
+
             $table->string('streamer_id');
-            $table->string('link', 1024);
-            $table->string('videolink', 2048);
+            $table->integer('show_id')->unsigned();
+            $table->enum('anime_type', ['sub', 'dub']);
+
+            $table->integer('episode_num');
             $table->dateTime('uploadtime');
-            $table->string('resolutions');
+            $table->string('link', 1024);
+
+            $table->string('videolink', 2048);
+            $table->string('resolution');
+
             $table->timestamps();
+
             $table->unique(['show_id', 'anime_type', 'episode_num', 'streamer_id']);
             $table->foreign('show_id')->references('id')->on('shows')->onDelete('cascade');
             $table->foreign('streamer_id')->references('id')->on('streamers')->onDelete('cascade');
@@ -36,6 +41,6 @@ class CreateEpisodesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('episodes');
+        Schema::drop('videos');
     }
 }
