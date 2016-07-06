@@ -5,7 +5,7 @@
     <img class="img-thumbnail details-thumbnail" src="{{ url('/media/thumbnails/'.$show->id) }}" alt="{{ $show->title }} - Thumbnail">
     <div class="content-header">
       <a target="_blank" href="{{ $show->mal_url }}">
-        View on MyAnimeList!
+        View on MyAnimeList
       </a>
     </div>
   @endsection
