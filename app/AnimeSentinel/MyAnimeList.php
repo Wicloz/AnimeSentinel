@@ -10,7 +10,7 @@ class MyAnimeList
    *
    * @return array
    */
-  public static function getSearch($request) {
+  public static function getSearch($query) {
     // TODO
     return [];
   }
