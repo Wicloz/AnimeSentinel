@@ -7,7 +7,7 @@
       <form class="searchbar-top" method="POST">
         {{ csrf_field() }}
         <div class="form-group">
-          <input type="text" name="query" class="form-control" value="{{ request('query') }}" placeholder="Search ..."></input>
+          <input type="text" name="q" class="form-control" value="{{ request('q') }}" placeholder="Search ..."></input>
           <button type="submit" class="btn btn-primary pull-right">Search</button>
         </div>
       </form>

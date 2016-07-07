@@ -11,11 +11,15 @@ class ShowManager
    * Will also search for any currently existing episodes.
    */
   public static function addShow($title) {
-    // First find this anime on MAL and get it's id
+    // Confirm this show isn't already in our databse.
+    // TODO
+
+    // Find this anime on MAL and get it's id
+    // TODO
 
     // Create a new show with the proper data.
     $show = Show::create(MyAnimeList::getAnimeData($mal_id));
-    Self::updateThumbnail($show); //TODO: asynchronus
+    Self::updateThumbnail($show); //TODO: asynchrounus
 
     // Call the function to find existing episodes
     // TODO
@@ -26,7 +30,7 @@ class ShowManager
    */
   public static function updateShowCache($show) {
     $show->update(MyAnimeList::getAnimeData($show->mal_id));
-    Self::updateThumbnail($show); //TODO: asynchronus
+    Self::updateThumbnail($show); //TODO: asynchrounus
   }
 
   /**

@@ -57,9 +57,11 @@ class AnimeController extends Controller
    */
   public function searchPost(Request $request) {
     $this->validate($request, [
-      'query' => ['required', 'min:3']
+      'q' => ['required', 'min:3']
+    ], [], [
+      'q' => 'query'
     ]);
-    $results = MyAnimeList::getSearch($request->query);
+    $results = MyAnimeList::getSearch($request->q);
 
     // TODO: expand known anime
 

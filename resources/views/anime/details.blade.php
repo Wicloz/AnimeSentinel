@@ -25,6 +25,7 @@
     @else
       <ul class="list-group">
         @foreach($show->episodes_sub as $episode)
+          <!-- TODO: Fancy CSS -->
           <li class="list-group-item">
             <a href="{{ $episode->episode_url }}">Episode {{ $episode->episode_num }}</a>
           </li>
@@ -40,6 +41,7 @@
     @else
       <ul class="list-group">
         @foreach($show->episodes_dub as $episode)
+          <!-- TODO: Fancy CSS -->
           <li class="list-group-item">
             <a href="{{ $episode->episode_url }}">Episode {{ $episode->episode_num }}</a>
           </li>
