@@ -13,4 +13,14 @@
     </ul>
     <div class="content-close"></div>
   </div>
+
+  <div class="content-header">
+    <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
+  </div>
+  <div class="content-generic flowfix">
+    <div class="mal-widget">
+      <iframe src="{{ $show->mal_url }}"></iframe>
+    </div>
+    <div class="content-close"></div>
+  </div>
 @endsection

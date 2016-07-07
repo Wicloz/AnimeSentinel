@@ -12,7 +12,7 @@ class Streamer extends Model
    * @var array
    */
   protected $fillable = [
-    'name', 'popularity', 'link_home', 'link_recent',
+    'id', 'name', 'popularity', 'link_home', 'link_recent',
   ];
 
   /**

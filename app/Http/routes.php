@@ -26,8 +26,8 @@ Route::get('/anime/search', 'AnimeController@searchEmpty');
 Route::post('/anime/search', 'AnimeController@searchPost');
 
 // Anime Details
-Route::get('/anime/{show}', 'AnimeController@details');
-Route::get('/anime/{show}/{translation_type}/episode-{episode_num}', 'AnimeController@episode');
+Route::get('/anime/{show}', 'ShowController@details');
+Route::get('/anime/{show}/{translation_type}/episode-{episode_num}', 'EpisodeController@episode');
 
 // Stream Pages
 Route::get('/anime/{show}/{translation_type}/episode-{episode_num}/{video}', 'EpisodeController@stream');

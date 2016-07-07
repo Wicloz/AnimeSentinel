@@ -2,11 +2,9 @@
 @section('title', $show->title)
 
   @section('content-left')
-    <img class="img-thumbnail details-thumbnail" src="{{ url('/media/thumbnails/'.$show->id) }}" alt="{{ $show->title }} - Thumbnail">
+    <img class="img-thumbnail details-thumbnail" src="{{ url('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
     <div class="content-header">
-      <a target="_blank" href="{{ $show->mal_url }}">
-        View on MyAnimeList
-      </a>
+      <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
     </div>
   @endsection
 
@@ -51,7 +49,9 @@
     <div class="content-close"></div>
   </div>
 
-  <div class="content-header">A somewhat working iframe powered MAL widget:</div>
+  <div class="content-header">
+    <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
+  </div>
   <div class="content-generic flowfix">
     <div class="mal-widget">
       <iframe src="{{ $show->mal_url }}"></iframe>

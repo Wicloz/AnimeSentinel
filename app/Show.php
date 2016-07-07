@@ -4,6 +4,8 @@ namespace App;
 
 use App\Scopes\CacheShowScope;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+use App\AnimeSentinel\ShowManager;
 
 class Show extends Model
 {
@@ -71,7 +73,7 @@ class Show extends Model
   }
 
   /**
-  * Get the list of subbed episodes and their internal link.
+  * Get the list of subbed episodes videos.
   *
   * @return array
   */
@@ -85,7 +87,7 @@ class Show extends Model
   }
 
   /**
-  * Get the list of dubbed episodes and their internal link.
+  * Get the list of dubbed episodes videos.
   *
   * @return array
   */
@@ -119,9 +121,12 @@ class Show extends Model
   /**
   * Handle caching for the shows information
   *
-  * @return integer
+  * @return string
   */
   public function getIdAttribute($value) {
+    if ($this->updated_at->diffInHours(Carbon::now()) >= 24) {
+      ShowManager::updateShowCache($this);
+    }
     return $value;
   }
 }
