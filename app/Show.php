@@ -15,7 +15,7 @@ class Show extends Model
    * @var array
    */
   protected $fillable = [
-    'mal_id', 'title', 'alts', 'description', 'show_type', 'hits',
+    'mal_id', 'thumbnail_id', 'title', 'alts', 'description', 'show_type', 'hits',
   ];
 
   /**
@@ -59,7 +59,7 @@ class Show extends Model
   */
   public function getLatestSubAttribute() {
     $episode_num = $this->videos()->where('translation_type', 'sub')->max('episode_num');
-    return $episode_num ? $episode_num : null;
+    return $episode_num ? $episode_num : false;
   }
 
   /**
@@ -69,7 +69,7 @@ class Show extends Model
   */
   public function getLatestDubAttribute() {
     $episode_num =  $this->videos()->where('translation_type', 'dub')->max('episode_num');
-    return $episode_num ? $episode_num : null;
+    return $episode_num ? $episode_num : false;
   }
 
   /**
@@ -125,6 +125,7 @@ class Show extends Model
   */
   public function getIdAttribute($value) {
     if ($this->updated_at->diffInHours(Carbon::now()) >= 24) {
+      $this->updated_at = Carbon::now();
       ShowManager::updateShowCache($this);
     }
     return $value;

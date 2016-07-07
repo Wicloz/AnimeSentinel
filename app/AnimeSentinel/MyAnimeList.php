@@ -77,7 +77,26 @@ class MyAnimeList
    * @return array
    */
   public static function getAnimeData($mal_id) {
-    // TODO
-    return [];
+    $page = file_get_contents('http://myanimelist.net/anime/'.$mal_id);
+
+    $title = Helpers::str_get_between($page, '<span itemprop="name">', '</span>');
+    $alts[] = $title;
+
+    $set = explode('</div>', Helpers::str_get_between($page, '<h2>Alternative Titles</h2>', '<br />'));
+    foreach ($set as $line) {
+      if (trim($line) !== '') {
+        $clean = trim(Helpers::str_get_between($line, '</span>'));
+        $alts = array_merge($alts, explode(', ', $clean));
+      }
+    }
+
+    return [
+      'mal_id' => $mal_id,
+      'title' => $title,
+      'description' => Helpers::str_get_between($page, '<span itemprop="description">', '</span>'),
+      'show_type' => Helpers::str_get_between(Helpers::str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'), '>'),
+      'thumbnail_id' => str_replace('/', '-', Helpers::str_get_between($page, 'data-src="http://cdn.myanimelist.net/images/anime/', '"')),
+      'alts' => $alts,
+    ];
   }
 }

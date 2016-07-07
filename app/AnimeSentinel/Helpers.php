@@ -17,4 +17,20 @@ class Helpers
 
     return ($title1 === $title2);
   }
+
+  public static function str_get_between($string, $start, $end = '') {
+    // TODO: improve this function
+
+    $string = ' ' . $string;
+    $ini = strpos($string, $start);
+    if ($ini == 0) return '';
+    $ini += strlen($start);
+
+    if ($end === '') {
+      return substr($string, $ini);
+    } else {
+      $len = strpos($string, $end, $ini) - $ini;
+      return substr($string, $ini, $len);
+    }
+  }
 }
