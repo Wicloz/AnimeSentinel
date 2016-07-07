@@ -1,0 +1,22 @@
+// main: app.scss
+@import 'vars';
+
+.alert-success {
+  color: #4f8a10;
+  background-color: #dff2bf;
+}
+
+.alert-info {
+  color: #00529b;
+  background-color: #bde5f8;
+}
+
+.alert-warning {
+  color: #9f6000;
+  background-color: #feefb3;
+}
+
+.alert-error {
+  color: #d8000c;
+  background-color: #ffbaba;
+}

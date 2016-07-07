@@ -24,6 +24,11 @@ class AnimeController extends Controller
     return $shows;
   }
 
+  protected function malSearchResults ($query) {
+    // TODO
+    return [];
+  }
+
   /**
    * Show the home page.
    *
@@ -36,7 +41,7 @@ class AnimeController extends Controller
   }
 
   /**
-   * Show the 'recently updated' page.
+   * Show the 'recently uploaded' page.
    *
    * @return \Illuminate\Http\Response
    */
@@ -47,13 +52,28 @@ class AnimeController extends Controller
   }
 
   /**
-   * Show the search page for all shows.
+   * Show an empty search results page.
    *
    * @return \Illuminate\Http\Response
    */
-  public function search() {
-    // TODO
-    $results = Show::all();
+  public function searchEmpty() {
+    return view('anime.search', [
+      'results' => []
+    ]);
+  }
+
+  /**
+   * Show the search page with results.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function searchPost(Request $request) {
+    $this->validate($request, [
+      'query' => ['required', 'min:3']
+    ]);
+    $results = $this->malSearchResults($request->query);
+
+    // TODO: expand known anime
 
     return view('anime.search', [
       'results' => $results

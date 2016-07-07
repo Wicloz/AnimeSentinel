@@ -18,7 +18,8 @@ Route::get('/about', 'PagesController@about');
 Route::get('/news', 'PagesController@news');
 
 Route::get('/anime/recent', 'AnimeController@recent');
-Route::get('/anime/search', 'AnimeController@search');
+Route::get('/anime/search', 'AnimeController@searchEmpty');
+Route::post('/anime/search', 'AnimeController@searchPost');
 
 Route::get('/anime/{show}', 'AnimeController@details');
 Route::get('/anime/{show}/{translation_type}/episode-{episode_num}', 'AnimeController@episode');

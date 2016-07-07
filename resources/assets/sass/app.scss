@@ -1,6 +1,7 @@
 @import 'vars';
 @import 'navbar';
 @import 'panels';
+@import 'notifications';
 @import 'synopsy';
 @import 'pageContent';
 @import 'pageDetails';
@@ -24,6 +25,31 @@ h1 > a, h1 > a:focus, h1 > a:hover, h2 > a, h2 > a:focus, h2 > a:hover {
 
 }
 
+// Search Bar //
+.searchbar-top {
+  background-color: $background_colour-content2;
+  padding: 15px 15px 0px;
+  margin-bottom: 20px;
+  margin-top: -20px;
+  float: left;
+  width: 100%;
+  input {
+    display: inline-block;
+    width: calc(100% - 80px);
+  }
+  submit {
+    display: inline-block;
+  }
+}
+
+@media (min-width: 768px) {
+  .searchbar-top {
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 0px;
+  }
+}
+
 // Specific Modules //
 .fa-btn {
   margin-right: 6px;
@@ -44,7 +70,7 @@ img {
 }
 
 .jumbotron {
-  background-color: $background_colour-elements;
+  background-color: $background_colour-jumbotron;
   p {
     font-weight: 300;
   }
@@ -53,8 +79,8 @@ img {
 .jumbotron-welcome {
   background-color: transparent;
   > .container {
-    background-color: transparentize($background_colour-elements, 0.1);
-    box-shadow: 0 0 64px $background_colour-elements;
+    background-color: transparentize($background_colour-jumbotron, 0.1);
+    box-shadow: 0 0 64px $background_colour-jumbotron;
     margin-top: -48px;
     margin-bottom: -61px;
   }

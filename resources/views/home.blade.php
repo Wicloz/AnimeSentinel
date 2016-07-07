@@ -22,7 +22,7 @@
 
 @section('content-center')
   <div class="welcome-content-wrapper">
-    <div class="content-header">Recently Updated</div>
+    <div class="content-header">Recently Uploaded</div>
     @foreach($shows as $show)
       <div class="synopsis-panel">
         <div class="row">
