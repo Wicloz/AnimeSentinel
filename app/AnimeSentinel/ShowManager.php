@@ -15,7 +15,7 @@ class ShowManager
     // TODO
 
     // Find this anime on MAL and get it's id
-    // TODO
+    $mal_id = MyAnimeList::getSearchStrict($title)->id;
 
     // Create a new show with the proper data.
     $show = Show::create(MyAnimeList::getAnimeData($mal_id));

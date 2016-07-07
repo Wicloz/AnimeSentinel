@@ -61,9 +61,15 @@ class AnimeController extends Controller
     ], [], [
       'q' => 'query'
     ]);
-    $results = MyAnimeList::getSearch($request->q);
+    $results = MyAnimeList::search($request->q);
 
-    // TODO: expand known anime
+    // Expand results which are in our databse
+    foreach ($results as $index => $result) {
+      $show = Show::where('mal_id', $result->id)->first();
+      if (!empty($show)) {
+        $results[$index] = $show;
+      }
+    }
 
     return view('anime.search', [
       'results' => $results
