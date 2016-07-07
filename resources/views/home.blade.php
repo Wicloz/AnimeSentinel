@@ -34,7 +34,12 @@
           <div class="col-sm-10">
             <div class="synopsis-title"><a href="{{ $show->details_url }}">{{ $show->title }}</a></div>
             <div class="synopsis-details">
-              {!! $show->description !!}
+              <div class="collapsed toggle" data-toggle="collapse" data-target="#description-{{ $show->id }}-{{ $show->this_translation }}-{{ $show->this_episode }}">
+                &laquo; Toggle Description &raquo;
+              </div>
+              <div class="collapse" id="description-{{ $show->id }}-{{ $show->this_translation }}-{{ $show->this_episode }}">
+                {!! $show->description !!}
+              </div>
             </div>
             <div class="synopsis-episodes">
               <div class="row">
