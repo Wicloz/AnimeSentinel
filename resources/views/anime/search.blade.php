@@ -61,12 +61,12 @@
                   <div class="row">
                     <div class="col-sm-4">
                       <a href="{{ url("/anime/$result->id/sub/episode-$result->latest_sub") }}">
-                        Latest Subbed: Epsiode {{ $result->latest_sub }}
+                        Latest Subbed: Epsiode {{ $result->latest_sub or 'not available' }}
                       </a>
                     </div>
                     <div class="col-sm-4">
                       <a href="{{ url("/anime/$result->id/dub/episode-$result->latest_dub") }}">
-                        Latest Dubbed: Epsiode {{ $result->latest_sub }}
+                        Latest Dubbed: Epsiode {{ $result->latest_sub or 'not available' }}
                       </a>
                     </div>
                   </div>

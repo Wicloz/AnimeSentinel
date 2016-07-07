@@ -59,7 +59,7 @@ class Show extends Model
   */
   public function getLatestSubAttribute() {
     $episode_num = $this->videos()->where('translation_type', 'sub')->max('episode_num');
-    return $episode_num ? $episode_num : -1;
+    return $episode_num ? $episode_num : null;
   }
 
   /**
@@ -69,7 +69,7 @@ class Show extends Model
   */
   public function getLatestDubAttribute() {
     $episode_num =  $this->videos()->where('translation_type', 'dub')->max('episode_num');
-    return $episode_num ? $episode_num : -1;
+    return $episode_num ? $episode_num : null;
   }
 
   /**
