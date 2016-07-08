@@ -2,6 +2,8 @@
 
 namespace App\AnimeSentinel;
 
+use App\MalFlag;
+
 class MyAnimeList
 {
   /**
@@ -21,7 +23,6 @@ class MyAnimeList
     curl_close($curl);
     // Convert to and return xml
     $xml = simplexml_load_string($response);
-    // TODO: filter hentai ...
     return $xml;
   }
 
@@ -33,15 +34,18 @@ class MyAnimeList
    */
   public static function search($query) {
     $xml = Self::searchApi($query);
-    if (!$xml) {
-      return [];
-    }
+    if (!$xml) return [];
     foreach ($xml as $entry) {
-      $result = json_decode(json_encode($entry));
-      // Ensure synonyms is an array
-      $result->synonyms = explode('; ', json_encode($result->synonyms));
-      $result->mal = true;
-      $results[] = $result;
+      $flag = MalFlag::firstOrNew(['mal_id' => $entry->id]);
+      if (!$flag->exists) {
+        $flag->setIsHentai()->save();
+      }
+      if (!$flag->is_hentai) {
+        $result = json_decode(json_encode($entry));
+        $result->synonyms = explode('; ', json_encode($result->synonyms));
+        $result->mal = true;
+        $results[] = $result;
+      }
     }
     return $results;
   }
@@ -72,7 +76,7 @@ class MyAnimeList
   }
 
   /**
-   * Grabs all important data from MAL for the anime with the requested id.
+   * Scrapes all important data from MAL for the anime with the requested id.
    *
    * @return array
    */
@@ -98,5 +102,24 @@ class MyAnimeList
       'thumbnail_id' => str_replace('/', '-', Helpers::str_get_between($page, 'data-src="http://cdn.myanimelist.net/images/anime/', '"')),
       'alts' => $alts,
     ];
+  }
+
+  /**
+   * Finds out if the requested anime is a heantai.
+   *
+   * @return bool
+   */
+  public static function isHentai($mal_id) {
+    $page = file_get_contents('http://myanimelist.net/anime/'.$mal_id);
+
+    $set = explode('</a>', Helpers::str_get_between($page, '<span class="dark_text">Genres:</span>', '</div>'));
+    foreach ($set as $line) {
+      if (trim($line) !== '') {
+        $clean = trim(Helpers::str_get_between($line, '>'));
+        if (strtolower($clean) === 'hentai') return true;
+      }
+    }
+
+    return false;
   }
 }

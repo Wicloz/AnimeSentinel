@@ -4,8 +4,7 @@
 @section('content-top')
   <div class="container-fluid">
     <div class="row">
-      <form class="searchbar-top" method="POST">
-        {{ csrf_field() }}
+      <form class="searchbar-top" method="GET">
         <div class="form-group">
           <input type="text" name="q" class="form-control" value="{{ request('q') }}" placeholder="Search ..."></input>
           <button type="submit" class="btn btn-primary pull-right">Search</button>

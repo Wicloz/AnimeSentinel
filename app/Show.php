@@ -125,7 +125,6 @@ class Show extends Model
   */
   public function getIdAttribute($value) {
     if ($this->updated_at->diffInHours(Carbon::now()) >= 24) {
-      $this->updated_at = Carbon::now();
       ShowManager::updateShowCache($this);
     }
     return $value;

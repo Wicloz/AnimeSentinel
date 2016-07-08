@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Streamer extends Model
 {
+  public $incrementing = false;
+
   /**
    * The attributes that are mass assignable.
    *
