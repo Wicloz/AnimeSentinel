@@ -42,7 +42,8 @@ class animeshow
           }
           // Read line with upload date
           if (strpos($line, '<div class="col-lg-2 col-md-3 hidden-sm hidden-xs">') !== false) {
-            $episodes[count($episodes) - 1]['uploadtime'] = Carbon::createFromFormat('d M Y', Helpers::str_get_between($line, '<div class="col-lg-2 col-md-3 hidden-sm hidden-xs">'));
+            $episodes[count($episodes) - 1]['uploadtime'] = Carbon::createFromFormat('d M Y', Helpers::str_get_between($line, '<div class="col-lg-2 col-md-3 hidden-sm hidden-xs">'))
+                                                                    ->hour(0)->minute(0)->second(0);
           }
         }
 
@@ -52,10 +53,10 @@ class animeshow
           // Grab a list of mirrors
           $mirror_list = explode('</div>', Helpers::str_get_between($page, '<div id="episode_mirrors">', '<br />')); //let's hope this goes well
           // Turn it into an array of mirrors
-          $mirrors[] = [
+          $mirrors = [[
             'link_video' => $episode['link_episode'],
             'resolution' => '1280x720',
-          ];
+          ]];
           foreach ($mirror_list as $line) {
             // Read line with animeshow link
             if (strpos($line, '<a href="') !== false) {
