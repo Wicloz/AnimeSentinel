@@ -40,34 +40,33 @@ class AnimeController extends Controller
   }
 
   /**
-   * Show an empty search results page.
+   * Show the search page.
    *
    * @return \Illuminate\Http\Response
    */
-  public function searchEmpty() {
-    return view('anime.search', [
-      'results' => []
-    ]);
-  }
+  public function search(Request $request) {
+    $results = [];
 
-  /**
-   * Show the search page with results.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function searchPost(Request $request) {
-    $this->validate($request, [
-      'q' => ['required', 'min:3']
-    ], [], [
-      'q' => 'query'
-    ]);
-    $results = MyAnimeList::search($request->q);
+    if (isset($request->q)) {
+      $this->validate($request, [
+        'q' => ['required', 'min:3']
+      ], [], [
+        'q' => 'query'
+      ]);
+      $results = MyAnimeList::search($request->q);
 
-    // Expand results which are in our databse
-    foreach ($results as $index => $result) {
-      $show = Show::where('mal_id', $result->id)->first();
-      if (!empty($show)) {
-        $results[$index] = $show;
+      // Sort results by score
+      usort($results, function ($a, $b) {
+        if ($a === $b) return 0;
+        return ($a->score > $b->score) ? -1 : 1;
+      });
+
+      // Expand results which are in our databse
+      foreach ($results as $index => $result) {
+        $show = Show::where('mal_id', $result->id)->first();
+        if (!empty($show)) {
+          $results[$index] = $show;
+        }
       }
     }
 

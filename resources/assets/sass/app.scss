@@ -40,6 +40,12 @@ h1 > a, h1 > a:focus, h1 > a:hover, h2 > a, h2 > a:focus, h2 > a:hover {
   submit {
     display: inline-block;
   }
+  > .form-group {
+    margin-bottom: 5px;
+  }
+  > p {
+    margin-bottom: 15px;
+  }
 }
 
 @media (min-width: 768px) {

@@ -9,6 +9,9 @@
           <input type="text" name="q" class="form-control" value="{{ request('q') }}" placeholder="Search ..."></input>
           <button type="submit" class="btn btn-primary pull-right">Search</button>
         </div>
+        <p>
+          Note: If your search times out, retry until it doesn't. This is because certain data from MAL has to be stored the first time an anime is shown here, which can take a while.
+        </p>
       </form>
     </div>
   </div>
@@ -52,7 +55,11 @@
                   </div>
                 @else
                   <p>This show is not in our database yet.</p>
-                  <div class="btn btn-primary">Request Queue</div>
+                  <form action="{{ url('/anime/add') }}" method="POST">
+                    {{ csrf_field() }}
+                    <imput type="hidden" name="title" value="{{ $result->title }}"></input>
+                    <button type="submit" class="btn btn-primary">Click To Add</button>
+                  </form>
                 @endif
               </div>
               @if(empty($result->mal))

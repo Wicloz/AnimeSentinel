@@ -15,7 +15,7 @@ class Helpers
       $title2 = str_replace($char, '', $title2);
     }
 
-    return ($title1 === $title2);
+    return $title1 === $title2;
   }
 
   public static function str_get_between($string, $start, $end = '') {

@@ -22,12 +22,14 @@ Route::get('/news', 'PagesController@news');
 
 // Anime Listings
 Route::get('/anime/recent', 'AnimeController@recent');
-Route::get('/anime/search', 'AnimeController@searchEmpty');
-Route::post('/anime/search', 'AnimeController@searchPost');
+Route::get('/anime/search', 'AnimeController@search');
 
 // Anime Details
 Route::get('/anime/{show}', 'ShowController@details');
 Route::get('/anime/{show}/{translation_type}/episode-{episode_num}', 'EpisodeController@episode');
+
+// Show Modifications
+Route::post('/anime/add', 'ShowController@insert');
 
 // Stream Pages
 Route::get('/anime/{show}/{translation_type}/episode-{episode_num}/{video}', 'EpisodeController@stream');
