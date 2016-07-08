@@ -15,14 +15,16 @@ class MalFlag extends Model
    * @var array
    */
   protected $fillable = [
-    'mal_id', 'is_hentai',
+    'mal_id', 'is_hentai', 'is_music',
   ];
 
   /**
   * Set the is_hentai flag.
   */
-  public function setIsHentai() {
-    $this->is_hentai = \App\AnimeSentinel\MyAnimeList::isHentai($this->mal_id);
+  public function setFlags() {
+    $flags = \App\AnimeSentinel\MyAnimeList::malFlags($this->mal_id);
+    $this->is_hentai = $flags->hentai;
+    $this->is_music = $flags->music;
     return $this;
   }
 
@@ -33,5 +35,14 @@ class MalFlag extends Model
   */
   public function show() {
     return $this->belongsTo(Show::class, 'mal_id', 'mal_id');
+  }
+
+  /**
+  * Returns whether this item has any flag set.
+  *
+  * @return \Illuminate\Database\Eloquent\Relations\Relation
+  */
+  public function getFlaggedAttribute() {
+    return $this->is_hentai || $this->is_music;
   }
 }

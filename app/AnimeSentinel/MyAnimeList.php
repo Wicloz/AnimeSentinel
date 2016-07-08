@@ -35,12 +35,13 @@ class MyAnimeList
   public static function search($query) {
     $xml = Self::searchApi($query);
     if (empty($xml)) return [];
+    $results = [];
     foreach ($xml as $entry) {
       $flag = MalFlag::firstOrNew(['mal_id' => $entry->id]);
       if (!$flag->exists) {
-        $flag->setIsHentai()->save();
+        $flag->setFlags()->save();
       }
-      if (!$flag->is_hentai) {
+      if (!$flag->flagged) {
         $result = json_decode(json_encode($entry));
         if (!is_string($result->english)) $result->english = '';
         $json_synonyms = json_encode($result->synonyms);
@@ -89,43 +90,61 @@ class MyAnimeList
   public static function getAnimeData($mal_id) {
     $page = file_get_contents('http://myanimelist.net/anime/'.$mal_id);
 
-    $title = Helpers::str_get_between($page, '<span itemprop="name">', '</span>');
-    $alts[] = $title;
+    $title = trim(Helpers::str_get_between($page, '<span itemprop="name">', '</span>'));
 
+    $alts[] = $title;
     $set = explode('</div>', Helpers::str_get_between($page, '<h2>Alternative Titles</h2>', '<br />'));
     foreach ($set as $line) {
       if (trim($line) !== '') {
-        $clean = trim(Helpers::str_get_between($line, '</span>'));
-        $alts = array_merge($alts, explode(', ', $clean));
+        $list = trim(Helpers::str_get_between($line, '</span>'));
+        $alts = array_merge($alts, explode(', ', $list));
+      }
+    }
+
+    $duration = Helpers::str_get_between($page, '<span class="dark_text">Episodes:</span>', '</div>');
+    $amount = Helpers::str_get_between($page, '<span class="dark_text">Duration:</span>', '</div>');
+    $amount = settype($amount, 'integer');
+    if ($amount === 0) $amount = -1;
+
+    $genres = [];
+    $set = explode('</a>', Helpers::str_get_between($page, '<span class="dark_text">Genres:</span>', '</div>'));
+    foreach ($set as $item) {
+      if (trim($item) !== '') {
+        $genres[] = strtolower(trim(Helpers::str_get_between($item, '>')));
       }
     }
 
     return [
       'mal_id' => $mal_id,
-      'title' => $title,
-      'description' => Helpers::str_get_between($page, '<span itemprop="description">', '</span>'),
-      'show_type' => Helpers::str_get_between(Helpers::str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'), '>'),
       'thumbnail_id' => str_replace('/', '-', Helpers::str_get_between($page, 'data-src="http://cdn.myanimelist.net/images/anime/', '"')),
+      'title' => $title,
       'alts' => $alts,
+      'description' => trim(Helpers::str_get_between($page, '<span itemprop="description">', '</span>')),
+      'show_type' => strtolower(trim(Helpers::str_get_between(Helpers::str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'), '>'))),
+      'genres' => $genres,
+      'episode_amount' => $amount,
+      'episode_duration' => $duration,
     ];
   }
 
   /**
-   * Finds out if the requested anime is a heantai.
+   * Finds out if the requested anime is hentai or music rather than an anime.
    *
-   * @return bool
+   * @return stdClass
    */
-  public static function isHentai($mal_id) {
+  public static function malFlags($mal_id) {
     $page = file_get_contents('http://myanimelist.net/anime/'.$mal_id);
+    $flags = (object) ['hentai' => false];
 
+    $flags->music = strtolower(trim(Helpers::str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'))) === 'music';
     $set = explode('</a>', Helpers::str_get_between($page, '<span class="dark_text">Genres:</span>', '</div>'));
-    foreach ($set as $line) {
-      if (trim($line) !== '') {
-        $clean = trim(Helpers::str_get_between($line, '>'));
-        if (strtolower($clean) === 'hentai') return true;
+    foreach ($set as $item) {
+      if (trim($item) !== '') {
+        $clean = trim(Helpers::str_get_between($item, '>'));
+        if (strtolower($clean) === 'hentai') $flags->hentai = true;
       }
     }
 
-    return false;
+    return $flags;
   }
 }

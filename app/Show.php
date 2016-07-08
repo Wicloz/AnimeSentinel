@@ -15,7 +15,7 @@ class Show extends Model
    * @var array
    */
   protected $fillable = [
-    'mal_id', 'thumbnail_id', 'title', 'alts', 'description', 'show_type', 'hits',
+    'mal_id', 'thumbnail_id', 'title', 'alts', 'description', 'show_type', 'genres', 'episode_duration', 'epsiode_amount', 'hits',
   ];
 
   /**
@@ -32,6 +32,7 @@ class Show extends Model
    */
   protected $casts = [
     'alts' => 'array',
+    'genres' => 'array',
   ];
 
   /**
