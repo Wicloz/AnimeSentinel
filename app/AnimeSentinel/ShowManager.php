@@ -7,14 +7,14 @@ use App\Show;
 class ShowManager
 {
   /**
-   * Adds the anime with the requested title to the database.
+   * Adds the show with the requested title to the database.
    * Will also search for any currently existing episodes.
    */
   public static function addShow($title) {
     // Confirm this show isn't already in our databse.
     // TODO
 
-    // Find this anime on MAL and get it's id
+    // Find this show on MAL and get it's id
     $mal_id = MyAnimeList::getSearchStrict($title)->id;
 
     // Create a new show with the proper data.
@@ -34,7 +34,7 @@ class ShowManager
   }
 
   /**
-   * Downloads the anime's thumbnail from MAL.
+   * Downloads the show's thumbnail from MAL.
    */
   private static function updateThumbnail($show) {
     $remote = 'http://cdn.myanimelist.net/images/anime/'.str_replace('-', '/', $show->thumbnail_id);
