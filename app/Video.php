@@ -24,7 +24,10 @@ class Video extends Model
 
   public function save(array $options = []) {
     if (empty($this->mirror)) {
-      $max_mirror = Self::where('streamer_id', $this->streamer_id)->where('show_id', $this->show_id)->where('translation_type', $this->translation_type)
+      $max_mirror = Self::where('streamer_id', $this->streamer_id)
+                        ->where('show_id', $this->show_id)
+                        ->where('translation_type', $this->translation_type)
+                        ->where('episode_num', $this->episode_num)
                         ->max('mirror');
       $this->mirror = $max_mirror + 1;
     }
