@@ -11,28 +11,53 @@ class ShowManager
    * Will also search for any currently existing episodes.
    */
   public static function addShow($title) {
-    // Confirm this show isn't already in our databse.
+    // Confirm this show isn't already in our databse
     if (!empty(Show::withTitle($title)->first())) return; //TODO: set error
 
     // Find this show on MAL and get it's id
     $mal = MyAnimeList::searchStrict($title);
-    if (empty($mal)) return; //TODO: set error
-    $mal_id = $mal->id;
-
-    // Create a new show with the proper data.
-    $show = Show::create(MyAnimeList::getAnimeData($mal_id));
-    Self::updateThumbnail($show); //TODO: asynchrounus
+    if (!empty($mal)) {
+      // Create a new show with the proper data
+      $show = Show::create(MyAnimeList::getAnimeData($mal->id));
+      Self::updateThumbnail($show); //TODO: asynchrounus
+    } else {
+      // Create a mostly empty show because we don't have MAL data
+      $show = Show::create([
+        'title' => $title,
+        'alts' => [$title],
+        'description' => 'No Description Available',
+      ]);
+    }
 
     // Call the function to find existing episodes
-    // TODO
+    EpisodeManager::findEpsiodesFor($show);
   }
 
   /**
    * Updates the cached database information for the requested show.
+   * If episodes is set to true, also update episode information.
    */
-  public static function updateShowCache($show) {
-    $show->update(MyAnimeList::getAnimeData($show->mal_id));
-    Self::updateThumbnail($show); //TODO: asynchrounus
+  public static function updateShowCache($show, $episodes = false) {
+    // If the mal id is not known yet, try to find it first
+    if ($show->mal_id === -1) {
+      $mal = MyAnimeList::searchStrict($title);
+      if (!empty($mal)) {
+        $show->update(MyAnimeList::getAnimeData($show->mal_id));
+        Self::updateThumbnail($show); //TODO: asynchrounus
+        $episodes = true;
+      }
+    }
+
+    // Otherwise just update the cache
+    else {
+      $show->update(MyAnimeList::getAnimeData($show->mal_id));
+      Self::updateThumbnail($show); //TODO: asynchrounus
+    }
+
+    // Call the function to find existing episodes if requested
+    if ($episodes) {
+      EpisodeManager::findEpsiodesFor($show);
+    }
   }
 
   /**
