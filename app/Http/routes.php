@@ -33,7 +33,7 @@ Route::post('/anime/add', 'ShowController@insert');
 Route::post('/anime/update', 'ShowController@update');
 
 // Stream Pages
-Route::get('/anime/{show}/{translation_type}/episode-{episode_num}/{video}', 'EpisodeController@stream');
+Route::get('/anime/{show}/{translation_type}/episode-{episode_num}/{mirror}', 'EpisodeController@stream');
 Route::get('/stream/{video}', 'EpisodeController@stream');
 
 // Profile Pages

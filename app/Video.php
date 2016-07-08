@@ -76,6 +76,6 @@ class Video extends Model
   * @return string
   */
   public function getStreamUrlAttribute() {
-    return url('/anime/'.$this->show_id.'/'.$this->translation_type.'/episode-'.$this->episode_num.'/'.$this->id);
+    return url('/anime/'.$this->show_id.'/'.$this->translation_type.'/episode-'.$this->episode_num.'/'.$this->mirror);
   }
 }
