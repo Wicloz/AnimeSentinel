@@ -103,7 +103,7 @@ class MyAnimeList
 
     $amount = Helpers::str_get_between($page, '<span class="dark_text">Episodes:</span>', '</div>');
     settype($amount, 'int');
-    if ($amount === 0) $amount = -1;
+    if ($amount === 0) $amount = null;
 
     $durations = explode('hr.', trim(Helpers::str_get_between($page, '<span class="dark_text">Duration:</span>', '</div>')));
     $duration = 0;
@@ -113,7 +113,7 @@ class MyAnimeList
       $duration += $durations[0] * 60;
       $duration += $durations[1];
     }
-    if ($duration === 0) $duration = -1;
+    if ($duration === 0) $duration = null;
 
     $genres = [];
     $set = explode('</a>', Helpers::str_get_between($page, '<span class="dark_text">Genres:</span>', '</div>'));

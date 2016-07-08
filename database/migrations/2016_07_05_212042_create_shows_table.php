@@ -14,7 +14,7 @@ class CreateShowsTable extends Migration
     {
         Schema::create('shows', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('mal_id')->default(-1)->index();
+            $table->integer('mal_id')->unsigned()->nullable()->default(null)->unique();
             $table->string('thumbnail_id');
             $table->string('title');
             $table->text('alts');
@@ -27,8 +27,8 @@ class CreateShowsTable extends Migration
               'special',
             ]);
             $table->text('genres');
-            $table->integer('episode_amount')->default(-1);
-            $table->integer('episode_duration')->default(-1);
+            $table->integer('episode_amount')->nullable()->default(null);
+            $table->integer('episode_duration')->nullable()->default(null);
             $table->bigInteger('hits')->default(0);
             $table->timestamps();
         });

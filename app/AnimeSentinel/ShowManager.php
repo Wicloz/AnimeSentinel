@@ -39,7 +39,7 @@ class ShowManager
    */
   public static function updateShowCache($show, $episodes = false) {
     // If the mal id is not known yet, try to find it first
-    if ($show->mal_id === -1) {
+    if (isset($show->mal_id)) {
       $mal = MyAnimeList::searchStrict($title);
       if (!empty($mal)) {
         $show->update(MyAnimeList::getAnimeData($show->mal_id));

@@ -18,6 +18,7 @@ class CreateVideosTable extends Migration
             $table->string('streamer_id');
             $table->integer('show_id')->unsigned();
             $table->enum('translation_type', ['sub', 'dub']);
+            $table->integer('mirror')->unsinged();
 
             $table->integer('episode_num');
             $table->dateTime('uploadtime');
@@ -30,7 +31,7 @@ class CreateVideosTable extends Migration
 
             $table->timestamps();
 
-            $table->index(['show_id', 'translation_type', 'episode_num', 'streamer_id']);
+            $table->unique(['show_id', 'translation_type', 'episode_num', 'streamer_id', 'mirror'], 'videos_combined_id');
             $table->foreign('show_id')->references('id')->on('shows')->onDelete('cascade');
             $table->foreign('streamer_id')->references('id')->on('streamers')->onDelete('cascade');
         });
