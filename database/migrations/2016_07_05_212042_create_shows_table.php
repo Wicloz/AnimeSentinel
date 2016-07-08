@@ -26,6 +26,9 @@ class CreateShowsTable extends Migration
               'movie',
               'special',
             ]);
+            $table->text('genres');
+            $table->integer('episode_amount')->default(-1);
+            $table->integer('episode_duration')->default(-1);
             $table->bigInteger('hits')->default(0);
             $table->timestamps();
         });

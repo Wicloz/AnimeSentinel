@@ -8,7 +8,7 @@
       <div class="row">
         <div class="col-sm-2">
           <a href="{{ $video->show->details_url }}">
-            <img class="img-thumbnail synopsis-thumbnail" src="{{ url('/media/thumbnails/'.$video->show->thumbnail_id) }}" alt="{{ $video->show->title }} - Thumbnail">
+            <img class="img-thumbnail synopsis-thumbnail" src="{{ $video->show->thumbnail_url }}" alt="{{ $video->show->title }} - Thumbnail">
           </a>
         </div>
         <div class="col-sm-10">

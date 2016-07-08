@@ -16,6 +16,13 @@ class Video extends Model
   ];
 
   /**
+   * The attributes that should be mutated to dates.
+   *
+   * @var array
+   */
+  protected $dates = ['uploadtime', 'created_at', 'updated_at'];
+
+  /**
   * Get the show this video belongs to.
   *
   * @return \Illuminate\Database\Eloquent\Relations\Relation

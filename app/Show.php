@@ -15,15 +15,8 @@ class Show extends Model
    * @var array
    */
   protected $fillable = [
-    'mal_id', 'thumbnail_id', 'title', 'alts', 'description', 'show_type', 'genres', 'episode_duration', 'epsiode_amount', 'hits',
+    'mal_id', 'thumbnail_id', 'title', 'alts', 'description', 'show_type', 'genres', 'episode_amount', 'episode_duration', 'hits',
   ];
-
-  /**
-   * The attributes that should be mutated to dates.
-   *
-   * @var array
-   */
-  protected $dates = ['uploadtime', 'created_at', 'updated_at'];
 
   /**
    * The attributes that should be casted to native types.
@@ -138,14 +131,57 @@ class Show extends Model
   }
 
   /**
-  * Handle caching for the shows information
+  * Get the url to this show's local thumbnail.
   *
   * @return string
   */
-  public function getIdAttribute($value) {
-    if ($this->updated_at->diffInHours(Carbon::now()) >= 24) {
+  public function getThumbnailUrlAttribute() {
+    return url('/media/thumbnails/'.$this->thumbnail_id);
+  }
+
+  /**
+  * Update this show's cached infomation when needed.
+  */
+  public function handleCaching() {
+    // TODO: dynamic cache time
+    if ($this->updated_at->diffInHours(Carbon::now()) >= 48) {
       ShowManager::updateShowCache($this);
     }
+  }
+
+  /**
+  * Handle caching calls.
+  */
+  public function getThumbnailIdAttribute($value) {
+    $this->handleCaching();
+    return $value;
+  }
+  public function getTitleAttribute($value) {
+    $this->handleCaching();
+    return $value;
+  }
+  public function getAltsAttribute($value) {
+    $this->handleCaching();
+    return $value;
+  }
+  public function getDescriptionAttribute($value) {
+    $this->handleCaching();
+    return $value;
+  }
+  public function getShowTypeAttribute($value) {
+    $this->handleCaching();
+    return $value;
+  }
+  public function getGenresAttribute($value) {
+    $this->handleCaching();
+    return $value;
+  }
+  public function getEpisodeAmountAttribute($value) {
+    $this->handleCaching();
+    return $value;
+  }
+  public function getEpisodeDurationAttribute($value) {
+    $this->handleCaching();
     return $value;
   }
 }

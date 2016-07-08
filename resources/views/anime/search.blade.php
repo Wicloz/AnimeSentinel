@@ -29,7 +29,7 @@
             <div class="col-sm-2">
               @if(empty($result->mal))
                 <a href="{{ $result->details_url }}">
-                  <img class="img-thumbnail synopsis-thumbnail" src="{{ url('/media/thumbnails/'.$result->thumbnail_id) }}" alt="{{ $result->title }} - Thumbnail">
+                  <img class="img-thumbnail synopsis-thumbnail" src="{{ $result->thumbnail_url }}" alt="{{ $result->title }} - Thumbnail">
                 </a>
               @else
                 <a target="_blank" href="http://myanimelist.net/anime/{{ $result->id }}">
