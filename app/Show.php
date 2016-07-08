@@ -102,8 +102,9 @@ class Show extends Model
   */
   public function getEpisodesSubAttribute() {
     $episodes = $this->videos()
+                     ->distinct()
                      ->where('translation_type', 'sub')
-                     ->distinct('episode_num')
+                     ->groupBy('episode_num')
                      ->orderBy('episode_num', 'asc')
                      ->get();
     return $episodes;
@@ -116,8 +117,9 @@ class Show extends Model
   */
   public function getEpisodesDubAttribute() {
     $episodes = $this->videos()
+                     ->distinct()
                      ->where('translation_type', 'dub')
-                     ->distinct('episode_num')
+                     ->groupBy('episode_num')
                      ->orderBy('episode_num', 'asc')
                      ->get();
     return $episodes;
