@@ -22,6 +22,15 @@ class Video extends Model
    */
   protected $dates = ['uploadtime', 'created_at', 'updated_at'];
 
+  public function save(array $options = []) {
+    if (empty($this->mirror)) {
+      $max_mirror = Self::where('streamer_id', $this->streamer_id)->where('show_id', $this->show_id)->where('translation_type', $this->translation_type)
+                        ->max('mirror');
+      $this->mirror = $max_mirror + 1;
+    }
+    parent::save($options);
+  }
+
   /**
   * Get the show this video belongs to.
   *

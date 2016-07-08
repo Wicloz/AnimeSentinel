@@ -27,6 +27,17 @@ class Show extends Model
     'alts' => 'array',
     'genres' => 'array',
   ];
+  /**
+   * Ensure both cache handling and decoding occurs.
+   */
+  public function getAltsAttribute($value) {
+    $this->handleCaching();
+    return json_decode($value);
+  }
+  public function getGenresAttribute($value) {
+    $this->handleCaching();
+    return json_decode($value);
+  }
 
   /**
   * Get all videos related to this show.
@@ -160,19 +171,11 @@ class Show extends Model
     $this->handleCaching();
     return $value;
   }
-  public function getAltsAttribute($value) {
-    $this->handleCaching();
-    return $value;
-  }
   public function getDescriptionAttribute($value) {
     $this->handleCaching();
     return $value;
   }
   public function getShowTypeAttribute($value) {
-    $this->handleCaching();
-    return $value;
-  }
-  public function getGenresAttribute($value) {
     $this->handleCaching();
     return $value;
   }
