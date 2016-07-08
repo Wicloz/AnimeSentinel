@@ -12,10 +12,12 @@ class ShowManager
    */
   public static function addShow($title) {
     // Confirm this show isn't already in our databse.
-    // TODO
+    if (!empty(Show::withTitle($title)->first())) return; //TODO: set error
 
     // Find this show on MAL and get it's id
-    $mal_id = MyAnimeList::getSearchStrict($title)->id;
+    $mal = MyAnimeList::searchStrict($title);
+    if (empty($mal)) return; //TODO: set error
+    $mal_id = $mal->id;
 
     // Create a new show with the proper data.
     $show = Show::create(MyAnimeList::getAnimeData($mal_id));

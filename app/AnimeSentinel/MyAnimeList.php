@@ -34,7 +34,7 @@ class MyAnimeList
    */
   public static function search($query) {
     $xml = Self::searchApi($query);
-    if (!$xml) return [];
+    if (empty($xml)) return [];
     foreach ($xml as $entry) {
       $flag = MalFlag::firstOrNew(['mal_id' => $entry->id]);
       if (!$flag->exists) {
@@ -42,7 +42,13 @@ class MyAnimeList
       }
       if (!$flag->is_hentai) {
         $result = json_decode(json_encode($entry));
-        $result->synonyms = explode('; ', json_encode($result->synonyms));
+        if (!is_string($result->english)) $result->english = '';
+        $json_synonyms = json_encode($result->synonyms);
+        if ($json_synonyms !== '{}') {
+          $result->synonyms = explode('; ', $json_synonyms);
+        } else {
+          $result->synonyms = [];
+        }
         $result->mal = true;
         $results[] = $result;
       }

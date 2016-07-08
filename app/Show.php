@@ -62,6 +62,15 @@ class Show extends Model
   }
 
   /**
+   * Include show's where the requested title matches any alt.
+   *
+   * @return \Illuminate\Database\Eloquent\Builder
+   */
+  public function scopeWithTitle($query, $title) {
+    return $query->where('alts', 'like', '%'.json_encode($title).'%');
+  }
+
+  /**
   * Get the latest subbed episode number for this show.
   *
   * @return integer

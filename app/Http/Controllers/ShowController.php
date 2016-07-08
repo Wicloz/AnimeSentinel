@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 
 use App\Show;
+use App\AnimeSentinel\ShowManager;
 
 class ShowController extends Controller
 {
@@ -18,5 +19,20 @@ class ShowController extends Controller
     return view('anime.details', [
       'show' => $show
     ]);
+  }
+
+  /**
+   * Attempt to add the requested show to the database.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function insert(Request $request) {
+    $this->validate($request, [
+      'title' => ['required', 'min:3']
+    ]);
+
+    ShowManager::addShow($request->title);
+
+    return back();
   }
 }

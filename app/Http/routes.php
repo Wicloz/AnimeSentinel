@@ -30,6 +30,7 @@ Route::get('/anime/{show}/{translation_type}/episode-{episode_num}', 'EpisodeCon
 
 // Show Modifications
 Route::post('/anime/add', 'ShowController@insert');
+Route::post('/anime/update', 'ShowController@update');
 
 // Stream Pages
 Route::get('/anime/{show}/{translation_type}/episode-{episode_num}/{video}', 'EpisodeController@stream');

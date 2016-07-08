@@ -57,7 +57,7 @@
                   <p>This show is not in our database yet.</p>
                   <form action="{{ url('/anime/add') }}" method="POST">
                     {{ csrf_field() }}
-                    <imput type="hidden" name="title" value="{{ $result->title }}"></input>
+                    <input type="hidden" name="title" value="{{ $result->title }}"></input>
                     <button type="submit" class="btn btn-primary">Click To Add</button>
                   </form>
                 @endif
