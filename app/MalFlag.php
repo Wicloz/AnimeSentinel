@@ -25,4 +25,13 @@ class MalFlag extends Model
     $this->is_hentai = \App\AnimeSentinel\MyAnimeList::isHentai($this->mal_id);
     return $this;
   }
+
+  /**
+  * Get the show this flag belongs to.
+  *
+  * @return \Illuminate\Database\Eloquent\Relations\Relation
+  */
+  public function show() {
+    return $this->belongsTo(Show::class, 'mal_id', 'mal_id');
+  }
 }

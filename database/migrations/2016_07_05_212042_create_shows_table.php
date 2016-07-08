@@ -14,7 +14,7 @@ class CreateShowsTable extends Migration
     {
         Schema::create('shows', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('mal_id')->default(-1)->unique();
+            $table->integer('mal_id')->default(-1)->index();
             $table->string('thumbnail_id');
             $table->string('title');
             $table->text('alts');

@@ -53,6 +53,15 @@ class Show extends Model
   }
 
   /**
+  * Get the mal flag for this show.
+  *
+  * @return \Illuminate\Database\Eloquent\Relations\Relation
+  */
+  public function mal_flag() {
+    return $this->hasOne(MalFlag::class, 'mal_id', 'mal_id');
+  }
+
+  /**
   * Get the latest subbed episode number for this show.
   *
   * @return integer
