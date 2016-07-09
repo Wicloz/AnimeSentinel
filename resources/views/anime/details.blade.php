@@ -11,7 +11,7 @@
 @section('content-center')
   <div class="content-header">{{ $show->title }}</div>
   <div class="content-generic">
-    {!! $show->description !!}
+    <p>{!! $show->description !!}</p>
     <div class="content-close"></div>
   </div>
 
@@ -19,13 +19,14 @@
   <div class="content-generic">
     <h2>Subbed</h2>
     @if (count($show->episodes_sub) === 0)
-      <p>
-        No Episodes Found
-      </p>
+      <ul class="list-group episode-list">
+        <li class="list-group-item">
+          No Episodes Found
+        </li>
+      </ul>
     @else
-      <ul class="list-group">
+      <ul class="list-group episode-list">
         @foreach($show->episodes_sub as $episode)
-          <!-- TODO: Fancy CSS -->
           <li class="list-group-item">
             <a href="{{ $episode->episode_url }}">Episode {{ $episode->episode_num }}</a>
           </li>
@@ -35,13 +36,14 @@
     <div class="content-close"></div>
     <h2>Dubbed</h2>
     @if (count($show->episodes_dub) === 0)
-      <p>
-        No Episodes Found
-      </p>
+      <ul class="list-group episode-list">
+        <li class="list-group-item">
+          No Episodes Found
+        </li>
+      </ul>
     @else
-      <ul class="list-group">
+      <ul class="list-group episode-list">
         @foreach($show->episodes_dub as $episode)
-          <!-- TODO: Fancy CSS -->
           <li class="list-group-item">
             <a href="{{ $episode->episode_url }}">Episode {{ $episode->episode_num }}</a>
           </li>

@@ -16,13 +16,14 @@ body {
 }
 
 h1 > a, h1 > a:focus, h1 > a:hover, h2 > a, h2 > a:focus, h2 > a:hover {
-	text-decoration: none;
+	text-decoration: inherit;
 	color: inherit;
 	outline-width: 0px;
 }
 
 a {
   transition: color 0.2s;
+  text-decoration: inherit;
 }
 
 #footer {
@@ -73,6 +74,24 @@ img {
   color: $background_colour-content2;
   background-color: $text_colour-navs;
   border-color: $text_colour-navs;
+}
+
+.list-group {
+  > .list-group-item {
+    background-color: $background_colour-jumbotron;
+    border-color: $border_colour-main;
+  }
+  > .active, .active:focus, .active:hover {
+    background-color: #235580;
+    border-color: $border_colour-main;
+  }
+  a {
+    color: $text_colour-content;
+  }
+  a:focus, a:hover {
+    color: $text_colour-navs;
+    text-decoration: inherit;
+  }
 }
 
 .stick-to-nav {
