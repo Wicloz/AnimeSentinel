@@ -22,7 +22,9 @@ class EpisodeManager
       $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
       $videos = $class::seek($show);
       foreach ($videos as $video) {
-        $video->save();
+        if (!empty($video->link_video)) {
+          $video->save();
+        }
       }
     }
   }

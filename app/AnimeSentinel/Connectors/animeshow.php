@@ -20,60 +20,37 @@ class animeshow
     foreach ($show->alts as $alt) {
       $page = file_get_contents('http://animeshow.tv/'.str_replace(' ', '-', $alt));
       if (strpos($page, '<title>Watch Anime - AnimeShow.tv</title>') === false) {
-        // We have an episode overview page now
+        // We have an episode overview page now, so set some general data
         $data_stream = [
           'show_id' => $show->id,
           'streamer_id' => 'animeshow',
           'link_stream' => 'http://animeshow.tv/'.str_replace(' ', '-', $alt),
         ];
 
-        // Grab a list of episodes
-        $epsiode_list = explode('</div>', Helpers::str_get_between($page, '<div id="episodes_list">', '<div id="sidebar">'));
-        // Turn it into an array of episodes
-        $episodes = [];
-        foreach ($epsiode_list as $line) {
-          // Read line with episode number
-          if (strpos($line, '<div class="episodes_list_hover">') !== false) {
-            $episode_num = Helpers::str_get_between($line, 'Episode ');
-            $episodes[] = [
-              'episode_num' => $episode_num,
-              'link_episode' => 'http://animeshow.tv/'.str_replace(' ', '-', $alt).'-episode-'.$episode_num,
-            ];
-          }
-          // Read line with upload date
-          if (strpos($line, '<div class="col-lg-2 col-md-3 hidden-sm hidden-xs">') !== false) {
-            $episodes[count($episodes) - 1]['uploadtime'] = Carbon::createFromFormat('d M Y', Helpers::str_get_between($line, '<div class="col-lg-2 col-md-3 hidden-sm hidden-xs">'))
-                                                                    ->hour(0)->minute(0)->second(0);
-          }
-        }
+        // Scrape the page for episode data
+        $episodes = Helpers::scrape_page(Helpers::str_get_between($page, '<div id="episodes_list">', '<div id="sidebar">'), '</div>', [
+          'episode_num' => ['Episode ', ''],
+          'uploadtime' => ['<div class="col-lg-2 col-md-3 hidden-sm hidden-xs">', ''],
+        ]);
 
-        // Episode list done, start grabbing video data
+        // Get mirror data for each episode
         foreach ($episodes as $episode) {
+          // Complete episode data
+          $episode['link_episode'] = 'http://animeshow.tv/'.str_replace(' ', '-', $alt).'-episode-'.$episode['episode_num'];
+          $episode['uploadtime'] = Carbon::createFromFormat('d M Y', $episode['uploadtime'])->hour(0)->minute(0)->second(0);
+
+          // Get episode page
           $page = file_get_contents($episode['link_episode']);
-          // Grab a list of mirrors
-          $mirror_list = explode('</div>', Helpers::str_get_between($page, '<div id="episode_mirrors">', '<br />')); //let's hope this goes well
-          // Turn it into an array of mirrors
+          // Create first entry
           $mirrors = [[
             'link_video' => $episode['link_episode'],
-            'resolution' => '1280x720',
           ]];
-          foreach ($mirror_list as $line) {
-            // Read line with animeshow link
-            if (strpos($line, '<a href="') !== false) {
-              $mirrors[] = [
-                'link_video' => Helpers::str_get_between($line, '<a href="', '/"'),
-                'resolution' => '1280x720',
-              ];
-            }
-            // Read line with translation type
-            if (strpos($line, '<div class="episode_mirrors_type_') !== false) {
-              $mirrors[count($mirrors) - 1]['translation_type'] = Helpers::str_get_between($line, '<div class="episode_mirrors_type_', '"');
-            }
-            // Read line with hd flag
-            if (strpos($line, 'class="glyphicon glyphicon-hd-video"') !== false) {
-              $mirrors[count($mirrors) - 1]['resolution'] = '1920x1080';
-            }
-          }
+          // Scrape the page for mirror data
+          $mirrors = Helpers::scrape_page(Helpers::str_get_between($page, '<div id="episode_mirrors">', '<br />'), '</div>', [
+            'link_video' => ['<a href="', '/"'],
+            'translation_type' => ['<div class="episode_mirrors_type_', '"'],
+            'resolution' => ['1280x720', '1920x1080', 'class="glyphicon glyphicon-hd-video"'],
+          ], $mirrors);
 
           // Loop through mirror list
           foreach ($mirrors as $mirror) {

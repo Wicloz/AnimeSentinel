@@ -26,11 +26,57 @@ class Helpers
     if ($ini == 0) return '';
     $ini += strlen($start);
 
-    if ($end === '') {
+    if (empty($end)) {
       return substr($string, $ini);
     } else {
       $len = strpos($string, $end, $ini) - $ini;
       return substr($string, $ini, $len);
     }
+  }
+
+  public static function scrape_page($page, $delim, array $request, $results = []) {
+    // Explode the page
+    $page_list = explode($delim, $page);
+
+    // Turn it into an array
+    foreach ($page_list as $line) {
+      $index = 0;
+      foreach ($request as $key => $value) {
+
+        if (empty($value[2])) {
+          // Find content between the requested strings
+          if (strpos($line, $value[0]) !== false && (empty($value[1]) || strpos($line, $value[1]) !== false)) {
+            if ($index === 0) {
+              $results[] = [
+                $key => Helpers::str_get_between($line, $value[0], $value[1])
+              ];
+            } else {
+              $results[count($results) - 1][$key] = Helpers::str_get_between($line, $value[0], $value[1]);
+            }
+          }
+        }
+
+        else {
+          // Set content depending on string presence
+          if (strpos($line, $value[2]) !== false) {
+            $data = $value[1];
+          } else {
+            $data = $value[0];
+          }
+          if ($index === 0) {
+            $results[] = [
+              $key => $data
+            ];
+          } else {
+            $results[count($results) - 1][$key] = $data;
+          }
+        }
+
+        $index++;
+      }
+    }
+
+    // Return results
+    return $results;
   }
 }
