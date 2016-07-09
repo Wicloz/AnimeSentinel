@@ -15,7 +15,7 @@ class Show extends Model
    * @var array
    */
   protected $fillable = [
-    'mal_id', 'thumbnail_id', 'title', 'alts', 'description', 'show_type', 'genres', 'episode_amount', 'episode_duration', 'hits',
+    'mal_id', 'thumbnail_id', 'title', 'alts', 'description', 'type', 'genres', 'episode_amount', 'episode_duration', 'hits',
   ];
 
   /**
@@ -177,7 +177,7 @@ class Show extends Model
     $this->handleCaching();
     return $value;
   }
-  public function getShowTypeAttribute($value) {
+  public function getTypeAttribute($value) {
     $this->handleCaching();
     return $value;
   }

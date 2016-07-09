@@ -19,7 +19,7 @@ class CreateShowsTable extends Migration
             $table->string('title');
             $table->text('alts');
             $table->text('description');
-            $table->enum('show_type', [
+            $table->enum('type', [
               'tv',
               'ova',
               'ona',
