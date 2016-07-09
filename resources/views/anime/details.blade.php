@@ -6,16 +6,32 @@
 
   <div class="content-header">Information</div>
   <div class="content-generic">
-    <p><strong>Type:</strong> {{ $show->type }}</p>
+    <p><strong>Type:</strong> {{ ucwords($show->type) }}</p>
     <p>
       <strong>Genres:</strong>
       @foreach($show->genres as $index => $genre)
         {{ ucwords($genre) }}{{ $index === count($show->genres) -1 ? '' : ',' }}
       @endforeach
     </p>
-    <p><strong>Status:</strong></p>
-    <p><strong>Episodes:</strong> {{ $show->episode_amount }}</p>
-    <p><strong>Duration:</strong> {{ $show->episode_duration }} min. per ep.</p>
+    <p>
+      <strong>Status:</strong>
+      @if(!isset($show->latest_sub))
+        Upcoming
+      @elseif($show->latest_sub >= $show->episode_amount)
+        Completed
+      @else
+        Current
+      @endif
+    </p>
+    <p><strong>Episodes:</strong> {{ $show->episode_amount or 'Unknown' }}</p>
+    <p>
+      <strong>Duration:</strong>
+      @if(isset($show->episode_duration))
+        {{ $show->episode_duration }} min. per ep.
+      @else
+        Unknown
+      @endif
+    </p>
     <div class="content-close"></div>
   </div>
 
