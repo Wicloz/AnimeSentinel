@@ -1,12 +1,28 @@
 @extends('layouts.app')
 @section('title', $show->title)
 
-  @section('content-left')
-    <img class="img-thumbnail details-thumbnail" src="{{ url('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
-    <div class="content-header">
-      <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
-    </div>
-  @endsection
+@section('content-left')
+  <img class="img-thumbnail details-thumbnail" src="{{ url('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
+
+  <div class="content-header">Information</div>
+  <div class="content-generic">
+    <p><strong>Type:</strong> {{ $show->type }}</p>
+    <p>
+      <strong>Genres:</strong>
+      @foreach($show->genres as $index => $genre)
+        {{ ucwords($genre) }}{{ $index === count($show->genres) -1 ? '' : ',' }}
+      @endforeach
+    </p>
+    <p><strong>Status:</strong></p>
+    <p><strong>Episodes:</strong> {{ $show->episode_amount }}</p>
+    <p><strong>Duration:</strong> {{ $show->episode_duration }} min. per ep.</p>
+    <div class="content-close"></div>
+  </div>
+
+  <div class="content-header">
+    <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
+  </div>
+@endsection
 
 @section('content-center')
   <div class="content-header">{{ $show->title }}</div>
@@ -18,7 +34,7 @@
   <div class="content-header">Episodes</div>
   <div class="content-generic">
     <h2>Subbed</h2>
-    @if (count($show->episodes_sub) === 0)
+    @if(count($show->episodes_sub) === 0)
       <ul class="list-group episode-list">
         <li class="list-group-item">
           No Episodes Found
@@ -35,7 +51,7 @@
     @endif
     <div class="content-close"></div>
     <h2>Dubbed</h2>
-    @if (count($show->episodes_dub) === 0)
+    @if(count($show->episodes_dub) === 0)
       <ul class="list-group episode-list">
         <li class="list-group-item">
           No Episodes Found
