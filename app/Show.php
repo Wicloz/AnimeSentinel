@@ -15,7 +15,7 @@ class Show extends Model
    * @var array
    */
   protected $fillable = [
-    'mal_id', 'thumbnail_id', 'title', 'alts', 'description', 'type', 'genres', 'episode_amount', 'episode_duration', 'hits',
+    'mal_id', 'thumbnail_id', 'title', 'alts', 'description', 'type', 'genres', 'episode_amount', 'episode_duration', 'hits', 'airing_start', 'airing_end',
   ];
 
   /**
@@ -192,6 +192,14 @@ class Show extends Model
     return $value;
   }
   public function getEpisodeDurationAttribute($value) {
+    $this->handleCaching();
+    return $value;
+  }
+  public function getAiringStartAttribute($value) {
+    $this->handleCaching();
+    return $value;
+  }
+  public function getAiringEndAttribute($value) {
     $this->handleCaching();
     return $value;
   }

@@ -3,6 +3,7 @@
 namespace App\AnimeSentinel;
 
 use App\MalFlag;
+use Carbon\Carbon;
 
 class MyAnimeList
 {
@@ -123,6 +124,20 @@ class MyAnimeList
       }
     }
 
+    $aired = explode('to', Helpers::str_get_between($page, '<span class="dark_text">Aired:</span>', '</div>'));
+    $aired[0] = trim($aired[0]);
+    if ($aired[0] !== '?') {
+      $airing_start = Carbon::createFromFormat('M j, Y', $aired[0]);
+    } else {
+      $airing_start = null;
+    }
+    $aired[1] = trim($aired[1]);
+    if ($aired[1] !== '?') {
+      $airing_end = Carbon::createFromFormat('M j, Y', $aired[1]);
+    } else {
+      $airing_end = null;
+    }
+
     return [
       'mal_id' => $mal_id,
       'thumbnail_id' => str_replace('/', '-', Helpers::str_get_between($page, 'src="http://cdn.myanimelist.net/images/anime/', '"')),
@@ -133,6 +148,8 @@ class MyAnimeList
       'genres' => $genres,
       'episode_amount' => $amount,
       'episode_duration' => $duration,
+      'airing_start' => $airing_start,
+      'airing_end' => $airing_end,
     ];
   }
 
