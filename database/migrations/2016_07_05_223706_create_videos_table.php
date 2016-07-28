@@ -21,10 +21,11 @@ class CreateVideosTable extends Migration
             $table->integer('mirror')->unsinged();
 
             $table->integer('episode_num');
-            $table->dateTime('uploadtime');
             $table->string('link_stream', 1024);
             $table->string('link_episode', 1024);
+            $table->string('notes');
 
+            $table->dateTime('uploadtime');
             $table->bigInteger('hits')->default(0);
             $table->string('link_video', 2048);
             $table->string('resolution');
