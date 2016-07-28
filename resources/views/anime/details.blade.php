@@ -85,6 +85,7 @@
             </div>
           </li>
         @endforeach
+        <!-- TODO: add next episode prediction -->
       </ul>
     @endif
     <div class="content-close"></div>
@@ -114,6 +115,7 @@
             </div>
           </li>
         @endforeach
+        <!-- TODO: add next episode prediction -->
       </ul>
     @endif
     <div class="content-close"></div>
