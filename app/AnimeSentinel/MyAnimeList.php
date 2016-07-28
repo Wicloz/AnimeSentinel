@@ -125,7 +125,7 @@ class MyAnimeList
 
     return [
       'mal_id' => $mal_id,
-      'thumbnail_id' => str_replace('/', '-', Helpers::str_get_between($page, 'data-src="http://cdn.myanimelist.net/images/anime/', '"')),
+      'thumbnail_id' => str_replace('/', '-', Helpers::str_get_between($page, 'src="http://cdn.myanimelist.net/images/anime/', '"')),
       'title' => $title,
       'alts' => $alts,
       'description' => trim(Helpers::str_get_between($page, '<span itemprop="description">', '</span>')),
