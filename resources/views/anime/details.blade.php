@@ -34,6 +34,14 @@
         Unknown
       @endif
     </p>
+    <p>
+      <strong>First Episode Aired:</strong>
+      @if(!empty($show->first_video))
+        {{ $show->first_video->uploadtime->toFormattedDateString() }}
+      @else
+        Upcoming
+      @endif
+    </p>
     <div class="content-close"></div>
   </div>
 

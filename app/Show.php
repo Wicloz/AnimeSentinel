@@ -91,8 +91,17 @@ class Show extends Model
   * @return integer
   */
   public function getLatestDubAttribute() {
-    $episode_num =  $this->videos()->where('translation_type', 'dub')->max('episode_num');
+    $episode_num = $this->videos()->where('translation_type', 'dub')->max('episode_num');
     return $episode_num ? $episode_num : null;
+  }
+
+  /**
+  * Get the first uploaded video
+  *
+  * @return Video
+  */
+  public function getFirstVideoAttribute() {
+    return $this->videos()->orderBy('uploadtime', 'asc')->first();
   }
 
   /**
