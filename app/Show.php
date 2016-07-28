@@ -165,10 +165,6 @@ class Show extends Model
   /**
   * Handle caching calls.
   */
-  public function getThumbnailIdAttribute($value) {
-    $this->handleCaching();
-    return $value;
-  }
   public function getTitleAttribute($value) {
     $this->handleCaching();
     return $value;
