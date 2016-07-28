@@ -35,7 +35,7 @@
       @endif
     </p>
     <p>
-      <strong>First Episode Aired:</strong>
+      <strong>Aired Since:</strong>
       @if(!empty($show->first_video))
         {{ $show->first_video->uploadtime->toFormattedDateString() }}
       @else
