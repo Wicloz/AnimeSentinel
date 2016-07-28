@@ -18,7 +18,6 @@
     <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
   </div>
   <div class="content-generic flowfix">
-    <!-- TODO: Proper scaling -->
     <div class="mal-widget">
       <iframe src="{{ $show->mal_url }}"></iframe>
     </div>

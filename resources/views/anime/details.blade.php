@@ -17,6 +17,8 @@
       <strong>Status:</strong>
       @if(!isset($show->latest_sub))
         Upcoming
+      @elseif(!isset($show->episode_amount))
+        Unknown
       @elseif($show->latest_sub >= $show->episode_amount)
         Completed
       @else
@@ -60,7 +62,19 @@
       <ul class="list-group episode-list">
         @foreach($show->episodes_sub as $episode)
           <li class="list-group-item">
-            <a href="{{ $episode->episode_url }}">Episode {{ $episode->episode_num }}</a>
+            <div class="row">
+              <div class="col-xs-6">
+                <a href="{{ $episode->episode_url }}">Episode {{ $episode->episode_num }}</a>
+              </div>
+              <div class="col-xs-6">
+                <ul class="pull-right">
+                  @foreach($episode->streamers as $streamer)
+                    <!-- TODO: link to streamer page -->
+                    <li>{{ $streamer->name }}</li>
+                  @endforeach
+                </ul>
+              </div>
+            </div>
           </li>
         @endforeach
       </ul>
@@ -75,9 +89,21 @@
       </ul>
     @else
       <ul class="list-group episode-list">
-        @foreach($show->episodes_dub as $episode)
+        @foreach($show->episodes_sub as $episode)
           <li class="list-group-item">
-            <a href="{{ $episode->episode_url }}">Episode {{ $episode->episode_num }}</a>
+            <div class="row">
+              <div class="col-xs-6">
+                <a href="{{ $episode->episode_url }}">Episode {{ $episode->episode_num }}</a>
+              </div>
+              <div class="col-xs-6">
+                <ul class="pull-right">
+                  @foreach($episode->streamers as $streamer)
+                    <!-- TODO: link to streamer page -->
+                    <li>{{ $streamer->name }}</li>
+                  @endforeach
+                </ul>
+              </div>
+            </div>
           </li>
         @endforeach
       </ul>

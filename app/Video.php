@@ -74,6 +74,20 @@ class Video extends Model
   }
 
   /**
+  * Get all streamers that stream this episode.
+  *
+  * @return array
+  */
+  public function getStreamersAttribute() {
+    $streamer_ids = Self::where('show_id', $this->show_id)->episode($this->translation_type, $this->episode_num)
+                       ->distinct()->pluck('streamer_id');
+    foreach ($streamer_ids as $streamer_id) {
+      $streamers[] = Streamer::find($streamer_id);
+    }
+    return $streamers;
+  }
+
+  /**
   * Get the full url for this videos stream page.
   *
   * @return string

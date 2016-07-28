@@ -61,21 +61,7 @@ a {
   }
 }
 
-// Specific Modules //
-.fa-btn {
-  margin-right: 6px;
-}
-
-img {
-  max-width: 100%;
-}
-
-.img-thumbnail {
-  color: $background_colour-content2;
-  background-color: $text_colour-navs;
-  border-color: $text_colour-navs;
-}
-
+// List Group Restyling //
 .list-group {
   > .list-group-item {
     background-color: $background_colour-jumbotron;
@@ -92,6 +78,21 @@ img {
     color: $text_colour-navs;
     text-decoration: inherit;
   }
+}
+
+// Specific Modules //
+.fa-btn {
+  margin-right: 6px;
+}
+
+img {
+  max-width: 100%;
+}
+
+.img-thumbnail {
+  color: $background_colour-content2;
+  background-color: $text_colour-navs;
+  border-color: $text_colour-navs;
 }
 
 .stick-to-nav {
@@ -136,4 +137,22 @@ img {
 
 .flowfix {
   overflow: hidden;
+}
+
+.mal-widget {
+  width: 597px;
+  height: 146px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 10px;
+  // TODO: proper scaling
+
+  > iframe {
+    position: absolute;
+    top: -185px;
+    left: -242px;
+    width: 1024px;
+    height: 512px;
+    border: none;
+  }
 }
