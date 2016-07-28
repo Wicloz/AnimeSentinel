@@ -43,7 +43,6 @@ class EpisodeManager
     foreach ($streamers as $streamer) {
       $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
       $videos = $class::guard();
-      $videos = $class::seek(\App\Show::first());
 
       foreach ($videos as $video) {
         // Check whether video doesn't already exists in the database and the link isn't empty
