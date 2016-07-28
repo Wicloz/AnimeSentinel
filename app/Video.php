@@ -62,6 +62,18 @@ class Video extends Model
   }
 
   /**
+   * Scope a query to only include video's which are 'the same'.
+   *
+   * @return \Illuminate\Database\Eloquent\Builder
+   */
+  public function scopeSameVideo($query, $video) {
+    return $query->where('streamer_id', $video->streamer_id)
+                 ->where('show_id', $video->show_id)
+                 ->where('translation_type', $video->translation_type)
+                 ->where('episode_num', $video->episode_num);
+  }
+
+  /**
   * Get the full url for this videos stream page.
   *
   * @return string
