@@ -36,8 +36,6 @@ a {
 .searchbar-top {
   background-color: $background_colour-content2;
   padding: 15px 15px 0px;
-  margin-bottom: 20px;
-  margin-top: -20px;
   float: left;
   width: 100%;
   input {
@@ -55,11 +53,11 @@ a {
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .searchbar-top {
     width: 90%;
     margin-left: 5%;
-    margin-top: 0px;
+    margin-bottom: 20px;
   }
 }
 
@@ -102,13 +100,6 @@ img {
 
 .stick-to-nav {
   margin-top: -20px;
-}
-
-.jumbotron {
-  background-color: $background_colour-jumbotron;
-  p {
-    font-weight: 300;
-  }
 }
 
 .flowfix {

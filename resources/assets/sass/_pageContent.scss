@@ -9,6 +9,26 @@
   margin-bottom: 20px;
 }
 
+// Fluid Layout Expansions //
+
+.hide-md {
+  display: none;
+}
+@media (min-width: 992px) {
+  .hide-md {
+    display: inherit;
+  }
+}
+
+// Jumbotrons //
+
+.jumbotron {
+  background-color: $background_colour-jumbotron;
+  p {
+    font-weight: 300;
+  }
+}
+
 .jumbotron-welcome {
   background-color: transparent;
   > .container {
@@ -19,7 +39,7 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .jumbotron-welcome > .container {
     margin-top: 0px;
     margin-bottom: 0px;

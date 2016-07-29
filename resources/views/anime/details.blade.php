@@ -4,7 +4,7 @@
 @section('content-left')
   <img class="img-thumbnail details-thumbnail" src="{{ url('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
   @include('components.animedetails', ['details' => $show])
-  <div class="content-header">
+  <div class="content-header hide-md">
     <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
   </div>
 @endsection

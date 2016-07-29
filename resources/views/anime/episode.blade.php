@@ -6,7 +6,7 @@
     <img class="img-thumbnail details-thumbnail" src="{{ url('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
   </a>
   @include('components.animedetails', ['details' => $show, 'link' => true])
-  <div class="content-header">
+  <div class="content-header hide-md">
     <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
   </div>
 @endsection
