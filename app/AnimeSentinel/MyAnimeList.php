@@ -132,8 +132,8 @@ class MyAnimeList
       if ($aired[0] !== '?') {
         $airing_start = Carbon::createFromFormat('M j, Y', $aired[0]);
       }
-      if ($aired[1] !== '?') {
-        $airing_end = Carbon::createFromFormat('M j, Y', $aired[1]);
+      if ($aired[count($aired) - 1] !== '?') {
+        $airing_end = Carbon::createFromFormat('M j, Y', $aired[count($aired) - 1]);
       }
     }
 
