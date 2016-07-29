@@ -10,7 +10,7 @@ class ShowManager
    * Adds the show with the requested title to the database.
    * Will also search for any currently existing episodes.
    */
-  public static function addShow($title) {
+  public static function addShowWithTitle($title) {
     // Confirm this show isn't already in our databse
     if (!empty(Show::withTitle($title)->first())) {
       flash_error('The requested show has already been added to the database.');
@@ -33,7 +33,10 @@ class ShowManager
     }
 
     // Call the function to find existing episodes
-    EpisodeManager::findEpsiodesFor($show);
+    EpisodeManager::findVideosForShow($show);
+
+    // Return the show object
+    return $show;
   }
 
   /**
@@ -59,8 +62,11 @@ class ShowManager
 
     // Call the function to find existing episodes if requested
     if ($episodes) {
-      EpisodeManager::findEpsiodesFor($show);
+      EpisodeManager::findVideosForShow($show);
     }
+
+    // Return the show object
+    return $show;
   }
 
   /**

@@ -31,7 +31,7 @@ class ShowController extends Controller
       'title' => ['required', 'min:3']
     ]);
 
-    ShowManager::addShow($request->title);
+    ShowManager::addShowWithTitle($request->title);
 
     return back();
   }

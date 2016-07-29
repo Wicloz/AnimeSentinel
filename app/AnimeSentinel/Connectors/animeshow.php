@@ -76,6 +76,7 @@ class animeshow
    * @return array
    */
   public static function guard() {
-    return [];
+    $videos = [];
+    return $videos;
   }
 }

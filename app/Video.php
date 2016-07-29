@@ -50,6 +50,21 @@ class Video extends Model
   }
 
   /**
+   * Return all video's which are 'the same'
+   *
+   * @return array
+   */
+  public static function sameVideo($video) {
+    return Self::where('streamer_id', $video->streamer_id)
+               ->where('show_id', $video->show_id)
+               ->where('translation_type', $video->translation_type)
+               ->where('episode_num', $video->episode_num)
+               ->where('link_video', $video->link_video)
+               ->where('resolution', $video->resolution)
+               ->get();
+  }
+
+  /**
   * Get the show this video belongs to.
   *
   * @return \Illuminate\Database\Eloquent\Relations\Relation
@@ -74,18 +89,6 @@ class Video extends Model
    */
   public function scopeEpisode($query, $translation_type, $episode_num) {
     return $query->where('translation_type', $translation_type)->where('episode_num', $episode_num);
-  }
-
-  /**
-   * Scope a query to only include video's which are 'the same'.
-   *
-   * @return \Illuminate\Database\Eloquent\Builder
-   */
-  public function scopeSameVideo($query, $video) {
-    return $query->where('streamer_id', $video->streamer_id)
-                 ->where('show_id', $video->show_id)
-                 ->where('translation_type', $video->translation_type)
-                 ->where('episode_num', $video->episode_num);
   }
 
   /**
