@@ -91,22 +91,22 @@ class MyAnimeList
   public static function getAnimeData($mal_id) {
     $page = file_get_contents('http://myanimelist.net/anime/'.$mal_id);
 
-    $title = trim(Helpers::str_get_between($page, '<span itemprop="name">', '</span>'));
+    $title = trim(str_get_between($page, '<span itemprop="name">', '</span>'));
 
     $alts[] = $title;
-    $set = explode('</div>', Helpers::str_get_between($page, '<h2>Alternative Titles</h2>', '<br />'));
+    $set = explode('</div>', str_get_between($page, '<h2>Alternative Titles</h2>', '<br />'));
     foreach ($set as $line) {
       if (trim($line) !== '') {
-        $list = trim(Helpers::str_get_between($line, '</span>'));
+        $list = trim(str_get_between($line, '</span>'));
         $alts = array_merge($alts, explode(', ', $list));
       }
     }
 
-    $amount = Helpers::str_get_between($page, '<span class="dark_text">Episodes:</span>', '</div>');
+    $amount = str_get_between($page, '<span class="dark_text">Episodes:</span>', '</div>');
     settype($amount, 'int');
     if ($amount === 0) $amount = null;
 
-    $durations = explode('hr.', trim(Helpers::str_get_between($page, '<span class="dark_text">Duration:</span>', '</div>')));
+    $durations = explode('hr.', trim(str_get_between($page, '<span class="dark_text">Duration:</span>', '</div>')));
     $duration = 0;
     if (count($durations) === 1) {
       $duration += $durations[0];
@@ -117,14 +117,14 @@ class MyAnimeList
     if ($duration === 0) $duration = null;
 
     $genres = [];
-    $set = explode('</a>', Helpers::str_get_between($page, '<span class="dark_text">Genres:</span>', '</div>'));
+    $set = explode('</a>', str_get_between($page, '<span class="dark_text">Genres:</span>', '</div>'));
     foreach ($set as $item) {
       if (trim($item) !== '') {
-        $genres[] = strtolower(trim(Helpers::str_get_between($item, '>')));
+        $genres[] = strtolower(trim(str_get_between($item, '>')));
       }
     }
 
-    $aired = explode('to', Helpers::str_get_between($page, '<span class="dark_text">Aired:</span>', '</div>'));
+    $aired = explode('to', str_get_between($page, '<span class="dark_text">Aired:</span>', '</div>'));
     $aired[0] = trim($aired[0]);
     if ($aired[0] !== '?') {
       $airing_start = Carbon::createFromFormat('M j, Y', $aired[0]);
@@ -140,11 +140,11 @@ class MyAnimeList
 
     return [
       'mal_id' => $mal_id,
-      'thumbnail_id' => str_replace('/', '-', Helpers::str_get_between($page, 'src="http://cdn.myanimelist.net/images/anime/', '"')),
+      'thumbnail_id' => str_replace('/', '-', str_get_between($page, 'src="http://cdn.myanimelist.net/images/anime/', '"')),
       'title' => $title,
       'alts' => $alts,
-      'description' => trim(Helpers::str_get_between($page, '<span itemprop="description">', '</span>')),
-      'show_type' => strtolower(trim(Helpers::str_get_between(Helpers::str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'), '>'))),
+      'description' => trim(str_get_between($page, '<span itemprop="description">', '</span>')),
+      'show_type' => strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'), '>'))),
       'genres' => $genres,
       'episode_amount' => $amount,
       'episode_duration' => $duration,
@@ -162,11 +162,11 @@ class MyAnimeList
     $page = file_get_contents('http://myanimelist.net/anime/'.$mal_id);
     $flags = (object) ['hentai' => false];
 
-    $flags->music = strtolower(trim(Helpers::str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'))) === 'music';
-    $set = explode('</a>', Helpers::str_get_between($page, '<span class="dark_text">Genres:</span>', '</div>'));
+    $flags->music = strtolower(trim(str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'))) === 'music';
+    $set = explode('</a>', str_get_between($page, '<span class="dark_text">Genres:</span>', '</div>'));
     foreach ($set as $item) {
       if (trim($item) !== '') {
-        $clean = trim(Helpers::str_get_between($item, '>'));
+        $clean = trim(str_get_between($item, '>'));
         if (strtolower($clean) === 'hentai') $flags->hentai = true;
       }
     }

@@ -18,22 +18,6 @@ class Helpers
     return $title1 === $title2;
   }
 
-  public static function str_get_between($string, $start, $end = '') {
-    // TODO: improve this function
-
-    $string = ' ' . $string;
-    $ini = strpos($string, $start);
-    if ($ini == 0) return '';
-    $ini += strlen($start);
-
-    if (empty($end)) {
-      return substr($string, $ini);
-    } else {
-      $len = strpos($string, $end, $ini) - $ini;
-      return substr($string, $ini, $len);
-    }
-  }
-
   public static function scrape_page($page, $delim, array $request, $results = []) {
     // Explode the page
     $page_list = explode($delim, $page);
@@ -48,10 +32,10 @@ class Helpers
           if (strpos($line, $value[0]) !== false && (empty($value[1]) || strpos($line, $value[1]) !== false)) {
             if ($index === 0) {
               $results[] = [
-                $key => Helpers::str_get_between($line, $value[0], $value[1])
+                $key => str_get_between($line, $value[0], $value[1])
               ];
             } else {
-              $results[count($results) - 1][$key] = Helpers::str_get_between($line, $value[0], $value[1]);
+              $results[count($results) - 1][$key] = str_get_between($line, $value[0], $value[1]);
             }
           }
         }

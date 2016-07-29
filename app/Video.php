@@ -22,6 +22,9 @@ class Video extends Model
    */
   protected $dates = ['uploadtime', 'created_at', 'updated_at'];
 
+  /**
+   * Overwrite the save method to properly handle the compound key.
+   */
   public function save(array $options = []) {
     if (empty($this->mirror)) {
       $max_mirror = Self::where('streamer_id', $this->streamer_id)
@@ -32,6 +35,18 @@ class Video extends Model
       $this->mirror = $max_mirror + 1;
     }
     parent::save($options);
+  }
+
+  /**
+   * Overwrite the find method to properly handle the compound key.
+   */
+  public static function find(array $data = []) {
+    return Self::where('show_id', $data['show_id'])
+               ->where('translation_type', $data['translation_type'])
+               ->where('episode_num', $data['episode_num'])
+               ->where('streamer_id', $data['streamer_id'])
+               ->where('mirror', $data['mirror'])
+               ->first();
   }
 
   /**
@@ -102,6 +117,6 @@ class Video extends Model
   * @return string
   */
   public function getStreamUrlAttribute() {
-    return url('/anime/'.$this->show_id.'/'.$this->translation_type.'/episode-'.$this->episode_num.'/'.$this->mirror);
+    return url('/anime/'.$this->show_id.'/'.$this->translation_type.'/episode-'.$this->episode_num.'/'.$this->streamer_id.'/'.$this->mirror);
   }
 }

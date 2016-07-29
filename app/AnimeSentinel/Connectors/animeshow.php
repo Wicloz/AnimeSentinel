@@ -28,7 +28,7 @@ class animeshow
         ];
 
         // Scrape the page for episode data
-        $episodes = Helpers::scrape_page(Helpers::str_get_between($page, '<div id="episodes_list">', '<div id="sidebar">'), '</div>', [
+        $episodes = Helpers::scrape_page(str_get_between($page, '<div id="episodes_list">', '<div id="sidebar">'), '</div>', [
           'episode_num' => ['Episode ', ''],
           'uploadtime' => ['<div class="col-lg-2 col-md-3 hidden-sm hidden-xs">', ''],
         ]);
@@ -46,7 +46,7 @@ class animeshow
             'link_video' => $episode['link_episode'],
           ]];
           // Scrape the page for mirror data
-          $mirrors = Helpers::scrape_page(Helpers::str_get_between($page, '<div id="episode_mirrors">', '<br />'), '</div>', [
+          $mirrors = Helpers::scrape_page(str_get_between($page, '<div id="episode_mirrors">', '<br />'), '</div>', [
             'link_video' => ['<a href="', '/"'],
             'translation_type' => ['<div class="episode_mirrors_type_', '"'],
             'resolution' => ['1280x720', '1920x1080', 'class="glyphicon glyphicon-hd-video"'],
@@ -55,15 +55,7 @@ class animeshow
           // Loop through mirror list
           foreach ($mirrors as $mirror) {
             $page = file_get_contents($mirror['link_video']);
-            $mirror['link_video'] = Helpers::str_get_between($page, '<iframe width="100%" height="100%" id="video_embed" scrolling="no" src="', '"');
-            $page = file_get_contents($mirror['link_video']);
-            // Grab source link depending on mirror site
-            if (strpos($mirror['link_video'], 'mp4upload') !== false) {
-              $mirror['link_video'] = Helpers::str_get_between($page, '"file": "', '"');
-            }
-            if (strpos($mirror['link_video'], 'auengine') !== false) {
-              $mirror['link_video'] = Helpers::str_get_between($page, 'var video_link = \'', '\';');
-            }
+            $mirror['link_video'] = str_get_between($page, '<iframe width="100%" height="100%" id="video_embed" scrolling="no" src="', '"');
             // Create and add final video
             $videos[] = new Video(array_merge($data_stream, $episode, $mirror));
           }
