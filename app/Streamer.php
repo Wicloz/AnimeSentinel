@@ -34,4 +34,13 @@ class Streamer extends Model
   public function streamers() {
     return $this->belongsToMany(Show::class, 'videos');
   }
+
+  /**
+  * Get the full url for this streamer's details page.
+  *
+  * @return string
+  */
+  public function getDetailsUrlAttribute() {
+    return url('/streamers/'.$this->id);
+  }
 }

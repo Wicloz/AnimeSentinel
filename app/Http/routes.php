@@ -20,6 +20,10 @@ Route::get('/', 'AnimeController@home');
 Route::get('/about', 'PagesController@about'); //TODO
 Route::get('/news', 'PagesController@news'); //TODO
 
+// Streamers Pages
+Route::get('/streamers', 'StreamersController@list'); //TODO
+Route::get('/streamers/{streamer}', 'StreamersController@details'); //TODO
+
 // Anime Listings
 Route::get('/anime/recent', 'AnimeController@recent');
 Route::get('/anime/search', 'AnimeController@search');

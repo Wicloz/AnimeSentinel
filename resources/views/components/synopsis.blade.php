@@ -68,8 +68,7 @@
                 Uploaded Episode Type: {{ $syn_video->translation_type === 'sub' ? 'Subbed' : '' }}{{ $syn_video->translation_type === 'dub' ? 'Dubbed' : ''}}
               </div>
               <div class="col-sm-4">
-                Uploaded by {{ $syn_video->streamer->name }}
-                <!-- TODO: link to internal site -->
+                Uploaded by <a href="{{ $syn_video->streamer->details_url }}">{{ $syn_video->streamer->name }}</a>
               </div>
 
             @else

@@ -36,8 +36,7 @@
               <div class="col-xs-6">
                 <ul class="pull-right">
                   @foreach($episode->streamers as $streamer)
-                    <!-- TODO: link to streamer page -->
-                    <li>{{ $streamer->name }}</li>
+                    <li><a href="{{ $streamer->details_url }}">{{ $streamer->name }}</a></li>
                   @endforeach
                 </ul>
               </div>
@@ -66,8 +65,7 @@
               <div class="col-xs-6">
                 <ul class="pull-right">
                   @foreach($episode->streamers as $streamer)
-                    <!-- TODO: link to streamer page -->
-                    <li>{{ $streamer->name }}</li>
+                    <li><a href="{{ $streamer->details_url }}">{{ $streamer->name }}</a></li>
                   @endforeach
                 </ul>
               </div>

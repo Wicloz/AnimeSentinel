@@ -32,7 +32,7 @@
 
 @if (count($errors) > 0)
   <div class="alert alert-error">
-    <!-- TODO: Fancy CSS -->
+    <!-- TODO: fancy CSS -->
     <ul>
       @foreach ($errors->all() as $error)
         <li>{{ $error }}</li>
