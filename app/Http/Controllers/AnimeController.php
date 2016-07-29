@@ -12,8 +12,9 @@ use App\AnimeSentinel\MyAnimeList;
 class AnimeController extends Controller
 {
   protected function recentShows($limit) {
-    $recent = Video::orderBy('uploadtime', 'desc')
-              ->take($limit)->with('show')->get();
+    $recent = Video::where('mirror', 1)
+                   ->orderBy('uploadtime', 'desc')
+                   ->take($limit)->with('show')->get();
     return $recent;
   }
 
@@ -66,6 +67,9 @@ class AnimeController extends Controller
         $show = Show::where('mal_id', $result->id)->first();
         if (!empty($show)) {
           $results[$index] = $show;
+        } else {
+          $results[$index]->details_url = 'http://myanimelist.net/anime/'.$result->id;
+          $results[$index]->thumbnail_url = $result->image;
         }
       }
     }
