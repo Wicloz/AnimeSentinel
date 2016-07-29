@@ -52,7 +52,7 @@
   </div>
   <div class="content-generic flowfix">
     <div class="mal-widget">
-      <!--<iframe src="{{ $show->mal_url }}" scrolling="no"></iframe>-->
+      <iframe src="{{ $show->mal_url }}" scrolling="no"></iframe>
     </div>
     <div class="content-close"></div>
   </div>
