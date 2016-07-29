@@ -119,4 +119,30 @@ class Video extends Model
   public function getStreamUrlAttribute() {
     return url('/anime/'.$this->show_id.'/'.$this->translation_type.'/episode-'.$this->episode_num.'/'.$this->streamer_id.'/'.$this->mirror);
   }
+
+  /**
+  * Get the full url for the episode page for the previous episode.
+  *
+  * @return string
+  */
+  public function getPreEpisodeUrlAttribute() {
+    $episode = $this->show->episode($this->translation_type, $this->episode_num - 1);
+    if (!empty($episode)) {
+      $episode = $episode->episode_url;
+    }
+    return $episode;
+  }
+
+  /**
+  * Get the full url for the episode page for the next episode.
+  *
+  * @return string
+  */
+  public function getNextEpisodeUrlAttribute() {
+    $episode = $this->show->episode($this->translation_type, $this->episode_num + 1);
+    if (!empty($episode)) {
+      $episode = $episode->episode_url;
+    }
+    return $episode;
+  }
 }

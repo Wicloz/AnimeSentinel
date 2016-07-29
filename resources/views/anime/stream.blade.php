@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $video->show->title." - Episode $video->episode_num Watch Online in $video->resolution")
+@section('title', $video->show->title.' - '.($video->translation_type === 'sub' ? 'Subbed' : '').($video->translation_type === 'dub' ? 'Dubbed' : '').' - Episode '.$video->episode_num.' - Watch Online in '.$video->resolution)
 
 @section('content-left')
   <img class="img-thumbnail details-thumbnail" src="{{ url('/media/thumbnails/'.$video->show->thumbnail_id) }}" alt="{{ $video->show->title }} - Thumbnail">
@@ -16,7 +16,15 @@
 @endsection
 
 @section('content-center')
-  <div class="content-header">{{ $video->show->title }} - Episode {{ $video->episode_num }}</div>
+  <div class="content-header header-center">
+    <a href="{{ $video->pre_episode_url }}" class="arrow-left {{ empty($video->pre_episode_url) ? 'arrow-hide' : '' }}">&#8666;</a>
+    <a href="{{ $video->show->details_url }}">{{ $video->show->title }}</a>
+    - {{ $video->translation_type === 'sub' ? 'Subbed' : '' }}{{ $video->translation_type === 'dub' ? 'Dubbed' : '' }} -
+    <a href="{{ $video->episode_url }}">Episode {{ $video->episode_num }}</a>
+    <!-- TODO: select episodes with dropdown -->
+    <a href="{{ $video->next_episode_url }}" class="arrow-right {{ empty($video->next_episode_url) ? 'arrow-hide' : '' }}">&#8667;</a>
+  </div>
+
   <div class="content-generic">
     <div class="streamplayer">
       @if(str_ends_with($video->link_video, '.mp4'))

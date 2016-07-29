@@ -60,7 +60,7 @@
   <div class="content-header">Episodes</div>
   <div class="content-generic">
     <h2>Subbed</h2>
-    @if(count($show->episodes_sub) === 0)
+    @if(count($show->episodes('sub')) === 0)
       <ul class="list-group episode-list">
         <li class="list-group-item">
           No Episodes Found
@@ -68,7 +68,7 @@
       </ul>
     @else
       <ul class="list-group episode-list">
-        @foreach($show->episodes_sub as $episode)
+        @foreach($show->episodes('sub') as $episode)
           <li class="list-group-item">
             <div class="row">
               <div class="col-xs-6">
@@ -90,7 +90,7 @@
     @endif
     <div class="content-close"></div>
     <h2>Dubbed</h2>
-    @if(count($show->episodes_dub) === 0)
+    @if(count($show->episodes('dub')) === 0)
       <ul class="list-group episode-list">
         <li class="list-group-item">
           No Episodes Found
@@ -98,7 +98,7 @@
       </ul>
     @else
       <ul class="list-group episode-list">
-        @foreach($show->episodes_sub as $episode)
+        @foreach($show->episodes('dub') as $episode)
           <li class="list-group-item">
             <div class="row">
               <div class="col-xs-6">

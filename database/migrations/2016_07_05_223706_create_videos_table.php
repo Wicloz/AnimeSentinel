@@ -15,24 +15,25 @@ class CreateVideosTable extends Migration
         Schema::create('videos', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('streamer_id');
-            $table->integer('show_id')->unsigned();
-            $table->enum('translation_type', ['sub', 'dub']);
-            $table->integer('mirror')->unsinged();
+            $table->string('streamer_id');                              // video
+            $table->integer('show_id')->unsigned();                     // episode
+            $table->enum('translation_type', ['sub', 'dub']);           // episode
+            $table->integer('mirror')->unsinged();                      // video
 
-            $table->integer('episode_num');
-            $table->string('link_stream', 1024);
-            $table->string('link_episode', 1024);
-            $table->string('notes');
+            $table->integer('episode_num');                             // episode
+            $table->string('link_stream', 1024);                        // video
+            $table->string('link_episode', 1024);                       // episode
+            $table->string('notes');                                    // video
 
-            $table->dateTime('uploadtime');
-            $table->bigInteger('hits')->default(0);
-            $table->string('link_video', 2048);
-            $table->string('resolution');
+            $table->dateTime('uploadtime');                             // video
+            $table->bigInteger('hits')->default(0);                     // video
+            $table->string('link_video', 2048);                         // video
+            $table->string('resolution');                               // video
 
             $table->timestamps();
 
-            $table->unique(['show_id', 'translation_type', 'episode_num', 'streamer_id', 'mirror'], 'videos_combined_id');
+            $table->unique(['show_id', 'translation_type', 'episode_num', 'streamer_id', 'mirror'], 'videos_video_identifier');
+            $table->index(['show_id', 'translation_type', 'episode_num'], 'videos_episode_identifier')
             $table->foreign('show_id')->references('id')->on('shows')->onDelete('cascade');
             $table->foreign('streamer_id')->references('id')->on('streamers')->onDelete('cascade');
         });

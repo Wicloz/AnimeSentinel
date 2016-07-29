@@ -105,33 +105,28 @@ class Show extends Model
   }
 
   /**
-  * Get the list of subbed episodes videos.
+  * Get a list of episodes of the requested type.
   *
   * @return array
   */
-  public function getEpisodesSubAttribute() {
-    $episodes = $this->videos()
-                     ->distinct()
-                     ->where('translation_type', 'sub')
-                     ->groupBy('episode_num')
-                     ->orderBy('episode_num', 'asc')
-                     ->get();
-    return $episodes;
+  public function episodes($translation_type) {
+    return $this->videos()
+                ->distinct()
+                ->where('translation_type', $translation_type)
+                ->groupBy('episode_num')
+                ->orderBy('episode_num', 'asc')
+                ->get();
   }
 
   /**
-  * Get the list of dubbed episodes videos.
+  * Get the episode of the requested type and number.
   *
-  * @return array
+  * @return Video
   */
-  public function getEpisodesDubAttribute() {
-    $episodes = $this->videos()
-                     ->distinct()
-                     ->where('translation_type', 'dub')
-                     ->groupBy('episode_num')
-                     ->orderBy('episode_num', 'asc')
-                     ->get();
-    return $episodes;
+  public function episode($translation_type, $episode_num) {
+    return $this->videos()
+                ->episode($translation_type, $episode_num)
+                ->first();
   }
 
   /**

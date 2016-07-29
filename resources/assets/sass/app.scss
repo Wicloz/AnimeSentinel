@@ -132,3 +132,22 @@ img {
     border: none;
   }
 }
+
+.arrow-left, .arrow-right {
+  font-size: 40px;
+  margin-top: -14px;
+}
+
+.arrow-left {
+  text-align: left;
+  float: left;
+}
+
+.arrow-right {
+  text-align: right;
+  float: right;
+}
+
+.arrow-hide {
+  visibility: hidden;
+}

@@ -37,8 +37,7 @@ class EpisodeController extends Controller
 
     return view('anime.episode', [
       'show' => $show,
-      'translation' => $translation_type,
-      'number' => $episode_num,
+      'episode' => $videos[0],
       'videos' => $videos,
       'resolutions' => $resolutions,
     ]);
