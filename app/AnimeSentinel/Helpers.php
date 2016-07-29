@@ -51,7 +51,7 @@ class Helpers
             $results[] = [
               $key => $data
             ];
-          } else {
+          } elseif (!isset($results[count($results) - 1][$key]) || $results[count($results) - 1][$key] !== $value[1]) {
             $results[count($results) - 1][$key] = $data;
           }
         }

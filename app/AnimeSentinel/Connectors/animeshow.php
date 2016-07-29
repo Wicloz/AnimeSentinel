@@ -18,7 +18,7 @@ class animeshow
     $videos = [];
 
     foreach ($show->alts as $alt) {
-      $page = file_get_contents('http://animeshow.tv/'.str_replace(' ', '-', $alt));
+      $page = file_get_contents('http://animeshow.tv/'.str_clean($alt));
       if (strpos($page, '<title>Watch Anime - AnimeShow.tv</title>') === false) {
         // We have an episode overview page now, so set some general data
         $data_stream = [
