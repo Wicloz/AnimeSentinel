@@ -2,7 +2,13 @@
 @section('title', $show->title.' - '.($episode->translation_type === 'sub' ? 'Subbed' : '').($episode->translation_type === 'dub' ? 'Dubbed' : '').' - Episode '.$episode->episode_num)
 
 @section('content-left')
-  <img class="img-thumbnail details-thumbnail" src="{{ url('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
+  <a href="{{ $show->details_url }}">
+    <img class="img-thumbnail details-thumbnail" src="{{ url('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
+  </a>
+  @include('components.animedetails', ['details' => $show, 'link' => true])
+  <div class="content-header">
+    <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
+  </div>
 @endsection
 
 @section('content-center')
@@ -47,13 +53,8 @@
     <div class="content-close"></div>
   </div>
 
-  <div class="content-header">
-    <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
-  </div>
-  <div class="content-generic flowfix">
-    <div class="mal-widget">
-      <iframe src="{{ $show->mal_url }}" scrolling="no"></iframe>
-    </div>
-    <div class="content-close"></div>
-  </div>
+  @include('components.malwidget', ['mal_url' => $show->mal_url])
+
+  <div class="content-header">Comments</div>
+  <!-- TODO: Disqus integration -->
 @endsection

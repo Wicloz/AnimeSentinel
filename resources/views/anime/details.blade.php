@@ -3,48 +3,7 @@
 
 @section('content-left')
   <img class="img-thumbnail details-thumbnail" src="{{ url('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
-
-  <div class="content-header">Information</div>
-  <div class="content-generic">
-    <p><strong>Type:</strong> {{ ucwords($show->type) }}</p>
-    <p>
-      <strong>Genres:</strong>
-      @foreach($show->genres as $index => $genre)
-        {{ ucwords($genre) }}{{ $index === count($show->genres) -1 ? '' : ',' }}
-      @endforeach
-    </p>
-    <p>
-      <strong>Status:</strong>
-      @if(!isset($show->latest_sub))
-        Upcoming
-      @elseif(!isset($show->episode_amount))
-        Unknown
-      @elseif($show->latest_sub >= $show->episode_amount)
-        Completed
-      @else
-        Current
-      @endif
-    </p>
-    <p><strong>Episodes:</strong> {{ $show->episode_amount or 'Unknown' }}</p>
-    <p>
-      <strong>Duration:</strong>
-      @if(isset($show->episode_duration))
-        {{ $show->episode_duration }} min. per ep.
-      @else
-        Unknown
-      @endif
-    </p>
-    <p>
-      <strong>Aired Since:</strong>
-      @if(!empty($show->first_video))
-        {{ $show->first_video->uploadtime->toFormattedDateString() }}
-      @else
-        Upcoming
-      @endif
-    </p>
-    <div class="content-close"></div>
-  </div>
-
+  @include('components.animedetails', ['details' => $show])
   <div class="content-header">
     <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
   </div>
@@ -121,13 +80,8 @@
     <div class="content-close"></div>
   </div>
 
-  <div class="content-header">
-    <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
-  </div>
-  <div class="content-generic flowfix">
-    <div class="mal-widget">
-      <iframe src="{{ $show->mal_url }}" scrolling="no"></iframe>
-    </div>
-    <div class="content-close"></div>
-  </div>
+  @include('components.malwidget', ['mal_url' => $show->mal_url])
+
+  <div class="content-header">Comments</div>
+  <!-- TODO: Disqus integration -->
 @endsection
