@@ -23,12 +23,12 @@
 
   <div class="content-generic">
     <div class="streamplayer">
-      @if(str_ends_with($video->link_video, '.mp4'))
+      @if(player_support($video->link_video))
         <video class="streamplayer-video" controls>
           <source src="{{ $video->link_video }}" type="video/mp4">
           Your browser does not support the video tag.
         </video>
-      @elseif(str_ends_with($video->link_video, '.html'))
+      @else
         <iframe class="streamplayer-video streamplayer-embed" src="{{ $video->link_video }}" scrolling="no"></iframe>
       @endif
       <div class="content-close"></div>

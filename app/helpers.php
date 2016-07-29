@@ -26,6 +26,13 @@ function flash_error($content) {
   flash($content, 'error');
 }
 
+function player_support($filename) {
+  if (str_ends_with($filename, '.mp4')) {
+    return true;
+  }
+  return false;
+}
+
 // String Helpers //
 function str_get_between($string, $start, $end = '') {
   // TODO: improve this function

@@ -35,10 +35,10 @@
                   <a href="{{ $video->stream_url }}">
                     <div class="episode-block">
                       <p>Original Streamer: {{ $video->streamer->name }}</p>
-                      @if(str_ends_with($video->link_video, '.html'))
-                        <p class="embed-no">HTML5 Player: No</p>
-                      @else
+                      @if(player_support($video->link_video))
                         <p class="embed-yes">HTML5 Player: Yes</p>
+                      @else
+                        <p class="embed-no">HTML5 Player: No</p>
                       @endif
                     </div>
                   </a>
