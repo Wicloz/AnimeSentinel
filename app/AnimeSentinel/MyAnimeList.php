@@ -143,7 +143,7 @@ class MyAnimeList
       'title' => $title,
       'alts' => $alts,
       'description' => trim(str_get_between($page, '<span itemprop="description">', '</span>')),
-      'show_type' => strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'), '>'))),
+      'type' => strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'), '>'))),
       'genres' => $genres,
       'episode_amount' => $amount,
       'episode_duration' => $duration,
