@@ -79,7 +79,9 @@
   background-color: $background_colour-content1;
   margin-bottom: 15px;
   padding: 15px;
-  > .content-close {
-    border: 1px solid $border_colour-main;
-  }
+}
+
+.content-close {
+  border: 1px solid $border_colour-main;
+  width: 100%;
 }

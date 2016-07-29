@@ -13,7 +13,7 @@
         <li class="list-group-item">
           <h2>{{ $resolution }}</h2>
         </li>
-        <li class="list-group-item item-blockholder">
+        <li class="list-group-item">
           <div class="row">
             @foreach($videos as $video)
               @if($video->resolution === $resolution)
@@ -32,6 +32,7 @@
               @endif
             @endforeach
           </div>
+          <div class="content-close"></div>
         </li>
       </ul>
     @endforeach
