@@ -12,35 +12,64 @@
         <a {{ $syn_mal ? 'target="_blank"' : '' }} href="{{ $syn_show->details_url }}">{{ $syn_show->title }}</a>
       </div>
 
-      <div class="synopsis-details">
-        @if(!$syn_mal)
-          <div class="collapsed toggle" data-toggle="collapse" data-target="#description-{{ $syn_unique }}">
-            &laquo; Toggle Description &raquo;
+      @if(!$syn_mal)
+        <div class="row">
+          <div class="col-sm-9">
+            <div class="synopsis-description">
+              <div class="collapsed toggle" data-toggle="collapse" data-target="#description-{{ $syn_unique }}">
+                &laquo; Toggle Description &raquo;
+              </div>
+              <div class="collapse" id="description-{{ $syn_unique }}">
+                {!! $syn_show->description !!}
+              </div>
+            </div>
           </div>
-          <div class="collapse" id="description-{{ $syn_unique }}">
-            {!! $syn_show->description !!}
+
+          <div class="col-sm-3">
+            <div class="synopsis-details">
+              <p><strong>Type:</strong> {{ ucwords($syn_show->type) }}</p>
+              <p><strong>Episodes:</strong> {{ $syn_show->episode_amount or 'Unknown' }}</p>
+              <p>
+                <strong>Duration:</strong>
+                @if(isset($syn_show->episode_duration))
+                  {{ $syn_show->episode_duration }} min. per ep.
+                @else
+                  Unknown
+                @endif
+              </p>
+            </div>
           </div>
-        @else
-          <p>This show is not in our database yet.</p>
-          <form action="{{ url('/anime/add') }}" method="POST">
-            {{ csrf_field() }}
-            <input type="hidden" name="title" value="{{ $syn_show->title }}"></input>
-            <button type="submit" class="btn btn-primary">Click To Add</button>
-          </form>
-        @endif
-      </div>
+        </div>
+      @else
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="synopsis-description">
+              <p>This show is not in our database yet.</p>
+              <form action="{{ url('/anime/add') }}" method="POST">
+                {{ csrf_field() }}
+                <input type="hidden" name="title" value="{{ $syn_show->title }}"></input>
+                <button type="submit" class="btn btn-primary">Click To Add</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      @endif
 
       @if(!$syn_mal)
-        <div class="synopsis-episodes">
+        <div class="synopsis-bottombar">
           <div class="row">
             @if(!empty($syn_video))
-              <div class="col-sm-6">
+              <div class="col-sm-4">
                 <a href="{{ $syn_video->episode_url }}">
                   Episode {{ $syn_video->episode_num }} Has Aired
                 </a>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-4">
                 Uploaded Episode Type: {{ $syn_video->translation_type === 'sub' ? 'Subbed' : '' }}{{ $syn_video->translation_type === 'dub' ? 'Dubbed' : ''}}
+              </div>
+              <div class="col-sm-4">
+                Uploaded by {{ $syn_video->streamer->name }}
+                <!-- TODO: link to internal site -->
               </div>
 
             @else
