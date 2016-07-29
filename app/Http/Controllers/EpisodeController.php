@@ -20,11 +20,27 @@ class EpisodeController extends Controller
                    ->episode($translation_type, $episode_num)
                    ->get();
 
+    $resolutions = [];
+    foreach ($videos as $video) {
+      if (!in_array($video->resolution, $resolutions)) {
+        $resolutions[] = $video->resolution;
+      }
+    }
+    usort($resolutions, function ($a, $b) {
+      $aex = explode('x', $a);
+      $a = $aex[0] * $aex[1];
+      $bex = explode('x', $b);
+      $b = $bex[0] * $bex[1];
+      if ($a === $b) return 0;
+      return ($a > $b) ? -1 : 1;
+    });
+
     return view('anime.episode', [
       'show' => $show,
       'translation' => $translation_type,
       'number' => $episode_num,
       'videos' => $videos,
+      'resolutions' => $resolutions,
     ]);
   }
 

@@ -1,0 +1,23 @@
+// main: app.scss
+@import 'vars';
+
+.episode-block {
+  background-color: $background_colour-content1;
+  padding: 5px;
+  margin-bottom: 10px;
+  > p {
+    margin-bottom: 0px;
+  }
+}
+
+.item-blockholder {
+
+}
+
+.embed-no {
+  color: #d8000c;
+}
+
+.embed-yes {
+  color: #4f8a10;
+}

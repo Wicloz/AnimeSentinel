@@ -57,7 +57,7 @@ class AnimeController extends Controller
 
       // Sort results by score
       usort($results, function ($a, $b) {
-        if ($a === $b) return 0;
+        if ($a->score === $b->score) return 0;
         return ($a->score > $b->score) ? -1 : 1;
       });
 
