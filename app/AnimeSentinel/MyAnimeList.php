@@ -124,18 +124,17 @@ class MyAnimeList
       }
     }
 
-    $aired = explode('to', str_get_between($page, '<span class="dark_text">Aired:</span>', '</div>'));
-    $aired[0] = trim($aired[0]);
-    if ($aired[0] !== '?') {
-      $airing_start = Carbon::createFromFormat('M j, Y', $aired[0]);
-    } else {
-      $airing_start = null;
-    }
-    $aired[1] = trim($aired[1]);
-    if ($aired[1] !== '?') {
-      $airing_end = Carbon::createFromFormat('M j, Y', $aired[1]);
-    } else {
-      $airing_end = null;
+    $airing_start = null;
+    $airing_end = null;
+    $aired = trim(str_get_between($page, '<span class="dark_text">Aired:</span>', '</div>'));
+    if ($aired !== 'Not available') {
+      $aired = explode(' to ', $aired);
+      if ($aired[0] !== '?') {
+        $airing_start = Carbon::createFromFormat('M j, Y', $aired[0]);
+      }
+      if ($aired[1] !== '?') {
+        $airing_end = Carbon::createFromFormat('M j, Y', $aired[1]);
+      }
     }
 
     return [

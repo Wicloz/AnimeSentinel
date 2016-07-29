@@ -33,7 +33,7 @@ class CreateVideosTable extends Migration
             $table->timestamps();
 
             $table->unique(['show_id', 'translation_type', 'episode_num', 'streamer_id', 'mirror'], 'videos_video_identifier');
-            $table->index(['show_id', 'translation_type', 'episode_num'], 'videos_episode_identifier')
+            $table->index(['show_id', 'translation_type', 'episode_num'], 'videos_episode_identifier');
             $table->foreign('show_id')->references('id')->on('shows')->onDelete('cascade');
             $table->foreign('streamer_id')->references('id')->on('streamers')->onDelete('cascade');
         });
