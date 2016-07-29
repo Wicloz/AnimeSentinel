@@ -39,6 +39,12 @@
   }
 }
 
+@media (max-width: 991px) {
+  .jumbotron-welcome > .container {
+    width: 100%;
+  }
+}
+
 @media (min-width: 992px) {
   .jumbotron-welcome > .container {
     margin-top: 0px;
@@ -64,7 +70,7 @@
   margin-left: -15px;
   margin-right: -15px;
   float: left;
-  width: 100%;
+  width: calc(100% + 30px);
 }
 
 .welcome-content-wrapper::before {
@@ -72,7 +78,7 @@
   position: absolute;
   top: 0px;
   left: 0px;
-  width: calc(100% - 30px);
+  width: 100%;
   height: $welcome_picture-height - 560px;
   max-height: 100%;
   z-index: -1;
