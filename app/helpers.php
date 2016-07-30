@@ -53,7 +53,7 @@ function str_get_between($string, $start, $end = '') {
 
 function str_starts_with($haystack, $needle) {
     // search backwards starting from haystack length characters from the end
-    return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== false;
+    return $needle === "" || strrpos($haystack, $needle, - strlen($haystack)) !== false;
 }
 
 function str_ends_with($haystack, $needle) {
@@ -64,7 +64,7 @@ function str_ends_with($haystack, $needle) {
 function str_urlify($string) {
   $remove = ['★', '!', ';', ':', '.', ','];
 
-  $string = str_replace(' ', '-', strtolower(trim($string)));
+  $string = str_replace('---', '-', str_replace(' ', '-', strtolower(trim($string))));
   foreach ($remove as $char) {
     $string = str_replace($char, '', $string);
   }
