@@ -49,8 +49,7 @@ class kissanime
 
     // Scrape the page for episode data
     $episodes = Helpers::scrape_page(str_get_between($page, '<tr style="height: 10px">', '</table>'), '</td>', [
-      'episode_num' => [true, 'Episode ', ' '],
-      'notes' => [false, 'Episode {{episode_num}} ', ' online'],
+      'episode_num' => [true, 'Watch anime ', ' in high quality'],
       'link_episode' => [false, 'href="', '"'],
       'uploadtime' => [false, '<td>', ''],
     ]);
@@ -58,6 +57,18 @@ class kissanime
     // Get mirror data for each episode
     foreach ($episodes as $episode) {
       // Complete episode data
+      if (strpos($episode['link_episode'], '/Episode-') !== false) {
+        $line = $episode['episode_num'];
+        $episode['episode_num'] = str_get_between($line, 'Episode ', ' ');
+        $episode['notes'] = str_get_between($line, 'Episode '.$episode['episode_num'].' ', ' online');
+      }
+      elseif (strpos($episode['link_episode'], '/Movie?') !== false) {
+        $episode['notes'] = str_get_between($episode['episode_num'], 'Movie ', ' online', true);
+        $episode['episode_num'] = 1;
+      }
+      else {
+        continue;
+      }
       $episode['notes'] = str_replace('[', '(', str_replace(']', ')', $episode['notes']));
       $episode['link_episode'] = 'http://kissanime.to'.$episode['link_episode'];
       $episode['uploadtime'] = Carbon::createFromFormat('n/j/Y', trim($episode['uploadtime']))->hour(12)->minute(0)->second(0);
