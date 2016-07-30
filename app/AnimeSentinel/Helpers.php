@@ -26,6 +26,15 @@ class Helpers
     foreach ($page_list as $line) {
       foreach ($request as $key => $value) {
 
+        $var = str_get_between($value[1], '{{', '}}');
+        if (!empty($var) && count($results) >= 1) {
+          $value[1] = str_replace('{{'.$var.'}}', $results[count($results) - 1][$var], $value[1]);
+        }
+        $var = str_get_between($value[2], '{{', '}}');
+        if (!empty($var) && count($results) >= 1) {
+          $value[2] = str_replace('{{'.$var.'}}', $results[count($results) - 1][$var], $value[2]);
+        }
+
         if (empty($value[3])) {
           // Find content between the requested strings
           if (strpos($line, $value[1]) !== false && (empty($value[2]) || strpos($line, $value[2]) !== false)) {

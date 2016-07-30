@@ -26,6 +26,10 @@ class Downloaders
       return Self::downloadCloudFlare($url, $cookieid);
     }
 
+    if ($cookieid === 'kissanime') {
+      $cf_data->cookies .= '; password=xF0d5g%2bDfyUirFXabZYgRi17jf9gLeTF; username=kV9SRW%2fZraoO0hm2pEp2AA%3d%3d';
+    }
+
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);

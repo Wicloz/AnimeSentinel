@@ -20,12 +20,12 @@ class animeshow
 
     foreach ($show->alts as $alt) {
       $page = file_get_contents('http://animeshow.tv/'.str_urlify($alt));
-      if (strpos($page, '<title>Watch Anime - AnimeShow.tv</title>') === false) {
+      if (strpos($page, 'episodes online in high quality with professional English subtitles on AnimeShow.tv"/>') !== false) {
         // We have an episode overview page now, so set some general data
         $data_stream = [
           'show_id' => $show->id,
           'streamer_id' => 'animeshow',
-          'link_stream' => 'http://animeshow.tv/'.str_replace(' ', '-', $alt),
+          'link_stream' => 'http://animeshow.tv/'.str_urlify($alt),
         ];
 
         // Scrape the page for episode data
@@ -38,7 +38,7 @@ class animeshow
         foreach ($episodes as $episode) {
           // Complete episode data
           $episode['link_episode'] = 'http://animeshow.tv/'.str_urlify($alt).'-episode-'.$episode['episode_num'];
-          $episode['uploadtime'] = Carbon::createFromFormat('d M Y', $episode['uploadtime'])->hour(0)->minute(0)->second(0);
+          $episode['uploadtime'] = Carbon::createFromFormat('d M Y', $episode['uploadtime'])->hour(12)->minute(0)->second(0);
 
           // Get episode page
           $page = file_get_contents($episode['link_episode']);
@@ -77,8 +77,8 @@ class animeshow
    * @return array
    */
   public static function guard() {
-    //TODO
     $videos = [];
+    //TODO
     return $videos;
   }
 }
