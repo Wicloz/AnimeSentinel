@@ -23,7 +23,7 @@ class Downloaders
       $cf_data = json_decode(file_get_contents(__DIR__.'/../../storage/app/cookies/'.$cookieid));
     } else {
       Self::requestCloudFlareData($url, $cookieid);
-      //return downloadCloudFlare($url, $cookieid);
+      return Self::downloadCloudFlare($url, $cookieid);
     }
 
     $curl = curl_init();
@@ -39,13 +39,13 @@ class Downloaders
 
     if (strpos($response, '<title>Please wait 5 seconds...</title>') !== false) {
       Self::requestCloudFlareData($url, $cookieid);
-      //return downloadCloudFlare($url, $cookieid);
+      return Self::downloadCloudFlare($url, $cookieid);
     }
 
     return $response;
   }
 
   private static function requestCloudFlareData($url, $cookieid = 'cloudflare') {
-    exec('python CloudFlare.py "'. $url .'" "'. $cookieid .'"');
+    exec('python '. __DIR__ .'/CloudFlare.py "'. $url .'" "'. $cookieid .'"');
   }
 }
