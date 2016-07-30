@@ -27,12 +27,12 @@ class Show extends Model
     'alts' => 'array',
     'genres' => 'array',
   ];
+
   /**
    * Ensure both cache handling and decoding occurs.
    */
   public function getAltsAttribute($value) {
     $this->handleCaching();
-    // TODO: Allow manual changes to alts persistent through cache updates
     return json_decode($value);
   }
   public function getGenresAttribute($value) {
@@ -55,7 +55,7 @@ class Show extends Model
   * @return \Illuminate\Database\Eloquent\Relations\Relation
   */
   public function streamers() {
-    return $this->belongsToMany(Streamer::class, 'videos');
+    return $this->belongsToMany(Streamer::class, 'videos')->distinct();
   }
 
   /**
@@ -65,6 +65,15 @@ class Show extends Model
   */
   public function mal_flag() {
     return $this->hasOne(MalFlag::class, 'mal_id', 'mal_id');
+  }
+
+  /**
+  * Get the show flag for this show.
+  *
+  * @return \Illuminate\Database\Eloquent\Relations\Relation
+  */
+  public function show_flag() {
+    return $this->hasOne(ShowFlag::class, 'mal_id', 'mal_id');
   }
 
   /**
