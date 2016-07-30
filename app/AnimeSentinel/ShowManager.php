@@ -14,8 +14,7 @@ class ShowManager
     // Confirm this show isn't already in our databse
     if (!empty(Show::withTitle($title)->first())) {
       flash_error('The requested show has already been added to the database.');
-      Show::withTitle($title)->first()->delete();
-      //return;
+      return;
     }
 
     // Find this show on MAL and get it's id
