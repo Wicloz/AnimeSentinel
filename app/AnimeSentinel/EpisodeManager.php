@@ -29,8 +29,10 @@ class EpisodeManager
     // For all streamers, request an array of video objects
     $videos = [];
     foreach ($streamers as $streamer) {
-      $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
-      $videos = array_merge($videos, $class::seek($show));
+      if ($streamer->id !== 'youtube' || (!empty($show->show_flags) && $show->show_flags->check_youtube)) {
+        $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
+        $videos = array_merge($videos, $class::seek($show));
+      }
     }
 
     // Remove all existing videos
@@ -49,22 +51,29 @@ class EpisodeManager
 
     // For all streamers, request an array of video objects
     foreach ($streamers as $streamer) {
-      $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
-      $videos = $class::guard();
+      if ($streamer->id !== 'youtube') {
+        $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
+        $videos = $class::guard();
 
-      // Process the videos
-      foreach ($videos as $video) {
-        // Make sure the anime this video belongs to is present in the database
-        $show = Show::withTitle($video->show_id)->first();
-        if ($show === null) {
-          $show = ShowManager::addShowWithTitle($video->show_id);
+        // Process the videos
+        foreach ($videos as $video) {
+          // Make sure the anime this video belongs to is present in the database
+          $show = Show::withTitle($video->show_id)->first();
+          if ($show === null) {
+            // Add the show to the database
+            $show = ShowManager::addShowWithTitle($video->show_id);
+            // And remove all videos for this show from the array
+            $video->show_id = $show->id; // TODO
+          }
+          else {
+            // Set the show_id on the video
+            $video->show_id = $show->id;
+          }
         }
-        // Set the show_id on the video
-        $video->show_id = $show->id;
-      }
 
-      // Save the videos
-      Self::saveVideos($videos);
+        // Save the videos
+        Self::saveVideos($videos);
+      }
     }
   }
 
