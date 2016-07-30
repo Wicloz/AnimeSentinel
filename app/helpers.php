@@ -61,10 +61,10 @@ function str_ends_with($haystack, $needle) {
     return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== false);
 }
 
-function str_clean($string) {
-  $remove = ['★', '!', ';', ':', '.'];
+function str_urlify($string) {
+  $remove = ['★', '!', ';', ':', '.', ','];
 
-  $string = strtolower(trim($string));
+  $string = str_replace(' ', '-', strtolower(trim($string)));
   foreach ($remove as $char) {
     $string = str_replace($char, '', $string);
   }

@@ -19,7 +19,7 @@ class animeshow
     $videos = [];
 
     foreach ($show->alts as $alt) {
-      $page = file_get_contents('http://animeshow.tv/'.str_clean($alt));
+      $page = file_get_contents('http://animeshow.tv/'.str_urlify($alt));
       if (strpos($page, '<title>Watch Anime - AnimeShow.tv</title>') === false) {
         // We have an episode overview page now, so set some general data
         $data_stream = [
@@ -31,13 +31,13 @@ class animeshow
         // Scrape the page for episode data
         $episodes = Helpers::scrape_page(str_get_between($page, '<div id="episodes_list">', '<div id="sidebar">'), '</div>', [
           'episode_num' => [true, 'Episode ', ''],
-          'uploadtime' => [fasle, '<div class="col-lg-2 col-md-3 hidden-sm hidden-xs">', ''],
+          'uploadtime' => [false, '<div class="col-lg-2 col-md-3 hidden-sm hidden-xs">', ''],
         ]);
 
         // Get mirror data for each episode
         foreach ($episodes as $episode) {
           // Complete episode data
-          $episode['link_episode'] = 'http://animeshow.tv/'.str_clean($alt).'-episode-'.$episode['episode_num'];
+          $episode['link_episode'] = 'http://animeshow.tv/'.str_urlify($alt).'-episode-'.$episode['episode_num'];
           $episode['uploadtime'] = Carbon::createFromFormat('d M Y', $episode['uploadtime'])->hour(0)->minute(0)->second(0);
 
           // Get episode page
