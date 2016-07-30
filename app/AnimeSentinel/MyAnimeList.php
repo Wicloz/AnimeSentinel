@@ -130,10 +130,10 @@ class MyAnimeList
     if ($aired !== 'Not available') {
       $aired = explode(' to ', $aired);
       if ($aired[0] !== '?') {
-        $airing_start = Carbon::createFromFormat('M j, Y', $aired[0]);
+        $airing_start = Self::convertAiringToCarbon($aired[0]);
       }
       if ($aired[count($aired) - 1] !== '?') {
-        $airing_end = Carbon::createFromFormat('M j, Y', $aired[count($aired) - 1]);
+        $airing_end = Self::convertAiringToCarbon($aired[count($aired) - 1]);
       }
     }
 
@@ -150,6 +150,22 @@ class MyAnimeList
       'airing_start' => $airing_start,
       'airing_end' => $airing_end,
     ];
+  }
+
+  private static function convertAiringToCarbon($string) {
+    if (count(explode(' ', $string)) === 3) {
+      $carbon = Carbon::createFromFormat('M j, Y', $string);
+      return $carbon;
+    }
+    if (count(explode(' ', $string)) === 2) {
+      $carbon = Carbon::createFromFormat('M, Y', $string)->day(1);
+      return $carbon;
+    }
+    if (count(explode(' ', $string)) === 1) {
+      $carbon = Carbon::createFromFormat('Y', $string)->day(1)->month(1);
+      return $carbon;
+    }
+    return null;
   }
 
   /**
