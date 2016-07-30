@@ -26,8 +26,8 @@ function flash_error($content) {
   flash($content, 'error');
 }
 
-function player_support($filename) {
-  if (str_ends_with($filename, '.mp4')) {
+function playerSupport($filename) {
+  if (str_ends_with($filename, '.mp4') || strpos($filename, 'redirector.googlevideo.com') !== false) {
     return true;
   }
   return false;

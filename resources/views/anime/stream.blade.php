@@ -23,7 +23,7 @@
 
   <div class="content-generic">
     <div class="streamplayer">
-      @if(player_support($video->link_video))
+      @if(playerSupport($video->link_video))
         <video class="streamplayer-video" controls>
           <source src="{{ $video->link_video }}" type="video/mp4">
           Your browser does not support the video tag.
