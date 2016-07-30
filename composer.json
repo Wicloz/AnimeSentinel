@@ -40,6 +40,7 @@
             "php artisan key:generate"
         ],
         "post-install-cmd": [
+            "pip install cfscrape",
             "Illuminate\\Foundation\\ComposerScripts::postInstall",
             "php artisan optimize"
         ],
