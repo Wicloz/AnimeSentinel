@@ -30,13 +30,39 @@ class AnimeController extends Controller
   }
 
   /**
-   * Show the 'recently uploaded' page.
+   * Reroute to the last used form of the 'recently uploaded' page.
    *
    * @return \Illuminate\Http\Response
    */
   public function recent() {
-    return view('anime.recent', [
+    if (session()->has('recentpage_form')) {
+      return redirect('anime/recent/'.session()->get('recentpage_form'));
+    } else {
+      return redirect('anime/recent/list');
+    }
+  }
+
+  /**
+   * Show the 'recently uploaded' page as a list.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function recentList() {
+    session()->put('recentpage_form', 'list');
+    return view('anime.recent_list', [
       'recent' => $this->recentShows(64)
+    ]);
+  }
+
+  /**
+   * Show the 'recently uploaded' page with blocks.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function recentBlocks() {
+    session()->put('recentpage_form', 'blocks');
+    return view('anime.recent_blocks', [
+      'recent' => $this->recentShows(128)
     ]);
   }
 

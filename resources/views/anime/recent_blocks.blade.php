@@ -2,5 +2,5 @@
 @section('title', 'Recently Uploaded')
 
 @section('content-center')
-  @include('components.recentanime')
+  <div class="content-header">Recently Uploaded</div>
 @endsection

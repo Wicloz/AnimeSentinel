@@ -17,7 +17,7 @@
 
       <!-- Left Side Of Navbar -->
       <ul class="nav navbar-nav">
-        <li {{ request()->is('anime/recent') ? 'class=active' : '' }}><a href="{{ url('/anime/recent') }}">Recently Uploaded</a></li>
+        <li {{ request()->is('anime/recent/*') ? 'class=active' : '' }}><a href="{{ url('/anime/recent') }}">Recently Uploaded</a></li>
         <li {{ request()->is('anime/search') ? 'class=active' : '' }}><a href="{{ url('/anime/search') }}">Search Anime</a></li>
         <li {{ request()->is('streamers') || request()->is('streamers/*') ? 'class=active' : '' }}><a href="{{ url('/streamers') }}">Browse Streaming Sites</a></li>
         <li {{ request()->is('about') ? 'class=active' : '' }}><a href="{{ url('/about') }}">About</a></li>
