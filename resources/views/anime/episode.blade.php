@@ -58,7 +58,10 @@
     <div class="content-close"></div>
   </div>
 
-  @include('components.malwidget', ['mal_url' => $show->mal_url])
+  <div class="content-header">
+    <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
+  </div>
+  @include('components.malwidget_big', ['mal_url' => $show->mal_url])
 
   <div class="content-header">Comments</div>
   <!-- TODO: Disqus integration -->
