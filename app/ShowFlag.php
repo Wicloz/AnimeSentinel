@@ -26,9 +26,6 @@ class ShowFlag extends Model
   protected $casts = [
     'alt_rules' => 'array'
   ];
-  public function getAltRulesAttribute($value) {
-    return json_decode($value);
-  }
 
   /**
   * Get the show this flag belongs to.

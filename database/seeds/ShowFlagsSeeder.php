@@ -12,6 +12,15 @@ class ShowFlagsSeeder extends Seeder
    */
   public function run()
   {
-
+    $gate_s2 = ShowFlag::findOrNew(31637);
+    $gate_s2->mal_id = 31637;
+    $gate_s2->alt_rules = [
+      "GATE" => "-",
+      "Gate: Jieitai Kanochi nite" => "-",
+      "Kaku Tatakaeri - Enryuu-hen" => "-",
+      "Gate: Jieitai Kanochi nite, Kaku Tatakaeri - Enryuu-hen" => "+",
+      "GATE S2" => "+",
+    ];
+    $gate_s2->save();
   }
 }
