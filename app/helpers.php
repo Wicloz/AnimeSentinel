@@ -43,12 +43,16 @@ function badNotes($notes) {
 
 // String Helpers //
 
-function str_get_between($string, $start, $end = '') {
+function str_get_between($string, $start, $end = '', $last = false) {
   // TODO: improve this function
 
-  $string = ' ' . $string;
-  $ini = strpos($string, $start);
-  if ($ini == 0) return '';
+  if ($last) {
+    $ini = strrpos($string, $start);
+  } else {
+    $ini = strpos($string, $start);
+  }
+
+  if ($ini === false) return '';
   $ini += strlen($start);
 
   if (empty($end)) {
@@ -70,12 +74,21 @@ function str_ends_with($haystack, $needle) {
 }
 
 function str_urlify($string) {
-  $remove = ['★', '!', ';', ':', '.', ','];
+  $replace = [
+    '★' => '-',
+    ' ' => '-',
+    '!' => '',
+    ';' => '',
+    ':' => '',
+    '.' => '',
+    ',' => '',
+  ];
 
-  $string = str_replace('---', '-', str_replace(' ', '-', strtolower(trim($string))));
-  foreach ($remove as $char) {
-    $string = str_replace($char, '', $string);
+  $string = strtolower(trim($string));
+  foreach ($replace as $from => $to) {
+    $string = str_replace($from, $to, $string);
   }
+  $string = str_replace('---', '-', $string);
 
   return $string;
 }
