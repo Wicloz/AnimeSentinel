@@ -34,6 +34,7 @@ function player_support($filename) {
 }
 
 // String Helpers //
+
 function str_get_between($string, $start, $end = '') {
   // TODO: improve this function
 
@@ -61,7 +62,12 @@ function str_ends_with($haystack, $needle) {
 }
 
 function str_clean($string) {
-  return strtolower(trim(
-           str_replace(' ', '-', str_replace('!', '', $string
-         ))));
+  $remove = ['★', '!', ';', ':', '.'];
+
+  $string = strtolower(trim($string));
+  foreach ($remove as $char) {
+    $string = str_replace($char, '', $string);
+  }
+
+  return $string;
 }
