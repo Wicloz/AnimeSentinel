@@ -24,39 +24,37 @@ class Helpers
 
     // Turn it into an array
     foreach ($page_list as $line) {
-      $index = 0;
       foreach ($request as $key => $value) {
 
-        if (empty($value[2])) {
+        if (empty($value[3])) {
           // Find content between the requested strings
-          if (strpos($line, $value[0]) !== false && (empty($value[1]) || strpos($line, $value[1]) !== false)) {
-            if ($index === 0) {
+          if (strpos($line, $value[1]) !== false && (empty($value[2]) || strpos($line, $value[2]) !== false)) {
+            if ($value[0]) {
               $results[] = [
-                $key => str_get_between($line, $value[0], $value[1])
+                $key => str_get_between($line, $value[1], $value[2])
               ];
             } else {
-              $results[count($results) - 1][$key] = str_get_between($line, $value[0], $value[1]);
+              $results[count($results) - 1][$key] = str_get_between($line, $value[1], $value[2]);
             }
           }
         }
 
         else {
           // Set content depending on string presence
-          if (strpos($line, $value[2]) !== false) {
-            $data = $value[1];
+          if (strpos($line, $value[3]) !== false) {
+            $data = $value[2];
           } else {
-            $data = $value[0];
+            $data = $value[1];
           }
-          if ($index === 0) {
+          if ($value[0] && $data === $value[2]) {
             $results[] = [
               $key => $data
             ];
-          } elseif (!isset($results[count($results) - 1][$key]) || $results[count($results) - 1][$key] !== $value[1]) {
+          } elseif (!$value[0] && (!isset($results[count($results) - 1][$key]) || $results[count($results) - 1][$key] !== $value[2])) {
             $results[count($results) - 1][$key] = $data;
           }
         }
 
-        $index++;
       }
     }
 

@@ -4,6 +4,7 @@ namespace App\AnimeSentinel\Connectors;
 
 use App\Video;
 use App\AnimeSentinel\Helpers;
+use App\AnimeSentinel\Downloaders;
 use Carbon\Carbon;
 
 class animeshow
@@ -29,14 +30,14 @@ class animeshow
 
         // Scrape the page for episode data
         $episodes = Helpers::scrape_page(str_get_between($page, '<div id="episodes_list">', '<div id="sidebar">'), '</div>', [
-          'episode_num' => ['Episode ', ''],
-          'uploadtime' => ['<div class="col-lg-2 col-md-3 hidden-sm hidden-xs">', ''],
+          'episode_num' => [true, 'Episode ', ''],
+          'uploadtime' => [fasle, '<div class="col-lg-2 col-md-3 hidden-sm hidden-xs">', ''],
         ]);
 
         // Get mirror data for each episode
         foreach ($episodes as $episode) {
           // Complete episode data
-          $episode['link_episode'] = 'http://animeshow.tv/'.str_replace(' ', '-', $alt).'-episode-'.$episode['episode_num'];
+          $episode['link_episode'] = 'http://animeshow.tv/'.str_clean($alt).'-episode-'.$episode['episode_num'];
           $episode['uploadtime'] = Carbon::createFromFormat('d M Y', $episode['uploadtime'])->hour(0)->minute(0)->second(0);
 
           // Get episode page
@@ -47,9 +48,9 @@ class animeshow
           ]];
           // Scrape the page for mirror data
           $mirrors = Helpers::scrape_page(str_get_between($page, '<div id="episode_mirrors">', '<br />'), '</div>', [
-            'link_video' => ['<a href="', '/"'],
-            'translation_type' => ['<div class="episode_mirrors_type_', '"'],
-            'resolution' => ['1280x720', '1920x1080', 'class="glyphicon glyphicon-hd-video"'],
+            'link_video' => [true, '<a href="', '/"'],
+            'translation_type' => [false, '<div class="episode_mirrors_type_', '"'],
+            'resolution' => [false, '1280x720', '1920x1080', 'class="glyphicon glyphicon-hd-video"'],
           ], $mirrors);
 
           // Loop through mirror list
@@ -76,6 +77,7 @@ class animeshow
    * @return array
    */
   public static function guard() {
+    //TODO
     $videos = [];
     return $videos;
   }

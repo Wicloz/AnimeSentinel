@@ -4,6 +4,7 @@ namespace App\AnimeSentinel\Connectors;
 
 use App\Video;
 use App\AnimeSentinel\Helpers;
+use App\AnimeSentinel\Downloaders;
 
 class template
 {
