@@ -32,6 +32,7 @@ class Show extends Model
    */
   public function getAltsAttribute($value) {
     $this->handleCaching();
+    // TODO: Allow manual changes to alts persistent through cache updates
     return json_decode($value);
   }
   public function getGenresAttribute($value) {

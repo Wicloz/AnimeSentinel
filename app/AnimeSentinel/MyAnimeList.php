@@ -98,7 +98,7 @@ class MyAnimeList
     foreach ($set as $line) {
       if (trim($line) !== '') {
         $list = trim(str_get_between($line, '</span>'));
-        $alts = array_merge($alts, explode(', ', $list));
+        $alts = array_merge($alts, explode(', ', $list)); //TODO: make it possible to scrape names that themselves contain commas
       }
     }
 
