@@ -8,26 +8,35 @@ use App\Video;
 
 class EpisodeManager
 {
+  private static function saveVideos($videos) {
+    foreach ($videos as $video) {
+      // Check whether the video doesn't already exists in the database
+      if (count(Video::sameVideo($video)) == 0) {
+        $video->save();
+      }
+    }
+  }
+
   /**
    * Finds all video's for a specific show on all streaming sites.
-   * Removes all existing episodes and videos for that show beforehand.
+   * Removes all existing episodes and videos for that show.
    * This is used when a new show is added or some shows videos are broken and need to be refreshed.
    */
   public static function findVideosForShow($show) {
     // Grab all streamers data
     $streamers = Streamer::all();
 
-    // Remove all existing videos
-    $show->videos()->delete();
-
-    // For all streamers, request an array of video objects and save them
+    // For all streamers, request an array of video objects
+    $videos = [];
     foreach ($streamers as $streamer) {
       $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
-      $videos = $class::seek($show);
-      foreach ($videos as $video) {
-        $video->save();
-      }
+      $videos = array_merge($videos, $class::seek($show));
     }
+
+    // Remove all existing videos
+    $show->videos()->delete();
+    // Save the new videos
+    Self::saveVideos($videos);
   }
 
   /**
@@ -38,25 +47,24 @@ class EpisodeManager
     // Grab all streamers data
     $streamers = Streamer::all();
 
-    // For all streamers, request an array of video objects and save them
+    // For all streamers, request an array of video objects
     foreach ($streamers as $streamer) {
       $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
       $videos = $class::guard();
 
+      // Process the videos
       foreach ($videos as $video) {
         // Make sure the anime this video belongs to is present in the database
-        $show = Show::withTitle($video->showtitle)->first();
+        $show = Show::withTitle($video->show_id)->first();
         if ($show === null) {
-          $show = ShowManager::addShowWithTitle($video->showtitle);
+          $show = ShowManager::addShowWithTitle($video->show_id);
         }
         // Set the show_id on the video
         $video->show_id = $show->id;
-        $video->showtitle = null;
-        // Check whether the video doesn't already exists in the database
-        if (count(Video::sameVideo($video)) == 0) {
-          $video->save();
-        }
       }
+
+      // Save the videos
+      Self::saveVideos($videos);
     }
   }
 
@@ -68,17 +76,12 @@ class EpisodeManager
     // Process all shows data in chuncks of 100
     Show::orderBy('id')->chunk(100, function($shows) use ($streamer) {
 
-      // For all shows, request an array of video objects and save them
+      // For all shows, request an array of video objects
       foreach ($shows as $show) {
         $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
         $videos = $class::seek($show);
-
-        foreach ($videos as $video) {
-          // Check whether the video doesn't already exists in the database
-          if (count(Video::sameVideo($video)) == 0) {
-            $video->save();
-          }
-        }
+        // Save the videos
+        Self::saveVideos($videos);
       }
     });
   }

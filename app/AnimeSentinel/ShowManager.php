@@ -19,10 +19,11 @@ class ShowManager
 
     // Find this show on MAL and get it's id
     $mal = MyAnimeList::searchStrict($title);
+
     if (!empty($mal)) {
       // Create a new show with the proper data
       $show = Show::create(MyAnimeList::getAnimeData($mal->id));
-      Self::updateThumbnail($show); //TODO: asynchrounus
+      Self::updateThumbnail($show);
     } else {
       // Create a mostly empty show because we don't have MAL data
       $show = Show::create([
@@ -41,7 +42,7 @@ class ShowManager
 
   /**
    * Updates the cached database information for the requested show.
-   * If episodes is set to true, also update episode information.
+   * If episodes is set to true, also updates episode information.
    */
   public static function updateShowCache($show, $episodes = false) {
     // If the mal id is not known yet, try to find it first
@@ -49,7 +50,7 @@ class ShowManager
       $mal = MyAnimeList::searchStrict($show->title);
       if (!empty($mal)) {
         $show->update(MyAnimeList::getAnimeData($mal->id));
-        Self::updateThumbnail($show); //TODO: asynchrounus
+        Self::updateThumbnail($show);
         $episodes = true;
       }
     }
@@ -57,7 +58,7 @@ class ShowManager
     // Otherwise just update the cache
     else {
       $show->update(MyAnimeList::getAnimeData($show->mal_id));
-      Self::updateThumbnail($show); //TODO: asynchrounus
+      Self::updateThumbnail($show);
     }
 
     // Call the function to find existing episodes if requested
@@ -73,10 +74,6 @@ class ShowManager
    * Downloads the show's thumbnail from MAL.
    */
   private static function updateThumbnail($show) {
-    if (!isset($show->thumbnail_id)) {
-      dd($show);
-    }
-
     $remote = 'http://cdn.myanimelist.net/images/anime/'.str_replace('-', '/', $show->thumbnail_id);
     $local = __DIR__.'/../../public/media/thumbnails/'.$show->thumbnail_id;
     copy($remote, $local);
