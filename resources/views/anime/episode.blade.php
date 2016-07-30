@@ -36,9 +36,14 @@
                     <div class="episode-block">
                       <p>Original Streamer: {{ $video->streamer->name }}</p>
                       @if(playerSupport($video->link_video))
-                        <p class="embed-yes">HTML5 Player: Yes</p>
+                        <p class="episode-info-good">HTML5 Player: Yes</p>
                       @else
-                        <p class="embed-no">HTML5 Player: No</p>
+                        <p class="episode-info-bad">HTML5 Player: No</p>
+                      @endif
+                      @if(!empty($video->notes) && badNotes($video->notes))
+                        <p>Notes: <span class="episode-info-bad">{{ $video->notes }}</span></p>
+                      @elseif(!empty($video->notes))
+                        <p>Notes: {{ $video->notes }}</p>
                       @endif
                     </div>
                   </a>

@@ -33,6 +33,14 @@ function playerSupport($filename) {
   return false;
 }
 
+function badNotes($notes) {
+  $notes = strtolower($notes);
+  if (strpos($notes, 'lq') !== false || strpos($notes, 'broken') !== false) {
+    return true;
+  }
+  return false;
+}
+
 // String Helpers //
 
 function str_get_between($string, $start, $end = '') {

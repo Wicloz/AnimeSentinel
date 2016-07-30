@@ -58,6 +58,7 @@ class kissanime
     // Get mirror data for each episode
     foreach ($episodes as $episode) {
       // Complete episode data
+      $episode['notes'] = str_replace('[', '(', str_replace(']', ')', $episode['notes']));
       $episode['link_episode'] = 'http://kissanime.to'.$episode['link_episode'];
       $episode['uploadtime'] = Carbon::createFromFormat('n/j/Y', trim($episode['uploadtime']))->hour(12)->minute(0)->second(0);
 
