@@ -41,6 +41,13 @@ class Show extends Model
   }
 
   /**
+   * The attributes that should be mutated to dates.
+   *
+   * @var array
+   */
+  protected $dates = ['airing_start', 'airing_end', 'created_at', 'updated_at'];
+
+  /**
   * Get all videos related to this show.
   *
   * @return \Illuminate\Database\Eloquent\Relations\Relation
@@ -197,14 +204,6 @@ class Show extends Model
     return $value;
   }
   public function getEpisodeDurationAttribute($value) {
-    $this->handleCaching();
-    return $value;
-  }
-  public function getAiringStartAttribute($value) {
-    $this->handleCaching();
-    return $value;
-  }
-  public function getAiringEndAttribute($value) {
     $this->handleCaching();
     return $value;
   }

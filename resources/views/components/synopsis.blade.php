@@ -37,6 +37,14 @@
                   Unknown
                 @endif
               </p>
+              <p>
+                <strong>Airing:</strong>
+                @if(empty($syn_show->airing_start) && empty($syn_show->airing_end))
+                  Unknown
+                @else
+                  {{ !empty($syn_show->airing_start) ? $syn_show->airing_start->toFormattedDateString() : '?' }} to {{ !empty($syn_show->airing_end) ? $syn_show->airing_end->toFormattedDateString() : '?' }}
+                @endif
+              </p>
             </div>
           </div>
         </div>
