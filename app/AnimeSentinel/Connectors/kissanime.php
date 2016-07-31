@@ -18,15 +18,22 @@ class kissanime
   public static function seek($show) {
     $videos = [];
 
+    // Try all alts to get a valid episode page
     foreach ($show->alts as $alt) {
       $page = Downloaders::downloadCloudFlare('http://kissanime.to/Anime/'.str_urlify($alt), 'kissanime');
       if (strpos($page, '<meta name="description" content="Watch online and download ') !== false) {
-        $videos = array_merge($videos, Self::seekEpisodes($page, $show, 'http://kissanime.to/Anime/'.str_urlify($alt), 'sub'));
+        $videos = array_merge($videos, Self::seekEpisodes($page, $show, $alt, [
+          'link_stream' => 'http://kissanime.to/Anime/'.str_urlify($alt),
+          'translation_type' => 'sub',
+        ]));
       }
 
       $page = Downloaders::downloadCloudFlare('http://kissanime.to/Anime/'.str_urlify($alt).'-dub', 'kissanime');
       if (strpos($page, '<meta name="description" content="Watch online and download ') !== false) {
-        $videos = array_merge($videos, Self::seekEpisodes($page, $show, 'http://kissanime.to/Anime/'.str_urlify($alt).'-dub', 'dub'));
+        $videos = array_merge($videos, Self::seekEpisodes($page, $show, $alt, [
+          'link_stream' => 'http://kissanime.to/Anime/'.str_urlify($alt).'-dub',
+          'translation_type' => 'dub',
+        ]));
       }
     }
 
@@ -36,16 +43,14 @@ class kissanime
     // Video specific:    'uploadtime', 'link_video', 'resolution'
   }
 
-  private static function seekEpisodes($page, $show, $link_stream, $translation_type) {
+  private static function seekEpisodes($page, $show, $alt, $data) {
     $videos = [];
 
-    // We have an episode overview page now, so set some general data
-    $data_stream = [
+    // Set some general data
+    $data_stream = array_merge($data, [
       'show_id' => $show->id,
       'streamer_id' => 'kissanime',
-      'translation_type' => $translation_type,
-      'link_stream' => $link_stream,
-    ];
+    ]);
 
     // Scrape the page for episode data
     $episodes = Helpers::scrape_page(str_get_between($page, '<tr style="height: 10px">', '</table>'), '</td>', [
@@ -57,39 +62,60 @@ class kissanime
     // Get mirror data for each episode
     foreach ($episodes as $episode) {
       // Complete episode data
-      if (strpos($episode['link_episode'], '/Episode-') !== false) {
-        $line = $episode['episode_num'];
-        $episode['episode_num'] = str_get_between($line, 'Episode ', ' ');
-        $episode['notes'] = str_get_between($line, 'Episode '.$episode['episode_num'].' ', ' online');
-      }
-      elseif (strpos($episode['link_episode'], '/Movie?') !== false) {
-        $episode['notes'] = str_get_between($episode['episode_num'], 'Movie ', ' online', true);
-        $episode['episode_num'] = 1;
-      }
-      else {
+      $episode = Self::seekCompleteEpisode($episode);
+      if (empty($episode)) {
         continue;
       }
-      $episode['notes'] = str_replace('[', '(', str_replace(']', ')', $episode['notes']));
-      $episode['link_episode'] = 'http://kissanime.to'.$episode['link_episode'];
-      $episode['uploadtime'] = Carbon::createFromFormat('n/j/Y', trim($episode['uploadtime']))->hour(12)->minute(0)->second(0);
 
-      // Get episode page
-      $page = Downloaders::downloadCloudFlare($episode['link_episode'], 'kissanime');
-
-      // Scrape the page for mirror data
-      $mirrors = Helpers::scrape_page(str_get_between($page, 'id="divDownload">', '</div>'), '</a>', [
-        'link_video' => [true, 'href="', '"'],
-        'resolution' => [false, '>', '.mp4'],
-      ]);
+      // Get all mirrors data
+      $mirrors = Self::seekMirrors($episode['link_episode']);
 
       // Loop through mirror list
       foreach ($mirrors as $mirror) {
+        // Complete mirror data
+        $mirror = Self::seekCompleteMirror($mirror);
         // Create and add final video
         $videos[] = new Video(array_merge($data_stream, $episode, $mirror));
       }
     }
 
     return $videos;
+  }
+
+  private static function seekMirrors($link_episode) {
+    // Get episode page
+    $page = Downloaders::downloadCloudFlare($link_episode, 'kissanime');
+    // Scrape the page for mirror data
+    $mirrors = Helpers::scrape_page(str_get_between($page, 'id="divDownload">', '</div>'), '</a>', [
+      'link_video' => [true, 'href="', '"'],
+      'resolution' => [false, '>', '.mp4'],
+    ]);
+    return $mirrors;
+  }
+
+  private static function seekCompleteEpisode($episode) {
+    // Complete episode data
+    if (strpos($episode['link_episode'], '/Episode-') !== false) {
+      $line = $episode['episode_num'];
+      $episode['episode_num'] = str_get_between($line, 'Episode ', ' ');
+      $episode['notes'] = str_get_between($line, 'Episode '.$episode['episode_num'].' ', ' online');
+    }
+    elseif (strpos($episode['link_episode'], '/Movie?') !== false) {
+      $episode['notes'] = str_get_between($episode['episode_num'], 'Movie ', ' online', true);
+      $episode['episode_num'] = 1;
+    }
+    else {
+      return false;
+    }
+    $episode['notes'] = str_replace('[', '(', str_replace(']', ')', $episode['notes']));
+    $episode['link_episode'] = 'http://kissanime.to'.$episode['link_episode'];
+    $episode['uploadtime'] = Carbon::createFromFormat('n/j/Y', trim($episode['uploadtime']))->hour(12)->minute(0)->second(0);
+    return $episode;
+  }
+
+  private static function seekCompleteMirror($mirror) {
+    // Complete mirror data
+    return $mirror;
   }
 
   /**
@@ -110,13 +136,14 @@ class kissanime
    * @return string
    */
   public static function videoLink($video) {
-    $page = Downloaders::downloadCloudFlare($video->link_episode, 'kissanime');
-    $mirrors = Helpers::scrape_page(str_get_between($page, 'id="divDownload">', '</div>'), '</a>', [
-      'link_video' => [true, 'href="', '"'],
-      'resolution' => [false, '>', '.mp4'],
-    ]);
+    // Get all mirrors data
+    $mirrors = Self::seekMirrors($video->link_episode);
 
+    // Loop through mirror list
     foreach ($mirrors as $mirror) {
+      // Complete mirror data
+      $mirror = Self::seekCompleteMirror($mirror);
+      // Determine which link to return
       if ($mirror['resolution'] === $video->resolution) {
         return $mirror['link_video'];
       }
