@@ -27,7 +27,7 @@ function flash_error($content) {
 }
 
 function playerSupport($filename) {
-  if (str_ends_with($filename, '.mp4') || strpos($filename, 'redirector.googlevideo.com') !== false) {
+  if (str_ends_with($filename, '.mp4') || strpos($filename, 'redirector.googlevideo.com') !== false || strpos($filename, '2.bp.blogspot.com') !== false) {
     return true;
   }
   return false;

@@ -88,7 +88,7 @@ class kissanime
     // Scrape the page for mirror data
     $mirrors = Helpers::scrape_page(str_get_between($page, 'id="divDownload">', '</div>'), '</a>', [
       'link_video' => [true, 'href="', '"'],
-      'resolution' => [false, '>', '.mp4'],
+      'resolution' => [false, '>', '.'],
     ]);
     return $mirrors;
   }
