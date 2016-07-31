@@ -26,6 +26,14 @@ function flash_error($content) {
   flash($content, 'error');
 }
 
+function visitPage($id) {
+  if (!session()->has('visited_'.$id) || !session()->get('visited_'.$id)) {
+    session()->put('visited_'.$id, true);
+    return false;
+  }
+  return true;
+}
+
 function playerSupport($filename) {
   if (str_ends_with($filename, '.mp4') || strpos($filename, 'redirector.googlevideo.com') !== false || strpos($filename, '2.bp.blogspot.com') !== false) {
     return true;

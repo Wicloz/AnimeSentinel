@@ -65,6 +65,10 @@ class EpisodeController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function stream(Video $video) {
+    if (!visitPage('video_'.$video->episode_id)) {
+      $video->hits++;
+      $video->save();
+    }
     return view('anime.stream', [
       'video' => $video
     ]);

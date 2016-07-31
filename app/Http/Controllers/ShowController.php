@@ -16,6 +16,10 @@ class ShowController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function details(Show $show) {
+    if (!visitPage('show_'.$show->id)) {
+      $show->hits++;
+      $show->save();
+    }
     return view('anime.details', [
       'show' => $show
     ]);
