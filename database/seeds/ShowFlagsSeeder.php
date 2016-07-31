@@ -22,5 +22,13 @@ class ShowFlagsSeeder extends Seeder
       "GATE S2" => "+",
     ];
     $gate_s2->save();
+
+    $momokuri = ShowFlag::findOrNew(30014);
+    $momokuri->mal_id = 30014;
+    $momokuri->alt_rules = [
+      "Momokuri 1" => "+",
+      "Momokuri TV" => "+",
+    ];
+    $momokuri->save();
   }
 }
