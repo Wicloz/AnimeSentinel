@@ -82,21 +82,20 @@ function str_ends_with($haystack, $needle) {
 }
 
 function str_urlify($string) {
+  $string = strtolower(trim($string));
+
   $replace = [
     '★' => '-',
+    ':' => '-',
+    ';' => '-',
     ' ' => '-',
-    '!' => '',
-    ';' => '',
-    ':' => '',
-    '.' => '',
-    ',' => '',
   ];
-
-  $string = strtolower(trim($string));
   foreach ($replace as $from => $to) {
     $string = str_replace($from, $to, $string);
   }
-  $string = str_replace('---', '-', $string);
+  $string = preg_replace('/-+/', '-', $string);
+
+  $string = preg_replace('/[^a-zA-Z0-9\-]/', '', $string);
 
   return $string;
 }
