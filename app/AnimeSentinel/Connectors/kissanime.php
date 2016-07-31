@@ -59,10 +59,20 @@ class kissanime
       'uploadtime' => [false, '<td>', ''],
     ]);
 
+    // Find the lowest episode number
+    foreach ($episodes as $episode) {
+      if (strpos($episode['link_episode'], '/Episode-') !== false) {
+        $ep_num = str_get_between($episode['episode_num'], 'Episode ', ' ');
+        if (!isset($lowest_ep) || $ep_num < $lowest_ep) {
+          $lowest_ep = $ep_num;
+        }
+      }
+    }
+
     // Get mirror data for each episode
     foreach ($episodes as $episode) {
       // Complete episode data
-      $episode = Self::seekCompleteEpisode($episode);
+      $episode = Self::seekCompleteEpisode($episode, $lowest_ep - 1);
       if (empty($episode)) {
         continue;
       }
@@ -93,7 +103,7 @@ class kissanime
     return $mirrors;
   }
 
-  private static function seekCompleteEpisode($episode) {
+  private static function seekCompleteEpisode($episode, $decrement) {
     // Complete episode data
     if (strpos($episode['link_episode'], '/Episode-') !== false) {
       $line = $episode['episode_num'];
@@ -107,6 +117,7 @@ class kissanime
     else {
       return false;
     }
+    $episode['episode_num'] -= $decrement;
     $episode['notes'] = str_replace('[', '(', str_replace(']', ')', $episode['notes']));
     $episode['link_episode'] = 'http://kissanime.to'.$episode['link_episode'];
     $episode['uploadtime'] = Carbon::createFromFormat('n/j/Y', trim($episode['uploadtime']))->hour(12)->minute(0)->second(0);
