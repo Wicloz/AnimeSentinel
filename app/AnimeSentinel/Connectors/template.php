@@ -23,6 +23,7 @@ class template
        }
      }
 
+     return [];
      // Stream specific:   'show_id', 'streamer_id', 'translation_type', 'link_stream'
      // Episode specific:  'episode_num', 'link_episode', ('notes')
      // Video specific:    'uploadtime', 'link_video', 'resolution'
