@@ -171,7 +171,7 @@ class Video extends Model
   */
   public function getLinkVideoAttribute($value) {
     // TODO: proper check
-    if (isset($this->updated_at) && $this->updated_at->diffInHours(Carbon::now()) >= 24) {
+    if (isset($this->updated_at) && $this->updated_at->diffInHours(Carbon::now()) >= 2) {
       $value = VideoManager::findVideoLink($this);
       $this->updated_at = Carbon::now();
       $this->link_video = $value;
