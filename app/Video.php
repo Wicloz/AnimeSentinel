@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\AnimeSentinel\VideoManager;
+use Carbon\Carbon;
 
 class Video extends Model
 {
@@ -147,5 +149,21 @@ class Video extends Model
       $episode = $episode->episode_url;
     }
     return $episode;
+  }
+
+  /**
+  * Refresh the link_video for this video when it is needed.
+  *
+  * @return string
+  */
+  public function getLinkVideoAttribute($value) {
+    // TODO: proper check
+    if ($this->streamer_id === 'kissanime' && $this->updated_at->diffInHours(Carbon::now()) >= 24) {
+      $value = VideoManager::findVideoLink($this);
+      $this->updated_at = Carbon::now();
+      $this->link_video = $value;
+      $this->save();
+    }
+    return $value;
   }
 }

@@ -103,4 +103,25 @@ class kissanime
     //TODO
     return $videos;
   }
+
+  /**
+   * Finds the stream link for the requested video.
+   *
+   * @return string
+   */
+  public static function videoLink($video) {
+    $page = Downloaders::downloadCloudFlare($video->link_episode, 'kissanime');
+    $mirrors = Helpers::scrape_page(str_get_between($page, 'id="divDownload">', '</div>'), '</a>', [
+      'link_video' => [true, 'href="', '"'],
+      'resolution' => [false, '>', '.mp4'],
+    ]);
+
+    foreach ($mirrors as $mirror) {
+      if ($mirror['resolution'] === $video->resolution) {
+        return $mirror['link_video'];
+      }
+    }
+
+    return $video->link_video;
+  }
 }

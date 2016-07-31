@@ -16,6 +16,7 @@ class template
    */
   public static function seek($show) {
     $videos = [];
+    //TODO
     return $videos;
     // Stream specific:   'show_id', 'streamer_id', 'translation_type', 'link_stream'
     // Episode specific:  'episode_num', 'link_episode', ('notes')
@@ -30,6 +31,17 @@ class template
    */
   public static function guard() {
     $videos = [];
+    //TODO
     return $videos;
+  }
+
+  /**
+   * Finds the stream link for the requested video.
+   *
+   * @return string
+   */
+  public static function videoLink($video) {
+    //TODO
+    return $video->link_video;
   }
 }

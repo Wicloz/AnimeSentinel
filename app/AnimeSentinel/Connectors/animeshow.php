@@ -81,4 +81,14 @@ class animeshow
     //TODO
     return $videos;
   }
+
+  /**
+   * Finds the stream link for the requested video.
+   *
+   * @return string
+   */
+  public static function videoLink($video) {
+    //TODO
+    return $video->link_video;
+  }
 }
