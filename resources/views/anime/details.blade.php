@@ -93,5 +93,15 @@
   </div>
 
   <div class="content-header">Comments</div>
-  <!-- TODO: Disqus integration -->
+  @if(isset($show->mal_id))
+    @include('components.disqus', [
+      'disqus_url' => $show->details_url,
+      'disqus_id' => 'mal:'.$show->id,
+    ])
+  @else
+    @include('components.disqus', [
+      'disqus_url' => $show->details_url,
+      'disqus_id' => 'id:'.$show->id,
+    ])
+  @endif
 @endsection

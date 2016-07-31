@@ -108,6 +108,19 @@ class Video extends Model
   }
 
   /**
+  * Get a string that uniquely identifies this episode.
+  *
+  * @return string
+  */
+  public function getEpisodeIdAttribute() {
+    if (isset($this->mal_id)) {
+      return 'mal:'.$this->mal_id.',tt:'.$this->translation_type.',num:'.$this->episode_num;
+    } else {
+      return 'id:'.$this->show_id.',tt:'.$this->translation_type.',num:'.$this->episode_num;
+    }
+  }
+
+  /**
   * Get the full url for this videos stream page.
   *
   * @return string

@@ -41,5 +41,8 @@
   @include('components.malwidget_big', ['mal_url' => $video->show->mal_url])
 
   <div class="content-header">Comments</div>
-  <!-- TODO: Disqus integration -->
+  @include('components.disqus', [
+    'disqus_url' => $video->episode_url,
+    'disqus_id' => $video->episode_id,
+  ])
 @endsection
