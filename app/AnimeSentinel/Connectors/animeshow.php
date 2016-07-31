@@ -57,6 +57,14 @@ class animeshow
           foreach ($mirrors as $mirror) {
             $page = file_get_contents($mirror['link_video']);
             $mirror['link_video'] = str_get_between($page, '<iframe width="100%" height="100%" id="video_embed" scrolling="no" src="', '"');
+            $page = file_get_contents($mirror['link_video']);
+            // Grab source link depending on mirror site
+            if (strpos($mirror['link_video'], 'mp4upload') !== false) {
+              $mirror['link_video'] = str_get_between($page, '"file": "', '"');
+            }
+            if (strpos($mirror['link_video'], 'auengine') !== false) {
+              $mirror['link_video'] = str_get_between($page, 'var video_link = \'', '\';');
+            }
             // Create and add final video
             $videos[] = new Video(array_merge($data_stream, $episode, $mirror));
           }
@@ -88,7 +96,37 @@ class animeshow
    * @return string
    */
   public static function videoLink($video) {
-    //TODO
+    // Get episode page
+    $page = file_get_contents($video->link_episode);
+    // Create first entry
+    $mirrors = [[
+      'link_video' => $video->link_episode,
+    ]];
+    // Scrape the page for mirror data
+    $mirrors = Helpers::scrape_page(str_get_between($page, '<div id="episode_mirrors">', '<br />'), '</div>', [
+      'link_video' => [true, '<a href="', '/"'],
+      'translation_type' => [false, '<div class="episode_mirrors_type_', '"'],
+      'resolution' => [false, '1280x720', '1920x1080', 'class="glyphicon glyphicon-hd-video"'],
+    ], $mirrors);
+
+    // Loop through mirror list
+    foreach ($mirrors as $mirror) {
+      $page = file_get_contents($mirror['link_video']);
+      $mirror['link_video'] = str_get_between($page, '<iframe width="100%" height="100%" id="video_embed" scrolling="no" src="', '"');
+      $page = file_get_contents($mirror['link_video']);
+      // Grab source link depending on mirror site
+      if (strpos($mirror['link_video'], 'mp4upload') !== false) {
+        $mirror['link_video'] = str_get_between($page, '"file": "', '"');
+      }
+      if (strpos($mirror['link_video'], 'auengine') !== false) {
+        $mirror['link_video'] = str_get_between($page, 'var video_link = \'', '\';');
+      }
+      // Determine which link to return
+      if ($mirror['resolution'] === $video->resolution && $mirror['translation_type'] === $video->translation_type) {
+        return $mirror['link_video'];
+      }
+    }
+
     return $video->link_video;
   }
 }
