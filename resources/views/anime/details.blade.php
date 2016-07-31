@@ -21,7 +21,13 @@
   <div class="content-header">Episodes</div>
   <div class="content-generic">
     <h2>Subbed</h2>
-    @if(count($show->episodes('sub')) === 0)
+    @if(!$show->videos_initialised)
+      <ul class="list-group episode-list">
+        <li class="list-group-item">
+          Searching for episodes ...
+        </li>
+      </ul>
+    @elseif(count($show->episodes('sub')) === 0)
       <ul class="list-group episode-list">
         <li class="list-group-item">
           No Episodes Found
@@ -50,7 +56,13 @@
     @endif
     <div class="content-close"></div>
     <h2>Dubbed</h2>
-    @if(count($show->episodes('dub')) === 0)
+    @if(!$show->videos_initialised)
+      <ul class="list-group episode-list">
+        <li class="list-group-item">
+          Searching for episodes ...
+        </li>
+      </ul>
+    @elseif(count($show->episodes('dub')) === 0)
       <ul class="list-group episode-list">
         <li class="list-group-item">
           No Episodes Found

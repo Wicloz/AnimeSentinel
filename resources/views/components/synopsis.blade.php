@@ -82,7 +82,9 @@
             @else
 
               <div class="col-sm-6">
-                @if(isset($syn_show->latest_sub))
+                @if(!$syn_show->videos_initialised)
+                  Latest Subbed: Searching for episodes ...
+                @elseif(isset($syn_show->latest_sub))
                   <a href="{{ url("/anime/$syn_show->id/sub/episode-$syn_show->latest_sub") }}">
                     Latest Subbed: Epsiode {{ $syn_show->latest_sub }}
                   </a>
@@ -91,7 +93,9 @@
                 @endif
               </div>
               <div class="col-sm-6">
-                @if(isset($syn_show->latest_dub))
+                @if(!$syn_show->videos_initialised)
+                  Latest Dubbed: Searching for episodes ...
+                @elseif(isset($syn_show->latest_dub))
                   <a href="{{ url("/anime/$syn_show->id/dub/episode-$syn_show->latest_dub") }}">
                     Latest Dubbed: Epsiode {{ $syn_show->latest_dub }}
                   </a>

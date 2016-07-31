@@ -39,6 +39,9 @@ class EpisodeManager
     $show->videos()->delete();
     // Save the new videos
     Self::saveVideos($videos);
+    // Mark show as initialised
+    $show->videos_initialised = true;
+    $show->save();
   }
 
   /**

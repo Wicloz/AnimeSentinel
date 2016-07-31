@@ -32,6 +32,7 @@ class CreateShowsTable extends Migration
             $table->date('airing_start')->nullable()->default(null);
             $table->date('airing_end')->nullable()->default(null);
             $table->bigInteger('hits')->default(0);
+            $table->boolean('videos_initialised')->default(false);
             $table->timestamps();
         });
     }
