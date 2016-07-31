@@ -1,6 +1,14 @@
 // main: app.scss
 @import 'vars';
 
+.recent-type-icon {
+  height: 34.2833px;
+  margin-left: 5px;
+  margin-top: -4.167px;
+}
+
+// Synopsis Panels //
+
 .synopsis-panel {
   background-color: $background_colour-content1;
   margin-bottom: 15px;
@@ -65,5 +73,49 @@
       color: $text_colour-navs;
       text-decoration: inherit;
     }
+  }
+}
+
+// Synopsis Blocks //
+
+.synblock {
+  background-color: $background_colour-content1;
+  padding: 15px;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.synblock-thumbnail {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.synblock-ttype-sub, .synblock-ttype-dub {
+  position: absolute;
+  top: 30px;
+  font-size: 24px;
+  background-color: transparentize($background_colour-content2, 0.15);
+  box-shadow: 0 0 10px $background_colour-content2;
+  padding: 1px 5px;
+}
+
+.synblock-ttype-sub {
+  left: calc(50% - 44.45px);
+}
+
+.synblock-ttype-dub {
+  left: calc(50% - 47.125px);
+}
+
+.synblock-episode {
+  background-color: $background_colour-content2;
+  font-size: 24px;
+  padding: 5px 10px;
+  > a {
+    color: inherit;
+  }
+  > a:focus, a:hover {
+    color: $text_colour-navs;
+    text-decoration: inherit;
   }
 }

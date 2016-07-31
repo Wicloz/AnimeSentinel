@@ -27,7 +27,7 @@ Route::get('/streamers/{streamer}', 'StreamersController@details'); //TODO
 // Anime Listings
 Route::get('/anime/recent', 'AnimeController@recent');
 Route::get('/anime/recent/list', 'AnimeController@recentList');
-Route::get('/anime/recent/blocks', 'AnimeController@recentBlocks');
+Route::get('/anime/recent/grid', 'AnimeController@recentGrid');
 Route::get('/anime/search', 'AnimeController@search');
 
 // Anime Details

@@ -11,10 +11,19 @@ use App\AnimeSentinel\MyAnimeList;
 
 class AnimeController extends Controller
 {
-  protected function recentShows($limit) {
-    $recent = Video::where('mirror', 1)
-                   ->orderBy('uploadtime', 'desc')
-                   ->take($limit)->with('show')->get();
+  protected function recentShows($limit, $noDuplicates) {
+    if ($noDuplicates) {
+      $recent = Video::orderBy('uploadtime', 'desc')
+                     ->groupBy(['show_id', 'translation_type', 'episode_num'])->distinct()
+                     ->take($limit)->with('show')->get();
+    }
+
+    else {
+      $recent = Video::where('mirror', 1)
+                     ->orderBy('uploadtime', 'desc')
+                     ->take($limit)->with('show')->get();
+    }
+
     return $recent;
   }
 
@@ -25,7 +34,7 @@ class AnimeController extends Controller
    */
   public function home() {
     return view('home', [
-      'recent' => $this->recentShows(32)
+      'recent' => $this->recentShows(32, false)
     ]);
   }
 
@@ -38,7 +47,7 @@ class AnimeController extends Controller
     if (session()->has('recentpage_form')) {
       return redirect('anime/recent/'.session()->get('recentpage_form'));
     } else {
-      return redirect('anime/recent/list');
+      return redirect('anime/recent/grid');
     }
   }
 
@@ -50,19 +59,19 @@ class AnimeController extends Controller
   public function recentList() {
     session()->put('recentpage_form', 'list');
     return view('anime.recent_list', [
-      'recent' => $this->recentShows(64)
+      'recent' => $this->recentShows(64, false)
     ]);
   }
 
   /**
-   * Show the 'recently uploaded' page with blocks.
+   * Show the 'recently uploaded' page as a grid.
    *
    * @return \Illuminate\Http\Response
    */
-  public function recentBlocks() {
-    session()->put('recentpage_form', 'blocks');
-    return view('anime.recent_blocks', [
-      'recent' => $this->recentShows(128)
+  public function recentGrid() {
+    session()->put('recentpage_form', 'grid');
+    return view('anime.recent_grid', [
+      'recent' => $this->recentShows(128, true)
     ]);
   }
 
