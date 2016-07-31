@@ -71,7 +71,7 @@ class AnimeController extends Controller
   public function recentGrid() {
     session()->put('recentpage_form', 'grid');
     return view('anime.recent_grid', [
-      'recent' => $this->recentShows(128, true)
+      'recent' => $this->recentShows(192, true)
     ]);
   }
 
