@@ -89,7 +89,7 @@ class Show extends Model
    * @return \Illuminate\Database\Eloquent\Builder
    */
   public function scopeWithTitle($query, $title) {
-    return $query->where('alts', 'like', '%'.json_encode($title).'%'); //TODO: case insensitive
+    return $query->where('alts', 'like', '%'.json_encode($title).'%'); //TODO: make this work properly
   }
 
   /**
