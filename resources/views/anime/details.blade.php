@@ -96,12 +96,12 @@
   @if(isset($show->mal_id))
     @include('components.disqus', [
       'disqus_url' => $show->details_url,
-      'disqus_id' => 'mal:'.$show->id,
+      'disqus_id' => 'show:(mal:'.$show->id.')',
     ])
   @else
     @include('components.disqus', [
       'disqus_url' => $show->details_url,
-      'disqus_id' => 'id:'.$show->id,
+      'disqus_id' => 'show:(id:'.$show->id.')',
     ])
   @endif
 @endsection

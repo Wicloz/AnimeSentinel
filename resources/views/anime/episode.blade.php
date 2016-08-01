@@ -66,6 +66,6 @@
   <div class="content-header">Comments</div>
   @include('components.disqus', [
     'disqus_url' => $episode->episode_url,
-    'disqus_id' => $episode->episode_id,
+    'disqus_id' => 'episode:('.$episode->episode_id.')',
   ])
 @endsection
