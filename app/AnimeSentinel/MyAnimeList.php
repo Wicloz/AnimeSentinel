@@ -96,9 +96,9 @@ class MyAnimeList
     $alts[] = $title;
     $set = explode('</div>', str_get_between($page, '<h2>Alternative Titles</h2>', '<br />'));
     foreach ($set as $line) {
-      if (trim($line) !== '') {
+      if (trim($line) !== '' && strpos($line, '<span class="dark_text">Japanese:</span>') === false) {
         $list = trim(str_get_between($line, '</span>'));
-        $alts = array_merge($alts, explode(', ', $list)); //TODO: make it possible to scrape names that themselves contain commas
+        $alts = array_merge($alts, explode(', ', $list));
       }
     }
 
