@@ -83,19 +83,9 @@ function str_ends_with($haystack, $needle) {
 
 function str_urlify($string) {
   $string = strtolower(trim($string));
-
-  $replace = [
-    '★' => '-',
-    ':' => '-',
-    ';' => '-',
-    ' ' => '-',
-  ];
-  foreach ($replace as $from => $to) {
-    $string = str_replace($from, $to, $string);
-  }
+  $string = preg_replace('/[^a-zA-Z0-9\-_]/', '-', $string);
   $string = preg_replace('/-+/', '-', $string);
-
-  $string = preg_replace('/[^a-zA-Z0-9\-]/', '', $string);
-
+  $string = preg_replace('/^-+/', '', $string);
+  $string = preg_replace('/-+$/', '', $string);
   return $string;
 }
