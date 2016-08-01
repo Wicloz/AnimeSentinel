@@ -51,5 +51,14 @@ class ShowFlagsSeeder extends Seeder
       "xxxHOLiC: Manatsu no Yoru no Yume" => "+",
     ];
     $xxxholic_movie->save();
+
+    $psi = ShowFlag::findOrNew(19469);
+    $psi->mal_id = 19469;
+    $psi->alt_rules = [
+      "Saiki Kusuo no Psi Nan" => "-",
+      "Saiki Kusuo no Ψ-nan" => "-",
+      "Saiki Kusuo no nan" => "+",
+    ];
+    $psi->save();
   }
 }
