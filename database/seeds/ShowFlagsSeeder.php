@@ -30,5 +30,26 @@ class ShowFlagsSeeder extends Seeder
       "Momokuri TV" => "+",
     ];
     $momokuri->save();
+
+    $annehappy = ShowFlag::findOrNew(31080);
+    $annehappy->mal_id = 31080;
+    $annehappy->alt_rules = [
+      "Unhappy" => "+",
+    ];
+    $annehappy->save();
+
+    $arslansenki_s2 = ShowFlag::findOrNew(31821);
+    $arslansenki_s2->mal_id = 31821;
+    $arslansenki_s2->alt_rules = [
+      "Arslan Senki (TV) S2" => "+",
+    ];
+    $arslansenki_s2->save();
+
+    $xxxholic_movie = ShowFlag::findOrNew(793);
+    $xxxholic_movie->mal_id = 793;
+    $xxxholic_movie->alt_rules = [
+      "xxxHOLiC: Manatsu no Yoru no Yume" => "+",
+    ];
+    $xxxholic_movie->save();
   }
 }
