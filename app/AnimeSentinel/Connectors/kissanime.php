@@ -15,7 +15,7 @@ class kissanime
    *
    * @return array
    */
-  public static function seek($show) {
+  public static function seek($show, $req_episode_num = null) {
     $videos = [];
 
     // Try all alts to get a valid episode page
@@ -25,7 +25,7 @@ class kissanime
         $videos = array_merge($videos, Self::seekEpisodes($page, $show, $alt, [
           'link_stream' => 'http://kissanime.to/Anime/'.str_urlify($alt),
           'translation_type' => 'sub',
-        ]));
+        ], $req_episode_num));
       }
 
       $page = Downloaders::downloadPage('http://kissanime.to/Anime/'.str_urlify($alt).'-dub');
@@ -33,7 +33,7 @@ class kissanime
         $videos = array_merge($videos, Self::seekEpisodes($page, $show, $alt, [
           'link_stream' => 'http://kissanime.to/Anime/'.str_urlify($alt).'-dub',
           'translation_type' => 'dub',
-        ]));
+        ], $req_episode_num));
       }
     }
 
@@ -43,7 +43,7 @@ class kissanime
     // Video specific:    'uploadtime', 'link_video', 'resolution'
   }
 
-  private static function seekEpisodes($page, $show, $alt, $data) {
+  private static function seekEpisodes($page, $show, $alt, $data, $req_episode_num) {
     $videos = [];
 
     // Set some general data
@@ -77,15 +77,16 @@ class kissanime
         continue;
       }
 
-      // Get all mirrors data
-      $mirrors = Self::seekMirrors($episode['link_episode']);
-
-      // Loop through mirror list
-      foreach ($mirrors as $mirror) {
-        // Complete mirror data
-        $mirror = Self::seekCompleteMirror($mirror);
-        // Create and add final video
-        $videos[] = new Video(array_merge($data_stream, $episode, $mirror));
+      elseif (!isset($req_episode_num) || $req_episode_num === (int) $episode['episode_num']) {
+        // Get all mirrors data
+        $mirrors = Self::seekMirrors($episode['link_episode']);
+        // Loop through mirror list
+        foreach ($mirrors as $mirror) {
+          // Complete mirror data
+          $mirror = Self::seekCompleteMirror($mirror);
+          // Create and add final video
+          $videos[] = new Video(array_merge($data_stream, $episode, $mirror));
+        }
       }
     }
 
@@ -130,8 +131,9 @@ class kissanime
   }
 
   /**
-   * Finds all video's from the recently aired page.
-   * Returns data as an array of models.
+   * Finds all episode data + title from the recently aired page.
+   * Returns this data as an array.
+   * This data is later used to find the episode video's.
    *
    * @return array
    */

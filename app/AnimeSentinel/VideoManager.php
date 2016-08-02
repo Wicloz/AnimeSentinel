@@ -29,4 +29,43 @@ class VideoManager
     $class = '\\App\\AnimeSentinel\\Connectors\\'.$video->streamer_id;
     return $class::videoLink($video);
   }
+
+  /**
+   *
+   */
+  public static function reprocessEpsiode($show, $episode_num, $translation_types = ['sub', 'dub'], $streamer_id = null) {
+    // Grab all streamers data
+    $streamers = Streamer::all();
+
+    // For all applicable streamers, request videos for this episode
+    $videosRaw = []; $videos = [];
+    foreach ($streamers as $streamer) {
+      if ((!isset($streamer_id) || $streamer_id === $streamer->id) && ($streamer->id !== 'youtube' || (!empty($show->show_flags) && $show->show_flags->check_youtube))) {
+        $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
+        $videosRaw = array_merge($videosRaw, $class::seek($show, $episode_num));
+      }
+    }
+    foreach ($videosRaw as $video) {
+      if (in_array($video->translation_type, $translation_types)) {
+        $videos[] = $video;
+      }
+    }
+
+    // Mark show as not initialised
+    $show->videos_initialised = false;
+    $show->save();
+    // Remove all existing videos for this episode
+    foreach ($translation_types as $translation_type) {
+      if (!isset($streamer_id)) {
+        $show->videos()->episode($translation_type, $episode_num)->delete();
+      } else {
+        $show->videos()->episode($translation_type, $episode_num)->where('streamer_id', $streamer_id)->delete();
+      }
+    }
+    // Save the new videos
+    Self::saveVideos($videos);
+    // Mark show as initialised
+    $show->videos_initialised = true;
+    $show->save();
+  }
 }

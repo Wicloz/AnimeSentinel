@@ -14,12 +14,12 @@ class template
    *
    * @return array
    */
-  public static function seek($show) {
+  public static function seek($show, $req_episode_num = null) {
     // Try all alts to get a valid episode page
     foreach ($show->alts as $alt) {
       $page = Downloaders::downloadPage('TODO');
       if (strpos($page, 'TODO') !== false) {
-        return Self::seekEpisodes($page, $show, $alt, []);
+        return Self::seekEpisodes($page, $show, $alt, [], $req_episode_num);
       }
     }
 
@@ -29,7 +29,7 @@ class template
     // Video specific:    'uploadtime', 'link_video', 'resolution'
   }
 
-  private static function seekEpisodes($page, $show, $alt, $data) {
+  private static function seekEpisodes($page, $show, $alt, $data, $req_episode_num) {
     $videos = [];
 
     // Set some general data
@@ -51,15 +51,16 @@ class template
         continue;
       }
 
-      // Get all mirrors data
-      $mirrors = Self::seekMirrors($episode['link_episode']);
-
-      // Loop through mirror list
-      foreach ($mirrors as $mirror) {
-        // Complete mirror data
-        $mirror = Self::seekCompleteMirror($mirror);
-        // Create and add final video
-        $videos[] = new Video(array_merge($data_stream, $episode, $mirror));
+      elseif (!isset($req_episode_num) || $req_episode_num === (int) $episode['episode_num']) {
+        // Get all mirrors data
+        $mirrors = Self::seekMirrors($episode['link_episode']);
+        // Loop through mirror list
+        foreach ($mirrors as $mirror) {
+          // Complete mirror data
+          $mirror = Self::seekCompleteMirror($mirror);
+          // Create and add final video
+          $videos[] = new Video(array_merge($data_stream, $episode, $mirror));
+        }
       }
     }
 
@@ -89,8 +90,9 @@ class template
   }
 
   /**
-   * Finds all video's from the recently aired page.
-   * Returns data as an array of models.
+   * Finds all episode data + title from the recently aired page.
+   * Returns this data as an array.
+   * This data is later used to find the episode video's.
    *
    * @return array
    */

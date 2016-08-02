@@ -20,6 +20,10 @@ class EpisodeController extends Controller
                    ->episode($translation_type, $episode_num)
                    ->get();
 
+    if (count($videos) == 0) {
+      abort(404);
+    }
+
     $resolutions = [];
     foreach ($videos as $video) {
       if (!in_array($video->resolution, $resolutions)) {
