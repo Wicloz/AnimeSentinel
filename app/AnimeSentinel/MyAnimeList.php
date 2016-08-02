@@ -81,10 +81,10 @@ class MyAnimeList
     }
 
     // If that fails, try using the regular search
-    $page = Downloaders::downloadPage('http://myanimelist.net/search/all?q='.str_urlify($title));
-    $shows = Helpers::scrape_page(str_get_between($page, '<h2 id="anime">Anime</h2>', '<h2 id="manga">Manga</h2>'), '<br>', [
-      'mal_id' => [true, 'href="http://myanimelist.net/anime/', '/'],
-    ]);
+    $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace('-', '+', str_urlify($title)));
+    $shows = array_slice(Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
+      'mal_id' => [true, 'http://myanimelist.net/anime/', '/'],
+    ]), 0, 8);
     foreach ($shows as $show) {
       // Get MAL data
       $data = Self::getAnimeData($show['mal_id']);
