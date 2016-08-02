@@ -92,7 +92,7 @@ class AnimeController extends Controller
       ], [], [
         'q' => 'query'
       ]);
-      $results = MyAnimeList::search($request->q);
+      $results = MyAnimeList::searchApi($request->q);
 
       // Sort results by score
       usort($results, function ($a, $b) {

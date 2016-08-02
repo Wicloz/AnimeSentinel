@@ -18,11 +18,11 @@ class ShowManager
     }
 
     // Find this show on MAL and get it's id
-    $mal = MyAnimeList::searchStrict($title);
+    $mal_id = MyAnimeList::getMalIdForTitle($title);
 
-    if (!empty($mal)) {
+    if (isset($mal_id)) {
       // Create a new show with the proper data
-      $show = Show::create(MyAnimeList::getAnimeData($mal->id));
+      $show = Show::create(MyAnimeList::getAnimeData($mal_id));
       Self::updateThumbnail($show);
     } else {
       // Create a mostly empty show because we don't have MAL data
@@ -50,9 +50,9 @@ class ShowManager
   public static function updateShowCache($show, $episodes = false) {
     // If the mal id is not known yet, try to find it first
     if (!isset($show->mal_id)) {
-      $mal = MyAnimeList::searchStrict($show->title);
-      if (!empty($mal)) {
-        $show->update(MyAnimeList::getAnimeData($mal->id));
+      $mal_id = MyAnimeList::getMalIdForTitle($show->title);
+      if (isset($mal_id)) {
+        $show->update(MyAnimeList::getAnimeData($mal_id));
         Self::updateThumbnail($show);
         $episodes = true;
       }

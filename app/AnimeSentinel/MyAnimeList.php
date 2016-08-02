@@ -13,7 +13,7 @@ class MyAnimeList
    *
    * @return SimpleXMLElement
    */
-  private static function searchApi($query) {
+  private static function searchApiXml($query) {
     // Preform curl request
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, 'http://myanimelist.net/api/anime/search.xml?q='.str_replace(' ', '+', $query));
@@ -33,8 +33,8 @@ class MyAnimeList
    *
    * @return array
    */
-  public static function search($query) {
-    $xml = Self::searchApi($query);
+  public static function searchApi($query) {
+    $xml = Self::searchApiXml($query);
     if (empty($xml)) return [];
     $results = [];
     foreach ($xml as $entry) {
@@ -59,14 +59,14 @@ class MyAnimeList
   }
 
   /**
-   * Does a search on MAL with the requested query.
-   * Returns only the first result where the query matches one of the titles
+   * Tries to find the mal id for the requested title.
+   * Returns null if it cannot be found.
    *
-   * @return stdClass
+   * @return integer
    */
-  public static function searchStrict($query) {
-    $results = Self::search($query);
-
+  public static function getMalIdForTitle($title) {
+    // First try searching using the api
+    $results = Self::searchApi($title);
     foreach ($results as $result) {
       // Create alts list
       $alts[] = $result->title;
@@ -74,13 +74,13 @@ class MyAnimeList
       $alts = array_merge($alts, $result->synonyms);
       // Check for a match
       foreach ($alts as $alt) {
-        if (match_fuzzy($alt, $query)) {
-          return $result;
+        if (match_fuzzy($alt, $title)) {
+          return $result->id;
         }
       }
     }
 
-    return false;
+    return null;
   }
 
   /**
