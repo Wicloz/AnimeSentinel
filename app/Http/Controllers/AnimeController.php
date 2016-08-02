@@ -13,7 +13,7 @@ class AnimeController extends Controller
 {
   protected function recentShows($limit, $noDuplicates) {
     if ($noDuplicates) {
-      $recent = Video::orderBy('uploadtime', 'desc')->orderBy('episode_num', 'desc')
+      $recent = Video::orderBy('uploadtime', 'desc')->orderBy('show_id', 'desc')->orderBy('episode_num', 'desc')
                      ->groupBy(['show_id', 'translation_type', 'episode_num'])->distinct()
                      ->take($limit)->with('show')->get();
     }
@@ -21,6 +21,7 @@ class AnimeController extends Controller
     else {
       $recent = Video::where('mirror', 1)
                      ->orderBy('uploadtime', 'desc')
+                     ->orderBy('show_id', 'desc')
                      ->orderBy('episode_num', 'desc')
                      ->take($limit)->with('show')->get();
     }
