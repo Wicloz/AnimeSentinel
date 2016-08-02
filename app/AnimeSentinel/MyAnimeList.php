@@ -89,7 +89,7 @@ class MyAnimeList
    * @return array
    */
   public static function getAnimeData($mal_id) {
-    $page = file_get_contents('http://myanimelist.net/anime/'.$mal_id);
+    $page = Downloaders::downloadPage('http://myanimelist.net/anime/'.$mal_id);
 
     $title = trim(str_get_between($page, '<span itemprop="name">', '</span>'));
 
@@ -174,7 +174,7 @@ class MyAnimeList
    * @return stdClass
    */
   public static function malFlags($mal_id) {
-    $page = file_get_contents('http://myanimelist.net/anime/'.$mal_id);
+    $page = Downloaders::downloadPage('http://myanimelist.net/anime/'.$mal_id);
     $flags = (object) ['hentai' => false];
 
     $flags->music = strtolower(trim(str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'))) === 'music';
