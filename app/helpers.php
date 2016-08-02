@@ -83,7 +83,7 @@ function str_ends_with($haystack, $needle) {
 
 function str_urlify($string) {
   $string = trim($string); // TODO: properly convert string to lowercase
-  $string = preg_replace('/[^a-zA-Z0-9α-ωΑ-Ω\-_]/', '-', $string);
+  $string = preg_replace('/[^a-zA-Z0-9α-ωΑ-Ω\-_]/u', '-', $string);
   $string = preg_replace('/-+/', '-', $string);
   $string = preg_replace('/^-+/', '', $string);
   $string = preg_replace('/-+$/', '', $string);
