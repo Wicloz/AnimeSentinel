@@ -132,14 +132,24 @@ class kissanime
 
   /**
    * Finds all episode data + title from the recently aired page.
-   * Returns this data as an array of objects.
+   * Returns this data as an array of associative arrays.
    * This data is later used to find the episode video's.
    *
    * @return array
    */
   public static function guard() {
-    $data = [];
-    //TODO
+    // Download the 'recently aired' page
+    $page = Downloaders::downloadPage('http://kissanime.to');
+
+    // Scrape the 'recently aired' page
+    $data = Helpers::scrape_page(str_get_between($page, '<div class="items">', '</div>'), '</a>', [
+      'title' => [true, 'href="Anime/', '"'],
+    ]);
+
+    // Complete and return data
+    foreach ($data as $item) {
+      $item['title']) = str_replace('-', ' ', $item['title']);
+    }
     return $data;
   }
 

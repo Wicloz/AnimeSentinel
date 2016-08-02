@@ -64,9 +64,10 @@ class StreamingManager
    * Finds all video's an all streaming sites's recently aired page.
    * This is used for the periodic checks.
    */
-  public static function findRecentVideos() {
+  public static function findRecentEpisodes() {
     // Grab all streamers data
     $streamers = Streamer::all();
+    $processedShows = [];
 
     // For all streamers, request required data
     foreach ($streamers as $streamer) {
@@ -74,19 +75,18 @@ class StreamingManager
         $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
         $data = $class::guard();
 
-        // Process the data to find all videos
         foreach ($data as $item) {
           // Get the show related to this data
-          $show = Show::withTitle($item->title)->first();
+          $show = Show::withTitle($item['title'])->first();
           // Add the show if it does not exist
           if ($show === null) {
-            ShowManager::addShowWithTitle($item->title);
+            $show = ShowManager::addShowWithTitle($item['title']);
           }
 
           // Otherwise, find all videos for the data
           else {
-            $translation_type = !isset($item->translation_type) ? ['sub', 'dub'] : [$item->translation_type];
-            VideoManager::reprocessEpsiode($show, $translation_type, $item->episode_num, $streamer->id);
+            $translation_type = !isset($item['translation_type']) ? ['sub', 'dub'] : [$item['translation_type']];
+            VideoManager::reprocessEpsiode($show, $translation_type, $item->['episode_num'], $streamer->id);
           }
         }
       }

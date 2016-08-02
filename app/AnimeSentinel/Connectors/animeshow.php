@@ -110,7 +110,7 @@ class animeshow
 
   /**
    * Finds all episode data + title from the recently aired page.
-   * Returns this data as an array of objects.
+   * Returns this data as an array of associative arrays.
    * This data is later used to find the episode video's.
    *
    * @return array
