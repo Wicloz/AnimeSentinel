@@ -186,7 +186,6 @@ class Show extends Model
   public function handleCaching() {
     // TODO: dynamic cache time
     if ($this->updated_at->diffInHours(Carbon::now()) >= 48) {
-      $this->updated_at = Carbon::now();
       ShowManager::updateShowCache($this);
     }
   }

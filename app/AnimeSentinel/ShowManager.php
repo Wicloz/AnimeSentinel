@@ -3,6 +3,7 @@
 namespace App\AnimeSentinel;
 
 use App\Show;
+use Carbon\Carbon;
 
 class ShowManager
 {
@@ -72,6 +73,10 @@ class ShowManager
     if ($episodes) {
       StreamingManager::findVideosForShow($show);
     }
+
+    // Set the updated_at time
+    $show->updated_at = Carbon::now();
+    $show->save();
 
     // Return the show object
     return $show;
