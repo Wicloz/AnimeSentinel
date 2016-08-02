@@ -17,7 +17,7 @@ class template
    public static function seek($show) {
      // Try all alts to get a valid episode page
      foreach ($show->alts as $alt) {
-       $page = file_get_contents('TODO');
+       $page = Downloaders::downloadPage('TODO');
        if (strpos($page, 'TODO') !== false) {
          return Self::seekEpisodes($page, $show, $alt, []);
        }
@@ -68,7 +68,7 @@ class template
 
    private static function seekMirrors($link_episode) {
      // Get episode page
-     $page = file_get_contents($link_episode);
+     $page = Downloaders::downloadPage($link_episode);
      // Scrape the page for mirror data
      $mirrors = Helpers::scrape_page(str_get_between($page, 'TODO', 'TODO'), 'TODO', [
        'TODO' => [true, 'TODO', 'TODO'],

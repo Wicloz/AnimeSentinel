@@ -5,6 +5,28 @@ namespace App\AnimeSentinel;
 class Downloaders
 {
   /**
+   * Downloads a webpage after determining whivh method to use.
+   *
+   * @return string
+   */
+  public static function downloadPage($url) {
+    if (strpos($url, 'kissanime.to') !== false) {
+      $response = Self::downloadCloudFlare($url, 'kissanime');
+    }
+
+    else {
+      $curl = curl_init();
+      curl_setopt($curl, CURLOPT_URL, $url);
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+      $response = curl_exec($curl);
+      curl_close($curl);
+    }
+
+    return $response;
+  }
+
+  /**
    * Returns a webpage after executing JavaScript
    *
    * @return string

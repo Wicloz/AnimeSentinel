@@ -18,7 +18,7 @@ class animeshow
   public static function seek($show) {
     // Try all alts to get a valid episode page
     foreach ($show->alts as $alt) {
-      $page = file_get_contents('http://animeshow.tv/'.str_urlify($alt));
+      $page = Downloaders::downloadPage('http://animeshow.tv/'.str_urlify($alt));
       if (strpos($page, 'episodes online in high quality with professional English subtitles on AnimeShow.tv"/>') !== false) {
         return Self::seekEpisodes($page, $show, $alt, []);
       }
@@ -71,7 +71,7 @@ class animeshow
 
   private static function seekMirrors($link_episode) {
     // Get episode page
-    $page = file_get_contents($link_episode);
+    $page = Downloaders::downloadPage($link_episode);
     // Create first entry
     $mirrors = [[
       'link_video' => $link_episode,
@@ -94,9 +94,9 @@ class animeshow
 
   private static function seekCompleteMirror($mirror) {
     // Complete mirror data
-    $page = file_get_contents($mirror['link_video']);
+    $page = Downloaders::downloadPage($mirror['link_video']);
     $mirror['link_video'] = str_get_between($page, '<iframe width="100%" height="100%" id="video_embed" scrolling="no" src="', '"');
-    $page = file_get_contents($mirror['link_video']);
+    $page = Downloaders::downloadPage($mirror['link_video']);
     // Grab source link depending on mirror site
     if (strpos($mirror['link_video'], 'mp4upload') !== false) {
       $mirror['link_video'] = str_get_between($page, '"file": "', '"');

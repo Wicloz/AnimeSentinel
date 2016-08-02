@@ -20,7 +20,7 @@ class kissanime
 
     // Try all alts to get a valid episode page
     foreach ($show->alts as $alt) {
-      $page = Downloaders::downloadCloudFlare('http://kissanime.to/Anime/'.str_urlify($alt), 'kissanime');
+      $page = Downloaders::downloadPage('http://kissanime.to/Anime/'.str_urlify($alt));
       if (strpos($page, '<meta name="description" content="Watch online and download ') !== false) {
         $videos = array_merge($videos, Self::seekEpisodes($page, $show, $alt, [
           'link_stream' => 'http://kissanime.to/Anime/'.str_urlify($alt),
@@ -28,7 +28,7 @@ class kissanime
         ]));
       }
 
-      $page = Downloaders::downloadCloudFlare('http://kissanime.to/Anime/'.str_urlify($alt).'-dub', 'kissanime');
+      $page = Downloaders::downloadPage('http://kissanime.to/Anime/'.str_urlify($alt).'-dub');
       if (strpos($page, '<meta name="description" content="Watch online and download ') !== false) {
         $videos = array_merge($videos, Self::seekEpisodes($page, $show, $alt, [
           'link_stream' => 'http://kissanime.to/Anime/'.str_urlify($alt).'-dub',
@@ -94,7 +94,7 @@ class kissanime
 
   private static function seekMirrors($link_episode) {
     // Get episode page
-    $page = Downloaders::downloadCloudFlare($link_episode, 'kissanime');
+    $page = Downloaders::downloadPage($link_episode);
     // Scrape the page for mirror data
     $mirrors = Helpers::scrape_page(str_get_between($page, 'id="divDownload">', '</div>'), '</a>', [
       'link_video' => [true, 'href="', '"'],
