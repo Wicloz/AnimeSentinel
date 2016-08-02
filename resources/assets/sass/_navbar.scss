@@ -4,12 +4,15 @@
 .navbar-custom {
   border-color: $border_colour-main;
   background-color: $background_colour-navs;
+  box-shadow: 0 0 10px $background_colour-navs;
+
   .navbar-toggle {
     border-color: $text_colour-navs;
     > .icon-bar {
       background-color: $text_colour-content;
     }
   }
+
   .navbar-header {
     > a {
       background-color: transparent;
@@ -24,6 +27,7 @@
       color: $text_colour-content;
     }
   }
+
   .navbar-nav {
     > li {
       > a {
