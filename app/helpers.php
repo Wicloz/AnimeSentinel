@@ -71,6 +71,12 @@ function str_get_between($string, $start, $end = '', $last = false) {
   }
 }
 
+function match_fuzzy($title1, $title2) {
+  $title1 = str_replace('-', '', str_urlify($title1));
+  $title2 = str_replace('-', '', str_urlify($title2));
+  return $title1 === $title2;
+}
+
 function str_starts_with($haystack, $needle) {
     // search backwards starting from haystack length characters from the end
     return $needle === "" || strrpos($haystack, $needle, - strlen($haystack)) !== false;
@@ -82,7 +88,7 @@ function str_ends_with($haystack, $needle) {
 }
 
 function str_urlify($string) {
-  $string = trim($string); // TODO: properly convert string to lowercase
+  $string = mb_strtolower(trim($string));
   $string = preg_replace('/[^a-zA-Z0-9α-ωΑ-Ω\-_]/u', '-', $string);
   $string = preg_replace('/-+/', '-', $string);
   $string = preg_replace('/^-+/', '', $string);

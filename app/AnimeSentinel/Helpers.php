@@ -5,20 +5,6 @@ use Carbon\Carbon;
 
 class Helpers
 {
-  public static function match_titles($title1, $title2) {
-    $remove = ['-', '_', '★'];
-
-    $title1 = preg_replace('/\s/', '', strtolower($title1));
-    $title2 = preg_replace('/\s/', '', strtolower($title2));;
-
-    foreach ($remove as $char) {
-      $title1 = str_replace($char, '', $title1);
-      $title2 = str_replace($char, '', $title2);
-    }
-
-    return $title1 === $title2;
-  }
-
   public static function scrape_page($page, $delim, array $request, $results = []) {
     // Explode the page
     $page_list = explode($delim, $page);

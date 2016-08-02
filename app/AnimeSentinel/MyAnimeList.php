@@ -74,7 +74,7 @@ class MyAnimeList
       $alts = array_merge($alts, $result->synonyms);
       // Check for a match
       foreach ($alts as $alt) {
-        if (Helpers::match_titles($alt, $query)) {
+        if (match_fuzzy($alt, $query)) {
           return $result;
         }
       }
