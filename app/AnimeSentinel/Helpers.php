@@ -1,10 +1,31 @@
 <?php
 
 namespace App\AnimeSentinel;
+
 use Carbon\Carbon;
+use App\ShowFlag;
 
 class Helpers
 {
+  public static function mergeFlagAlts($alts, $mal_id) {
+    $showFlag = ShowFlag::find($mal_id);
+
+    if (!empty($showFlag)) {
+      foreach ($showFlag->alt_rules as $data => $action) {
+        switch ($action) {
+          case '+':
+            $alts[] = $data;
+          break;
+          case '-':
+            array_splice($alts, array_search($data, $alts), 1);
+          break;
+        }
+      }
+    }
+
+    return $alts;
+  }
+
   public static function scrape_page($page, $delim, array $request, $results = []) {
     // Explode the page
     $page_list = explode($delim, $page);

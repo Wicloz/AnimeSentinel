@@ -33,8 +33,6 @@ class ShowManager
         'description' => 'No Description Available',
       ]);
     }
-    // Process alt rules
-    Self::processAltRules($show);
 
     // Call the function to find existing episodes
     StreamingManager::findVideosForShow($show);
@@ -64,9 +62,6 @@ class ShowManager
       Self::updateThumbnail($show);
     }
 
-    // Process alt rules
-    Self::processAltRules($show);
-
     // Call the function to find existing episodes if requested
     if ($episodes) {
       StreamingManager::findVideosForShow($show);
@@ -74,29 +69,6 @@ class ShowManager
 
     // Return the show object
     return $show;
-  }
-
-  /**
-   * Process the alt rules from the show_flags table for this show.
-   */
-  private static function processAltRules($show) {
-    if (!empty($show->show_flag)) {
-      $alts = $show->alts;
-
-      foreach ($show->show_flag->alt_rules as $data => $action) {
-        switch ($action) {
-          case '+':
-            $alts[] = $data;
-          break;
-          case '-':
-            array_splice($alts, array_search($data, $alts), 1);
-          break;
-        }
-      }
-
-      $show->alts = $alts;
-      $show->save();
-    }
   }
 
   /**

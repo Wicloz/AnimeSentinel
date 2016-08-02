@@ -141,7 +141,7 @@ class MyAnimeList
       'mal_id' => $mal_id,
       'thumbnail_id' => str_replace('/', '-', str_get_between($page, 'src="http://cdn.myanimelist.net/images/anime/', '"')),
       'title' => $title,
-      'alts' => $alts,
+      'alts' => Helpers::mergeFlagAlts($alts, $mal_id),
       'description' => trim(str_get_between($page, '<span itemprop="description">', '</span>')),
       'type' => strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'), '>'))),
       'genres' => $genres,
