@@ -124,7 +124,7 @@ class animeshow
    *
    * @return string
    */
-  public static function videoLink($video) {
+  public static function findVideoLink($video) {
     // Get all mirrors data
     $mirrors = Self::seekMirrors($video->link_episode);
 

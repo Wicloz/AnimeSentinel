@@ -36,7 +36,7 @@ class ShowManager
     Self::processAltRules($show);
 
     // Call the function to find existing episodes
-    EpisodeManager::findVideosForShow($show);
+    StreamingManager::findVideosForShow($show);
 
     // Return the show object
     return $show;
@@ -68,7 +68,7 @@ class ShowManager
 
     // Call the function to find existing episodes if requested
     if ($episodes) {
-      EpisodeManager::findVideosForShow($show);
+      StreamingManager::findVideosForShow($show);
     }
 
     // Return the show object
