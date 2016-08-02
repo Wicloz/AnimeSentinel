@@ -68,30 +68,27 @@ class StreamingManager
     // Grab all streamers data
     $streamers = Streamer::all();
 
-    // For all streamers, request an array of videos
+    // For all streamers, request required data
     foreach ($streamers as $streamer) {
       if ($streamer->id !== 'youtube') {
         $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
-        $videos = $class::guard();
+        $data = $class::guard();
 
-        // Process the videos
-        foreach ($videos as $video) {
-          // Make sure the anime this video belongs to is present in the database
-          $show = Show::withTitle($video->show_id)->first();
+        // Process the data to find all videos
+        foreach ($data as $item) {
+          // Get the show related to this data
+          $show = Show::withTitle($item->title)->first();
+          // Add the show if it does not exist
           if ($show === null) {
-            // Add the show to the database
-            $show = ShowManager::addShowWithTitle($video->show_id);
-            // And remove all videos for this show from the array
-            $video->show_id = $show->id; // TODO
+            ShowManager::addShowWithTitle($item->title);
           }
+
+          // Otherwise, find all videos for the data
           else {
-            // Set the show_id on the video
-            $video->show_id = $show->id;
+            $translation_type = !isset($item->translation_type) ? ['sub', 'dub'] : [$item->translation_type];
+            VideoManager::reprocessEpsiode($show, $translation_type, $item->episode_num, $streamer->id);
           }
         }
-
-        // Save the videos
-        VideoManager::saveVideos($videos);
       }
     }
   }

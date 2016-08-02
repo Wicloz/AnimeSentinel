@@ -51,7 +51,7 @@ class template
         continue;
       }
 
-      elseif (!isset($req_episode_num) || $req_episode_num === (int) $episode['episode_num']) {
+      elseif ($req_episode_num === null || $req_episode_num === (int) $episode['episode_num']) {
         // Get all mirrors data
         $mirrors = Self::seekMirrors($episode['link_episode']);
         // Loop through mirror list
@@ -91,15 +91,15 @@ class template
 
   /**
    * Finds all episode data + title from the recently aired page.
-   * Returns this data as an array.
+   * Returns this data as an array of objects.
    * This data is later used to find the episode video's.
    *
    * @return array
    */
   public static function guard() {
-    $videos = [];
+    $data = [];
     //TODO
-    return $videos;
+    return $data;
   }
 
   /**
