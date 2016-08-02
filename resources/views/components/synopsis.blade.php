@@ -67,16 +67,19 @@
         <div class="synopsis-bottombar">
           <div class="row">
             @if(!empty($syn_video))
-              <div class="col-sm-4">
+              <div class="col-sm-3">
                 <a href="{{ $syn_video->episode_url }}">
                   Episode {{ $syn_video->episode_num }} Has Aired
                 </a>
               </div>
-              <div class="col-sm-4">
-                Uploaded Episode Type: {{ $syn_video->translation_type === 'sub' ? 'Subbed' : '' }}{{ $syn_video->translation_type === 'dub' ? 'Dubbed' : ''}}
+              <div class="col-sm-3">
+                Episode Type: {{ $syn_video->translation_type === 'sub' ? 'Subbed' : '' }}{{ $syn_video->translation_type === 'dub' ? 'Dubbed' : ''}}
               </div>
-              <div class="col-sm-4">
+              <div class="col-sm-3">
                 Uploaded by <a href="{{ $syn_video->streamer->details_url }}">{{ $syn_video->streamer->name }}</a>
+              </div>
+              <div class="col-sm-3">
+                Uploaded on {{ $syn_video->uploadtime->format('M j, Y (l)') }}
               </div>
 
             @else
@@ -84,9 +87,9 @@
               <div class="col-sm-6">
                 @if(!$syn_show->videos_initialised)
                   Latest Subbed: Searching for episodes ...
-                @elseif(isset($syn_show->latest_sub))
-                  <a href="{{ url("/anime/$syn_show->id/sub/episode-$syn_show->latest_sub") }}">
-                    Latest Subbed: Epsiode {{ $syn_show->latest_sub }}
+                @elseif(isset($syn_show->latest_sub->episode_num))
+                  <a href="{{ url("/anime/$syn_show->id/sub/episode-$syn_show->latest_sub->episode_num") }}">
+                    Latest Subbed: Epsiode {{ $syn_show->latest_sub->episode_num }}; Uploaded on {{ $syn_show->latest_sub->uploadtime->format('M j, Y (l)') }}
                   </a>
                 @else
                   Latest Subbed: No episodes available
@@ -95,9 +98,9 @@
               <div class="col-sm-6">
                 @if(!$syn_show->videos_initialised)
                   Latest Dubbed: Searching for episodes ...
-                @elseif(isset($syn_show->latest_dub))
-                  <a href="{{ url("/anime/$syn_show->id/dub/episode-$syn_show->latest_dub") }}">
-                    Latest Dubbed: Epsiode {{ $syn_show->latest_dub }}
+                @elseif(isset($syn_show->latest_dub->episode_num))
+                  <a href="{{ url("/anime/$syn_show->id/dub/episode-$syn_show->latest_dub->episode_num") }}">
+                    Latest Dubbed: Epsiode {{ $syn_show->latest_dub->episode_num }}; Uploaded on {{ $syn_show->latest_dub->uploadtime->format('M j, Y (l)') }}
                   </a>
                 @else
                   Latest Dubbed: No episodes available

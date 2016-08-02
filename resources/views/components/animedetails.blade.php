@@ -15,14 +15,14 @@
   </p>
   <p>
     <strong>Status:</strong>
-    @if(!isset($details->latest_sub))
+    @if(!isset($details->latest_sub->episode_num))
       Upcoming
     @elseif(!isset($details->episode_amount))
       Unknown
-    @elseif($details->latest_sub >= $details->episode_amount)
+    @elseif($details->latest_sub->episode_num >= $details->episode_amount)
       Completed
     @else
-      Current
+      Airing
     @endif
   </p>
   <p><strong>Episodes:</strong> {{ $details->episode_amount or 'Unknown' }}</p>

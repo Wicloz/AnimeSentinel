@@ -98,8 +98,11 @@ class Show extends Model
   * @return integer
   */
   public function getLatestSubAttribute() {
-    $episode_num = $this->videos()->where('translation_type', 'sub')->max('episode_num');
-    return $episode_num ? $episode_num : null;
+    return $this->videos()
+                ->where('translation_type', 'sub')
+                ->orderBy('episode_num', 'desc')
+                ->orderBy('uploadtime', 'asc')
+                ->first();
   }
 
   /**
@@ -108,8 +111,11 @@ class Show extends Model
   * @return integer
   */
   public function getLatestDubAttribute() {
-    $episode_num = $this->videos()->where('translation_type', 'dub')->max('episode_num');
-    return $episode_num ? $episode_num : null;
+    return $this->videos()
+                ->where('translation_type', 'dub')
+                ->orderBy('episode_num', 'desc')
+                ->orderBy('uploadtime', 'asc')
+                ->first();
   }
 
   /**
