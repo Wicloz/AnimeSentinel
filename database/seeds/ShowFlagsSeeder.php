@@ -67,5 +67,19 @@ class ShowFlagsSeeder extends Seeder
       "Boku no Hero Academia: My Hero Academia" => "+",
     ];
     $heroacademia->save();
+
+    $activeraidkidoukyoushuushitsu_s2 = ShowFlag::findOrNew(32301);
+    $activeraidkidoukyoushuushitsu_s2->mal_id = 32301;
+    $activeraidkidoukyoushuushitsu_s2->alt_rules = [
+      "Active Raid: Kidou Kyoushuushitsu Dai Hachi Gakari 2nd" => "+",
+    ];
+    $activeraidkidoukyoushuushitsu_s2->save();
+
+    $danganronpa3futurearc = ShowFlag::findOrNew(32189);
+    $danganronpa3futurearc->mal_id = 32189;
+    $danganronpa3futurearc->alt_rules = [
+      "Danganronpa 3 - Future Arc" => "+",
+    ];
+    $danganronpa3futurearc->save();
   }
 }
