@@ -16,12 +16,20 @@
         <div class="row">
           <div class="col-sm-9">
             <div class="synopsis-description">
+              {!! $syn_show->description !!}
+              <!--
+              <div class="synopsis-description-top">
+                {!! $syn_show->description !!}
+              </div>
+              -->
+              <!--
               <div class="collapsed toggle" data-toggle="collapse" data-target="#description-{{ $syn_unique }}">
                 &laquo; Toggle Description &raquo;
               </div>
               <div class="collapse" id="description-{{ $syn_unique }}">
                 {!! $syn_show->description !!}
               </div>
+              -->
             </div>
           </div>
 
@@ -48,6 +56,7 @@
             </div>
           </div>
         </div>
+
       @else
         <div class="row">
           <div class="col-sm-12">
