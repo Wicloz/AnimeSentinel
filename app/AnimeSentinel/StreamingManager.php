@@ -67,7 +67,7 @@ class StreamingManager
   public static function findRecentEpisodes() {
     // Grab all streamers data
     $streamers = Streamer::all();
-    $processedShows = [];
+    $addedShows = [];
 
     // For all streamers, request required data
     foreach ($streamers as $streamer) {
@@ -81,12 +81,13 @@ class StreamingManager
           // Add the show if it does not exist
           if ($show === null) {
             $show = ShowManager::addShowWithTitle($item['title']);
+            $addedShows[] = $show->id;
           }
 
-          // Otherwise, find all videos for the data
-          else {
+          // Otherwise, if this show is not new, find all videos for the data
+          elseif (!in_array($show->id, $addedShows)) {
             $translation_type = !isset($item['translation_type']) ? ['sub', 'dub'] : [$item['translation_type']];
-            VideoManager::reprocessEpsiode($show, $translation_type, $item->['episode_num'], $streamer->id);
+            VideoManager::reprocessEpsiode($show, $translation_type, (int) $item['episode_num'], $streamer->id);
           }
         }
       }

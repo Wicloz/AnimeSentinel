@@ -60,7 +60,7 @@ function str_get_between($string, $start, $end = '', $last = false) {
     $ini = strpos($string, $start);
   }
 
-  if ($ini === false) return '';
+  if ($ini === false) return false;
   $ini += strlen($start);
 
   if (empty($end)) {

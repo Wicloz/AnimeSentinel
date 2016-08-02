@@ -68,6 +68,9 @@ class kissanime
         }
       }
     }
+    if (!isset($lowest_ep)) {
+      $lowest_ep = 1;
+    }
 
     // Get mirror data for each episode
     foreach ($episodes as $episode) {
@@ -138,18 +141,66 @@ class kissanime
    * @return array
    */
   public static function guard() {
+    $data = [];
+
     // Download the 'recently aired' page
     $page = Downloaders::downloadPage('http://kissanime.to');
 
     // Scrape the 'recently aired' page
-    $data = Helpers::scrape_page(str_get_between($page, '<div class="items">', '</div>'), '</a>', [
-      'title' => [true, 'href="Anime/', '"'],
+    $dataRaw = Helpers::scrape_page(str_get_between($page, '<div class="items">', '<div class="clear">'), '</a>', [
+      'link_stream' => [true, 'href="', '"'],
+      'title' => [false, '<br />', '<br />'],
+      'episode_num' => [false, '<span class=\'textDark\'>', '</span>'],
     ]);
 
     // Complete and return data
-    foreach ($data as $item) {
-      $item['title']) = str_replace('-', ' ', $item['title']);
+    foreach ($dataRaw as $item) {
+      // Determine translation type and clean up title
+      $item['translation_type'] = 'sub';
+      $item['title'] = trim(str_replace('(Sub)', '', $item['title']));
+      if (strpos($item['title'], '(Dub)') !== false) {
+        $item['translation_type'] = 'dub';
+      }
+      $item['title'] = trim(str_replace('(Dub)', '', $item['title']));
+
+      // Determine lowest episode number
+      $page = Downloaders::downloadPage('http://kissanime.to/'.$item['link_stream']);
+      // Scrape the page for episode data
+      $episodes = Helpers::scrape_page(str_get_between($page, '<tr style="height: 10px">', '</table>'), '</td>', [
+        'episode_num' => [true, 'Watch anime ', ' in high quality'],
+        'link_episode' => [false, 'href="', '"'],
+      ]);
+      // Find the lowest episode number
+      foreach ($episodes as $episode) {
+        if (strpos($episode['link_episode'], '/Episode-') !== false) {
+          $ep_num = str_get_between($episode['episode_num'], 'Episode ', ' ');
+          if (!isset($lowest_ep) || $ep_num < $lowest_ep) {
+            $lowest_ep = $ep_num;
+          }
+        }
+      }
+      if (!isset($lowest_ep)) {
+        $lowest_ep = 1;
+      }
+
+      // Determine actual episode number
+      if ($item['episode_num'] === 'Movie') {
+        $item['episode_num'] = 1;
+      }
+      elseif (strpos($item['episode_num'], 'Episode ') !== false) {
+        $episode_num = str_get_between($item['episode_num'], 'Episode ', ' ');
+        if ($episode_num === false) {
+          $episode_num = str_get_between($item['episode_num'], 'Episode ', '');
+        }
+        $item['episode_num'] = $episode_num;
+      }
+
+      else {
+        continue;
+      }
+      $data[] = $item;
     }
+
     return $data;
   }
 

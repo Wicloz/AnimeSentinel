@@ -97,8 +97,18 @@ class template
    * @return array
    */
   public static function guard() {
-    $data = [];
-    //TODO
+    // Download the 'recently aired' page
+    $page = Downloaders::downloadPage('TODO');
+
+    // Scrape the 'recently aired' page
+    $data = Helpers::scrape_page(str_get_between($page, 'TODO', 'TODO'), 'TODO', [
+      'TODO' => [true, 'TODO', 'TODO'],
+    ]);
+
+    // Complete and return data
+    foreach ($data as $item) {
+      //TODO
+    }
     return $data;
   }
 
