@@ -61,6 +61,13 @@ class ShowFlagsSeeder extends Seeder
     ];
     $psi->save();
 
+    $psi_s2 = ShowFlag::findOrNew(33255);
+    $psi_s2->mal_id = 33255;
+    $psi_s2->alt_rules = [
+      "Saiki Kusuo no Psi Nan (TV)" => "+",
+    ];
+    $psi_s2->save();
+
     $heroacademia = ShowFlag::findOrNew(31964);
     $heroacademia->mal_id = 31964;
     $heroacademia->alt_rules = [
