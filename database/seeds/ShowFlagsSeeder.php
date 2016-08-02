@@ -78,7 +78,7 @@ class ShowFlagsSeeder extends Seeder
     $activeraidkidoukyoushuushitsu_s2 = ShowFlag::findOrNew(32301);
     $activeraidkidoukyoushuushitsu_s2->mal_id = 32301;
     $activeraidkidoukyoushuushitsu_s2->alt_rules = [
-      "Active Raid: Kidou Kyoushuushitsu Dai Hachi Gakari 2nd" => "+",
+      "Active Raid: Kidou Kyoushuushitsu Dai Hachi Gakari 2nd Season" => "+",
     ];
     $activeraidkidoukyoushuushitsu_s2->save();
 
