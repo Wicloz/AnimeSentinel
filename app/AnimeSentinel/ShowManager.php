@@ -14,7 +14,7 @@ class ShowManager
     // Confirm this show isn't already in our databse
     if (!empty(Show::withTitle($title)->first())) {
       flash_error('The requested show has already been added to the database.');
-      return;
+      return false;
     }
 
     // Find this show on MAL and get it's id
@@ -50,9 +50,15 @@ class ShowManager
     if (!isset($show->mal_id)) {
       $mal_id = MyAnimeList::getMalIdForTitle($show->title);
       if (isset($mal_id)) {
-        $show->update(MyAnimeList::getAnimeData($mal_id));
-        Self::updateThumbnail($show);
-        $episodes = true;
+        $otherShow = Show::where('mal_id', $mal_id)->first();
+        if (empty($otherShow)) {
+          $show->update(MyAnimeList::getAnimeData($mal_id));
+          Self::updateThumbnail($show);
+          $episodes = true;
+        } else {
+          $show->delete();
+          return false;
+        }
       }
     }
 
