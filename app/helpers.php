@@ -72,8 +72,8 @@ function str_get_between($string, $start, $end = '', $last = false) {
 }
 
 function match_fuzzy($title1, $title2) {
-  $title1 = str_replace('-', '', str_urlify($title1));
-  $title2 = str_replace('-', '', str_urlify($title2));
+  $title1 = str_replace('-', '', str_replace('-and-', '', str_urlify($title1)));
+  $title2 = str_replace('-', '', str_replace('-and-', '', str_urlify($title2)));
   return $title1 === $title2;
 }
 
