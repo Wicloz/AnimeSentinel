@@ -84,16 +84,26 @@ class StreamingManager
             $addedShows[] = $show->id;
           }
 
-          // Otherwise, if this show is not new and the epsiode does not exist, find all videos for the data
-          elseif (!in_array($show->id, $addedShows)) {
-            if (!isset($item['translation_type']) && (
-              $show->videos()->episode('sub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null ||
-              $show->videos()->episode('dub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null
-            )) {
-              VideoManager::reprocessEpsiode($show, ['sub', 'dub'], (int) $item['episode_num'], $streamer->id);
+          else {
+            // Try to update the show cache if it does not have a mal id set
+            if ($show->mal_id === null) {
+              $show = ShowManager::updateShowCache($show);
+              if ($show && $show->mal_id !== null) {
+                $addedShows[] = $show->id;
+              }
             }
-            elseif ($show->videos()->episode($item['translation_type'], $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null) {
-              VideoManager::reprocessEpsiode($show, [$item['translation_type']], (int) $item['episode_num'], $streamer->id);
+
+            // Otherwise, if this show is not new or deleted and the epsiode does not exist, find all videos for the data
+            if ($show && !in_array($show->id, $addedShows)) {
+              if (!isset($item['translation_type']) && (
+                $show->videos()->episode('sub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null ||
+                $show->videos()->episode('dub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null
+              )) {
+                VideoManager::reprocessEpsiode($show, ['sub', 'dub'], (int) $item['episode_num'], $streamer->id);
+              }
+              elseif ($show->videos()->episode($item['translation_type'], $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null) {
+                VideoManager::reprocessEpsiode($show, [$item['translation_type']], (int) $item['episode_num'], $streamer->id);
+              }
             }
           }
         }
