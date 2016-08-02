@@ -60,5 +60,12 @@ class ShowFlagsSeeder extends Seeder
       "Saiki Kusuo no nan" => "+",
     ];
     $psi->save();
+
+    $heroacademia = ShowFlag::findOrNew(31964);
+    $heroacademia->mal_id = 31964;
+    $heroacademia->alt_rules = [
+      "Boku no Hero Academia: My Hero Academia" => "+",
+    ];
+    $heroacademia->save();
   }
 }
