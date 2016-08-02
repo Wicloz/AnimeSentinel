@@ -75,7 +75,7 @@ class StreamingManager
         $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
         $data = $class::guard();
 
-        foreach ($data as $item) {
+        foreach (array_reverse($data) as $item) {
           // Get the show related to this data
           $show = Show::withTitle($item['title'])->first();
           // Add the show if it does not exist
@@ -84,10 +84,17 @@ class StreamingManager
             $addedShows[] = $show->id;
           }
 
-          // Otherwise, if this show is not new, find all videos for the data
+          // Otherwise, if this show is not new and the epsiode does not exist, find all videos for the data
           elseif (!in_array($show->id, $addedShows)) {
-            $translation_type = !isset($item['translation_type']) ? ['sub', 'dub'] : [$item['translation_type']];
-            VideoManager::reprocessEpsiode($show, $translation_type, (int) $item['episode_num'], $streamer->id);
+            if (!isset($item['translation_type']) && (
+              $show->videos()->episode('sub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null ||
+              $show->videos()->episode('dub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null
+            )) {
+              VideoManager::reprocessEpsiode($show, ['sub', 'dub'], (int) $item['episode_num'], $streamer->id);
+            }
+            elseif ($show->videos()->episode($item['translation_type'], $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null) {
+              VideoManager::reprocessEpsiode($show, [$item['translation_type']], (int) $item['episode_num'], $streamer->id);
+            }
           }
         }
       }
