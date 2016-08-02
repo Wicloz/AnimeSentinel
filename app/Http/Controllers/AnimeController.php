@@ -13,7 +13,7 @@ class AnimeController extends Controller
 {
   protected function recentShows($limit, $noDuplicates) {
     if ($noDuplicates) {
-      $recent = Video::orderBy('uploadtime', 'desc')
+      $recent = Video::orderBy('uploadtime', 'desc')->orderBy('episode_num', 'desc')
                      ->groupBy(['show_id', 'translation_type', 'episode_num'])->distinct()
                      ->take($limit)->with('show')->get();
     }
@@ -21,6 +21,7 @@ class AnimeController extends Controller
     else {
       $recent = Video::where('mirror', 1)
                      ->orderBy('uploadtime', 'desc')
+                     ->orderBy('episode_num', 'desc')
                      ->take($limit)->with('show')->get();
     }
 
@@ -44,6 +45,7 @@ class AnimeController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function recent() {
+    // TODO: make more persistent
     if (session()->has('recentpage_form')) {
       return redirect('anime/recent/'.session()->get('recentpage_form'));
     } else {
@@ -71,7 +73,7 @@ class AnimeController extends Controller
   public function recentGrid() {
     session()->put('recentpage_form', 'grid');
     return view('anime.recent_grid', [
-      'recent' => $this->recentShows(192, true)
+      'recent' => $this->recentShows(128, true)
     ]);
   }
 
