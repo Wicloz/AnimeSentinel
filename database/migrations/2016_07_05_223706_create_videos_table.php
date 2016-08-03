@@ -20,7 +20,7 @@ class CreateVideosTable extends Migration
             $table->enum('translation_type', ['sub', 'dub']);           // episode
             $table->integer('mirror')->unsinged();                      // video
 
-            $table->integer('episode_num');                             // episode
+            $table->float('episode_num');                               // episode
             $table->string('link_stream', 1024);                        // video
             $table->string('link_episode', 1024);                       // episode
             $table->string('notes');                                    // video
