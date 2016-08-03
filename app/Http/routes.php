@@ -41,6 +41,7 @@ Route::post('/anime/update', 'ShowController@update'); //TODO
 // Stream Pages
 Route::get('/anime/{show}/{translation_type}/episode-{episode_num}/{streamer}/{mirror}', 'EpisodeController@stream2');
 Route::get('/stream/{video}', 'EpisodeController@stream');
+Route::get('/stream/{video}/video', 'EpisodeController@static');
 
 // Profile Pages (TODO)
 Route::get('/dashboard', 'ProfileController@dashboard');

@@ -77,4 +77,19 @@ class EpisodeController extends Controller
       'video' => $video
     ]);
   }
+
+  /**
+   * Show a page linking to the video.
+   * This can be used to provide a static link to the source material.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function static(Video $video) {
+    if (!visitPage('video_'.$video->episode_id)) {
+      $video->hits++;
+      $video->save();
+    }
+    // TODO: this doesn't work
+    response()->file($video->link_video);
+  }
 }
