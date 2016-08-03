@@ -27,7 +27,7 @@ class VideoManager
    */
   public static function findVideoLink($video) {
     $class = '\\App\\AnimeSentinel\\Connectors\\'.$video->streamer_id;
-    return $class::videoLink($video);
+    return $class::findVideoLink($video);
   }
 
   /**
