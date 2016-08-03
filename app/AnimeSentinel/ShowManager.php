@@ -30,7 +30,6 @@ class ShowManager
       $show = Show::create([
         'title' => $title,
         'alts' => [$title],
-        'genres' => [],
         'description' => 'No Description Available',
       ]);
     }

@@ -17,7 +17,7 @@ class CreateShowsTable extends Migration
             $table->integer('mal_id')->unsigned()->nullable()->default(null)->unique();
             $table->string('thumbnail_id')->nullable()->default(null);
             $table->string('title');
-            $table->text('alts');
+            $table->text('alts')->default('[]');
             $table->text('description');
             $table->enum('type', [
               'tv',
@@ -25,8 +25,8 @@ class CreateShowsTable extends Migration
               'ona',
               'movie',
               'special',
-            ]);
-            $table->text('genres');
+            ])->nullable()->default(null);
+            $table->text('genres')->default('[]');
             $table->integer('episode_amount')->nullable()->default(null);
             $table->integer('episode_duration')->nullable()->default(null);
             $table->date('airing_start')->nullable()->default(null);
