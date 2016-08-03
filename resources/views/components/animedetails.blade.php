@@ -6,12 +6,19 @@
   @endif
 </div>
 <div class="content-generic">
-  <p><strong>Type:</strong> {{ ucwords($details->type) }}</p>
+  <p>
+    <strong>Type:</strong>
+    {{ isset($details->type) ? ucwords($details->type) : 'Unknown' }}
+  </p>
   <p>
     <strong>Genres:</strong>
-    @foreach($details->genres as $index => $genre)
-      {{ ucwords($genre) }}{{ $index === count($details->genres) -1 ? '' : ',' }}
-    @endforeach
+    @if(count($details->genres) > 0)
+      @foreach($details->genres as $index => $genre)
+        {{ ucwords($genre) }}{{ $index === count($details->genres) -1 ? '' : ',' }}
+      @endforeach
+    @else
+      Unknown
+    @endif
   </p>
   <p>
     <strong>Status:</strong>
@@ -25,7 +32,10 @@
       Airing
     @endif
   </p>
-  <p><strong>Episodes:</strong> {{ $details->episode_amount or 'Unknown' }}</p>
+  <p>
+    <strong>Episodes:</strong>
+    {{ $details->episode_amount or 'Unknown' }}
+  </p>
   <p>
     <strong>Duration:</strong>
     @if(isset($details->episode_duration))

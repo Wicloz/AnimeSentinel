@@ -6,9 +6,11 @@
     <img class="img-thumbnail details-thumbnail" src="{{ url('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
   </a>
   @include('components.animedetails', ['details' => $show, 'link' => true])
-  <div class="content-header hide-md">
-    <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
-  </div>
+  @if(isset($show->mal_url))
+    <div class="content-header hide-md">
+      <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
+    </div>
+  @endif
 @endsection
 
 @section('content-center')
@@ -58,9 +60,11 @@
     <div class="content-close"></div>
   </div>
 
-  <div class="content-header">
-    <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
-  </div>
+  @if(isset($show->mal_url))
+    <div class="content-header">
+      <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
+    </div>
+  @endif
   @include('components.malwidget_big', ['mal_url' => $show->mal_url])
 
   <div class="content-header">Comments</div>

@@ -1,6 +1,8 @@
-<div class="content-generic flowfix">
-  <div class="mal-widget">
-    <iframe src="{{ $mal_url }}" scrolling="no"></iframe>
+@if(isset($mal_url))
+  <div class="content-generic flowfix">
+    <div class="mal-widget">
+      <iframe src="{{ $mal_url }}" scrolling="no"></iframe>
+    </div>
+    <div class="content-close"></div>
   </div>
-  <div class="content-close"></div>
-</div>
+@endif
