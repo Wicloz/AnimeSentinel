@@ -34,6 +34,9 @@ class VideoManager
    * Removes and adds all videos for the requested show and episode.
    */
   public static function reprocessEpsiode($show, $translation_types, $episode_num, $streamer_id = null) {
+    // Mark show as not initialised
+    $show->videos_initialised = false;
+    $show->save();
     // Grab all streamers data
     $streamers = Streamer::all();
 
@@ -51,9 +54,6 @@ class VideoManager
       }
     }
 
-    // Mark show as not initialised
-    $show->videos_initialised = false;
-    $show->save();
     // Remove all existing videos for this episode
     foreach ($translation_types as $translation_type) {
       if ($streamer_id === null) {
