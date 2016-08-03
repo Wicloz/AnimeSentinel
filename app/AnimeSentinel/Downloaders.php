@@ -23,7 +23,7 @@ class Downloaders
       curl_close($curl);
     }
 
-    return $response;
+    return html_entity_decode($response);
   }
 
   /**
