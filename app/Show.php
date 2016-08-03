@@ -168,7 +168,11 @@ class Show extends Model
   * @return string
   */
   public function getMalUrlAttribute() {
-    return 'http://myanimelist.net/anime/'.$this->mal_id; // NOTE: MAL does not have https
+    if (isset($this->mal_id)) {
+      return 'http://myanimelist.net/anime/'.$this->mal_id;
+    } else {
+      return null;
+    }
   }
 
   /**
