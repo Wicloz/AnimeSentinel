@@ -91,7 +91,8 @@ class Show extends Model
   public function scopeWithTitle($query, $title) {
     $title = str_replace('&', '%', str_fuzz($title));
     $title = preg_replace('/[α-ωΑ-Ω]/u', '\\u03__', $title);
-    return $query->where('alts', 'like', '%'.json_encode($title).'%');
+    $title = preg_replace('/([^\\\\])\\\\([^\\\\])/', '$1\\\\\\\\$2', json_encode($title));
+    return $query->where('alts', 'like', '%'.$title.'%');
   }
 
   /**
