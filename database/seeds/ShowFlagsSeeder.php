@@ -42,7 +42,7 @@ class ShowFlagsSeeder extends Seeder
     $xxxholicmovie->alt_rules = [
       "xxxHOLiC: Manatsu no Yoru no Yume" => "+",
     ];
-    $xxxholic_movie->save();
+    $xxxholicmovie->save();
 
     $psis2 = ShowFlag::findOrNew(33255);
     $psis2->mal_id = 33255;
