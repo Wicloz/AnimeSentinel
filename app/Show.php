@@ -89,8 +89,9 @@ class Show extends Model
    * @return \Illuminate\Database\Eloquent\Builder
    */
   public function scopeWithTitle($query, $title) {
+    $title = str_replace('&', '%', str_fuzz($title));
+    $title = preg_replace('/[α-ωΑ-Ω]/u', '\\u03__', $title);
     return $query->where('alts', 'like', '%'.json_encode($title).'%');
-    //TODO: make this work properly
   }
 
   /**

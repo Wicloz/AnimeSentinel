@@ -72,9 +72,7 @@ function str_get_between($string, $start, $end = '', $last = false) {
 }
 
 function match_fuzzy($title1, $title2) {
-  $title1 = str_replace('-', '', str_replace('-to-', '', str_replace('-and-', '', str_urlify($title1))));
-  $title2 = str_replace('-', '', str_replace('-to-', '', str_replace('-and-', '', str_urlify($title2))));
-  return $title1 === $title2;
+  return str_fuzz($title1) === str_fuzz($title2);
 }
 
 function str_starts_with($haystack, $needle) {
@@ -85,6 +83,10 @@ function str_starts_with($haystack, $needle) {
 function str_ends_with($haystack, $needle) {
     // search forward starting from end minus needle length characters
     return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== false);
+}
+
+function str_fuzz($string) {
+  return str_replace(' to ', '&', str_replace(' and ', '&', mb_strtolower(trim($string))));
 }
 
 function str_urlify($string) {
