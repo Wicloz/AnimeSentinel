@@ -64,11 +64,11 @@ class kissanime
       if (strpos($episode['link_episode'], '/Episode-') !== false) {
         $ep_num = str_get_between($episode['episode_num'], 'Episode ', ' ');
         if (!isset($lowest_ep) || $ep_num < $lowest_ep) {
-          $lowest_ep = $ep_num;
+          $lowest_ep = (int) $ep_num;
         }
       }
     }
-    if (!isset($lowest_ep)) {
+    if (!isset($lowest_ep) || $lowest_ep === 0) {
       $lowest_ep = 1;
     }
 
@@ -179,11 +179,11 @@ class kissanime
         if (strpos($episode['link_episode'], '/Episode-') !== false) {
           $ep_num = str_get_between($episode['episode_num'], 'Episode ', ' ');
           if (!isset($lowest_ep) || $ep_num < $lowest_ep) {
-            $lowest_ep = $ep_num;
+            $lowest_ep = (int) $ep_num;
           }
         }
       }
-      if (!isset($lowest_ep)) {
+      if (!isset($lowest_ep) || $lowest_ep === 0) {
         $lowest_ep = 1;
       }
 
@@ -196,7 +196,7 @@ class kissanime
         if ($episode_num === false) {
           $episode_num = str_get_between($item['episode_num'], 'Episode ', '');
         }
-        $item['episode_num'] = $episode_num;
+        $item['episode_num'] = $episode_num - $lowest_ep + 1;
       }
 
       else {
