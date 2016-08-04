@@ -81,7 +81,7 @@ class MyAnimeList
     }
 
     // If that fails, try using the regular search
-    $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace('-', '+', str_urlify($title)));
+    $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace(' ', '+', $title));
     $shows = array_slice(Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
       'mal_id' => [true, 'http://myanimelist.net/anime/', '/'],
     ]), 0, 8);
