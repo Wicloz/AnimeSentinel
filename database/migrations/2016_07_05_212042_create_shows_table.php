@@ -33,6 +33,7 @@ class CreateShowsTable extends Migration
             $table->date('airing_end')->nullable()->default(null);
             $table->bigInteger('hits')->default(0);
             $table->boolean('videos_initialised')->default(false);
+            $table->dateTime('cache_updated_at');
             $table->timestamps();
         });
     }

@@ -34,6 +34,10 @@ class ShowManager
       ]);
     }
 
+    // Set the cache updated time
+    $show->cache_updated_at = Carbon::now();
+    $show->save();
+
     // Call the function to find existing episodes
     StreamingManager::findVideosForShow($show);
 
@@ -68,14 +72,14 @@ class ShowManager
       Self::updateThumbnail($show);
     }
 
+    // Set the cache updated time
+    $show->cache_updated_at = Carbon::now();
+    $show->save();
+
     // Call the function to find existing episodes if requested
     if ($episodes) {
       StreamingManager::findVideosForShow($show);
     }
-
-    // Set the updated_at time
-    $show->updated_at = Carbon::now();
-    $show->save();
 
     // Return the show object
     return $show;
