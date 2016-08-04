@@ -91,10 +91,11 @@ class StreamingManager
               if ($show && $show->mal_id !== null) {
                 $addedShows[] = $show->id;
               }
+              $show = Show::withTitle($item['title'])->first();
             }
 
-            // Otherwise, if this show is not new or deleted and the epsiode does not exist, find all videos for the data
-            if ($show && !in_array($show->id, $addedShows)) {
+            // Otherwise, if this show is not new and the epsiode does not exist, find all videos for the data
+            if (!in_array($show->id, $addedShows)) {
               if (!isset($item['translation_type']) && (
                 $show->videos()->episode('sub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null ||
                 $show->videos()->episode('dub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null
