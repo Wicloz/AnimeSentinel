@@ -8,10 +8,10 @@
     <a class="pull-right" href="{{ url('/anime/recent/list') }}"><img class="recent-type-icon" src="{{ url('/media/icons/list.png') }}" alt="List"></a>
   </div>
 
-  @for ($i = 0; $i < count($recent); $i += 4)
+  @for ($i = 0; $i < count($recent); $i += 6)
     <div class="row">
-      @for ($j = 0; $j < 4 && $i + $j < count($recent); $j++)
-        <div class="col-sm-3">
+      @for ($j = 0; $j < 6 && $i + $j < count($recent); $j++)
+        <div class="col-sm-2">
           <div class="synblock">
             <div class="synblock-title">
               <a href="{{ $recent[$i + $j]->show->details_url }}">{{ $recent[$i + $j]->show->title }}</a>
