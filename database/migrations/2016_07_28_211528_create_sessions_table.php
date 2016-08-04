@@ -19,7 +19,6 @@ class CreateSessionsTable extends Migration
             $table->text('user_agent')->nullable();
             $table->text('payload');
             $table->integer('last_activity');
-            $table->timestamps();
         });
     }
 
