@@ -27,7 +27,7 @@ class ShowFlagsSeeder extends Seeder
     $momokuri->mal_id = 30014;
     $momokuri->alt_rules = [
       "Momokuri 1" => "+",
-      "Momokuri TV" => "+",
+      "Momokuri (TV)" => "+",
     ];
     $momokuri->save();
 
@@ -57,7 +57,7 @@ class ShowFlagsSeeder extends Seeder
     $psi->alt_rules = [
       "Saiki Kusuo no Psi Nan" => "-",
       "Saiki Kusuo no Ψ-nan" => "-",
-      "Saiki Kusuo no nan" => "+",
+      "Saiki Kusuo no Nan" => "+",
     ];
     $psi->save();
 
@@ -88,5 +88,12 @@ class ShowFlagsSeeder extends Seeder
       "Danganronpa 3 - Future Arc" => "+",
     ];
     $danganronpa3futurearc->save();
+
+    $pasmminnadeutau = ShowFlag::findOrNew(32160);
+    $pasmminnadeutau->mal_id = 32160;
+    $pasmminnadeutau->alt_rules = [
+      "Precure All Stars Movie: Minna de Utau♪: Kiseki no Mahou" => "+",
+    ];
+    $pasmminnadeutau->save();
   }
 }
