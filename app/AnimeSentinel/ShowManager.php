@@ -38,8 +38,8 @@ class ShowManager
     $show->cache_updated_at = Carbon::now();
     $show->save();
 
-    // Call the function to find existing episodes
-    StreamingManager::findVideosForShow($show);
+    // Queue the finding of videos
+    dispatch(new \App\Jobs\AnimeFindVideos($show));
 
     // Return the show object
     return $show;
@@ -78,9 +78,9 @@ class ShowManager
     $show->cache_updated_at = Carbon::now();
     $show->save();
 
-    // Call the function to find existing episodes if requested
+    // Queue the finding of videos if requested
     if ($episodes) {
-      StreamingManager::findVideosForShow($show);
+      dispatch(new \App\Jobs\AnimeFindVideos($show));
     }
 
     // Return the show object

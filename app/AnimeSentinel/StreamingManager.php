@@ -94,16 +94,16 @@ class StreamingManager
               $show = Show::withTitle($item['title'])->first();
             }
 
-            // Otherwise, if this show is not new and the epsiode does not exist, find all videos for the data
+            // Otherwise, if this show is not new and the epsiode does not exist, queue the finding of all videos for the data
             if (!in_array($show->id, $addedShows)) {
               if (!isset($item['translation_type']) && (
                 $show->videos()->episode('sub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null ||
                 $show->videos()->episode('dub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null
               )) {
-                VideoManager::reprocessEpsiode($show, ['sub', 'dub'], (int) $item['episode_num'], $streamer->id);
+                dispatch(new \App\Jobs\AnimeReprocessEpisode($show, ['sub', 'dub'], (int) $item['episode_num'], $streamer->id));
               }
               elseif ($show->videos()->episode($item['translation_type'], $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null) {
-                VideoManager::reprocessEpsiode($show, [$item['translation_type']], (int) $item['episode_num'], $streamer->id);
+                dispatch(new \App\Jobs\AnimeReprocessEpisode($show, [$item['translation_type']], (int) $item['episode_num'], $streamer->id));
               }
             }
           }
