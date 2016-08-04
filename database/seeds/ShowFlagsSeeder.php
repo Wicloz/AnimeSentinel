@@ -103,5 +103,12 @@ class ShowFlagsSeeder extends Seeder
       "Yuu Gi Ou! Arc-V 5" => "+",
     ];
     $yugioharcv->save();
+
+    $nariagirls = ShowFlag::findOrNew(33394);
+    $nariagirls->mal_id = 33394;
+    $nariagirls->alt_rules = [
+      "Mahou Shoujo Naria Girls" => "+",
+    ];
+    $nariagirls->save();
   }
 }
