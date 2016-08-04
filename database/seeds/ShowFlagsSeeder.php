@@ -95,5 +95,13 @@ class ShowFlagsSeeder extends Seeder
       "Precure All Stars Movie: Minna de Utau♪: Kiseki no Mahou" => "+",
     ];
     $pasmminnadeutau->save();
+
+    $yugioharcv = ShowFlag::findOrNew(21639);
+    $yugioharcv->mal_id = 21639;
+    $yugioharcv->alt_rules = [
+      "Yugioh" => "-",
+      "Yuu Gi Ou! Arc-V 5" => "+",
+    ];
+    $yugioharcv->save();
   }
 }
