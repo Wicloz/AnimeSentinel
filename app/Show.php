@@ -89,8 +89,11 @@ class Show extends Model
    * @return \Illuminate\Database\Eloquent\Builder
    */
   public function scopeWithTitle($query, $title) {
+    // fuzz title, allows matching of ' and ', ' to ' and '&' to each other
     $title = str_replace('&', '%', str_fuzz($title));
+    // allow case insensitive matching of greek characters
     $title = preg_replace('/[α-ωΑ-Ω]/u', '\\u03__', $title);
+    // encode to json, then escape all unescaped \'s
     $title = preg_replace('/([^\\\\])\\\\([^\\\\])/', '$1\\\\\\\\$2', json_encode($title));
     return $query->where('alts', 'like', '%'.$title.'%');
   }
