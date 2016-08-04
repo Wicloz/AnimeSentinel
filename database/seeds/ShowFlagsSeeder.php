@@ -89,13 +89,6 @@ class ShowFlagsSeeder extends Seeder
     ];
     $danganronpa3futurearc->save();
 
-    $pasmminnadeutau = ShowFlag::findOrNew(32160);
-    $pasmminnadeutau->mal_id = 32160;
-    $pasmminnadeutau->alt_rules = [
-      "Precure All Stars Movie: Minna de Utau♪: Kiseki no Mahou" => "+",
-    ];
-    $pasmminnadeutau->save();
-
     $yugioharcv = ShowFlag::findOrNew(21639);
     $yugioharcv->mal_id = 21639;
     $yugioharcv->alt_rules = [
