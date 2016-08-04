@@ -41,6 +41,33 @@ class AnimeController extends Controller
   }
 
   /**
+   * Show a page listing all anime in our database.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function list(Request $request) {
+    $showsPerPage = 52;
+    if (!isset($request->page)) {
+      return redirect(url('/anime').'?page=1');
+    }
+
+    //$request->page = (int) $request->page;
+    if ($request->page < 1) {
+      abort(404);
+    }
+    $shows = Show::orderBy('title', 'asc')->skip(($request->page - 1) * $showsPerPage)->take($showsPerPage)->get();
+    if (count($shows) == 0) {
+      abort(404);
+    }
+
+    return view('anime.list', [
+      'left' => $request->page > 1,
+      'right' => $request->page < (Show::count() / $showsPerPage),
+      'shows' => $shows,
+    ]);
+  }
+
+  /**
    * Reroute to the last used form of the 'recently uploaded' page.
    *
    * @return \Illuminate\Http\Response
