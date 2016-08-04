@@ -52,21 +52,6 @@ class Video extends Model
   }
 
   /**
-   * Return all video's which are 'the same'
-   *
-   * @return array
-   */
-  public static function sameVideo($video) {
-    return Self::where('streamer_id', $video->streamer_id)
-               ->where('show_id', $video->show_id)
-               ->where('translation_type', $video->translation_type)
-               ->where('episode_num', $video->episode_num)
-               ->where('link_video', $video->link_video)
-               ->where('resolution', $video->resolution)
-               ->get();
-  }
-
-  /**
   * Get the show this video belongs to.
   *
   * @return \Illuminate\Database\Eloquent\Relations\Relation
