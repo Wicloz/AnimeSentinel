@@ -49,7 +49,9 @@ class ShowManager
    * Updates the cached database information for the requested show.
    * If episodes is set to true, also updates episode information.
    */
-  public static function updateShowCache($show, $episodes = false) {
+  public static function updateShowCache($show_id, $episodes = false) {
+    $show = Show::find($show_id);
+
     // If the mal id is not known yet, try to find it first
     if (!isset($show->mal_id)) {
       $mal_id = MyAnimeList::getMalIdForTitle($show->title);
