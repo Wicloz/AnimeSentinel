@@ -45,7 +45,7 @@ class Show extends Model
    *
    * @var array
    */
-  protected $dates = ['airing_start', 'airing_end', 'created_at', 'updated_at'];
+  protected $dates = ['airing_start', 'airing_end', 'cache_updated_at', 'created_at', 'updated_at'];
 
   /**
   * Get all videos related to this show.
