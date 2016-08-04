@@ -93,7 +93,7 @@ class ShowFlagsSeeder extends Seeder
     $yugioharcv->mal_id = 21639;
     $yugioharcv->alt_rules = [
       "Yugioh" => "-",
-      "Yuu Gi Ou! Arc-V 5" => "+",
+      "Yu☆Gi☆Oh! Arc-V - 5" => "+",
     ];
     $yugioharcv->save();
 
@@ -103,5 +103,33 @@ class ShowFlagsSeeder extends Seeder
       "Mahou Shoujo Naria Girls" => "+",
     ];
     $nariagirls->save();
+
+    $graymanhallow = ShowFlag::findOrNew(32370);
+    $graymanhallow->mal_id = 32370;
+    $graymanhallow->alt_rules = [
+      "D.Gray-man 2016" => "+",
+    ];
+    $graymanhallow->save();
+
+    $puzzledragons = ShowFlag::findOrNew(32772);
+    $puzzledragons->mal_id = 32772;
+    $puzzledragons->alt_rules = [
+      "Puzzle and Dragons" => "+",
+    ];
+    $puzzledragons->save();
+
+    $souseinoonmyouji = ShowFlag::findOrNew(32105);
+    $souseinoonmyouji->mal_id = 32105;
+    $souseinoonmyouji->alt_rules = [
+      "Sousei no Onmyouji - Twin Star Exorcists" => "+",
+    ];
+    $souseinoonmyouji->save();
+
+    $zestiriax = ShowFlag::findOrNew(30911);
+    $zestiriax->mal_id = 30911;
+    $zestiriax->alt_rules = [
+      "Tales of Zestiria the X Cross" => "+",
+    ];
+    $zestiriax->save();
   }
 }
