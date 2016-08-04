@@ -118,6 +118,10 @@ class kissanime
       $episode['notes'] = str_get_between($episode['episode_num'], 'Movie ', ' online', true);
       $episode['episode_num'] = 1;
     }
+    elseif (strpos($episode['link_episode'], '/Special?') !== false) {
+      $episode['notes'] = str_get_between($episode['episode_num'], 'Special ', ' online', true);
+      $episode['episode_num'] = 1;
+    }
     else {
       return false;
     }
