@@ -17,23 +17,50 @@ class kissanime
    */
   public static function seek($show, $req_episode_num = null) {
     $videos = [];
+    $processedLinks = [];
 
     // Try all alts to get a valid episode page
     foreach ($show->alts as $alt) {
-      $page = Downloaders::downloadPage('http://kissanime.to/Anime/'.str_urlify($alt));
+      // Download search results page
+      $page = Downloaders::downloadPage('http://kissanime.to/Search/Anime?keyword='.str_replace(' ', '+', $alt));
+
+      // First check whether we already have an episode page
       if (strpos($page, '<meta name="description" content="Watch online and download ') !== false) {
-        $videos = array_merge($videos, Self::seekEpisodes($page, $show, $alt, [
-          'link_stream' => 'http://kissanime.to/Anime/'.str_urlify($alt),
-          'translation_type' => 'sub',
-        ], $req_episode_num));
+        $link_stream = str_get_between($page, '<a Class="bigChar" href="', '">');
+        if (!in_array($link_stream, $processedLinks)) {
+          // Search for videos
+          $videos = array_merge($videos, Self::seekEpisodes($page, $show, $alt, [
+            'link_stream' => 'http://kissanime.to'.$link_stream,
+            'translation_type' => (strpos(str_get_between($page, '<title>', '</title>'), '(Dub)') !== false ? 'dub' : 'sub'),
+          ], $req_episode_num));
+          $processedLinks[] = $link_stream;
+          continue;
+        }
       }
 
-      $page = Downloaders::downloadPage('http://kissanime.to/Anime/'.str_urlify($alt).'-dub');
-      if (strpos($page, '<meta name="description" content="Watch online and download ') !== false) {
-        $videos = array_merge($videos, Self::seekEpisodes($page, $show, $alt, [
-          'link_stream' => 'http://kissanime.to/Anime/'.str_urlify($alt).'-dub',
-          'translation_type' => 'dub',
-        ], $req_episode_num));
+      // Otherwise, scrape and process search results
+      $results = Helpers::scrape_page(str_get_between($page, '<tr style="height: 10px">', '</table>'), '</tr>', [
+        'link_stream' => [true, '<a class="bigChar" href="', '">'],
+        'title' => [false, '<a class="bigChar" href="{{link_stream}}">', '<'],
+      ]);
+      foreach ($results as $result) {
+        // Determine translation type and clean up title
+        $result['translation_type'] = 'sub';
+        $result['title'] = trim(str_replace('(Sub)', '', $result['title']));
+        if (strpos($result['title'], '(Dub)') !== false) {
+          $result['translation_type'] = 'dub';
+        }
+        $result['title'] = trim(str_replace('(Dub)', '', $result['title']));
+
+        if (match_fuzzy($alt, $result['title']) && !in_array($result['link_stream'], $processedLinks)) {
+          // Search for videos
+          $page = Downloaders::downloadPage('http://kissanime.to'.$result['link_stream']);
+          $videos = array_merge($videos, Self::seekEpisodes($page, $show, $alt, [
+            'link_stream' => 'http://kissanime.to'.$result['link_stream'],
+            'translation_type' => $result['translation_type'],
+          ], $req_episode_num));
+          $processedLinks[] = $result['link_stream'];
+        }
       }
     }
 
