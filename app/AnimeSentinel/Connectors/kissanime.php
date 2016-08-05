@@ -52,7 +52,14 @@ class kissanime
         }
         $result['title'] = trim(str_replace('(Dub)', '', $result['title']));
 
-        if (match_fuzzy($alt, $result['title']) && !in_array($result['link_stream'], $processedLinks)) {
+        $matches = false;
+        foreach ($show->alts as $alt2) {
+          if (match_fuzzy($alt2, $result['title'])) {
+            $matches = true;
+            break;
+          }
+        }
+        if ($matches && !in_array($result['link_stream'], $processedLinks)) {
           // Search for videos
           $page = Downloaders::downloadPage('http://kissanime.to'.$result['link_stream']);
           $videos = array_merge($videos, Self::seekEpisodes($page, $show, $alt, [
