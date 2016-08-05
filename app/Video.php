@@ -159,15 +159,14 @@ class Video extends Model
   *
   * @return string
   */
-  public function getLinkVideoAttribute($value) {
+  public function getLinkVideoUpdatedAttribute() {
     $video = Video::find($this->id);
     // TODO: proper check
     if ($video->updated_at->diffInHours(Carbon::now()) >= 2) {
-      $value = VideoManager::findVideoLink($video);
+      $video->link_video = VideoManager::findVideoLink($video);
       $video->updated_at = Carbon::now();
-      $video->link_video = $value;
       $video->save();
     }
-    return $value;
+    return $video->link_video;
   }
 }
