@@ -42,13 +42,18 @@ class Video extends Model
   /**
    * Overwrite the find method to properly handle the compound key.
    */
-  public static function find(array $data = []) {
-    return Self::where('show_id', $data['show_id'])
-               ->where('translation_type', $data['translation_type'])
-               ->where('episode_num', $data['episode_num'])
-               ->where('streamer_id', $data['streamer_id'])
-               ->where('mirror', $data['mirror'])
-               ->first();
+  public static function find($data) {
+    if (is_array($data)) {
+      return Self::where('show_id', $data['show_id'])
+                 ->where('translation_type', $data['translation_type'])
+                 ->where('episode_num', $data['episode_num'])
+                 ->where('streamer_id', $data['streamer_id'])
+                 ->where('mirror', $data['mirror'])
+                 ->first();
+    }
+    else {
+      return Self::where('id', $data)->first();
+    }
   }
 
   /**
@@ -155,12 +160,13 @@ class Video extends Model
   * @return string
   */
   public function getLinkVideoAttribute($value) {
+    $video = Video::find($this->id);
     // TODO: proper check
-    if (isset($this->updated_at) && $this->updated_at->diffInHours(Carbon::now()) >= 2) {
-      $value = VideoManager::findVideoLink($this);
-      $this->updated_at = Carbon::now();
-      $this->link_video = $value;
-      $this->save();
+    if ($video->updated_at->diffInHours(Carbon::now()) >= 2) {
+      $value = VideoManager::findVideoLink($video);
+      $video->updated_at = Carbon::now();
+      $video->link_video = $value;
+      $video->save();
     }
     return $value;
   }
