@@ -11,7 +11,7 @@ class ShowManager
    * Adds the show with the requested title to the database.
    * Will also search for any currently existing episodes.
    */
-  public static function addShowWithTitle($title) {
+  public static function addShowWithTitle($title, $queue = 'default') {
     // Confirm this show isn't already in our databse
     if (!empty(Show::withTitle($title)->first())) {
       flash_error('The requested show has already been added to the database.');
@@ -39,7 +39,7 @@ class ShowManager
     $show->save();
 
     // Queue the finding of videos
-    dispatch(new \App\Jobs\AnimeFindVideos($show));
+    dispatch((new \App\Jobs\AnimeFindVideos($show))->onQueue($queue));
 
     // Return the show object
     return $show;
@@ -49,7 +49,7 @@ class ShowManager
    * Updates the cached database information for the requested show.
    * If episodes is set to true, also updates episode information.
    */
-  public static function updateShowCache($show_id, $episodes = false) {
+  public static function updateShowCache($show_id, $episodes = false, $queue = 'default') {
     $show = Show::find($show_id);
 
     // If the mal id is not known yet, try to find it first
@@ -80,7 +80,7 @@ class ShowManager
 
     // Queue the finding of videos if requested
     if ($episodes) {
-      dispatch(new \App\Jobs\AnimeFindVideos($show));
+      dispatch((new \App\Jobs\AnimeFindVideos($show))->onQueue($queue));
     }
 
     // Return the show object
