@@ -19,11 +19,11 @@ class Downloaders
       curl_setopt($curl, CURLOPT_URL, $url);
       curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-      $response = curl_exec($curl);
+      $response = html_entity_decode(curl_exec($curl));
       curl_close($curl);
     }
 
-    return html_entity_decode($response);
+    return $response;
   }
 
   /**
@@ -60,7 +60,7 @@ class Downloaders
       'Cookie: '.$cf_data->cookies,
       'User-Agent: '.$cf_data->agent,
     ]);
-    $response = curl_exec($curl);
+    $response = html_entity_decode(curl_exec($curl));
     curl_close($curl);
 
     if (strpos($response, '<title>Please wait 5 seconds...</title>') !== false) {
