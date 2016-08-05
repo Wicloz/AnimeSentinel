@@ -49,8 +49,10 @@ class AnimeController extends Controller
     if (!isset($request->page)) {
       return redirect(url('/anime').'?page=1');
     }
+    if ((int) $request->page != $request->page) {
+      return redirect(url('/anime').'?page='. (int) $request->page);
+    }
 
-    //$request->page = (int) $request->page;
     if ($request->page < 1) {
       abort(404);
     }
