@@ -149,13 +149,21 @@ class kissanime
       $episode['notes'] = str_get_between($episode['episode_num'], 'Special ', ' online', true);
       $episode['episode_num'] = 1;
     }
+    elseif (strpos($episode['link_episode'], '/OVA?') !== false) {
+      $episode['notes'] = str_get_between($episode['episode_num'], 'OVA ', ' online', true);
+      $episode['episode_num'] = 1;
+    }
+    elseif (strpos($episode['link_episode'], '/ONA?') !== false) {
+      $episode['notes'] = str_get_between($episode['episode_num'], 'ONA ', ' online', true);
+      $episode['episode_num'] = 1;
+    }
     else {
       return false;
     }
     $episode['episode_num'] -= $decrement;
     $episode['notes'] = str_replace('[', '(', str_replace(']', ')', $episode['notes']));
     $episode['link_episode'] = 'http://kissanime.to'.$episode['link_episode'];
-    $episode['uploadtime'] = Carbon::createFromFormat('n/j/Y', trim($episode['uploadtime']))->hour(12)->minute(0)->second(0);
+    $episode['uploadtime'] = Carbon::createFromFormat('n/j/Y', trim($episode['uploadtime']));
     return $episode;
   }
 

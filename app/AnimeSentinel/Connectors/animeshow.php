@@ -89,7 +89,7 @@ class animeshow
   private static function seekCompleteEpisode($episode, $alt) {
     // Complete episode data
     $episode['link_episode'] = 'http://animeshow.tv/'.str_urlify($alt).'-episode-'.$episode['episode_num'];
-    $episode['uploadtime'] = Carbon::createFromFormat('d M Y', $episode['uploadtime'])->hour(12)->minute(0)->second(0);
+    $episode['uploadtime'] = Carbon::createFromFormat('d M Y', $episode['uploadtime']);
     return $episode;
   }
 
