@@ -80,14 +80,14 @@ class StreamingManager
           $show = Show::withTitle($item['title'])->first();
           // Add the show if it does not exist
           if ($show === null) {
-            $show = ShowManager::addShowWithTitle($item['title'], 'periodic');
+            $show = ShowManager::addShowWithTitle($item['title'], 'periodic_high');
             $addedShows[] = $show->id;
           }
 
           else {
             // Try to update the show cache if it does not have a mal id set
             if ($show->mal_id === null) {
-              $show = ShowManager::updateShowCache($show, false, 'periodic');
+              $show = ShowManager::updateShowCache($show, false, 'periodic_high');
               if ($show && $show->mal_id !== null) {
                 $addedShows[] = $show->id;
               }
@@ -100,10 +100,10 @@ class StreamingManager
                 $show->videos()->episode('sub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null ||
                 $show->videos()->episode('dub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null
               )) {
-                dispatch((new \App\Jobs\AnimeReprocessEpisode($show, ['sub', 'dub'], (int) $item['episode_num'], $streamer->id))->onQueue('periodic'));
+                dispatch((new \App\Jobs\AnimeReprocessEpisode($show, ['sub', 'dub'], (int) $item['episode_num'], $streamer->id))->onQueue('periodic_high'));
               }
               elseif ($show->videos()->episode($item['translation_type'], $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null) {
-                dispatch((new \App\Jobs\AnimeReprocessEpisode($show, [$item['translation_type']], (int) $item['episode_num'], $streamer->id))->onQueue('periodic'));
+                dispatch((new \App\Jobs\AnimeReprocessEpisode($show, [$item['translation_type']], (int) $item['episode_num'], $streamer->id))->onQueue('periodic_high'));
               }
             }
           }

@@ -20,6 +20,6 @@ class FindRecentVideos extends Job implements ShouldQueue
    */
   public function handle() {
     StreamingManager::findRecentEpisodes();
-    dispatch((new FindRecentVideos)->onQueue('periodic')->delay(300));
+    dispatch((new FindRecentVideos)->onQueue('periodic_low')->delay(300));
   }
 }
