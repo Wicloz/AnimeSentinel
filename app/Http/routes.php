@@ -1,6 +1,7 @@
 <?php
 
 //php artisan queue:listen --queue=periodic_high,periodic_low,default --timeout=0 --memory=0
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -26,6 +27,7 @@ Route::get('/streamers', 'StreamersController@list'); //TODO
 Route::get('/streamers/{streamer}', 'StreamersController@details'); //TODO
 
 // Anime Listings
+Route::get('/anime', 'AnimeController@list');
 Route::get('/anime/recent', 'AnimeController@recent');
 Route::get('/anime/recent/list', 'AnimeController@recentList');
 Route::get('/anime/recent/grid', 'AnimeController@recentGrid');
@@ -37,7 +39,6 @@ Route::get('/anime/{show}/{translation_type}/episode-{episode_num}', 'EpisodeCon
 
 // Show Modifications
 Route::post('/anime/add', 'ShowController@insert');
-Route::post('/anime/update', 'ShowController@update'); //TODO
 
 // Stream Pages
 Route::get('/anime/{show}/{translation_type}/episode-{episode_num}/{streamer}/{mirror}', 'EpisodeController@stream2');
