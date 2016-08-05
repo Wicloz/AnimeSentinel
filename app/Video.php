@@ -22,7 +22,7 @@ class Video extends Model
    *
    * @var array
    */
-  protected $dates = ['uploadtime', 'created_at', 'updated_at'];
+  protected $dates = ['uploadtime', 'cache_updated_at', 'created_at', 'updated_at'];
 
   /**
    * Overwrite the save method to properly handle the compound key.
@@ -162,9 +162,9 @@ class Video extends Model
   public function getLinkVideoUpdatedAttribute() {
     $video = Video::find($this->id);
     // TODO: proper check
-    if ($video->updated_at->diffInHours(Carbon::now()) >= 2) {
+    if ($video->cache_updated_at->diffInHours(Carbon::now()) >= 2) {
       $video->link_video = VideoManager::findVideoLink($video);
-      $video->updated_at = Carbon::now();
+      $video->cache_updated_at = Carbon::now();
       $video->save();
     }
     return $video->link_video;

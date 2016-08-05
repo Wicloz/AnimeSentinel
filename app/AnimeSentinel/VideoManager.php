@@ -9,9 +9,11 @@ class VideoManager
 {
   /**
    * Saves the passed in video objects after:
+   * 1. Setting the cache_updated_at property to the current date and time
    */
   public static function saveVideos($videos) {
     foreach ($videos as $video) {
+      $video->cache_updated_at = Carbon::now();
       $video->save();
     }
   }
