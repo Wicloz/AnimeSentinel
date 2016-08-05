@@ -23,20 +23,12 @@
   <div class="content-header">Episodes</div>
   <div class="content-generic">
     <h2>Subbed</h2>
-    @if(!$show->videos_initialised)
-      <ul class="list-group episode-list">
-        <li class="list-group-item">
-          Searching for episodes ...
-        </li>
-      </ul>
-    @elseif(count($show->episodes('sub')) === 0)
-      <ul class="list-group episode-list">
+    <ul class="list-group episode-list">
+      @if($show->videos_initialised && count($show->episodes('sub')) === 0)
         <li class="list-group-item">
           No Episodes Found
         </li>
-      </ul>
-    @else
-      <ul class="list-group episode-list">
+      @elseif(count($show->episodes('sub')) > 0)
         @foreach($show->episodes('sub') as $episode)
           <li class="list-group-item">
             <div class="row">
@@ -54,24 +46,21 @@
           </li>
         @endforeach
         <!-- TODO: add next episode prediction -->
-      </ul>
-    @endif
-    <div class="content-close"></div>
-    <h2>Dubbed</h2>
-    @if(!$show->videos_initialised)
-      <ul class="list-group episode-list">
+      @endif
+      @if(!$show->videos_initialised)
         <li class="list-group-item">
           Searching for episodes ...
         </li>
-      </ul>
-    @elseif(count($show->episodes('dub')) === 0)
-      <ul class="list-group episode-list">
+      @endif
+    </ul>
+    <div class="content-close"></div>
+    <h2>Dubbed</h2>
+    <ul class="list-group episode-list">
+      @if($show->videos_initialised && count($show->episodes('dub')) === 0)
         <li class="list-group-item">
           No Episodes Found
         </li>
-      </ul>
-    @else
-      <ul class="list-group episode-list">
+      @elseif(count($show->episodes('dub')) > 0)
         @foreach($show->episodes('dub') as $episode)
           <li class="list-group-item">
             <div class="row">
@@ -89,8 +78,13 @@
           </li>
         @endforeach
         <!-- TODO: add next episode prediction -->
-      </ul>
-    @endif
+      @endif
+      @if(!$show->videos_initialised)
+        <li class="list-group-item">
+          Searching for episodes ...
+        </li>
+      @endif
+    </ul>
     <div class="content-close"></div>
   </div>
 

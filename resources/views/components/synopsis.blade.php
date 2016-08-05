@@ -94,25 +94,29 @@
             @else
 
               <div class="col-sm-6">
-                @if(!$syn_show->videos_initialised)
-                  Latest Subbed: Searching for episodes ...
-                @elseif(isset($syn_show->latest_sub->episode_num))
+                @if(!isset($syn_show->latest_sub))
+                  @if(!$syn_show->videos_initialised)
+                    Latest Subbed: Searching for episodes ...
+                  @else
+                    Latest Subbed: No episodes available
+                  @endif
+                @else
                   <a href="{{ url("/anime/$syn_show->id/sub/episode-$syn_show->latest_sub->episode_num") }}">
                     Latest Subbed: Epsiode {{ $syn_show->latest_sub->episode_num }}; Uploaded on {{ $syn_show->latest_sub->uploadtime->format('M j, Y (l)') }}
                   </a>
-                @else
-                  Latest Subbed: No episodes available
                 @endif
               </div>
               <div class="col-sm-6">
-                @if(!$syn_show->videos_initialised)
-                  Latest Dubbed: Searching for episodes ...
-                @elseif(isset($syn_show->latest_dub->episode_num))
+                @if(!isset($syn_show->latest_dub))
+                  @if(!$syn_show->videos_initialised)
+                    Latest Dubbed: Searching for episodes ...
+                  @else
+                    Latest Dubbed: No episodes available
+                  @endif
+                @else
                   <a href="{{ url("/anime/$syn_show->id/dub/episode-$syn_show->latest_dub->episode_num") }}">
                     Latest Dubbed: Epsiode {{ $syn_show->latest_dub->episode_num }}; Uploaded on {{ $syn_show->latest_dub->uploadtime->format('M j, Y (l)') }}
                   </a>
-                @else
-                  Latest Dubbed: No episodes available
                 @endif
               </div>
             @endif
