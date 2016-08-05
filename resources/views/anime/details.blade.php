@@ -45,13 +45,13 @@
             </div>
           </li>
         @endforeach
-        <!-- TODO: add next episode prediction -->
       @endif
       @if(!$show->videos_initialised)
         <li class="list-group-item">
           Searching for episodes ...
         </li>
       @endif
+      <!-- TODO: add next episode prediction -->
     </ul>
     <div class="content-close"></div>
     <h2>Dubbed</h2>
@@ -77,13 +77,13 @@
             </div>
           </li>
         @endforeach
-        <!-- TODO: add next episode prediction -->
       @endif
       @if(!$show->videos_initialised)
         <li class="list-group-item">
           Searching for episodes ...
         </li>
       @endif
+      <!-- TODO: add next episode prediction -->
     </ul>
     <div class="content-close"></div>
   </div>
