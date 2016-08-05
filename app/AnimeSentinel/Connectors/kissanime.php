@@ -89,9 +89,9 @@ class kissanime
     // Find the lowest episode number
     foreach ($episodes as $episode) {
       if (strpos($episode['link_episode'], '/Episode-') !== false) {
-        $ep_num = str_get_between($episode['episode_num'], 'Episode ', ' ');
+        $ep_num = (int) str_get_between($episode['episode_num'], 'Episode ', ' ');
         if (!isset($lowest_ep) || $ep_num < $lowest_ep) {
-          $lowest_ep = (int) $ep_num;
+          $lowest_ep = $ep_num;
         }
       }
     }
@@ -161,7 +161,7 @@ class kissanime
       return false;
     }
     $episode['episode_num'] -= $decrement;
-    $episode['notes'] = str_replace('[', '(', str_replace(']', ')', $episode['notes']));
+    $episode['notes'] = trim(str_replace('[', '(', str_replace(']', ')', $episode['notes'])));
     $episode['link_episode'] = 'http://kissanime.to'.$episode['link_episode'];
     $episode['uploadtime'] = Carbon::createFromFormat('n/j/Y', trim($episode['uploadtime']));
     return $episode;
