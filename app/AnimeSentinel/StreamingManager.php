@@ -87,7 +87,7 @@ class StreamingManager
           else {
             // Try to update the show cache if it does not have a mal id set
             if ($show->mal_id === null) {
-              $show = ShowManager::updateShowCache($show, false, 'periodic_high');
+              $show = ShowManager::updateShowCache($show->id, false, 'periodic_high');
               if ($show && $show->mal_id !== null) {
                 $addedShows[] = $show->id;
               }
