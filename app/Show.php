@@ -92,11 +92,11 @@ class Show extends Model
     // fuzz title, allows matching of ' and ', ' to ' and '&' to each other
     $title = str_replace('&', '%', str_fuzz($title));
     // allow matching of spaces to ': '
-    $title = str_replace(' ', '%', $title);
+    $title = str_replace(' ', '% ', $title);
     // allow case insensitive matching of greek characters
     $title = preg_replace('/[α-ωΑ-Ω]/u', '\\u03__', $title);
     // encode to json, then escape all unescaped \'s
-    $title = preg_replace('/([^\\\\])\\\\([^\\\\])/', '$1\\\\\\\\$2', json_encode($title));
+    $title = preg_replace('/([^\\\\])\\\\([^\\\\])/u', '$1\\\\\\\\$2', json_encode($title));
     return $query->where('alts', 'like', '%'.$title.'%');
   }
 
