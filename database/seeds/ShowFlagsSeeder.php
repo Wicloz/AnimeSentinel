@@ -93,5 +93,12 @@ class ShowFlagsSeeder extends Seeder
       "Pokemon: Destiny Deoxys" => "+",
     ];
     $destinydeoxys->save();
+
+    $berserk2016 = ShowFlag::findOrNew(32379);
+    $berserk2016->mal_id = 32379;
+    $berserk2016->alt_rules = [
+      "Berserk" => "-",
+    ];
+    $berserk2016->save();
   }
 }
