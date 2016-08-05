@@ -75,7 +75,7 @@
       @if(!$syn_mal)
         <div class="synopsis-bottombar">
           <div class="row">
-            @if(!empty($syn_video))
+            @if(isset($syn_video))
               <div class="col-sm-3">
                 <a href="{{ $syn_video->episode_url }}">
                   Episode {{ $syn_video->episode_num }} Has Aired
@@ -101,7 +101,7 @@
                     Latest Subbed: No episodes available
                   @endif
                 @else
-                  <a href="{{ url("/anime/$syn_show->id/sub/episode-$syn_show->latest_sub->episode_num") }}">
+                  <a href="{{ url('/anime/'.$syn_show->id.'/sub/episode-'.$syn_show->latest_sub->episode_num) }}">
                     Latest Subbed: Epsiode {{ $syn_show->latest_sub->episode_num }}; Uploaded on {{ $syn_show->latest_sub->uploadtime->format('M j, Y (l)') }}
                   </a>
                 @endif
@@ -114,7 +114,7 @@
                     Latest Dubbed: No episodes available
                   @endif
                 @else
-                  <a href="{{ url("/anime/$syn_show->id/dub/episode-$syn_show->latest_dub->episode_num") }}">
+                  <a href="{{ url('/anime/'.$syn_show->id.'/dub/episode-'.$syn_show->latest_dub->episode_num) }}">
                     Latest Dubbed: Epsiode {{ $syn_show->latest_dub->episode_num }}; Uploaded on {{ $syn_show->latest_dub->uploadtime->format('M j, Y (l)') }}
                   </a>
                 @endif
