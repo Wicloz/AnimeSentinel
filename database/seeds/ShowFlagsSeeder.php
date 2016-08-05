@@ -86,12 +86,5 @@ class ShowFlagsSeeder extends Seeder
       "Mahou Shoujo Naria Girls" => "+",
     ];
     $nariagirls->save();
-
-    $destinydeoxys = ShowFlag::findOrNew(1122);
-    $destinydeoxys->mal_id = 1122;
-    $destinydeoxys->alt_rules = [
-      "Destiny Deoxys" => "+",
-    ];
-    $destinydeoxys->save();
   }
 }
