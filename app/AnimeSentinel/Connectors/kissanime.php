@@ -93,23 +93,13 @@ class kissanime
       'uploadtime' => [false, '<td>', ''],
     ]);
 
-    // Find the lowest episode number
-    foreach ($episodes as $episode) {
-      if (strpos($episode['link_episode'], '/Episode-') !== false) {
-        $ep_num = (int) str_get_between($episode['episode_num'], 'Episode ', ' ');
-        if (!isset($lowest_ep) || $ep_num < $lowest_ep) {
-          $lowest_ep = $ep_num;
-        }
-      }
-    }
-    if (!isset($lowest_ep) || $lowest_ep === 0) {
-      $lowest_ep = 1;
-    }
+    // Find the decrement
+    $decrement = Self::findDecrement($episodes);
 
     // Get mirror data for each episode
     foreach ($episodes as $episode) {
       // Complete episode data
-      $episode = Self::seekCompleteEpisode($episode, $lowest_ep - 1);
+      $episode = Self::seekCompleteEpisode($episode, $decrement);
       if (empty($episode)) {
         continue;
       }
@@ -179,6 +169,22 @@ class kissanime
     return $mirror;
   }
 
+  private static function findDecrement($episodes) {
+    // Find the lowest episode number
+    foreach ($episodes as $episode) {
+      if (strpos($episode['link_episode'], '/Episode-') !== false) {
+        $ep_num = (int) str_get_between($episode['episode_num'], 'Episode ', ' ');
+        if (!isset($lowest_ep) || $ep_num < $lowest_ep) {
+          $lowest_ep = $ep_num;
+        }
+      }
+    }
+    if (!isset($lowest_ep) || $lowest_ep <= 0) {
+      return 0;
+    }
+    return $lowest_ep - 1;
+  }
+
   /**
    * Finds all episode data + title from the recently aired page.
    * Returns this data as an array of associative arrays.
@@ -209,41 +215,27 @@ class kissanime
       }
       $item['title'] = trim(str_replace('(Dub)', '', $item['title']));
 
-      // Determine lowest episode number
+      // Determine the decrement
       $page = Downloaders::downloadPage('http://kissanime.to/'.$item['link_stream']);
       // Scrape the page for episode data
       $episodes = Helpers::scrape_page(str_get_between($page, '<tr style="height: 10px">', '</table>'), '</td>', [
         'episode_num' => [true, 'Watch anime ', ' in high quality'],
         'link_episode' => [false, 'href="', '"'],
       ]);
-      // Find the lowest episode number
-      foreach ($episodes as $episode) {
-        if (strpos($episode['link_episode'], '/Episode-') !== false) {
-          $ep_num = str_get_between($episode['episode_num'], 'Episode ', ' ');
-          if (!isset($lowest_ep) || $ep_num < $lowest_ep) {
-            $lowest_ep = (int) $ep_num;
-          }
-        }
-      }
-      if (!isset($lowest_ep) || $lowest_ep === 0) {
-        $lowest_ep = 1;
-      }
+      $decrement = Self::findDecrement($episodes);
 
       // Determine actual episode number
-      if ($item['episode_num'] === 'Movie') {
-        $item['episode_num'] = 1;
-      }
-      elseif (strpos($item['episode_num'], 'Episode ') !== false) {
+      if (strpos($item['episode_num'], 'Episode ') !== false) {
         $episode_num = str_get_between($item['episode_num'], 'Episode ', ' ');
         if ($episode_num === false) {
           $episode_num = str_get_between($item['episode_num'], 'Episode ', '');
         }
-        $item['episode_num'] = $episode_num - $lowest_ep + 1;
+        $item['episode_num'] = $episode_num - $decrement;
+      }
+      else {
+        $item['episode_num'] = 1;
       }
 
-      else {
-        continue;
-      }
       $data[] = $item;
     }
 
