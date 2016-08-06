@@ -87,12 +87,12 @@ class ShowFlagsSeeder extends Seeder
     ];
     $nariagirls->save();
 
-    $destinydeoxys = ShowFlag::findOrNew(1122);
-    $destinydeoxys->mal_id = 1122;
-    $destinydeoxys->alt_rules = [
+    $pkmdestinydeoxys = ShowFlag::findOrNew(1122);
+    $pkmdestinydeoxys->mal_id = 1122;
+    $pkmdestinydeoxys->alt_rules = [
       "Pokemon: Destiny Deoxys" => "+",
     ];
-    $destinydeoxys->save();
+    $pkmdestinydeoxys->save();
 
     $berserk2016 = ShowFlag::findOrNew(32379);
     $berserk2016->mal_id = 32379;
@@ -100,5 +100,19 @@ class ShowFlagsSeeder extends Seeder
       "Berserk" => "-",
     ];
     $berserk2016->save();
+
+    $pkmvolcanion = ShowFlag::findOrNew(31231);
+    $pkmvolcanion->mal_id = 31231;
+    $pkmvolcanion->alt_rules = [
+      "Pokemon XY&Z: Volcanion to Karakuri no Magiana" => "+",
+    ];
+    $pkmvolcanion->save();
+
+    $shokugekinosomas2 = ShowFlag::findOrNew(32282);
+    $shokugekinosomas2->mal_id = 32282;
+    $shokugekinosomas2->alt_rules = [
+      "Shokugeki no Soma S2" => "+",
+    ];
+    $shokugekinosomas2->save();
   }
 }
