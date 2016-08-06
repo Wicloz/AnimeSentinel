@@ -20,7 +20,7 @@ class MyAnimeList
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_USERNAME, config('animesentinel.mal_username'));
     curl_setopt($curl, CURLOPT_PASSWORD, config('animesentinel.mal_password'));
-    $response = html_entity_decode(curl_exec($curl));
+    $response = curl_exec($curl);
     curl_close($curl);
     // Convert to and return xml
     $xml = simplexml_load_string($response);

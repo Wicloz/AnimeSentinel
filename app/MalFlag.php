@@ -19,7 +19,7 @@ class MalFlag extends Model
   ];
 
   /**
-  * Set the is_hentai flag.
+  * Set the flags.
   */
   public function setFlags() {
     $flags = \App\AnimeSentinel\MyAnimeList::malFlags($this->mal_id);
