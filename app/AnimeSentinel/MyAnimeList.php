@@ -64,7 +64,7 @@ class MyAnimeList
    * @return array
    */
   public static function search($query) {
-    $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace(' ', '+', $query));
+    $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace(' ', '+', $query).'&gx=1&genre[]=12');
     $shows = Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
       'mal_id' => [true, 'http://myanimelist.net/anime/', '/'],
       'thumbnail_url' => [false, 'data-src="http://cdn.myanimelist.net/r/50x70/images/anime/', '?'],
@@ -73,19 +73,13 @@ class MyAnimeList
 
     $results = [];
     foreach ($shows as $show) {
-      $flag = MalFlag::firstOrNew(['mal_id' => $show['mal_id']]);
-      if (!$flag->exists) {
-        $flag->setFlags()->save();
-      }
-      if (!$flag->flagged) {
-        $result = new \stdClass();
-        $result->mal = true;
-        $result->mal_id = $show['mal_id'];
-        $result->title = $show['title'];
-        $result->thumbnail_url = 'http://cdn.myanimelist.net/images/anime/'.$show['thumbnail_url'];
-        $result->details_url = 'http://myanimelist.net/anime/'.$show['mal_id'];
-        $results[] = $result;
-      }
+      $result = new \stdClass();
+      $result->mal = true;
+      $result->mal_id = $show['mal_id'];
+      $result->title = $show['title'];
+      $result->thumbnail_url = 'http://cdn.myanimelist.net/images/anime/'.$show['thumbnail_url'];
+      $result->details_url = 'http://myanimelist.net/anime/'.$show['mal_id'];
+      $results[] = $result;
     }
     return $results;
   }
@@ -113,7 +107,7 @@ class MyAnimeList
     }
 
     // If that fails, try using the regular search
-    $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace(' ', '+', $title));
+    $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace(' ', '+', $title).'&gx=1&genre[]=12');
     $shows = array_slice(Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
       'mal_id' => [true, 'http://myanimelist.net/anime/', '/'],
     ]), 0, 8);
