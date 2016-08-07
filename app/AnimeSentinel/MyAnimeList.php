@@ -73,13 +73,19 @@ class MyAnimeList
 
     $results = [];
     foreach ($shows as $show) {
-      $result = new \stdClass();
-      $result->mal = true;
-      $result->mal_id = $show['mal_id'];
-      $result->title = $show['title'];
-      $result->thumbnail_url = 'http://cdn.myanimelist.net/images/anime/'.$show['thumbnail_url'];
-      $result->details_url = 'http://myanimelist.net/anime/'.$show['mal_id'];
-      $results[] = $result;
+      $flag = MalFlag::firstOrNew(['mal_id' => $show['mal_id']]);
+      if (!$flag->exists) {
+        $flag->setFlags()->save();
+      }
+      if (!$flag->flagged) {
+        $result = new \stdClass();
+        $result->mal = true;
+        $result->mal_id = $show['mal_id'];
+        $result->title = $show['title'];
+        $result->thumbnail_url = 'http://cdn.myanimelist.net/images/anime/'.$show['thumbnail_url'];
+        $result->details_url = 'http://myanimelist.net/anime/'.$show['mal_id'];
+        $results[] = $result;
+      }
     }
     return $results;
   }
