@@ -8,9 +8,6 @@
         <input type="text" name="q" class="form-control" value="{{ request('q') }}" placeholder="Search ..."></input>
         <button type="submit" class="btn btn-primary pull-right">Search</button>
       </div>
-      <p>
-        Note: If your search times out, retry until it doesn't. This is because certain data from MAL has to be stored the first time an anime is shown here, which can take a while.
-      </p>
     </form>
   </div>
 @endsection
@@ -31,7 +28,7 @@
         @include('components.synopsis', [
           'syn_mal' => true,
           'syn_show' => $result,
-          'syn_unique' => $result->id,
+          'syn_unique' => $result->mal_id,
         ])
       @endif
     @endforeach

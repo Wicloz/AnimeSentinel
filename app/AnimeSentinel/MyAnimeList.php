@@ -28,7 +28,7 @@ class MyAnimeList
   }
 
   /**
-   * Does a search on MAL with the requested query.
+   * Does an API search on MAL with the requested query.
    * Converts the results to an array of stdClass.
    *
    * @return array
@@ -59,6 +59,32 @@ class MyAnimeList
   }
 
   /**
+   * Does a regular search on MAL with the requested query.
+   *
+   * @return array
+   */
+  public static function search($query) {
+    $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace(' ', '+', $query));
+    $shows = Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
+      'mal_id' => [true, 'http://myanimelist.net/anime/', '/'],
+      'thumbnail_url' => [false, 'data-src="http://cdn.myanimelist.net/r/50x70/images/anime/', '?'],
+      'title' => [false, '<strong>', '</strong>'],
+    ]);
+
+    $results = [];
+    foreach ($shows as $show) {
+      $result = new \stdClass();
+      $result->mal = true;
+      $result->mal_id = $show['mal_id'];
+      $result->title = $show['title'];
+      $result->thumbnail_url = 'http://cdn.myanimelist.net/images/anime/'.$show['thumbnail_url'];
+      $result->details_url = 'http://myanimelist.net/anime/'.$show['mal_id'];
+      $results[] = $result;
+    }
+    return $results;
+  }
+
+  /**
    * Tries to find the mal id for the requested title.
    * Returns null if it cannot be found.
    *
@@ -71,7 +97,7 @@ class MyAnimeList
       // Create alts list
       $alts[] = $result->title;
       $alts[] = $result->english;
-      $alts = array_merge($alts, $result->synonyms);
+      $alts = Helpers::mergeFlagAlts(array_merge($alts, $result->synonyms), $result->id);
       // Check for a match
       foreach ($alts as $alt) {
         if (match_fuzzy($alt, $title)) {

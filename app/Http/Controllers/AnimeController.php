@@ -120,22 +120,13 @@ class AnimeController extends Controller
       ], [], [
         'q' => 'query'
       ]);
-      $results = MyAnimeList::searchApi($request->q);
-
-      // Sort results by score
-      usort($results, function ($a, $b) {
-        if ($a->score === $b->score) return 0;
-        return ($a->score > $b->score) ? -1 : 1;
-      });
+      $results = MyAnimeList::search($request->q);
 
       // Expand results which are in our databse
       foreach ($results as $index => $result) {
-        $show = Show::where('mal_id', $result->id)->first();
+        $show = Show::where('mal_id', $result->mal_id)->first();
         if (!empty($show)) {
           $results[$index] = $show;
-        } else {
-          $results[$index]->details_url = 'http://myanimelist.net/anime/'.$result->id;
-          $results[$index]->thumbnail_url = $result->image;
         }
       }
     }
