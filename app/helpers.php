@@ -86,7 +86,7 @@ function str_ends_with($haystack, $needle) {
 }
 
 function str_fuzz($string) {
-  return str_replace(': ', ' ', str_replace(' & ', '&', str_replace(' to ', '&', str_replace(' and ', '&', mb_strtolower(trim($string))))));
+  return str_replace(' & ', '&', str_replace(' to ', '&', str_replace(' and ', '&', mb_strtolower(trim($string)))));
 }
 
 function str_urlify($string) {

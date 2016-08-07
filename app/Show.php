@@ -91,8 +91,6 @@ class Show extends Model
   public function scopeWithTitle($query, $title) {
     // fuzz title, allows matching of ' and ', ' to ' and '&' to each other
     $title = str_replace('&', '%', str_fuzz($title));
-    // allow matching of spaces to ': '
-    $title = str_replace(' ', '% ', $title);
     // allow case insensitive matching of greek characters
     $title = preg_replace('/[α-ωΑ-Ω]/u', '\\u03__', $title);
     // encode to json, then escape all unescaped \'s
