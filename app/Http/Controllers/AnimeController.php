@@ -90,7 +90,7 @@ class AnimeController extends Controller
   public function recentList() {
     session()->put('recentpage_form', 'list');
     return view('anime.recent_list', [
-      'recent' => $this->recentShows(64, false)
+      'recent' => $this->recentShows(128, false)
     ]);
   }
 
@@ -102,7 +102,7 @@ class AnimeController extends Controller
   public function recentGrid() {
     session()->put('recentpage_form', 'grid');
     return view('anime.recent_grid', [
-      'recent' => $this->recentShows(128, true)
+      'recent' => $this->recentShows(192, true)
     ]);
   }
 
