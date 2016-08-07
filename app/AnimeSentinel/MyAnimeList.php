@@ -67,7 +67,7 @@ class MyAnimeList
     $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace(' ', '+', $query).'&gx=1&genre[]=12');
     $shows = Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
       'mal_id' => [true, 'http://myanimelist.net/anime/', '/'],
-      'thumbnail_url' => [false, 'data-src="http://cdn.myanimelist.net/r/50x70/images/anime/', '?'],
+      'thumbnail_url' => [false, '/images/anime/', '?'],
       'title' => [false, '<strong>', '</strong>'],
     ]);
 
@@ -77,7 +77,11 @@ class MyAnimeList
       $result->mal = true;
       $result->mal_id = $show['mal_id'];
       $result->title = $show['title'];
-      $result->thumbnail_url = 'http://cdn.myanimelist.net/images/anime/'.$show['thumbnail_url'];
+      if (!empty($show['thumbnail_url'])) {
+        $result->thumbnail_url = 'http://cdn.myanimelist.net/images/anime/'.$show['thumbnail_url'];
+      } else {
+        $result->thumbnail_url = '';
+      }
       $result->details_url = 'http://myanimelist.net/anime/'.$show['mal_id'];
       $results[] = $result;
     }
@@ -179,9 +183,14 @@ class MyAnimeList
       }
     }
 
+    $thumbnail_id = str_replace('/', '-', str_get_between($page, 'src="http://cdn.myanimelist.net/images/anime/', '"'));
+    if (empty($thumbnail_id)) {
+      $thumbnail_id = null;
+    }
+
     return [
       'mal_id' => $mal_id,
-      'thumbnail_id' => str_replace('/', '-', str_get_between($page, 'src="http://cdn.myanimelist.net/images/anime/', '"')),
+      'thumbnail_id' => $thumbnail_id,
       'title' => $title,
       'alts' => Helpers::mergeFlagAlts($alts, $mal_id),
       'description' => trim(str_get_between($page, '<span itemprop="description">', '</span>')),

@@ -91,8 +91,10 @@ class ShowManager
    * Downloads the show's thumbnail from MAL.
    */
   private static function updateThumbnail($show) {
-    $remote = 'http://cdn.myanimelist.net/images/anime/'.str_replace('-', '/', $show->thumbnail_id);
-    $local = __DIR__.'/../../public/media/thumbnails/'.$show->thumbnail_id;
-    copy($remote, $local);
+    if (!empty($show->thumbnail_id)) {
+      $remote = 'http://cdn.myanimelist.net/images/anime/'.str_replace('-', '/', $show->thumbnail_id);
+      $local = __DIR__.'/../../public/media/thumbnails/'.$show->thumbnail_id;
+      copy($remote, $local);
+    }
   }
 }
