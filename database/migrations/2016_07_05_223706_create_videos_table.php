@@ -30,7 +30,7 @@ class CreateVideosTable extends Migration
             $table->string('link_video', 2048);                         // video
             $table->string('resolution');                               // video
 
-            $table->dateTime('cache_updated_at');
+            $table->dateTime('cache_updated_at')->nullable()->default(null);
             $table->timestamps();
 
             $table->unique(['show_id', 'translation_type', 'episode_num', 'streamer_id', 'mirror'], 'videos_video_identifier');
