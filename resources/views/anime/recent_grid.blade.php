@@ -16,7 +16,7 @@
             <div class="synblock-title">
               <a href="{{ $recent[$i + $j]->show->details_url }}">{{ $recent[$i + $j]->show->title }}</a>
             </div>
-            <div style="position:relative;">
+            <div class="synblock-middle">
               <div class="synblock-ttype-{{ $recent[$i + $j]->translation_type }}">
                 {{ $recent[$i + $j]->translation_type === 'sub' ? 'Subbed' : '' }}{{ $recent[$i + $j]->translation_type === 'dub' ? 'Dubbed' : ''}}
               </div>

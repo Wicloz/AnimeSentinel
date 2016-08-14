@@ -91,7 +91,13 @@
 
 .synblock-thumbnail {
   width: 100%;
+}
+
+.synblock-middle {
   margin-bottom: 10px;
+  padding-left: 1px;
+  padding-right: 1px;
+  position: relative;
 }
 
 .synblock-ttype-sub, .synblock-ttype-dub {

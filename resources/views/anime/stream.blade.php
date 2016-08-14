@@ -37,16 +37,18 @@
     </div>
   </div>
 
-  @if(isset($show->mal_url))
-    <div class="content-header">
-      <a target="_blank" href="{{ $video->show->mal_url }}">View on MyAnimeList</a>
-    </div>
-  @endif
-  @include('components.malwidget_big', ['mal_url' => $video->show->mal_url])
-
   <div class="content-header">Comments</div>
   @include('components.disqus', [
     'disqus_url' => $video->episode_url,
     'disqus_id' => $video->episode_id,
   ])
+@endsection
+
+@section('content-right')
+  @if(isset($show->mal_url))
+    <div class="content-header">
+      <a target="_blank" href="{{ $video->show->mal_url }}">View on MyAnimeList</a>
+    </div>
+  @endif
+  @include('components.malwidget_sidebar', ['mal_url' => $video->show->mal_url])
 @endsection

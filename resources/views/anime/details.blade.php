@@ -18,7 +18,7 @@
     <div class="content-close"></div>
   </div>
 
-  @include('components.malwidget_big', ['mal_url' => $show->mal_url])
+  @include('components.malwidget_banner', ['mal_url' => $show->mal_url])
 
   <div class="content-header">Episodes</div>
   <div class="content-generic">

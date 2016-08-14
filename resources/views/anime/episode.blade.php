@@ -65,7 +65,7 @@
       <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
     </div>
   @endif
-  @include('components.malwidget_big', ['mal_url' => $show->mal_url])
+  @include('components.malwidget_banner', ['mal_url' => $show->mal_url])
 
   <div class="content-header">Comments</div>
   @include('components.disqus', [

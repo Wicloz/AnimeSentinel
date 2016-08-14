@@ -4,6 +4,7 @@
 @import 'notifications';
 @import 'synopsy';
 @import 'disqus';
+@import 'malwidgets';
 @import 'pageContent';
 @import 'pageDetails';
 @import 'pageEpisode';
@@ -102,24 +103,6 @@ img {
 
 .flowfix {
   overflow: hidden;
-}
-
-.mal-widget {
-  width: 597px;
-  height: 146px;
-  overflow: hidden;
-  position: relative;
-  margin-bottom: 10px;
-  // TODO: proper scaling
-
-  > iframe {
-    position: absolute;
-    top: -183px;
-    left: -242px;
-    width: 1024px;
-    height: 512px;
-    border: none;
-  }
 }
 
 .arrow-left, .arrow-right {
