@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Carbon\Carbon;
+
 class Job extends BaseModel
 {
   public $timestamps = false;
@@ -12,7 +14,7 @@ class Job extends BaseModel
    * @var array
    */
   protected $fillable = [
-    'show_title', 'job_task', 'job_data', 'queue',
+    'job_task', 'show_title', 'job_data', 'queue', 'payload', 'attempts',
   ];
 
   /**
@@ -28,6 +30,16 @@ class Job extends BaseModel
    * @var string
    */
   protected $dateFormat = 'U';
+
+  /**
+   * Override the create function to properly set timestamps.
+   */
+  public static function create(array $attributes = []) {
+    $job = parent::create($attributes);
+    $job->created_at = Carbon::now();
+    $job->available_at = Carbon::now()->addSeconds($attributes['available_at'] - $attributes['created_at']);
+    $job->save();
+  }
 
   /**
   * Encode and decode the job_data to/from JSON.

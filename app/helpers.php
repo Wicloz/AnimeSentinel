@@ -51,7 +51,7 @@ function badNotes($notes) {
 
 // TODO: elevate to higher priority queues
 // TODO: remove items from queue when their related function end up being excecuted through other means
-function queueJob($job) {
+function queueJob($job, $queue = 'default') {
   // Prepare job data
   $job_data = $job->db_data;
   unset($job->db_data);
@@ -59,9 +59,15 @@ function queueJob($job) {
   if ($job_data['show_title'] !== null) {
     // Check whether a higher job is queued
     $contestants = \App\Job::where('show_title', $job_data['show_title'])->get();
-    foreach (array_get_parents(config('queue.hierarchy'), $job_data['job_task']) as $task_name) {
+    foreach (array_get_parents(config('queue.jobhierarchy'), $job_data['job_task']) as $task_name) {
       foreach ($contestants as $contestant) {
         if ($contestant->job_task === $task_name) {
+          // Elevate queue
+          if (in_array($contestant->queue, array_get_childs(config('queue.queuehierarchy'), $queue))) {
+            $contestant->queue = $queue;
+            $contestant->delete();
+            \App\Job::create($contestant->toArray());
+          }
           return;
         }
       }
@@ -74,11 +80,19 @@ function queueJob($job) {
       ['job_data', '=', json_encode($job_data['job_data'])],
     ])->get();
     if (count($duplicates) > 0) {
+      foreach ($duplicates as $duplicate) {
+        // Elevate queue
+        if (in_array($duplicate->queue, array_get_childs(config('queue.queuehierarchy'), $queue))) {
+          $duplicate->queue = $queue;
+          $duplicate->delete();
+          \App\Job::create($duplicate->toArray());
+        }
+      }
       return;
     }
 
     // Remove all lower queued jobs
-    foreach (array_get_childs(config('queue.hierarchy'), $job_data['job_task']) as $task_name) {
+    foreach (array_get_childs(config('queue.jobhierarchy'), $job_data['job_task']) as $task_name) {
       \App\Job::where([
         ['job_task', '=', $task_name],
         ['show_title', '=', $job_data['show_title']],
@@ -87,7 +101,7 @@ function queueJob($job) {
   }
 
   // Add this job to the queue
-  $job_id = dispatch($job);
+  $job_id = dispatch($job->onQueue($queue));
   $job = \App\Job::find($job_id);
   $job->job_task = $job_data['job_task'];
   $job->show_title = $job_data['show_title'];

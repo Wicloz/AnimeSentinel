@@ -29,7 +29,7 @@ class CreateJobsTable extends Migration
             $table->unique(['show_title', 'job_task', 'job_data']);
         });
 
-        queueJob((new \App\Jobs\FindRecentVideos)->onQueue('periodic_low'));
+        queueJob(new \App\Jobs\FindRecentVideos, 'periodic_low');
     }
 
     /**

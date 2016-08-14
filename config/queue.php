@@ -92,7 +92,7 @@ return [
     |
     */
 
-    'hierarchy' => [
+    'jobhierarchy' => [
       'ShowAdd',
       'ShowUpdate(true)',
       [
@@ -102,6 +102,22 @@ return [
       [
         'ShowUpdate(false)',
       ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Queue importance order
+    |--------------------------------------------------------------------------
+    |
+    | This data contains the hierarchy used to determine which queues have
+    | a higher priority than others.
+    |
+    */
+
+    'queuehierarchy' => [
+      'periodic_high',
+      'periodic_low',
+      'default',
     ],
 
 ];
