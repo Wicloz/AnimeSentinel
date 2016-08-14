@@ -50,6 +50,7 @@ function badNotes($notes) {
 }
 
 // TODO: elevate to higher priority queues
+// TODO: remove items from queue when their related function end up being excecuted through other means
 function queueJob($job) {
   // Prepare job data
   $job_data = $job->db_data;

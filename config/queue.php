@@ -94,8 +94,8 @@ return [
 
     'hierarchy' => [
       'ShowAdd',
+      'ShowUpdate(true)',
       [
-        'ShowUpdate(true)',
         'AnimeFindVideos',
         'AnimeReprocessEpisode',
       ],
