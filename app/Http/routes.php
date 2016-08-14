@@ -2,8 +2,6 @@
 
 //php artisan queue:listen --queue=periodic_high,periodic_low,default --timeout=0
 
-//queueJob((new \App\Jobs\AnimeReprocessEpisode(\App\Show::first(), ['sub', 'dub'], 1)));
-
 /*
 |--------------------------------------------------------------------------
 | Application Routes

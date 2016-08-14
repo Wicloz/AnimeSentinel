@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-use \App\AnimeSentinel\StreamingManager;
+use App\AnimeSentinel\StreamingManager;
 
 class FindRecentVideos extends Job implements ShouldQueue
 {

@@ -7,7 +7,8 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-use \App\AnimeSentinel\ShowManager;
+use App\AnimeSentinel\ShowManager;
+use App\Show;
 
 class ShowUpdate extends Job implements ShouldQueue
 {

@@ -82,4 +82,26 @@ return [
         'table' => 'failed_jobs',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Jobs importance order
+    |--------------------------------------------------------------------------
+    |
+    | This data contains the hierarchy used to determine which jobs overwrite
+    | other jobs.
+    |
+    */
+
+    'hierarchy' => [
+      'ShowAdd',
+      [
+        'ShowUpdate(true)',
+        'AnimeFindVideos',
+        'AnimeReprocessEpisode',
+      ],
+      [
+        'ShowUpdate(false)',
+      ],
+    ],
+
 ];

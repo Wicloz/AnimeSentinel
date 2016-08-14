@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use App\Show;
-use \App\AnimeSentinel\StreamingManager;
+use App\AnimeSentinel\StreamingManager;
 
 class AnimeFindVideos extends Job implements ShouldQueue
 {

@@ -50,17 +50,89 @@ function badNotes($notes) {
 }
 
 function queueJob($job) {
+  // Prepare job data
   $job_data = $job->db_data;
+  unset($job->db_data);
 
+  if ($job_data['show_title'] !== null) {
+    // Check whether a higher job is queued
+    $contestants = \App\Job::where('show_title', $job_data['show_title'])->get();
+    foreach (array_get_parents(config('queue.hierarchy'), $job_data['job_task']) as $task_name) {
+      foreach ($contestants as $contestant) {
+        if ($contestant->job_task === $task_name) {
+          return;
+        }
+      }
+    }
 
-  // Add this job
-  $job->db_data = null;
+    // Check whether the same job is already queued
+    $duplicates = \App\Job::where([
+      ['job_task', '=', $job_data['job_task']],
+      ['show_title', '=', $job_data['show_title']],
+      ['job_data', '=', json_encode($job_data['job_data'])],
+    ])->get();
+    if (count($duplicates) > 0) {
+      return;
+    }
+
+    // Remove all lower queued jobs
+    foreach (array_get_childs(config('queue.hierarchy'), $job_data['job_task']) as $task_name) {
+      \App\Job::where([
+        ['job_task', '=', $task_name],
+        ['show_title', '=', $job_data['show_title']],
+      ])->delete();
+    }
+  }
+
+  // Add this job to the queue
   $job_id = dispatch($job);
   $job = \App\Job::find($job_id);
   $job->job_task = $job_data['job_task'];
   $job->show_title = $job_data['show_title'];
   $job->job_data = $job_data['job_data'];
   $job->save();
+}
+
+/**
+ * Assuming a nested array containing unique values,
+ * this will return all values 'lower' than the start value.
+ *
+ * @return array
+ */
+function array_get_childs(array $array, $start, $childs = [], $adding = false) {
+  foreach ($array as $value) {
+    if (is_array($value)) {
+      $childs = array_get_childs($value, $start, $childs, $adding);
+    }
+    elseif ($value === $start) {
+      $adding = true;
+    }
+    elseif ($adding) {
+      $childs[] = $value;
+    }
+  }
+  return $childs;
+}
+
+/**
+ * Assuming a nested array containing unique values that don't equal 'd0ne',
+ * this will return all values 'higher' than the start value.
+ *
+ * @return array
+ */
+function array_get_parents(array $array, $start, $parents = [], $gathered = []) {
+  foreach ($array as $value) {
+    if (is_array($value)) {
+      $parents = array_get_parents($value, $start, $parents, $gathered);
+    }
+    elseif ($value === $start) {
+      $parents = $gathered;
+    }
+    else {
+      $gathered[] = $value;
+    }
+  }
+  return $parents;
 }
 
 // String Helpers //
