@@ -3,11 +3,10 @@
 namespace App;
 
 use App\Scopes\CacheShowScope;
-use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use App\AnimeSentinel\ShowManager;
 
-class Show extends Model
+class Show extends BaseModel
 {
   /**
    * The attributes that are mass assignable.
@@ -140,9 +139,8 @@ class Show extends Model
   */
   public function episodes($translation_type) {
     return $this->videos()
-                ->distinct()
                 ->where('translation_type', $translation_type)
-                ->groupBy('episode_num')
+                ->distinctOn('episode_num', 'videos')
                 ->orderBy('episode_num', 'asc')
                 ->get();
   }

@@ -2,9 +2,7 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Streamer extends Model
+class Streamer extends BaseModel
 {
   public $incrementing = false;
 

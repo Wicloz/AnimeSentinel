@@ -2,9 +2,7 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
-class ShowFlag extends Model
+class ShowFlag extends BaseModel
 {
   public $primaryKey = 'mal_id';
   public $incrementing = false;

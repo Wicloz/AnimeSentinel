@@ -2,11 +2,10 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use App\AnimeSentinel\VideoManager;
 use Carbon\Carbon;
 
-class Video extends Model
+class Video extends BaseModel
 {
   /**
    * The attributes that are mass assignable.

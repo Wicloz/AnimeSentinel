@@ -14,7 +14,7 @@ class AnimeController extends Controller
   protected function recentShows($limit, $noDuplicates) {
     if ($noDuplicates) {
       $recent = Video::orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
-                     ->groupBy(['show_id', 'translation_type', 'episode_num'])->distinct()
+                     ->distinctOn(['show_id', 'translation_type', 'episode_num'], 'videos')
                      ->take($limit)->with('show')->get();
     }
 
