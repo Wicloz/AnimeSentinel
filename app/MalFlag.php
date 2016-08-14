@@ -38,7 +38,7 @@ class MalFlag extends BaseModel
   /**
   * Returns whether this item has any flag set.
   *
-  * @return \Illuminate\Database\Eloquent\Relations\Relation
+  * @return boolean
   */
   public function getFlaggedAttribute() {
     return $this->is_hentai || $this->is_music;

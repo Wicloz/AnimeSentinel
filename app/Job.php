@@ -28,4 +28,14 @@ class Job extends BaseModel
    * @var string
    */
   protected $dateFormat = 'U';
+
+  /**
+  * Encode and decode the job_data to/from JSON.
+  */
+  public function getJobDataAttribute($value) {
+    return json_decode($value);
+  }
+  public function setJobDataAttribute($value) {
+    $this->attributes['job_data'] = json_encode($value);
+  }
 }
