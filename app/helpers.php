@@ -49,6 +49,7 @@ function badNotes($notes) {
   return false;
 }
 
+// TODO: elevate to higher priority queues
 function queueJob($job) {
   // Prepare job data
   $job_data = $job->db_data;
