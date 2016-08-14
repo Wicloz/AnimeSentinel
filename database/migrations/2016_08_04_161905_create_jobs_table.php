@@ -14,6 +14,9 @@ class CreateJobsTable extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('job_task');
+            $table->string('show_title')->nullable()->default(null);
+            $table->string('job_data')->nullable()->default(null);
             $table->string('queue');
             $table->longText('payload');
             $table->tinyInteger('attempts')->unsigned();
@@ -21,8 +24,12 @@ class CreateJobsTable extends Migration
             $table->unsignedInteger('reserved_at')->nullable();
             $table->unsignedInteger('available_at');
             $table->unsignedInteger('created_at');
+
             $table->index(['queue', 'reserved', 'reserved_at']);
+            $table->unique(['show_title', 'job_task', 'job_data']);
         });
+
+        queueJob((new \App\Jobs\FindRecentVideos)->onQueue('periodic_low'));
     }
 
     /**

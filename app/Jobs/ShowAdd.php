@@ -20,6 +20,12 @@ class ShowAdd extends Job implements ShouldQueue
    */
   public function __construct($title) {
     $this->title = $title;
+    // Set special database data
+    $this->db_data = [
+      'job_task' => 'ShowAdd',
+      'show_title' => $title,
+      'job_data' => null,
+    ];
   }
 
   /**

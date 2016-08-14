@@ -39,7 +39,7 @@ class ShowManager
     $show->save();
 
     // Queue the finding of videos
-    dispatch((new \App\Jobs\AnimeFindVideos($show))->onQueue($queue));
+    queueJob((new \App\Jobs\AnimeFindVideos($show))->onQueue($queue));
 
     // Return the show object
     return $show;
@@ -80,7 +80,7 @@ class ShowManager
 
     // Queue the finding of videos if requested
     if ($episodes) {
-      dispatch((new \App\Jobs\AnimeFindVideos($show))->onQueue($queue));
+      queueJob((new \App\Jobs\AnimeFindVideos($show))->onQueue($queue));
     }
 
     // Return the show object

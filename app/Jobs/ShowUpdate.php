@@ -21,6 +21,12 @@ class ShowUpdate extends Job implements ShouldQueue
   public function __construct($show_id, $episodes = false) {
     $this->show_id = $show_id;
     $this->episodes = $episodes;
+    // Set special database data
+    $this->db_data = [
+      'job_task' => 'ShowUpdate',
+      'show_title' => Show::find($show_id)->title,
+      'job_data' => $episodes,
+    ];
   }
 
   /**

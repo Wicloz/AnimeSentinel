@@ -49,6 +49,20 @@ function badNotes($notes) {
   return false;
 }
 
+function queueJob($job) {
+  $job_data = $job->db_data;
+
+
+  // Add this job
+  $job->db_data = null;
+  $job_id = dispatch($job);
+  $job = \App\Job::find($job_id);
+  $job->job_task = $job_data['job_task'];
+  $job->show_title = $job_data['show_title'];
+  $job->job_data = $job_data['job_data'];
+  $job->save();
+}
+
 // String Helpers //
 
 function str_get_between($string, $start, $end = '', $last = false) {
