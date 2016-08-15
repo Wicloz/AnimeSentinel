@@ -11,23 +11,47 @@ use App\Video;
 class EpisodeController extends Controller
 {
   /**
-   * Show all available video's for a certain anime episode.
+   * Redirect the user to the episode page with the highest quality mirror picked.
    *
    * @return \Illuminate\Http\Response
    */
-  public function episode(Show $show, $translation_type, $episode_num) {
-    $videos = $show->videos()
+  public function gotoEpisode($show, $translation_type, $episode_num) {
+    return redirect(url('/anime/'.$show.'/'.$translation_type.'/episode-'.$episode_num.'/kissanime/1'));
+  }
+
+  /**
+   * Display a player with the selected mirror.
+   * Also show all other available mirrors for the episode.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function episode(Show $show, $translation_type, $episode_num, $streamer, $mirror) {
+    $mirrors = $show->videos()
                    ->episode($translation_type, $episode_num)
                    ->get();
-
-    if (count($videos) == 0) {
+    if (count($mirrors) == 0) {
       abort(404);
     }
 
+    $video = Video::find([
+      'show_id' => $show->id,
+      'translation_type' => $translation_type,
+      'episode_num' => $episode_num,
+      'streamer_id' => $streamer,
+      'mirror' => $mirror,
+    ]);
+    if (empty($video)) {
+      abort(404);
+    }
+    if (!visitPage('video_'.$video->id)) {
+      $video->hits++;
+      $video->save();
+    }
+
     $resolutions = [];
-    foreach ($videos as $video) {
-      if (!in_array($video->resolution, $resolutions)) {
-        $resolutions[] = $video->resolution;
+    foreach ($mirrors as $mirror) {
+      if (!in_array($mirror->resolution, $resolutions)) {
+        $resolutions[] = $mirror->resolution;
       }
     }
     usort($resolutions, function ($a, $b) {
@@ -41,55 +65,24 @@ class EpisodeController extends Controller
 
     return view('anime.episode', [
       'show' => $show,
-      'episode' => $videos[0],
-      'videos' => $videos,
+      'video' => $video,
+      'mirrors' => $mirrors,
       'resolutions' => $resolutions,
     ]);
   }
 
   /**
-   * Show the page where a video can be watched.
-   * This one first finds the video based on the given keys.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function stream2($show, $translation_type, $episode_num, $streamer, $mirror) {
-    return Self::stream(Video::find([
-      'show_id' => $show,
-      'translation_type' => $translation_type,
-      'episode_num' => $episode_num,
-      'streamer_id' => $streamer,
-      'mirror' => $mirror,
-    ]));
-  }
-
-  /**
-   * Show the page where a video can be watched.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function stream(Video $video) {
-    if (!visitPage('video_'.$video->episode_id)) {
-      $video->hits++;
-      $video->save();
-    }
-    return view('anime.stream', [
-      'video' => $video
-    ]);
-  }
-
-  /**
-   * Show a page linking to the video.
+   * Show a page linking to the video source.
    * This can be used to provide a static link to the source material.
    *
    * @return \Illuminate\Http\Response
    */
   public function static(Video $video) {
-    if (!visitPage('video_'.$video->episode_id)) {
+    if (!visitPage('video_'.$video->id)) {
       $video->hits++;
       $video->save();
     }
-    // TODO: this doesn't work
-    response()->file($video->link_video);
+    // TODO: improve this
+    return redirect($video->link_video);
   }
 }

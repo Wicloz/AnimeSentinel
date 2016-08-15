@@ -35,14 +35,13 @@ Route::get('/anime/search', 'AnimeController@search');
 
 // Anime Details
 Route::get('/anime/{show}', 'ShowController@details');
-Route::get('/anime/{show}/{translation_type}/episode-{episode_num}', 'EpisodeController@episode');
 
 // Show Modifications
 Route::post('/anime/add', 'ShowController@insert');
 
 // Stream Pages
-Route::get('/anime/{show}/{translation_type}/episode-{episode_num}/{streamer}/{mirror}', 'EpisodeController@stream2');
-Route::get('/stream/{video}', 'EpisodeController@stream');
+Route::get('/anime/{show}/{translation_type}/episode-{episode_num}', 'EpisodeController@gotoEpisode');
+Route::get('/anime/{show}/{translation_type}/episode-{episode_num}/{streamer}/{mirror}', 'EpisodeController@episode');
 Route::get('/stream/{video}/video', 'EpisodeController@static');
 
 // Profile Pages (TODO)

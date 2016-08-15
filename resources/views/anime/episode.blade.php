@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $show->title.' - '.($episode->translation_type === 'sub' ? 'Subbed' : '').($episode->translation_type === 'dub' ? 'Dubbed' : '').' - Episode '.$episode->episode_num)
+@section('title', $show->title.' - '.($video->translation_type === 'sub' ? 'Subbed' : '').($video->translation_type === 'dub' ? 'Dubbed' : '').' - Episode '.$video->episode_num.' '.$video->notes.' - Watch Online in '.$video->resolution)
 
 @section('content-left')
   <a href="{{ $show->details_url }}">
@@ -15,12 +15,26 @@
 
 @section('content-center')
   <div class="content-header header-center">
-    <a href="{{ $episode->pre_episode_url }}" class="arrow-left {{ empty($episode->pre_episode_url) ? 'arrow-hide' : '' }}">&#8666;</a>
+    <a href="{{ $video->pre_episode_url }}" class="arrow-left {{ empty($video->pre_episode_url) ? 'arrow-hide' : '' }}">&#8666;</a>
     <a href="{{ $show->details_url }}">{{ $show->title }}</a>
-    - {{ $episode->translation_type === 'sub' ? 'Subbed' : '' }}{{ $episode->translation_type === 'dub' ? 'Dubbed' : '' }} -
-    Episode {{ $episode->episode_num }}
+    - {{ $video->translation_type === 'sub' ? 'Subbed' : '' }}{{ $video->translation_type === 'dub' ? 'Dubbed' : '' }} -
+    Episode {{ $video->episode_num }}
     <!-- TODO: select episodes with dropdown -->
-    <a href="{{ $episode->next_episode_url }}" class="arrow-right {{ empty($episode->next_episode_url) ? 'arrow-hide' : '' }}">&#8667;</a>
+    <a href="{{ $video->next_episode_url }}" class="arrow-right {{ empty($video->next_episode_url) ? 'arrow-hide' : '' }}">&#8667;</a>
+  </div>
+
+  <div class="content-generic">
+    <div class="streamplayer">
+      @if(playerSupport($video->link_video_updated))
+        <video class="streamplayer-video" controls>
+          <source src="{{ $video->link_video_updated }}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      @else
+        <iframe class="streamplayer-video streamplayer-embed" src="{{ $video->link_video_updated }}" scrolling="no"></iframe>
+      @endif
+      <div class="content-close"></div>
+    </div>
   </div>
 
   <div class="content-generic">
@@ -31,21 +45,21 @@
         </li>
         <li class="list-group-item">
           <div class="row">
-            @foreach($videos as $video)
-              @if($video->resolution === $resolution)
+            @foreach($mirrors as $mirror)
+              @if($mirror->resolution === $resolution)
                 <div class="col-sm-4">
-                  <a href="{{ $video->stream_url }}">
+                  <a href="{{ $mirror->stream_url }}">
                     <div class="episode-block">
-                      <p>Original Streamer: {{ $video->streamer->name }}</p>
-                      @if(playerSupport($video->link_video))
+                      <p>Original Streamer: {{ $mirror->streamer->name }}</p>
+                      @if(playerSupport($mirror->link_video))
                         <p class="episode-info-good">HTML5 Player: Yes</p>
                       @else
                         <p class="episode-info-bad">HTML5 Player: No</p>
                       @endif
-                      @if(!empty($video->notes) && badNotes($video->notes))
-                        <p>Notes: <span class="episode-info-bad">{{ $video->notes }}</span></p>
-                      @elseif(!empty($video->notes))
-                        <p>Notes: {{ $video->notes }}</p>
+                      @if(!empty($mirror->notes) && badNotes($mirror->notes))
+                        <p>Notes: <span class="episode-info-bad">{{ $mirror->notes }}</span></p>
+                      @elseif(!empty($mirror->notes))
+                        <p>Notes: {{ $mirror->notes }}</p>
                       @endif
                     </div>
                   </a>
@@ -69,7 +83,16 @@
 
   <div class="content-header">Comments</div>
   @include('components.disqus', [
-    'disqus_url' => $episode->episode_url,
-    'disqus_id' => 'episode:('.$episode->episode_id.')',
+    'disqus_url' => $video->episode_url,
+    'disqus_id' => 'episode:('.$video->episode_id.')',
   ])
+@endsection
+
+@section('content-right')
+  @if(isset($show->mal_url))
+    <div class="content-header">
+      <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
+    </div>
+  @endif
+  @include('components.malwidget_sidebar', ['mal_url' => $show->mal_url])
 @endsection
