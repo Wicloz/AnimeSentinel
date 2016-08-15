@@ -62,7 +62,7 @@
         </tr>
         <tr>
           <td>Add buttons to the search results to add anime or add it and go to the details page..</td>
-          <td>WIP</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Allow browsing of all anime in our database.</td>
@@ -71,6 +71,10 @@
         <tr>
           <td>Allow browsing of recently aired epsiodes with different layouts.</td>
           <td>Layout selection needs to be more persistent</td>
+        </tr>
+        <tr>
+          <td>Make the description of synopsy really fancy.</td>
+          <td>✘</td>
         </tr>
         <tr>
           <td>Properly scale the MAL widgets.</td>
@@ -141,6 +145,10 @@
         </tr>
         <tr>
           <td>Use jGrowl for the notification area.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Improve fluid layout.</td>
           <td>✘</td>
         </tr>
         <tr>

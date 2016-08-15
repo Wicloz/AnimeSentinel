@@ -62,11 +62,24 @@
           <div class="col-sm-12">
             <div class="synopsis-description">
               <p>This show is not in our database yet.</p>
-              <form action="{{ url('/anime/add') }}" method="POST">
-                {{ csrf_field() }}
-                <input type="hidden" name="title" value="{{ $syn_show->title }}"></input>
-                <button type="submit" class="btn btn-primary">Click To Add</button>
-              </form>
+              <div class="row">
+                <div class="col-sm-3">
+                  <form action="{{ url('/anime/add') }}" method="POST">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="title" value="{{ $syn_show->title }}"></input>
+                    <input type="hidden" name="gotodetails" value="0"></input>
+                    <button type="submit" class="btn btn-primary">Add and return to Search Results</button>
+                  </form>
+                </div>
+                <div class="col-sm-3">
+                  <form action="{{ url('/anime/add') }}" method="POST">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="title" value="{{ $syn_show->title }}"></input>
+                    <input type="hidden" name="gotodetails" value="1"></input>
+                    <button type="submit" class="btn btn-primary">Add and go to Details Page</button>
+                  </form>
+                </div>
+              </div>
             </div>
           </div>
         </div>

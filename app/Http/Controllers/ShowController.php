@@ -35,8 +35,12 @@ class ShowController extends Controller
       'title' => ['required', 'min:3']
     ]);
 
-    ShowManager::addShowWithTitle($request->title);
+    $show = ShowManager::addShowWithTitle($request->title);
 
-    return back();
+    if ($request->gotodetails) {
+      return redirect($show->details_url);
+    } else {
+      return back();
+    }
   }
 }
