@@ -46,7 +46,7 @@
         </tr>
         <tr>
           <td>Add a random anime to the welcome page.</td>
-          <td>✘</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Allow searching for anime from MAL.</td>
@@ -59,6 +59,10 @@
         <tr>
           <td>Add anime only existing in our database to the search results where required.</td>
           <td>✘</td>
+        </tr>
+        <tr>
+          <td>Add buttons to the search results to add anime or add it and go to the details page..</td>
+          <td>WIP</td>
         </tr>
         <tr>
           <td>Allow browsing of all anime in our database.</td>

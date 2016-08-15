@@ -35,7 +35,8 @@ class AnimeController extends Controller
    */
   public function home() {
     return view('home', [
-      'recent' => $this->recentShows(32, false)
+      'random' => Show::random()->first(),
+      'recent' => $this->recentShows(32, false),
     ]);
   }
 
