@@ -9,4 +9,253 @@
     </p>
     <div class="content-close"></div>
   </div>
+
+
+  <div class="content-header">Stage 1: Streaming</div>
+  <div class="content-generic">
+    <p>
+      The first stage of this project involves making sure the dynamic streaming site portion works and is reasonably stable.
+      After this, anime can be searched and added to our database.
+      Episodes will be searched for in the background, and recently aired pages from streaming sites will be checked at regular intervals.
+      Naturally, these episodes can be watched as well.
+    </p>
+    <h2>Features</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Create the anime details page.</td>
+          <td>✔</td>
+        </tr>
+        <tr>
+          <td>Create the page to watch episodes.</td>
+          <td>WIP</td>
+        </tr>
+        <tr>
+          <td>Implement method to order mirrors by quality.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Add recently aired anime to the welcome page.</td>
+          <td>✔</td>
+        </tr>
+        <tr>
+          <td>Add a random anime to the welcome page.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Allow searching for anime from MAL.</td>
+          <td>✔</td>
+        </tr>
+        <tr>
+          <td>Replace MAL search results with entries from our database where possible.</td>
+          <td>✔</td>
+        </tr>
+        <tr>
+          <td>Add anime only existing in our database to the search results where required.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Allow browsing of all anime in our database.</td>
+          <td>Seems to break when there are no shows in the database</td>
+        </tr>
+        <tr>
+          <td>Allow browsing of recently aired epsiodes with different layouts.</td>
+          <td>Layout selection needs to be more persistent</td>
+        </tr>
+        <tr>
+          <td>Properly scale the MAL widgets.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Allow adding of anime and episodes.</td>
+          <td>✔</td>
+        </tr>
+        <tr>
+          <td>Allow tasks to be executed in the background using a queue.</td>
+          <td>✔</td>
+        </tr>
+        <tr>
+          <td>Periodically check recently aired pages and add new episodes.</td>
+          <td>✔</td>
+        </tr>
+        <tr>
+          <td>Make sure cloudflare-scrape works.</td>
+          <td>WIP</td>
+        </tr>
+        <tr>
+          <td>Solve kissanime's noCaptcha challenges.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Implement the download helper with retries and failures.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Mail admins whenever something fails.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Review classnames and filenames for the Jobs and AnimeSentinel stuff.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Handle tasks that can be exucuted both as jobs and regularly.</td>
+          <td>✘</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="content-close"></div>
+  </div>
+
+  <div class="content-header">Stage 2: Production</div>
+  <div class="content-generic">
+    <p>
+      After this site can be used to at the very least watch anime, it is time to host it on a server in order to collect data and feedback.
+    </p>
+    <h2>Features</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Finish the about page.</td>
+          <td>WIP</td>
+        </tr>
+        <tr>
+          <td>Create the sites for streamer infromation.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Use jGrowl for the notification area.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Improve pages based on feedback.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Create and implement the news/notification system.</td>
+          <td>✘</td>
+        </tr>
+      </tbody>
+    </table>
+    <h2>Other</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Obtain a device to use as a server.</td>
+          <td>✔</td>
+        </tr>
+        <tr>
+          <td>Setup that device properly.</td>
+          <td>WIP</td>
+        </tr>
+        <tr>
+          <td>Host this site on the server.</td>
+          <td>✘</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="content-close"></div>
+  </div>
+
+  <div class="content-header">Stage 3: Users</div>
+  <div class="content-generic">
+    <p>
+      This stage involves allowing people to create an account and link it to their MAL account.
+      Afterwards, the notification system and other MAL interaction can be created.
+    </p>
+    <h2>Features</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Improve the login and register pages.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Create the users general options page.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Create the users notifications options page.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Create the users overview page.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Implement a permission system for the users.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Allow users to link their MAL account securely.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Cache MAL data for users.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Notify users (based on their settings) when a new episode is available.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Change shows from 'plan to watch' to 'watching' on users MAL accounts when an epsiode gets added.</td>
+          <td>✘</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="content-close"></div>
+  </div>
+
+  <div class="content-header">Stage X: The Future</div>
+  <div class="content-generic">
+    <p>
+      At this point the site can be considered 'fully functional' but is not finished yet.
+      Now that the foundations have been built it is time to implement some really cool features that truly set this apart from other streaming sites.
+    </p>
+    <h2>Features</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Allow videos to be played synchronously with friends.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Detect when a user has finished watching an episode and update ther MAL account.</td>
+          <td>✘</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="content-close"></div>
+  </div>
 @endsection

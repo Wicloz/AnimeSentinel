@@ -46,4 +46,3 @@ Route::get('/stream/{video}', 'EpisodeController@stream');
 Route::get('/stream/{video}/video', 'EpisodeController@static');
 
 // Profile Pages (TODO)
-Route::get('/dashboard', 'ProfileController@dashboard');
