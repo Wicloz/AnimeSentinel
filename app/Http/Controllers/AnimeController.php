@@ -57,7 +57,7 @@ class AnimeController extends Controller
       abort(404);
     }
     $shows = Show::orderBy('title', 'asc')->skip(($request->page - 1) * $showsPerPage)->take($showsPerPage)->get();
-    if (count($shows) == 0) {
+    if (count($shows) == 0 && $request->page > 1) {
       abort(404);
     }
 

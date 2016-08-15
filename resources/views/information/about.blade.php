@@ -62,7 +62,7 @@
         </tr>
         <tr>
           <td>Allow browsing of all anime in our database.</td>
-          <td>Seems to break when there are no shows in the database</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Allow browsing of recently aired epsiodes with different layouts.</td>
