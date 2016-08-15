@@ -89,16 +89,9 @@
 
 .content-header {
   padding: 10px 15px;
-  background-color: $background_colour-content2;
+  background-color: $background_colour-content_header;
   font-size: 24px;
   margin-bottom: 15px;
-  > a {
-    color: inherit;
-  }
-  > a:focus, a:hover {
-    color: $text_colour-navs;
-    text-decoration: inherit;
-  }
 }
 
 .header-center {
@@ -106,7 +99,7 @@
 }
 
 .content-generic {
-  background-color: $background_colour-content1;
+  background-color: $background_colour-content_main;
   margin-bottom: 15px;
   padding: 15px;
 }

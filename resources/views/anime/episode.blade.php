@@ -48,20 +48,18 @@
             @foreach($mirrors as $mirror)
               @if($mirror->resolution === $resolution)
                 <div class="col-sm-4">
-                  <a href="{{ $mirror->stream_url }}">
-                    <div class="episode-block">
-                      <p>Original Streamer: {{ $mirror->streamer->name }}</p>
-                      @if(playerSupport($mirror->link_video))
-                        <p class="episode-info-good">HTML5 Player: Yes</p>
-                      @else
-                        <p class="episode-info-bad">HTML5 Player: No</p>
-                      @endif
-                      @if(!empty($mirror->notes) && badNotes($mirror->notes))
-                        <p>Notes: <span class="episode-info-bad">{{ $mirror->notes }}</span></p>
-                      @elseif(!empty($mirror->notes))
-                        <p>Notes: {{ $mirror->notes }}</p>
-                      @endif
-                    </div>
+                  <a class="episode-block {{ $mirror->id === $video->id ? 'episode-block-active' : '' }}" href="{{ $mirror->stream_url }}">
+                    <p>Original Streamer: {{ $mirror->streamer->name }}</p>
+                    @if(playerSupport($mirror->link_video))
+                      <p class="episode-info-good">HTML5 Player: Yes</p>
+                    @else
+                      <p class="episode-info-bad">HTML5 Player: No</p>
+                    @endif
+                    @if(!empty($mirror->notes) && badNotes($mirror->notes))
+                      <p>Notes: <span class="episode-info-bad">{{ $mirror->notes }}</span></p>
+                    @elseif(!empty($mirror->notes))
+                      <p>Notes: {{ $mirror->notes }}</p>
+                    @endif
                   </a>
                 </div>
               @endif
@@ -73,13 +71,6 @@
     @endforeach
     <div class="content-close"></div>
   </div>
-
-  @if(isset($show->mal_url))
-    <div class="content-header">
-      <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
-    </div>
-  @endif
-  @include('components.malwidget_banner', ['mal_url' => $show->mal_url])
 
   <div class="content-header">Comments</div>
   @include('components.disqus', [

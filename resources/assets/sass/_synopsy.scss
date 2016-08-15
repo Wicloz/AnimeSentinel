@@ -10,7 +10,7 @@
 // Synopsis Panels //
 
 .synopsis-panel {
-  background-color: $background_colour-content1;
+  background-color: $background_colour-content_main;
   margin-bottom: 15px;
   padding: 15px;
 
@@ -29,17 +29,10 @@
   }
 
   .synopsis-title {
-    background-color: $background_colour-content2;
+    background-color: $background_colour-content_header;
     font-size: 24px;
     padding: 5px 10px;
     margin-bottom: 10px;
-    > a {
-      color: inherit;
-    }
-    > a:focus, a:hover {
-      color: $text_colour-navs;
-      text-decoration: inherit;
-    }
   }
 
   .synopsis-description {
@@ -58,7 +51,7 @@
   }
 
   .synopsis-details {
-    background-color: $background_colour-content2;
+    background-color: $background_colour-content_header;
     padding: 5px 10px 1px;
     margin-bottom: 10px;
     p {
@@ -67,23 +60,16 @@
   }
 
   .synopsis-bottombar {
-    background-color: $background_colour-content2;
+    background-color: $background_colour-content_header;
     padding: 5px 10px;
     font-size: 16px;
-    a {
-      color: inherit;
-    }
-    a:focus, a:hover {
-      color: $text_colour-navs;
-      text-decoration: inherit;
-    }
   }
 }
 
 // Synopsis Blocks //
 
 .synblock {
-  background-color: $background_colour-content1;
+  background-color: $background_colour-content_main;
   padding: 15px;
   width: 100%;
   margin-bottom: 15px;
@@ -104,8 +90,8 @@
   position: absolute;
   top: 10px;
   font-size: 16px;
-  background-color: transparentize($background_colour-content2, 0.15);
-  box-shadow: 0 0 10px $background_colour-content2;
+  background-color: transparentize($background_colour-content_header, 0.15);
+  box-shadow: 0 0 10px $background_colour-content_header;
   padding: 1px 5px;
 }
 
@@ -118,15 +104,8 @@
 }
 
 .synblock-title, .synblock-episode {
-  background-color: $background_colour-content2;
+  background-color: $background_colour-content_header;
   padding: 5px 10px;
-  > a {
-    color: inherit;
-  }
-  > a:focus, a:hover {
-    color: $text_colour-navs;
-    text-decoration: inherit;
-  }
 }
 
 .synblock-title {
