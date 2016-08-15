@@ -25,13 +25,14 @@
 
   <div class="content-generic">
     <div class="streamplayer">
+      <div style="padding-top:{{ $video->aspect * 100 }}%;"></div>
       @if(playerSupport($video->link_video_updated))
         <video class="streamplayer-video" controls>
           <source src="{{ $video->link_video_updated }}" type="video/mp4">
           Your browser does not support the video tag.
         </video>
       @else
-        <iframe class="streamplayer-video streamplayer-embed" src="{{ $video->link_video_updated }}" scrolling="no"></iframe>
+        <iframe class="streamplayer-video" src="{{ $video->link_video_updated }}" scrolling="no"></iframe>
       @endif
     </div>
   </div>

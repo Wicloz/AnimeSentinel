@@ -119,6 +119,26 @@ class Video extends BaseModel
   }
 
   /**
+  * Get the surface area of the video.
+  *
+  * @return integer
+  */
+  public function getSurfaceAttribute() {
+    $resolutions = explode('x', $this->resolution);
+    return $resolutions[0] * $resolutions[1];
+  }
+
+  /**
+  * Get the aspect ratio of the video.
+  *
+  * @return integer
+  */
+  public function getAspectAttribute() {
+    $resolutions = explode('x', $this->resolution);
+    return $resolutions[1] / $resolutions[0];
+  }
+
+  /**
   * Get the full url for the episode page related to this video.
   *
   * @return string

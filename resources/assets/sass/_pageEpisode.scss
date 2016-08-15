@@ -29,12 +29,6 @@
   position: relative;
 }
 
-.streamplayer:before {
-	content: "";
-	display: block;
-	padding-top: 56.25%;
-}
-
 .streamplayer-video {
   position: absolute;
   width: 100%;
@@ -44,9 +38,4 @@
 	bottom: 0;
 	right: 0;
   border: none;
-}
-
-.streamplayer-embed {
-  width: calc(100% + 8px);
-  height: calc(100% + 8px);
 }
