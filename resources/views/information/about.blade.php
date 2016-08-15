@@ -34,11 +34,11 @@
         </tr>
         <tr>
           <td>Create the page to watch episodes.</td>
-          <td>WIP</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Implement method to order mirrors by quality.</td>
-          <td>✘</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Add recently aired anime to the welcome page.</td>

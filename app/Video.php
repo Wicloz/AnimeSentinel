@@ -123,6 +123,33 @@ class Video extends BaseModel
   *
   * @return string
   */
+  public function getBestMirrorAttribute() {
+    $mirrors = Self::where('show_id', $this->show_id)->episode($this->translation_type, $this->episode_num)->get();
+    $bestMirror = null;
+
+    foreach ($mirrors as $mirror) {
+      $resolutions = explode('x', $mirror->resolution);
+      if (playerSupport($mirror->link_video) && ($bestMirror === null || $resolutions[0] * $resolutions[1] > explode('x', $bestMirror->resolution)[0] * explode('x', $bestMirror->resolution)[1])) {
+        $bestMirror = $mirror;
+      }
+    }
+    if ($bestMirror === null) {
+      foreach ($mirrors as $mirror) {
+        $resolutions = explode('x', $mirror->resolution);
+        if ($bestMirror === null || $resolutions[0] * $resolutions[1] > explode('x', $bestMirror->resolution)[0] * explode('x', $bestMirror->resolution)[1]) {
+          $bestMirror = $mirror;
+        }
+      }
+    }
+
+    return $bestMirror;
+  }
+
+  /**
+  * Get the full url for the episode page related to this video.
+  *
+  * @return string
+  */
   public function getStreamUrlAttribute() {
     return url('/anime/'.$this->show_id.'/'.$this->translation_type.'/episode-'.$this->episode_num.'/'.$this->streamer_id.'/'.$this->mirror);
   }

@@ -15,8 +15,9 @@ class EpisodeController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function gotoEpisode($show, $translation_type, $episode_num) {
-    return redirect(url('/anime/'.$show.'/'.$translation_type.'/episode-'.$episode_num.'/kissanime/1'));
+  public function gotoEpisode(Show $show, $translation_type, $episode_num) {
+    $bestMirror = $show->videos()->episode($translation_type, $episode_num)->first()->best_mirror;
+    return redirect($bestMirror->stream_url);
   }
 
   /**
@@ -27,8 +28,8 @@ class EpisodeController extends Controller
    */
   public function episode(Show $show, $translation_type, $episode_num, $streamer, $mirror) {
     $mirrors = $show->videos()
-                   ->episode($translation_type, $episode_num)
-                   ->get();
+                    ->episode($translation_type, $episode_num)
+                    ->get();
     if (count($mirrors) == 0) {
       abort(404);
     }
