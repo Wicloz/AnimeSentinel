@@ -22,17 +22,17 @@
 // TODO: proper scaling
 .malw-sidebar {
   width: 231px;
-  height: 187px;
+  height: 1000px;
   overflow: hidden;
   position: relative;
   margin-bottom: 10px;
 
   > iframe {
     position: absolute;
-    top: -469px;
+    top: -121px;
     left: -11px;
     width: 1024px;
-    height: 1024px;
+    height: 1121px;
     border: none;
   }
 }

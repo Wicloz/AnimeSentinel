@@ -33,7 +33,6 @@
       @else
         <iframe class="streamplayer-video streamplayer-embed" src="{{ $video->link_video_updated }}" scrolling="no"></iframe>
       @endif
-      <div class="content-close"></div>
     </div>
   </div>
 

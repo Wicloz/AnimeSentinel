@@ -41,6 +41,10 @@
           <td>✔</td>
         </tr>
         <tr>
+          <td>Fix layout with 4:3 videos.</td>
+          <td>✔</td>
+        </tr>
+        <tr>
           <td>Add recently aired anime to the welcome page.</td>
           <td>✔</td>
         </tr>
@@ -263,6 +267,10 @@
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <td>Get video data such as resolution and playback length directly from the video file.</td>
+          <td>✘</td>
+        </tr>
         <tr>
           <td>Allow videos to be played synchronously with friends.</td>
           <td>✘</td>
