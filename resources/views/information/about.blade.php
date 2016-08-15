@@ -61,7 +61,7 @@
           <td>✘</td>
         </tr>
         <tr>
-          <td>Add buttons to the search results to add anime or add it and go to the details page..</td>
+          <td>Add buttons to the search results to add anime or add it and go to the details page.</td>
           <td>✔</td>
         </tr>
         <tr>
@@ -77,11 +77,11 @@
           <td>✘</td>
         </tr>
         <tr>
-          <td>Properly scale the MAL widgets.</td>
-          <td>✘</td>
+          <td>Allow adding of animes and episodes.</td>
+          <td>✔</td>
         </tr>
         <tr>
-          <td>Allow adding of animes and episodes.</td>
+          <td>Store most anime and episode data and update it only once it expires. AKA caching.</td>
           <td>✔</td>
         </tr>
         <tr>
@@ -125,6 +125,7 @@
   <div class="content-generic">
     <p>
       After this site can be used to at the very least watch anime, it is time to host it on a server in order to collect data and feedback.
+      Also, a few less important features will require implementation.
     </p>
     <h2>Features</h2>
     <table class="table table-striped">
@@ -149,6 +150,10 @@
         </tr>
         <tr>
           <td>Improve fluid layout.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Properly scale the MAL widgets.</td>
           <td>✘</td>
         </tr>
         <tr>
