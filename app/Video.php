@@ -148,15 +148,13 @@ class Video extends BaseModel
     $bestMirror = null;
 
     foreach ($mirrors as $mirror) {
-      $resolutions = explode('x', $mirror->resolution);
-      if (playerSupport($mirror->link_video) && ($bestMirror === null || $resolutions[0] * $resolutions[1] > explode('x', $bestMirror->resolution)[0] * explode('x', $bestMirror->resolution)[1])) {
+      if (playerSupport($mirror->link_video) && ($bestMirror === null || $mirror->surface > $bestMirror->surface)) {
         $bestMirror = $mirror;
       }
     }
     if ($bestMirror === null) {
       foreach ($mirrors as $mirror) {
-        $resolutions = explode('x', $mirror->resolution);
-        if ($bestMirror === null || $resolutions[0] * $resolutions[1] > explode('x', $bestMirror->resolution)[0] * explode('x', $bestMirror->resolution)[1]) {
+        if ($bestMirror === null || $mirror->surface > $bestMirror->surface) {
           $bestMirror = $mirror;
         }
       }
