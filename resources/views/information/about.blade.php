@@ -73,10 +73,6 @@
           <td>Layout selection needs to be more persistent</td>
         </tr>
         <tr>
-          <td>Make the description of synopsy really fancy.</td>
-          <td>✘</td>
-        </tr>
-        <tr>
           <td>Allow adding of animes and episodes.</td>
           <td>✔</td>
         </tr>
@@ -113,7 +109,7 @@
           <td>✔</td>
         </tr>
         <tr>
-          <td>Handle tasks that can be exucuted both through jobs and regularly.</td>
+          <td>Handle tasks that can be executed both through jobs and regularly.</td>
           <td>✘</td>
         </tr>
       </tbody>
@@ -154,6 +150,10 @@
         </tr>
         <tr>
           <td>Properly scale the MAL widgets.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Make the description of synopsy really fancy.</td>
           <td>✘</td>
         </tr>
         <tr>
