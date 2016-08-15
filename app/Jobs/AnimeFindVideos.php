@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use App\Show;
-use App\AnimeSentinel\StreamingManager;
+use App\AnimeSentinel\ConnectionManager;
 
 class AnimeFindVideos extends Job implements ShouldQueue
 {
@@ -35,6 +35,6 @@ class AnimeFindVideos extends Job implements ShouldQueue
    * @return void
    */
   public function handle() {
-    StreamingManager::findVideosForShow(Show::find($this->show_id));
+    ConnectionManager::findVideosForShow(Show::find($this->show_id));
   }
 }

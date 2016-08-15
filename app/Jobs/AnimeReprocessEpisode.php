@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use App\Show;
-use App\AnimeSentinel\VideoManager;
+use App\AnimeSentinel\ConnectionManager;
 
 class AnimeReprocessEpisode extends Job implements ShouldQueue
 {
@@ -42,6 +42,6 @@ class AnimeReprocessEpisode extends Job implements ShouldQueue
    * @return void
    */
   public function handle() {
-    VideoManager::reprocessEpsiode(Show::find($this->show_id), $this->translation_types, $this->episode_num, $this->streamer_id);
+    ConnectionManager::reprocessEpsiode(Show::find($this->show_id), $this->translation_types, $this->episode_num, $this->streamer_id);
   }
 }

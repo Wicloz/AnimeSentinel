@@ -73,7 +73,7 @@
           <td>✘</td>
         </tr>
         <tr>
-          <td>Allow adding of anime and episodes.</td>
+          <td>Allow adding of animes and episodes.</td>
           <td>✔</td>
         </tr>
         <tr>
@@ -102,10 +102,10 @@
         </tr>
         <tr>
           <td>Review classnames and filenames for the Jobs and AnimeSentinel stuff.</td>
-          <td>✘</td>
+          <td>✔</td>
         </tr>
         <tr>
-          <td>Handle tasks that can be exucuted both as jobs and regularly.</td>
+          <td>Handle tasks that can be exucuted both through jobs and regularly.</td>
           <td>✘</td>
         </tr>
       </tbody>

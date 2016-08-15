@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-use App\AnimeSentinel\StreamingManager;
+use App\AnimeSentinel\ConnectionManager;
 
 class FindRecentVideos extends Job implements ShouldQueue
 {
@@ -33,7 +33,7 @@ class FindRecentVideos extends Job implements ShouldQueue
    * @return void
    */
   public function handle() {
-    StreamingManager::findRecentEpisodes();
+    ConnectionManager::findRecentEpisodes();
     queueJob((new FindRecentVideos)->delay(300), 'periodic_low');
   }
 }
