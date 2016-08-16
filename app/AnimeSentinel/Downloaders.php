@@ -12,6 +12,8 @@ class Downloaders
   public static function downloadPage($url) {
     if (strpos($url, 'kissanime.to') !== false) {
       $response = Self::downloadCloudFlare($url, 'kissanime');
+    } elseif (strpos($url, 'gogoanime.io') !== false) {
+      $response = Self::downloadCloudFlare($url, 'gogoanime');
     }
 
     else {
