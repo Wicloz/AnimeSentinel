@@ -112,7 +112,7 @@ class ConnectionManager
       }
     }
     // Save the new videos
-    Self::saveVideos($videos);
+    VideoManager::saveVideos($videos);
     // Mark show as initialised
     $show->videos_initialised = true;
     $show->save();

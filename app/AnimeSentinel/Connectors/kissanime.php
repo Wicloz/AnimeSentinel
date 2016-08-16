@@ -193,20 +193,18 @@ class kissanime
    * @return array
    */
   public static function guard() {
-    $data = [];
-
     // Download the 'recently aired' page
     $page = Downloaders::downloadPage('http://kissanime.to');
 
     // Scrape the 'recently aired' page
-    $dataRaw = Helpers::scrape_page(str_get_between($page, '<div class="items">', '<div class="clear">'), '</a>', [
+    $data = Helpers::scrape_page(str_get_between($page, '<div class="items">', '<div class="clear">'), '</a>', [
       'link_stream' => [true, 'href="', '"'],
       'title' => [false, '<br />', '<br />'],
       'episode_num' => [false, '<span class=\'textDark\'>', '</span>'],
     ]);
 
     // Complete and return data
-    foreach ($dataRaw as $item) {
+    foreach ($data as $index => $item) {
       // Determine translation type and clean up title
       $item['translation_type'] = 'sub';
       $item['title'] = trim(str_replace('(Sub)', '', $item['title']));
@@ -236,10 +234,11 @@ class kissanime
         $item['episode_num'] = 1;
       }
 
-      $data[] = $item;
+      $data[$index] = $item;
     }
 
     return $data;
+    // Contains: title, episode_num, (translation_type)
   }
 
   /**

@@ -106,10 +106,13 @@ class template
     ]);
 
     // Complete and return data
-    foreach ($data as $item) {
+    foreach ($data as $index => $item) {
       //TODO
+      $data[$index] = $item;
     }
+
     return $data;
+    // Contains: title, episode_num, (translation_type)
   }
 
   /**
