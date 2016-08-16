@@ -75,7 +75,9 @@ class Downloaders
 
   private static function requestCloudFlareData($url, $cookieid = 'cloudflare') {
     $cookies = exec('python '. __DIR__ .'/CloudFlare.py "'. $url .'"');
-    mkdir(__DIR__.'/../../storage/app/cookies');
+    if (!file_exists(__DIR__.'/../../storage/app/cookies')) {
+      mkdir(__DIR__.'/../../storage/app/cookies');
+    }
     file_put_contents(__DIR__.'/../../storage/app/cookies/'.$cookieid, $cookies);
   }
 }
