@@ -94,7 +94,7 @@
         </tr>
         <tr>
           <td>Make sure cloudflare-scrape works.</td>
-          <td>WIP</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Solve kissanime's noCaptcha challenges.</td>
