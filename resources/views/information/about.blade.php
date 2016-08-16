@@ -122,7 +122,7 @@
         </tr>
         <tr>
           <td>Properly handle superior in progress jobs when an inferior one gets queued.</td>
-          <td>✘</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Properly handle stopping jobs when they need to be removed.</td>

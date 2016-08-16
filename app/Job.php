@@ -74,16 +74,23 @@ class Job extends BaseModel
    * Returns all 'higher' jobs than the requested task, operating on the same show title.
    * Ignore reserved jobs.
    */
-  public static function higherThan($job_task, $show_title) {
-    return Self::where('show_title', $show_title)->where('reserved', 0)
-               ->whereIn('job_task', array_get_parents(config('queue.jobhierarchy'), $job_task))->get();
+  public static function higherThan($job_task, $show_title, $unReserved = true) {
+    if ($unReserved) {
+      return Self::where('show_title', $show_title)->where('reserved', 0)
+                 ->whereIn('job_task', array_get_parents(config('queue.jobhierarchy'), $job_task))
+                 ->get();
+    } else {
+      return Self::where('show_title', $show_title)
+                 ->whereIn('job_task', array_get_parents(config('queue.jobhierarchy'), $job_task))
+                 ->get();
+    }
   }
 
   /**
    * Returns all 'lower' jobs than the requested task, operating on the same show title.
    * Ignore reserved jobs.
    */
-  public static function lowerThan($job_task, $show_title) {
+  public static function lowerThan($job_task, $show_title, $unReserved = true) {
     return Self::where('show_title', $show_title)->where('reserved', 0)
                ->whereIn('job_task', array_get_childs(config('queue.jobhierarchy'), $job_task))->get();
   }

@@ -57,11 +57,12 @@ function queueJob($job, $queue = 'default') {
 
   if ($job_data['show_title'] !== null) {
     // Check whether a higher job is queued
+    $highers = \App\Job::higherThan($job_data['job_task'], $job_data['show_title'], false);
+    foreach ($highers as $higher) {
+      $higher->elevateQueue($queue);
+    }
     $highers = \App\Job::higherThan($job_data['job_task'], $job_data['show_title']);
     if (count($highers) > 0) {
-      foreach ($highers as $higher) {
-        $higher->elevateQueue($queue);
-      }
       return;
     }
 
