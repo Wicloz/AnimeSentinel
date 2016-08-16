@@ -13,8 +13,8 @@ class ConnectionManager
    * This is used when a new show is added or some shows videos are broken and need to be refreshed.
    */
   public static function findVideosForShow($show) {
-    // Stop any inferiour or equal queued jobs
-    \App\Job::terminateLowerEqual('AnimeFindVideos', $show->title);
+    // Remove any inferiour queued jobs
+    \App\Job::deleteLowerThan('AnimeFindVideos', $show->title);
 
     // Mark show as not initialised
     $show->videos_initialised = false;
@@ -41,13 +41,52 @@ class ConnectionManager
   }
 
   /**
+   * Removes and adds all videos for the requested show and episode.
+   */
+  public static function reprocessEpsiode($show, $translation_types, $episode_num, $streamer_id = null) {
+    // Remove any inferiour queued jobs
+    \App\Job::deleteLowerThan('AnimeReprocessEpisode', $show->title);
+
+    // Mark show as not initialised
+    $show->videos_initialised = false;
+    $show->save();
+    // Grab all streamers data
+    $streamers = Streamer::all();
+
+    // For all applicable streamers, request videos for this episode
+    $videosRaw = []; $videos = [];
+    foreach ($streamers as $streamer) {
+      if (($streamer_id === null || $streamer_id === $streamer->id) && ($streamer->id !== 'youtube' || (!empty($show->show_flags) && $show->show_flags->check_youtube))) {
+        $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
+        $videosRaw = array_merge($videosRaw, $class::seek($show, $episode_num));
+      }
+    }
+    foreach ($videosRaw as $video) {
+      if (in_array($video->translation_type, $translation_types)) {
+        $videos[] = $video;
+      }
+    }
+
+    // Remove all existing videos for this episode
+    foreach ($translation_types as $translation_type) {
+      if ($streamer_id === null) {
+        $show->videos()->episode($translation_type, $episode_num)->delete();
+      } else {
+        $show->videos()->episode($translation_type, $episode_num)->where('streamer_id', $streamer_id)->delete();
+      }
+    }
+    // Save the new videos
+    Self::saveVideos($videos);
+    // Mark show as initialised
+    $show->videos_initialised = true;
+    $show->save();
+  }
+
+  /**
    * Finds all video's for all existing shows on a specific streaming site.
    * This is used when a new streaming site is added.
    */
   public static function findVideosForStreamer($streamer) {
-    // Stop any inferiour or equal queued jobs
-    \App\Job::terminateLowerEqual('StreamerFindVideos', null, ['streamer_id' => $streamer->id]);
-
     // Process all shows data in chuncks of 100
     Show::orderBy('id')->chunk(100, function ($shows) use ($streamer) {
       foreach ($shows as $show) {
@@ -116,51 +155,5 @@ class ConnectionManager
         }
       }
     }
-  }
-
-  /**
-   * Removes and adds all videos for the requested show and episode.
-   */
-  public static function reprocessEpsiode($show, $translation_types, $episode_num, $streamer_id = null) {
-    // Stop any inferiour or equal queued jobs
-    \App\Job::terminateLowerEqual('AnimeReprocessEpisode', $show->title, [
-      'translation_types' => $translation_types,
-      'episode_num' => $episode_num,
-      'streamer_id' => $streamer_id,
-    ]);
-
-    // Mark show as not initialised
-    $show->videos_initialised = false;
-    $show->save();
-    // Grab all streamers data
-    $streamers = Streamer::all();
-
-    // For all applicable streamers, request videos for this episode
-    $videosRaw = []; $videos = [];
-    foreach ($streamers as $streamer) {
-      if (($streamer_id === null || $streamer_id === $streamer->id) && ($streamer->id !== 'youtube' || (!empty($show->show_flags) && $show->show_flags->check_youtube))) {
-        $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
-        $videosRaw = array_merge($videosRaw, $class::seek($show, $episode_num));
-      }
-    }
-    foreach ($videosRaw as $video) {
-      if (in_array($video->translation_type, $translation_types)) {
-        $videos[] = $video;
-      }
-    }
-
-    // Remove all existing videos for this episode
-    foreach ($translation_types as $translation_type) {
-      if ($streamer_id === null) {
-        $show->videos()->episode($translation_type, $episode_num)->delete();
-      } else {
-        $show->videos()->episode($translation_type, $episode_num)->where('streamer_id', $streamer_id)->delete();
-      }
-    }
-    // Save the new videos
-    Self::saveVideos($videos);
-    // Mark show as initialised
-    $show->videos_initialised = true;
-    $show->save();
   }
 }

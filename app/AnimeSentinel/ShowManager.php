@@ -17,8 +17,8 @@ class ShowManager
       flash_error('The requested show has already been added to the database.');
       return false;
     }
-    // Stop any inferiour or equal queued jobs
-    \App\Job::terminateLowerEqual('ShowAdd', $title);
+    // Remove any inferiour queued jobs
+    \App\Job::deleteLowerThan('ShowAdd', $title);
 
     // Find this show on MAL and get it's id
     $mal_id = MyAnimeList::getMalIdForTitle($title);
@@ -53,8 +53,8 @@ class ShowManager
    */
   public static function updateShowCache($show_id, $episodes = false, $queue = 'default') {
     $show = Show::find($show_id);
-    // Stop any inferiour or equal queued jobs
-    \App\Job::terminateLowerEqual('ShowUpdate', $show->title);
+    // Remove any inferiour queued jobs
+    \App\Job::deleteLowerThan('ShowUpdate', $show->title);
 
     // If the mal id is not known yet, try to find it first
     if (!isset($show->mal_id)) {

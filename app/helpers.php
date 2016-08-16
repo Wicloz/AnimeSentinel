@@ -49,7 +49,6 @@ function badNotes($notes) {
   return false;
 }
 
-// TODO: remove items from queue when their related function end up being excecuted through other means
 function queueJob($job, $queue = 'default') {
   // Prepare job data
   $job_data = $job->db_data;
@@ -57,12 +56,11 @@ function queueJob($job, $queue = 'default') {
 
   if ($job_data['show_title'] !== null) {
     // Check whether a higher job is queued
-    $highers = \App\Job::higherThan($job_data['job_task'], $job_data['show_title'], false);
-    foreach ($highers as $higher) {
-      $higher->elevateQueue($queue);
-    }
     $highers = \App\Job::higherThan($job_data['job_task'], $job_data['show_title']);
     if (count($highers) > 0) {
+      foreach ($highers as $higher) {
+        $higher->elevateQueue($queue);
+      }
       return;
     }
 
@@ -80,8 +78,8 @@ function queueJob($job, $queue = 'default') {
       return;
     }
 
-    // Stop any inferiour or equal queued jobs
-    $newQueue = \App\Job::terminateLowerEqual($job_data['job_task'], $job_data['show_title'], $job_data['job_data']);
+    // Remove any lower jobs
+    $newQueue = \App\Job::deleteLowerThan($job_data['job_task'], $job_data['show_title']);
     if (in_array($newQueue, array_get_parents(config('queue.queuehierarchy'), $queue))) {
       $queue = $newQueue;
     }

@@ -26,7 +26,7 @@ class CreateJobsTable extends Migration
             $table->unsignedInteger('created_at');
 
             $table->index(['queue', 'reserved', 'reserved_at']);
-            $table->unique(['show_title', 'job_task', 'job_data']);
+            $table->unique(['show_title', 'job_task', 'job_data', 'reserved']);
         });
 
         queueJob(new \App\Jobs\FindRecentVideos, 'periodic_low');
