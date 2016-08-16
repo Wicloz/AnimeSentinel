@@ -57,45 +57,29 @@ function queueJob($job, $queue = 'default') {
 
   if ($job_data['show_title'] !== null) {
     // Check whether a higher job is queued
-    $contestants = \App\Job::where('show_title', $job_data['show_title'])->get();
-    foreach (array_get_parents(config('queue.jobhierarchy'), $job_data['job_task']) as $task_name) {
-      foreach ($contestants as $contestant) {
-        if ($contestant->job_task === $task_name) {
-          // Elevate queue
-          if (in_array($contestant->queue, array_get_childs(config('queue.queuehierarchy'), $queue))) {
-            $contestant->queue = $queue;
-            $contestant->delete();
-            \App\Job::create($contestant->toArray());
-          }
-          return;
-        }
-      }
-    }
-
-    // Check whether the same job is already queued
-    $duplicates = \App\Job::where([
-      ['job_task', '=', $job_data['job_task']],
-      ['show_title', '=', $job_data['show_title']],
-      ['job_data', '=', json_encode($job_data['job_data'])],
-    ])->get();
-    if (count($duplicates) > 0) {
-      foreach ($duplicates as $duplicate) {
-        // Elevate queue
-        if (in_array($duplicate->queue, array_get_childs(config('queue.queuehierarchy'), $queue))) {
-          $duplicate->queue = $queue;
-          $duplicate->delete();
-          \App\Job::create($duplicate->toArray());
-        }
+    $highers = \App\Job::higherThan($job_data['job_task'], $job_data['show_title']);
+    if (count($highers) > 0) {
+      foreach ($highers as $higher) {
+        $higher->elevateQueue($queue);
       }
       return;
     }
 
+    // Check whether the same job is already queued
+    $duplicate = \App\Job::find([
+      'job_task' => $job_data['job_task'],
+      'show_title' => $job_data['show_title'],
+      'job_data' => json_encode($job_data['job_data']),
+    ]);
+    if (!empty($duplicate)) {
+      $duplicate->elevateQueue($queue);
+      return;
+    }
+
     // Remove all lower queued jobs
-    foreach (array_get_childs(config('queue.jobhierarchy'), $job_data['job_task']) as $task_name) {
-      \App\Job::where([
-        ['job_task', '=', $task_name],
-        ['show_title', '=', $job_data['show_title']],
-      ])->delete();
+    $lowers = \App\Job::lowerThan($job_data['job_task'], $job_data['show_title']);
+    foreach ($lowers as $lower) {
+      $lower->delete();
     }
   }
 
