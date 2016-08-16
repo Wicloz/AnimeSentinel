@@ -25,7 +25,7 @@ class StreamerFindVideos extends Job implements ShouldQueue
     $this->db_data = [
       'job_task' => 'StreamerFindVideos',
       'show_title' => null,
-      'job_data' => $streamer->id,
+      'job_data' => ['streamer_id' => $streamer->id],
     ];
   }
 

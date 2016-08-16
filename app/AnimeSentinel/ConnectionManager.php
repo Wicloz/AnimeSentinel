@@ -13,6 +13,9 @@ class ConnectionManager
    * This is used when a new show is added or some shows videos are broken and need to be refreshed.
    */
   public static function findVideosForShow($show) {
+    // Stop any inferiour or equal queued jobs
+    \App\Job::terminateLowerEqual('AnimeFindVideos', $show->title);
+
     // Mark show as not initialised
     $show->videos_initialised = false;
     $show->save();
@@ -42,6 +45,9 @@ class ConnectionManager
    * This is used when a new streaming site is added.
    */
   public static function findVideosForStreamer($streamer) {
+    // Stop any inferiour or equal queued jobs
+    \App\Job::terminateLowerEqual('StreamerFindVideos', null, ['streamer_id' => $streamer->id]);
+
     // Process all shows data in chuncks of 100
     Show::orderBy('id')->chunk(100, function ($shows) use ($streamer) {
       foreach ($shows as $show) {
@@ -116,6 +122,13 @@ class ConnectionManager
    * Removes and adds all videos for the requested show and episode.
    */
   public static function reprocessEpsiode($show, $translation_types, $episode_num, $streamer_id = null) {
+    // Stop any inferiour or equal queued jobs
+    \App\Job::terminateLowerEqual('AnimeReprocessEpisode', $show->title, [
+      'translation_types' => $translation_types,
+      'episode_num' => $episode_num,
+      'streamer_id' => $streamer_id,
+    ]);
+
     // Mark show as not initialised
     $show->videos_initialised = false;
     $show->save();

@@ -114,7 +114,7 @@
         </tr>
         <tr>
           <td>Handle tasks that can be executed both through jobs and regularly.</td>
-          <td>WIP</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Properly handle in progress jobs when a new one gets queued.</td>
