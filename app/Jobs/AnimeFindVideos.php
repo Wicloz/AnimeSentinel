@@ -35,6 +35,6 @@ class AnimeFindVideos extends Job implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ConnectionManager::findVideosForShow(Show::find($this->show_id));
+    ConnectionManager::findVideosForShow(Show::find($this->show_id), true);
   }
 }

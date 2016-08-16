@@ -37,6 +37,6 @@ class ShowUpdate extends Job implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ShowManager::updateShowCache($this->show_id, $this->episodes);
+    ShowManager::updateShowCache($this->show_id, $this->episodes, 'default', true);
   }
 }

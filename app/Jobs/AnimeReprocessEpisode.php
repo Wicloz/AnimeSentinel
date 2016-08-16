@@ -42,6 +42,6 @@ class AnimeReprocessEpisode extends Job implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ConnectionManager::reprocessEpsiode(Show::find($this->show_id), $this->translation_types, $this->episode_num, $this->streamer_id);
+    ConnectionManager::reprocessEpsiode(Show::find($this->show_id), $this->translation_types, $this->episode_num, $this->streamer_id, true);
   }
 }

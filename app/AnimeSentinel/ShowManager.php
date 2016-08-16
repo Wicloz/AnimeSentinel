@@ -11,14 +11,31 @@ class ShowManager
    * Adds the show with the requested title to the database.
    * Will also search for any currently existing episodes.
    */
-  public static function addShowWithTitle($title, $queue = 'default') {
+  public static function addShowWithTitle($title, $queue = 'default', $fromJob = false) {
+    // Remove any inferior queued jobs
+    \App\Job::deleteLowerThan('ShowAdd', $title);
+    // Set job values
+    $job_dbdata = [
+      ['job_task', '=', 'ShowAdd'],
+      ['show_title', '=', $title],
+      ['job_data', '=', json_encode(null)],
+    ];
+    // If this is queued as a job, remove it from the queue
+    \App\Job::where(array_merge($job_dbdata, [['reserved', '=', 0]]))->delete();
+    // Hovever, if that job is in progress, wait for it to complete instead of running this function,
+    // but only if this function isn't started from the job
+    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+        sleep(1);
+      }
+      return;
+    }
+
     // Confirm this show isn't already in our databse
     if (!empty(Show::withTitle($title)->first())) {
       flash_error('The requested show has already been added to the database.');
       return false;
     }
-    // Remove any inferiour queued jobs
-    \App\Job::deleteLowerThan('ShowAdd', $title);
 
     // Find this show on MAL and get it's id
     $mal_id = MyAnimeList::getMalIdForTitle($title);
@@ -51,10 +68,26 @@ class ShowManager
    * Updates the cached database information for the requested show.
    * If episodes is set to true, also updates episode information.
    */
-  public static function updateShowCache($show_id, $episodes = false, $queue = 'default') {
+  public static function updateShowCache($show_id, $episodes = false, $queue = 'default', $fromJob = false) {
     $show = Show::find($show_id);
-    // Remove any inferiour queued jobs
+    // Remove any inferior queued jobs
     \App\Job::deleteLowerThan('ShowUpdate', $show->title);
+    // Set job values
+    $job_dbdata = [
+      ['job_task', '=', 'ShowUpdate'],
+      ['show_title', '=', $show->title],
+      ['job_data', '=', json_encode(null)],
+    ];
+    // If this is queued as a job, remove it from the queue
+    \App\Job::where(array_merge($job_dbdata, [['reserved', '=', 0]]))->delete();
+    // Hovever, if that job is in progress, wait for it to complete instead of running this function,
+    // but only if this function isn't started from the job
+    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+        sleep(1);
+      }
+      return;
+    }
 
     // If the mal id is not known yet, try to find it first
     if (!isset($show->mal_id)) {

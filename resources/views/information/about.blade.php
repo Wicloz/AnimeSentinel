@@ -118,7 +118,7 @@
         </tr>
         <tr>
           <td>If a job is in progress and it's related task gets executed through other means, don't run the task but wait for the job to finish.</td>
-          <td>WIP</td>
+          <td>✔</td>
         </tr>
       </tbody>
     </table>

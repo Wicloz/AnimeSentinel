@@ -12,9 +12,25 @@ class ConnectionManager
    * Removes all existing episodes and videos for that show.
    * This is used when a new show is added or some shows videos are broken and need to be refreshed.
    */
-  public static function findVideosForShow($show) {
-    // Remove any inferiour queued jobs
+  public static function findVideosForShow($show, $fromJob = false) {
+    // Remove any inferior queued jobs
     \App\Job::deleteLowerThan('AnimeFindVideos', $show->title);
+    // Set job values
+    $job_dbdata = [
+      ['job_task', '=', 'AnimeFindVideos'],
+      ['show_title', '=', $show->title],
+      ['job_data', '=', json_encode(null)],
+    ];
+    // If this is queued as a job, remove it from the queue
+    \App\Job::where(array_merge($job_dbdata, [['reserved', '=', 0]]))->delete();
+    // Hovever, if that job is in progress, wait for it to complete instead of running this function,
+    // but only if this function isn't started from the job
+    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+        sleep(1);
+      }
+      return;
+    }
 
     // Mark show as not initialised
     $show->videos_initialised = false;
@@ -43,9 +59,29 @@ class ConnectionManager
   /**
    * Removes and adds all videos for the requested show and episode.
    */
-  public static function reprocessEpsiode($show, $translation_types, $episode_num, $streamer_id = null) {
-    // Remove any inferiour queued jobs
+  public static function reprocessEpsiode($show, $translation_types, $episode_num, $streamer_id = null, $fromJob = false) {
+    // Remove any inferior queued jobs
     \App\Job::deleteLowerThan('AnimeReprocessEpisode', $show->title);
+    // Set job values
+    $job_dbdata = [
+      ['job_task', '=', 'AnimeReprocessEpisode'],
+      ['show_title', '=', $show->title],
+      ['job_data', '=', json_encode([
+        'translation_types' => $translation_types,
+        'episode_num' => $episode_num,
+        'streamer_id' => $streamer_id,
+      ])],
+    ];
+    // If this is queued as a job, remove it from the queue
+    \App\Job::where(array_merge($job_dbdata, [['reserved', '=', 0]]))->delete();
+    // Hovever, if that job is in progress, wait for it to complete instead of running this function,
+    // but only if this function isn't started from the job
+    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+        sleep(1);
+      }
+      return;
+    }
 
     // Mark show as not initialised
     $show->videos_initialised = false;
@@ -87,6 +123,23 @@ class ConnectionManager
    * This is used when a new streaming site is added.
    */
   public static function findVideosForStreamer($streamer) {
+    // Set job values
+    $job_dbdata = [
+      ['job_task', '=', 'StreamerFindVideos'],
+      ['show_title', '=', null],
+      ['job_data', '=', json_encode(['streamer_id' => $streamer->id])],
+    ];
+    // If this is queued as a job, remove it from the queue
+    \App\Job::where(array_merge($job_dbdata, [['reserved', '=', 0]]))->delete();
+    // Hovever, if that job is in progress, wait for it to complete instead of running this function,
+    // but only if this function isn't started from the job
+    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+        sleep(1);
+      }
+      return;
+    }
+
     // Process all shows data in chuncks of 100
     Show::orderBy('id')->chunk(100, function ($shows) use ($streamer) {
       foreach ($shows as $show) {

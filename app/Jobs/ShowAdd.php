@@ -34,6 +34,6 @@ class ShowAdd extends Job implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ShowManager::addShowWithTitle($this->title);
+    ShowManager::addShowWithTitle($this->title, 'default', true);
   }
 }
