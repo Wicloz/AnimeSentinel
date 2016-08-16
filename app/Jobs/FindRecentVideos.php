@@ -36,4 +36,13 @@ class FindRecentVideos extends Job implements ShouldQueue
     ConnectionManager::findRecentEpisodes();
     queueJob((new FindRecentVideos)->delay(300), 'periodic_low');
   }
+
+  /**
+   * Handle a job failure.
+   *
+   * @return void
+   */
+  public function failed() {
+    queueJob((new FindRecentVideos)->delay(300), 'periodic_low');
+  }
 }
