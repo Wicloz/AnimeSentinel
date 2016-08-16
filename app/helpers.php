@@ -178,6 +178,7 @@ function str_fuzz($string) {
 
 function str_urlify($string) {
   $string = mb_strtolower(trim($string));
+  $string = preg_replace('/[`\']/u', '', $string);
   $string = preg_replace('/[^a-zA-Z0-9α-ωΑ-Ω\-_]/u', '-', $string);
   $string = preg_replace('/-+/', '-', $string);
   $string = preg_replace('/^-+/', '', $string);
