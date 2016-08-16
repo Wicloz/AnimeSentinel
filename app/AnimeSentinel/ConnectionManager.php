@@ -43,7 +43,7 @@ class ConnectionManager
    */
   public static function findVideosForStreamer($streamer) {
     // Process all shows data in chuncks of 100
-    Show::orderBy('id')->chunk(100, function($shows) use ($streamer) {
+    Show::orderBy('id')->chunk(100, function ($shows) use ($streamer) {
       foreach ($shows as $show) {
         // Mark show as not initialised
         $show->videos_initialised = false;

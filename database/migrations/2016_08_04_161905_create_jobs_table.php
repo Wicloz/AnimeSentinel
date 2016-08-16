@@ -17,7 +17,7 @@ class CreateJobsTable extends Migration
             $table->string('job_task');
             $table->string('show_title')->nullable()->default(null);
             $table->string('job_data')->default('null');
-            $table->string('queue');
+            $table->string('queue')->default('default');
             $table->longText('payload');
             $table->tinyInteger('attempts')->unsigned();
             $table->tinyInteger('reserved')->unsigned();

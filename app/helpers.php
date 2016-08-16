@@ -66,20 +66,23 @@ function queueJob($job, $queue = 'default') {
     }
 
     // Check whether the same job is already queued
-    $duplicate = \App\Job::find([
-      'job_task' => $job_data['job_task'],
-      'show_title' => $job_data['show_title'],
-      'job_data' => json_encode($job_data['job_data']),
-    ]);
-    if (!empty($duplicate)) {
-      $duplicate->elevateQueue($queue);
+    $duplicates = \App\Job::where([
+      ['job_task', '=', $job_data['job_task']],
+      ['show_title', '=', $job_data['show_title']],
+      ['job_data', '=', json_encode($job_data['job_data'])],
+      ['reserved', '=', 0],
+    ])->get();
+    if (count($duplicates) > 0) {
+      foreach ($duplicates as $duplicate) {
+        $duplicate->elevateQueue($queue);
+      }
       return;
     }
 
-    // Remove all lower queued jobs
-    $lowers = \App\Job::lowerThan($job_data['job_task'], $job_data['show_title']);
-    foreach ($lowers as $lower) {
-      $lower->delete();
+    // Stop any inferiour or equal queued jobs
+    $newQueue = \App\Job::terminateLowerEqual($job_data['job_task'], $job_data['show_title'], $job_data['job_data']);
+    if (in_array($newQueue, array_get_parents(config('queue.queuehierarchy'), $queue))) {
+      $queue = $newQueue;
     }
   }
 

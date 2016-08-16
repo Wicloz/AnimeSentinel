@@ -89,6 +89,52 @@ class Job extends BaseModel
   }
 
   /**
+   * Deletes all jobs 'lower' than or equal to the requested task, operating on the same show title.
+   * Doesn't ignore reserved jobs.
+   *
+   * @return string
+   */
+  public static function terminateLowerEqual($job_task, $show_title = null, $job_data = null) {
+    $lower_tasks = array_get_childs(config('queue.jobhierarchy'), $job_task);
+
+    // Determine the 'highest' queue of all jobs that will be removed
+    $queues = Self::where(function ($query) use ($job_task, $show_title, $job_data) {
+                      $query->where('job_task', $job_task)
+                            ->where('show_title', $show_title)
+                            ->where('job_data', json_encode($job_data));
+                    })
+                  ->orWhere(function ($query) use ($lower_tasks, $show_title) {
+                      $query->whereIn('job_task', $lower_tasks)
+                            ->where('show_title', $show_title);
+                    })
+                  ->get()->pluck('queue');
+    $highestQueue = 'default';
+    if (count($queues) > 0) {
+      foreach ($queues as $queue) {
+        if (in_array($queue, array_get_parents(config('queue.queuehierarchy'), $highestQueue))) {
+          $highestQueue = $queue;
+        }
+      }
+    }
+
+    // Remove all applicable jobs
+    Self::where(function ($query) use ($job_task, $show_title, $job_data) {
+            $query->where('job_task', $job_task)
+                  ->where('show_title', $show_title)
+                  ->where('job_data', json_encode($job_data));
+          })
+        ->orWhere(function ($query) use ($lower_tasks, $show_title) {
+            $query->whereIn('job_task', $lower_tasks)
+                  ->where('show_title', $show_title);
+          })
+        ->delete();
+
+    // TODO: Terminate the running job
+
+    return $highestQueue;
+  }
+
+  /**
    * Elevates this job's queue if the new one is higher in the hierarchy.
    */
   public function elevateQueue($newQueue) {

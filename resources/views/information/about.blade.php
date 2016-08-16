@@ -114,6 +114,18 @@
         </tr>
         <tr>
           <td>Handle tasks that can be executed both through jobs and regularly.</td>
+          <td>WIP</td>
+        </tr>
+        <tr>
+          <td>Properly handle in progress jobs when a new one gets queued.</td>
+          <td>✔</td>
+        </tr>
+        <tr>
+          <td>Properly handle superior in progress jobs when an inferior one gets queued.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Properly handle stopping jobs when they need to be removed.</td>
           <td>✘</td>
         </tr>
       </tbody>
