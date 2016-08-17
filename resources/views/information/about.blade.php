@@ -37,7 +37,7 @@
           <td>✔</td>
         </tr>
         <tr>
-          <td>Implement method to order mirrors by quality.</td>
+          <td>Implement a method to order mirrors by quality.</td>
           <td>✔</td>
         </tr>
         <tr>
@@ -128,10 +128,6 @@
           <td>If a job is in progress and it's related task gets executed through other means, don't run the task but wait for the job to finish.</td>
           <td>✔</td>
         </tr>
-        <tr>
-          <td>Reduce the amount of excecuted queries.</td>
-          <td>WIP</td>
-        </tr>
       </tbody>
     </table>
     <div class="content-close"></div>
@@ -181,8 +177,16 @@
           <td>✘</td>
         </tr>
         <tr>
+          <td>Decrease the size of the synopsy.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
           <td>Create and implement the news/notification system.</td>
           <td>✘</td>
+        </tr>
+        <tr>
+          <td>Reduce the amount of excecuted queries.</td>
+          <td>WIP</td>
         </tr>
         <tr>
           <td>Improve performance.</td>
@@ -301,6 +305,14 @@
         </tr>
         <tr>
           <td>Detect when a user has finished watching an episode and update ther MAL account.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Allow users to modify the colours of the site.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Add many more streaming sites.</td>
           <td>✘</td>
         </tr>
       </tbody>
