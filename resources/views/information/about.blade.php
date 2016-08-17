@@ -65,6 +65,10 @@
           <td>✘</td>
         </tr>
         <tr>
+          <td>Allow searching in only our database, only MAL, or both.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
           <td>Add buttons to the search results to add anime or add it and go to the details page.</td>
           <td>✔</td>
         </tr>
@@ -75,6 +79,10 @@
         <tr>
           <td>Allow browsing of recently aired epsiodes with different layouts.</td>
           <td>Layout selection needs to be more persistent</td>
+        </tr>
+        <tr>
+          <td>Allow browsing of animes by first character.</td>
+          <td>✘</td>
         </tr>
         <tr>
           <td>Allow adding of animes and episodes.</td>
