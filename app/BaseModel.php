@@ -23,7 +23,7 @@ abstract class BaseModel extends Model
           $inserts[] = '?';
         }
         $query->from(DB::raw(
-          '(SELECT DISTINCT ON ('.implode(', ', $columns).') * FROM '.$table.' ORDER BY '.implode(', ', $columns).')'
+          '(SELECT DISTINCT ON ('.implode(', ', $columns).') * FROM '.$table.' ORDER BY '.implode(', ', $columns).') AS distinct'
         ), array_merge($columns, $columns));
       break;
 
