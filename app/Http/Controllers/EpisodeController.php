@@ -16,7 +16,7 @@ class EpisodeController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function gotoEpisode(Show $show, $translation_type, $episode_num) {
-    $bestMirror = $show->videos()->episode($translation_type, $episode_num)->first()->best_mirror;
+    $bestMirror = $show->episode($translation_type, $episode_num)->best_mirror;
     return redirect($bestMirror->stream_url);
   }
 
@@ -29,6 +29,7 @@ class EpisodeController extends Controller
   public function episode(Show $show, $translation_type, $episode_num, $streamer, $mirror) {
     $mirrors = $show->videos()
                     ->episode($translation_type, $episode_num)
+                    ->with('streamer')
                     ->get();
     if (count($mirrors) == 0) {
       abort(404);
@@ -84,6 +85,6 @@ class EpisodeController extends Controller
       $video->save();
     }
     // TODO: improve this
-    return redirect($video->link_video);
+    return redirect($video->link_video_updated);
   }
 }

@@ -15,14 +15,14 @@ class AnimeController extends Controller
     if ($noDuplicates) {
       $recent = Video::distinctOn(['show_id', 'translation_type', 'episode_num'])
                      ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
-                     ->take($limit)->with('show')->get();
+                     ->take($limit)->with('show')->with('streamer')->get();
     }
 
     else {
       $recent = Video::where('mirror', 1)
                      ->orderBy('uploadtime', 'desc')
                      ->orderBy('id', 'desc')
-                     ->take($limit)->with('show')->get();
+                     ->take($limit)->with('show')->with('streamer')->get();
     }
 
     return $recent;

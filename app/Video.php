@@ -178,7 +178,7 @@ class Video extends BaseModel
   * @return string
   */
   public function getPreEpisodeUrlAttribute() {
-    $episode = $this->show->episode($this->translation_type, $this->episode_num - 1);
+    $episode = Self::where('show_id', $this->show_id)->episode($this->translation_type, $this->episode_num - 1)->first();
     if (!empty($episode)) {
       $episode = $episode->episode_url;
     }
@@ -191,7 +191,7 @@ class Video extends BaseModel
   * @return string
   */
   public function getNextEpisodeUrlAttribute() {
-    $episode = $this->show->episode($this->translation_type, $this->episode_num + 1);
+    $episode = Self::where('show_id', $this->show_id)->episode($this->translation_type, $this->episode_num + 1)->first();
     if (!empty($episode)) {
       $episode = $episode->episode_url;
     }
@@ -204,13 +204,12 @@ class Video extends BaseModel
   * @return string
   */
   public function getLinkVideoUpdatedAttribute() {
-    $video = Video::find($this->id);
     // TODO: proper check
-    if ($video->cache_updated_at->diffInHours(Carbon::now()) >= 2) {
-      $video->link_video = VideoManager::findVideoLink($video);
-      $video->cache_updated_at = Carbon::now();
-      $video->save();
+    if ($this->cache_updated_at->diffInHours(Carbon::now()) >= 2) {
+      $this->link_video = VideoManager::findVideoLink($this);
+      $this->cache_updated_at = Carbon::now();
+      $this->save();
     }
-    return $video->link_video;
+    return $this->link_video;
   }
 }

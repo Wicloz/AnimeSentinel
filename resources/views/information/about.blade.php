@@ -122,7 +122,7 @@
         </tr>
         <tr>
           <td>Reduce the amount of excecuted queries.</td>
-          <td>✘</td>
+          <td>WIP</td>
         </tr>
       </tbody>
     </table>
