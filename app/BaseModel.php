@@ -11,7 +11,7 @@ abstract class BaseModel extends Model
     parent::__construct($attributes);
   }
 
-  public function scopeDistinctOn($query, $columns, $table) {
+  public function scopeDistinctOn($query, $columns) {
     if (!is_array($columns)) {
       $columns = [$columns];
     }
@@ -22,9 +22,14 @@ abstract class BaseModel extends Model
         foreach ($columns as $column) {
           $inserts[] = '?';
         }
-        $query->from(DB::raw(
-          '(SELECT DISTINCT ON ('.implode(', ', $columns).') * FROM '.$table.' ORDER BY '.implode(', ', $columns).') videos'
-        ), array_merge($columns, $columns));
+
+        $query->select(DB::raw(
+          '* FROM (SELECT DISTINCT ON ('.implode(', ', $columns).') * '
+        ));
+
+        $query->orderBy(DB::raw(
+          implode(', ', $columns).') d ORDER BY 0'
+        ));
       break;
 
       case 'mysql':
