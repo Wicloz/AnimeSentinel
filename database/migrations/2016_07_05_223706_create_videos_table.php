@@ -21,14 +21,14 @@ class CreateVideosTable extends Migration
             $table->integer('mirror')->unsinged();                      // video
 
             $table->float('episode_num');                               // episode
-            $table->string('link_stream', 1024);                        // video
-            $table->string('link_episode', 1024);                       // episode
-            $table->string('notes');                                    // video
+            $table->string('link_stream', 1024)->default('');           // video
+            $table->string('link_episode', 1024)->default('');          // episode
+            $table->string('notes')->default('');                       // video
 
-            $table->dateTime('uploadtime');                             // video
+            $table->dateTime('uploadtime')->default(0);                 // video
             $table->bigInteger('hits')->default(0);                     // video
-            $table->string('link_video', 2048);                         // video
-            $table->string('resolution');                               // video
+            $table->string('link_video', 2048)->default('');            // video
+            $table->string('resolution')->default('');                  // video
 
             $table->dateTime('cache_updated_at')->nullable()->default(null);
             $table->timestamps();

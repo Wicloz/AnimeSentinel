@@ -15,7 +15,7 @@ class CreateStreamersTable extends Migration
         Schema::create('streamers', function (Blueprint $table) {
             $table->string('id');
             $table->string('name');
-            $table->string('link_home', 1024);
+            $table->string('link_home', 1024)->default('');
             $table->timestamps();
             $table->primary('id');
         });

@@ -14,7 +14,7 @@ class CreateShowFlagsTable extends Migration
     {
         Schema::create('show_flags', function (Blueprint $table) {
             $table->integer('mal_id')->unsigned();
-            $table->text('alt_rules');
+            $table->text('alt_rules')->default('{}');
             $table->boolean('check_youtube')->default(false);
             $table->timestamps();
             $table->primary('mal_id');

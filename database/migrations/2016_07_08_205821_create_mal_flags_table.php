@@ -14,8 +14,8 @@ class CreateMalFlagsTable extends Migration
     {
         Schema::create('mal_flags', function (Blueprint $table) {
             $table->integer('mal_id')->unsigned();
-            $table->boolean('is_hentai');
-            $table->boolean('is_music');
+            $table->boolean('is_hentai')->default(false);
+            $table->boolean('is_music')->default(false);
             $table->timestamps();
             $table->primary('mal_id');
         });

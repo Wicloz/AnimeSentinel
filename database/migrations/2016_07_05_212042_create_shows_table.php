@@ -18,7 +18,7 @@ class CreateShowsTable extends Migration
             $table->string('thumbnail_id')->nullable()->default(null);
             $table->string('title');
             $table->string('alts', 4096)->default('[]');
-            $table->text('description');
+            $table->text('description')->default('');
             $table->enum('type', [
               'tv',
               'ova',
