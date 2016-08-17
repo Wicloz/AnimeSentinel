@@ -162,7 +162,7 @@ class Show extends BaseModel
   * @return string
   */
   public function getDetailsUrlAttribute() {
-    return url('/anime/'.$this->id);
+    return fullUrl('/anime/'.$this->id);
   }
 
   /**
@@ -184,7 +184,7 @@ class Show extends BaseModel
   * @return string
   */
   public function getThumbnailUrlAttribute() {
-    return url('/media/thumbnails/'.$this->thumbnail_id);
+    return fullUrl('/media/thumbnails/'.$this->thumbnail_id);
   }
 
   /**

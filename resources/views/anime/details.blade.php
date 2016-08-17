@@ -2,7 +2,7 @@
 @section('title', $show->title)
 
 @section('content-left')
-  <img class="img-thumbnail details-thumbnail" src="{{ url('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
+  <img class="img-thumbnail details-thumbnail" src="{{ fullUrl('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
   @include('components.animedetails', ['details' => $show])
   @if(isset($show->mal_url))
     <div class="content-header">

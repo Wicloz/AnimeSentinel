@@ -48,10 +48,10 @@ class AnimeController extends Controller
   public function list(Request $request) {
     $showsPerPage = 52;
     if (!isset($request->page)) {
-      return redirect(url('/anime').'?page=1');
+      return redirect(fullUrl('/anime').'?page=1');
     }
     if ((int) $request->page != $request->page) {
-      return redirect(url('/anime').'?page='. (int) $request->page);
+      return redirect(fullUrl('/anime').'?page='. (int) $request->page);
     }
 
     if ($request->page < 1) {

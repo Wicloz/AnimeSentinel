@@ -14,7 +14,7 @@
         This site will constantly check the 'recently aired' pages of streaming sites, so you can get notified whenever a new episode is uploaded.
       </p>
       <p>
-        <a class="btn btn-primary btn-lg" href="{{ url('/about') }}" role="button">Read More &raquo;</a>
+        <a class="btn btn-primary btn-lg" href="{{ fullUrl('/about') }}" role="button">Read More &raquo;</a>
       </p>
     </div>
   </div>

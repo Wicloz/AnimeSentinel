@@ -49,6 +49,19 @@ function badNotes($notes) {
   return false;
 }
 
+function fullUrl($path) {
+  $appUrl = config('app.url');
+  if (str_starts_with($path, '/')) {
+    $pos1 = strpos($path, '/');
+    $path = substr_replace($path, '', $pos1, strlen('/'));
+  }
+  if (str_ends_with($appUrl, '/')) {
+    $pos2 = strlen($appUrl) - 1;
+    $appUrl = substr_replace($appUrl, '', $pos2, strlen('/'));
+  }
+  return $appUrl.'/'.$path;
+}
+
 function queueJob($job, $queue = 'default') {
   // Prepare job data
   $job_data = $job->db_data;

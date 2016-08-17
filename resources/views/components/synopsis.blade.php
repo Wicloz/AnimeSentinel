@@ -64,7 +64,7 @@
               <p>This show is not in our database yet.</p>
               <div class="row">
                 <div class="col-sm-3">
-                  <form action="{{ url('/anime/add') }}" method="POST">
+                  <form action="{{ fullUrl('/anime/add') }}" method="POST">
                     {{ csrf_field() }}
                     <input type="hidden" name="title" value="{{ $syn_show->title }}"></input>
                     <input type="hidden" name="gotodetails" value="0"></input>
@@ -72,7 +72,7 @@
                   </form>
                 </div>
                 <div class="col-sm-3">
-                  <form action="{{ url('/anime/add') }}" method="POST">
+                  <form action="{{ fullUrl('/anime/add') }}" method="POST">
                     {{ csrf_field() }}
                     <input type="hidden" name="title" value="{{ $syn_show->title }}"></input>
                     <input type="hidden" name="gotodetails" value="1"></input>
@@ -114,7 +114,7 @@
                     Latest Subbed: No episodes available
                   @endif
                 @else
-                  <a href="{{ url('/anime/'.$syn_show->id.'/sub/episode-'.$syn_show->latest_sub->episode_num) }}">
+                  <a href="{{ fullUrl('/anime/'.$syn_show->id.'/sub/episode-'.$syn_show->latest_sub->episode_num) }}">
                     Latest Subbed: Epsiode {{ $syn_show->latest_sub->episode_num }}; Uploaded on {{ $syn_show->latest_sub->uploadtime->format('M j, Y (l)') }}
                   </a>
                 @endif
@@ -127,7 +127,7 @@
                     Latest Dubbed: No episodes available
                   @endif
                 @else
-                  <a href="{{ url('/anime/'.$syn_show->id.'/dub/episode-'.$syn_show->latest_dub->episode_num) }}">
+                  <a href="{{ fullUrl('/anime/'.$syn_show->id.'/dub/episode-'.$syn_show->latest_dub->episode_num) }}">
                     Latest Dubbed: Epsiode {{ $syn_show->latest_dub->episode_num }}; Uploaded on {{ $syn_show->latest_dub->uploadtime->format('M j, Y (l)') }}
                   </a>
                 @endif

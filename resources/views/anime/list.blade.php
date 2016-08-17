@@ -3,10 +3,10 @@
 
 @section('content-center')
   <div class="content-header header-center">
-    <a href="{{ url('/anime').'?page='.(request()->page - 1) }}" class="arrow-left {{ $left ? '' : 'arrow-hide' }}">&#8666;</a>
+    <a href="{{ fullUrl('/anime').'?page='.(request()->page - 1) }}" class="arrow-left {{ $left ? '' : 'arrow-hide' }}">&#8666;</a>
     Anime List -
     Page {{ request()->page }}
-    <a href="{{ url('/anime').'?page='.(request()->page + 1) }}" class="arrow-right {{ $right ? '' : 'arrow-hide' }}">&#8667;</a>
+    <a href="{{ fullUrl('/anime').'?page='.(request()->page + 1) }}" class="arrow-right {{ $right ? '' : 'arrow-hide' }}">&#8667;</a>
   </div>
 
   @if(count($shows) > 0)
@@ -32,9 +32,9 @@
   @endif
 
   <div class="content-header header-center">
-    <a href="{{ url('/anime').'?page='.(request()->page - 1) }}" class="arrow-left {{ $left ? '' : 'arrow-hide' }}">&#8666;</a>
+    <a href="{{ fullUrl('/anime').'?page='.(request()->page - 1) }}" class="arrow-left {{ $left ? '' : 'arrow-hide' }}">&#8666;</a>
     Anime List -
     Page {{ request()->page }}
-    <a href="{{ url('/anime').'?page='.(request()->page + 1) }}" class="arrow-right {{ $right ? '' : 'arrow-hide' }}">&#8667;</a>
+    <a href="{{ fullUrl('/anime').'?page='.(request()->page + 1) }}" class="arrow-right {{ $right ? '' : 'arrow-hide' }}">&#8667;</a>
   </div>
 @endsection

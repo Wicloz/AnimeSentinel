@@ -39,6 +39,6 @@ class Streamer extends BaseModel
   * @return string
   */
   public function getDetailsUrlAttribute() {
-    return url('/streamers/'.$this->id);
+    return fullUrl('/streamers/'.$this->id);
   }
 }

@@ -4,8 +4,8 @@
 @section('content-center')
   <div class="content-header">
     Recently Uploaded
-    <a class="pull-right" href="{{ url('/anime/recent/grid') }}"><img class="recent-type-icon" src="{{ url('/media/icons/grid.png') }}" alt="Grid"></a>
-    <a class="pull-right" href="{{ url('/anime/recent/list') }}"><img class="recent-type-icon" src="{{ url('/media/icons/list.png') }}" alt="List"></a>
+    <a class="pull-right" href="{{ fullUrl('/anime/recent/grid') }}"><img class="recent-type-icon" src="{{ fullUrl('/media/icons/grid.png') }}" alt="Grid"></a>
+    <a class="pull-right" href="{{ fullUrl('/anime/recent/list') }}"><img class="recent-type-icon" src="{{ fullUrl('/media/icons/list.png') }}" alt="List"></a>
   </div>
 
   @for ($i = 0; $i < count($recent); $i += 6)

@@ -15,14 +15,14 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="{{ url('/') }}/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ fullUrl('/') }}/css/bootstrap.min.css">
   <link rel="stylesheet" href="{{ elixir('css/app.css') }}">
 
   <!-- Favicons -->
   <!--TODO-->
 
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-  <link href="{{ url('/') }}/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+  <link href="{{ fullUrl('/') }}/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -71,10 +71,10 @@
   </div>
 
   <!-- JavaScripts -->
-  <script src="{{ url('/') }}/js/jquery.min.js"></script>
-  <script src="{{ url('/') }}/js/bootstrap.min.js"></script>
+  <script src="{{ fullUrl('/') }}/js/jquery.min.js"></script>
+  <script src="{{ fullUrl('/') }}/js/bootstrap.min.js"></script>
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-  <script src="{{ url('/') }}/js/ie10-viewport-bug-workaround.js"></script>
+  <script src="{{ fullUrl('/') }}/js/ie10-viewport-bug-workaround.js"></script>
   <!-- YieldFoot -->
   @yield('foot')
 </body>
