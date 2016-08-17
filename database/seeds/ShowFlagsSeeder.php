@@ -123,5 +123,12 @@ class ShowFlagsSeeder extends Seeder
       "Shokugeki no Soma S2" => "+",
     ];
     $shokugekinosomas2->save();
+
+    $honoonoalpenrose = ShowFlag::findOrNew(3807);
+    $honoonoalpenrose->mal_id = 3807;
+    $honoonoalpenrose->alt_rules = [
+      "Honoo no Alpen Rose: Judy & Randy" => "+",
+    ];
+    $honoonoalpenrose->save();
   }
 }
