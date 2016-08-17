@@ -11,19 +11,20 @@ abstract class BaseModel extends Model
     parent::__construct($attributes);
   }
 
+  // NOTE: must not be followed by ->where() or ->select()
   public function scopeDistinctOn($query, $columns) {
     if (!is_array($columns)) {
       $columns = [$columns];
     }
 
     switch (config('database.default')) {
-      case 'pgsql':
+      case 'mysql':
         $inserts = [];
         foreach ($columns as $column) {
           $inserts[] = '?';
         }
 
-        $query->select(DB::raw(
+        $query->addSelect(DB::raw(
           '* FROM (SELECT DISTINCT ON ('.implode(', ', $columns).') * '
         ));
 
