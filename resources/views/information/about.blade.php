@@ -189,11 +189,11 @@
         </tr>
         <tr>
           <td>Setup that device properly.</td>
-          <td>WIP</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Host this site on the server.</td>
-          <td>✘</td>
+          <td>✔</td>
         </tr>
       </tbody>
     </table>
