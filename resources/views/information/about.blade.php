@@ -120,6 +120,10 @@
           <td>If a job is in progress and it's related task gets executed through other means, don't run the task but wait for the job to finish.</td>
           <td>✔</td>
         </tr>
+        <tr>
+          <td>Reduce the amount of excecuted queries.</td>
+          <td>✘</td>
+        </tr>
       </tbody>
     </table>
     <div class="content-close"></div>
@@ -170,6 +174,14 @@
         </tr>
         <tr>
           <td>Create and implement the news/notification system.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Improve performance.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Setup donations and ads.</td>
           <td>✘</td>
         </tr>
       </tbody>
