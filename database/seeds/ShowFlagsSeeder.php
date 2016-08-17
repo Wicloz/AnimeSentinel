@@ -44,10 +44,17 @@ class ShowFlagsSeeder extends Seeder
     ];
     $xxxholicmovie->save();
 
+    $psi = ShowFlag::findOrNew(19469);
+    $psi->mal_id = 19469;
+    $psi->alt_rules = [
+      "Saiki Kusuo no Psi Nan" => "-",
+      "Saiki Kusuo no Ψ nan" => "+",
+    ];
+    $psi->save();
+
     $psis2 = ShowFlag::findOrNew(33255);
     $psis2->mal_id = 33255;
     $psis2->alt_rules = [
-      "Saiki Kusuo no Psi Nan" => "-",
       "Saiki Kusuo no Psi Nan (TV)" => "+",
     ];
     $psis2->save();
