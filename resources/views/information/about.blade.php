@@ -157,15 +157,23 @@
           <td>✘</td>
         </tr>
         <tr>
+          <td>Make disqus work.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
           <td>Use jGrowl for the notification area.</td>
           <td>✘</td>
         </tr>
         <tr>
-          <td>Improve fluid layout.</td>
+          <td>Improve fluid layout, especially on mobile devices.</td>
           <td>✘</td>
         </tr>
         <tr>
           <td>Properly scale the MAL widgets.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Decrease the size of the synopsy.</td>
           <td>✘</td>
         </tr>
         <tr>
@@ -174,10 +182,6 @@
         </tr>
         <tr>
           <td>Improve pages based on feedback.</td>
-          <td>✘</td>
-        </tr>
-        <tr>
-          <td>Decrease the size of the synopsy.</td>
           <td>✘</td>
         </tr>
         <tr>
