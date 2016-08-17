@@ -14,7 +14,7 @@ class CreateJobsTable extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('job_task');
+            $table->string('job_task')->nullable();
             $table->string('show_title')->nullable()->default(null);
             $table->string('job_data')->default('null');
             $table->string('queue')->default('default');
