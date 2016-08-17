@@ -28,7 +28,7 @@ abstract class BaseModel extends Model
         ));
 
         $query->orderBy(DB::raw(
-          implode(', ', $columns).') d ORDER BY 0'
+          implode(', ', $columns).') d ORDER BY *'
         ));
       break;
 
