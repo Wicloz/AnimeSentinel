@@ -18,13 +18,13 @@ abstract class BaseModel extends Model
     }
 
     switch (config('database.default')) {
-      case 'mysql':
+      case 'pgsql':
         $inserts = [];
         foreach ($columns as $column) {
           $inserts[] = '?';
         }
 
-        $query->addSelect(DB::raw(
+        $query->select(DB::raw(
           '* FROM (SELECT DISTINCT ON ('.implode(', ', $columns).') * '
         ));
 
