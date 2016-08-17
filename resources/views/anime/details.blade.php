@@ -24,11 +24,7 @@
   <div class="content-generic">
     <h2>Subbed</h2>
     <ul class="list-group episode-list">
-      @if($show->videos_initialised && count($show->episodes('sub')) === 0)
-        <li class="list-group-item">
-          No Episodes Found
-        </li>
-      @elseif(count($show->episodes('sub')) > 0)
+      @if(count($show->episodes('sub')) > 0)
         @foreach($show->episodes('sub') as $episode)
           <li class="list-group-item">
             <div class="row">
@@ -45,11 +41,21 @@
             </div>
           </li>
         @endforeach
-      @endif
-      @if(!$show->videos_initialised)
-        <li class="list-group-item">
-          Searching for episodes ...
-        </li>
+        @if(!$show->videos_initialised)
+          <li class="list-group-item">
+            Searching for more episodes ...
+          </li>
+        @endif
+      @else
+        @if($show->videos_initialised)
+          <li class="list-group-item">
+            No Episodes Found
+          </li>
+        @elseif(!$show->videos_initialised)
+          <li class="list-group-item">
+            Searching for episodes ...
+          </li>
+        @endif
       @endif
       <!-- TODO: add next episode prediction -->
     </ul>
