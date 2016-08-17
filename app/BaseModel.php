@@ -17,7 +17,7 @@ abstract class BaseModel extends Model
     }
 
     switch (config('database.default')) {
-      case 'pgsql':
+      case 'mysql':
         $inserts = [];
         foreach ($columns as $column) {
           $inserts[] = '?';
@@ -27,9 +27,9 @@ abstract class BaseModel extends Model
           '* FROM (SELECT DISTINCT ON ('.implode(', ', $columns).') * '
         ));
 
-        $query->orderBy(DB::raw(
-          implode(', ', $columns).') d ORDER BY *'
-        ));
+        $query->where(DB::raw(
+          '1=1 ORDER BY '.implode(', ', $columns).')'
+        ), 'like', '');
       break;
 
       case 'mysql':
