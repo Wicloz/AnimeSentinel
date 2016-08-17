@@ -28,8 +28,8 @@ abstract class BaseModel extends Model
         ));
 
         $query->where(DB::raw(
-          '1=1 ORDER BY '.implode(', ', $columns).') d'
-        ), 'like', '');
+          '1=1 ORDER BY '.implode(', ', $columns).') d 1'
+        ), '=', '1');
       break;
 
       case 'mysql':
