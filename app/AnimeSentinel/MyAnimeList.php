@@ -65,11 +65,11 @@ class MyAnimeList
    */
   public static function search($query) {
     $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace(' ', '+', $query).'&gx=1&genre[]=12');
-    $shows = Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
+    $shows = array_slice(Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
       'mal_id' => [true, 'http://myanimelist.net/anime/', '/'],
       'thumbnail_url' => [false, '/images/anime/', '?'],
       'title' => [false, '<strong>', '</strong>'],
-    ]);
+    ]), 0, 64);
 
     $results = [];
     foreach ($shows as $show) {
