@@ -17,7 +17,7 @@ abstract class BaseModel extends Model
     }
 
     switch (config('database.default')) {
-      case 'mysql':
+      case 'pgsql':
         $inserts = [];
         foreach ($columns as $column) {
           $inserts[] = '?';
