@@ -32,9 +32,13 @@ class ShowManager
     }
 
     // Confirm this show isn't already in our databse
-    if (!empty(Show::withTitle($title)->first())) {
+    $dbshow = Show::withTitle($title)->first();
+    if (!empty($dbshow)) {
       flash_error('The requested show has already been added to the database.');
-      return null;
+      if (!$dbshow->videos_initialised) {
+        queueJob(new \App\Jobs\AnimeFindVideos($dbshow), $queue);
+      }
+      return $dbshow;
     }
 
     // Try to find this show on MAL and get it's id
@@ -80,9 +84,13 @@ class ShowManager
     }
 
     // Confirm this show isn't already in our databse
-    if (!empty(Show::where('mal_id', $mal_id)->first())) {
+    $dbshow = Show::where('mal_id', $mal_id)->first();
+    if (!empty($dbshow)) {
       flash_error('The requested show has already been added to the database.');
-      return null;
+      if (!$dbshow->videos_initialised) {
+        queueJob(new \App\Jobs\AnimeFindVideos($dbshow), $queue);
+      }
+      return $dbshow;
     }
 
     // Create a new show with the proper data
