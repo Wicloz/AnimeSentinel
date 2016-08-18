@@ -40,6 +40,15 @@ class EpisodeController extends Controller
         'mirror' => $streamer,
       ]);
       return redirect($video->stream_url);
+    } elseif ($title !== slugify($show->title)) {
+      $video = Video::find([
+        'show_id' => $show->id,
+        'translation_type' => $translation_type,
+        'episode_num' => $episode_num,
+        'streamer_id' => $streamer,
+        'mirror' => $mirror,
+      ]);
+      return redirect($video->stream_url);
     }
 
     $mirrors = $show->videos()
