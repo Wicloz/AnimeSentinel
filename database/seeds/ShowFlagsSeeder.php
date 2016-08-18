@@ -96,13 +96,6 @@ class ShowFlagsSeeder extends Seeder
     ];
     $nariagirls->save();
 
-    $pkmdestinydeoxys = ShowFlag::findOrNew(1122);
-    $pkmdestinydeoxys->mal_id = 1122;
-    $pkmdestinydeoxys->alt_rules = [
-      "Pokemon: Destiny Deoxys" => "+",
-    ];
-    $pkmdestinydeoxys->save();
-
     $berserk2016 = ShowFlag::findOrNew(32379);
     $berserk2016->mal_id = 32379;
     $berserk2016->alt_rules = [
@@ -130,5 +123,12 @@ class ShowFlagsSeeder extends Seeder
       "Honoo no Alpen Rose: Judy & Randy" => "+",
     ];
     $honoonoalpenrose->save();
+
+    $gintamaaizomekaorihen = ShowFlag::findOrNew(32366);
+    $gintamaaizomekaorihen->mal_id = 32366;
+    $gintamaaizomekaorihen->alt_rules = [
+      "Gintama: Aizome Kaori-hen" => "+",
+    ];
+    $gintamaaizomekaorihen->save();
   }
 }
