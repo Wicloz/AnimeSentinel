@@ -11,7 +11,7 @@ class ShowManager
    * Adds the show with the requested title to the database.
    * Will also add any currently existing episodes.
    */
-  public static function addShowWithTitle($title, $queue = 'default', $fromJob = false) {
+  public static function addShowWithTitle($title, $queue = 'default', $fromJob = false, $allowNonMal = true) {
     // Set job values
     $job_dbdata = [
       ['job_task', '=', 'ShowAdd'],
@@ -47,7 +47,7 @@ class ShowManager
     if (isset($mal_id)) {
       // Create and return a new show with the proper data
       return Self::addShowWithMalId($mal_id, $queue, $fromJob);
-    } else {
+    } elseif($allowNonMal) {
       // Create a mostly empty show because we don't have MAL data
       $show = Show::create([
         'title' => $title,
@@ -56,6 +56,9 @@ class ShowManager
       ]);
       // Finalize and return the show
       return Self::finalizeShowAdding($show, $queue);
+    } else {
+      flash_error('The requested show was not found on MyAnimeList.');
+      return null;
     }
   }
 

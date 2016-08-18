@@ -115,7 +115,7 @@ class Video extends BaseModel
   * @return string
   */
   public function getEpisodeUrlAttribute() {
-    return fullUrl('/anime/'.$this->show_id.'/'.$this->translation_type.'/episode-'.$this->episode_num);
+    return fullUrl('/anime/'.$this->show_id.'/'.slugify($this->show->title).'/'.$this->translation_type.'/episode-'.$this->episode_num);
   }
 
   /**
@@ -169,7 +169,7 @@ class Video extends BaseModel
   * @return string
   */
   public function getStreamUrlAttribute() {
-    return fullUrl('/anime/'.$this->show_id.'/'.$this->translation_type.'/episode-'.$this->episode_num.'/'.$this->streamer_id.'/'.$this->mirror);
+    return fullUrl('/anime/'.$this->show_id.'/'.slugify($this->show->title).'/'.$this->translation_type.'/episode-'.$this->episode_num.'/'.$this->streamer_id.'/'.$this->mirror);
   }
 
   /**

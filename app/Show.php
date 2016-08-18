@@ -171,7 +171,7 @@ class Show extends BaseModel
   * @return string
   */
   public function getDetailsUrlAttribute() {
-    return fullUrl('/anime/'.$this->id);
+    return fullUrl('/anime/'.$this->id.'/'.slugify($this->title));
   }
 
   /**

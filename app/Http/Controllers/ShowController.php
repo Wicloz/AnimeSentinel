@@ -15,14 +15,33 @@ class ShowController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function details(Show $show) {
-    if (!visitPage('show_'.$show->id)) {
-      $show->hits++;
-      $show->save();
+  public function details($show_id, $title) {
+    $show = Show::find($show_id);
+    if (isset($show)) {
+      if (!visitPage('show_'.$show->id)) {
+        $show->hits++;
+        $show->save();
+      }
+      return view('anime.details', [
+        'show' => $show
+      ]);
     }
-    return view('anime.details', [
-      'show' => $show
-    ]);
+
+    else {
+      $title = str_replace('-', ' ', $title);
+      $show = Show::withTitle($title)->first();
+      if (isset($show)) {
+        return redirect($show->details_url);
+      } else {
+        $show = ShowManager::addShowWithTitle($title, 'default', false, false);
+        if (isset($show)) {
+          return redirect($show->details_url);
+        } else {
+          // TODO: show a proper error page
+          return redirect(fullUrl('/anime'));
+        }
+      }
+    }
   }
 
   /**

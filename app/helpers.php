@@ -62,6 +62,13 @@ function fullUrl($path) {
   return $appUrl.'/'.$path;
 }
 
+function slugify($text) {
+  $slugify = new \Cocur\Slugify\Slugify();
+  $slugify->addRule('!', '!');
+  $slugify->addRule('?', '?');
+  return $slugify->slugify($text);
+}
+
 function queueJob($job, $queue = 'default') {
   // Prepare job data
   $job_data = $job->db_data;
