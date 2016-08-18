@@ -47,6 +47,7 @@
             "php artisan optimize"
         ],
         "post-update-cmd": [
+            "pip install cfscrape --upgrade",
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "php artisan optimize"
         ]
