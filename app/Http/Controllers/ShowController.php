@@ -32,10 +32,10 @@ class ShowController extends Controller
    */
   public function insert(Request $request) {
     $this->validate($request, [
-      'title' => ['required', 'min:3']
+      'mal_id' => ['required']
     ]);
 
-    $show = ShowManager::addShowWithTitle($request->title);
+    $show = ShowManager::addShowWithMalId($request->mal_id);
 
     if ($request->gotodetails) {
       return redirect($show->details_url);

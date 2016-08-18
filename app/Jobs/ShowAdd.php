@@ -18,8 +18,9 @@ class ShowAdd extends Job implements ShouldQueue
    *
    * @return void
    */
-  public function __construct($title) {
+  public function __construct($title, $mal_id = null) {
     $this->title = $title;
+    $this->mal_id = $mal_id;
     // Set special database data
     $this->db_data = [
       'job_task' => 'ShowAdd',
@@ -34,6 +35,10 @@ class ShowAdd extends Job implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ShowManager::addShowWithTitle($this->title, 'default', true);
+    if (isset($this->mal_id)) {
+      ShowManager::addShowWithMalId($this->mal_id, $this->title, 'default', true);
+    } else {
+      ShowManager::addShowWithTitle($this->title, 'default', true);
+    }
   }
 }

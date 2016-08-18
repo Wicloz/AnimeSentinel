@@ -9,7 +9,7 @@ class ShowManager
 {
   /**
    * Adds the show with the requested title to the database.
-   * Will also search for any currently existing episodes.
+   * Will also add any currently existing episodes.
    */
   public static function addShowWithTitle($title, $queue = 'default', $fromJob = false) {
     // Remove any inferior queued jobs
@@ -28,22 +28,21 @@ class ShowManager
       while (count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
         sleep(1);
       }
-      return;
+      return Show::withTitle($title)->first();
     }
 
     // Confirm this show isn't already in our databse
     if (!empty(Show::withTitle($title)->first())) {
       flash_error('The requested show has already been added to the database.');
-      return false;
+      return null;
     }
 
-    // Find this show on MAL and get it's id
+    // Try to find this show on MAL and get it's id
     $mal_id = MyAnimeList::getMalIdForTitle($title);
 
     if (isset($mal_id)) {
       // Create a new show with the proper data
-      $show = Show::create(MyAnimeList::getAnimeData($mal_id));
-      Self::updateThumbnail($show);
+      $show = Self::addShowWithMalId($mal_id, $title, $queue, $fromJob);
     } else {
       // Create a mostly empty show because we don't have MAL data
       $show = Show::create([
@@ -52,6 +51,44 @@ class ShowManager
         'description' => 'No Description Available',
       ]);
     }
+
+    // Return the show object
+    return $show;
+  }
+
+  /**
+   * Adds the show with the requested MAL id to the database.
+   * Will also add any currently existing episodes.
+   */
+  public static function addShowWithMalId($mal_id, $title, $queue = 'default', $fromJob = false) {
+    // Remove any inferior queued jobs
+    \App\Job::deleteLowerThan('ShowAdd', $title);
+    // Set job values
+    $job_dbdata = [
+      ['job_task', '=', 'ShowAdd'],
+      ['show_title', '=', $title],
+      ['job_data', '=', json_encode(null)],
+    ];
+    // If this is queued as a job, remove it from the queue
+    \App\Job::where(array_merge($job_dbdata, [['reserved', '=', 0]]))->delete();
+    // Hovever, if that job is in progress, wait for it to complete instead of running this function,
+    // but only if this function isn't started from the job
+    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+        sleep(1);
+      }
+      return Show::where('mal_id', $mal_id)->first();
+    }
+
+    // Confirm this show isn't already in our databse
+    if (!empty(Show::where('mal_id', $mal_id)->first())) {
+      flash_error('The requested show has already been added to the database.');
+      return null;
+    }
+
+    // Create a new show with the proper data
+    $show = Show::create(MyAnimeList::getAnimeData($mal_id));
+    Self::updateThumbnail($show);
 
     // Set the cache updated time
     $show->cache_updated_at = Carbon::now();
