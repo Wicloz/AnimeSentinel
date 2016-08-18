@@ -23,10 +23,11 @@ class ShowUpdate extends Job implements ShouldQueue
     $this->show_id = $show_id;
     $this->episodes = $episodes;
     // Set special database data
+    $show = Show::find($show_id);
     $mode = $episodes ? 'true' : 'false';
     $this->db_data = [
       'job_task' => 'ShowUpdate('.$mode.')',
-      'show_id' => Show::find($show_id)->mal_id,
+      'show_id' => $show->mal_id !== null ? $show->mal_id : $show->title,
       'job_data' => null,
     ];
   }

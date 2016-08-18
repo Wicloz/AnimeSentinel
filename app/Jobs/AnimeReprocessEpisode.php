@@ -27,7 +27,7 @@ class AnimeReprocessEpisode extends Job implements ShouldQueue
     // Set special database data
     $this->db_data = [
       'job_task' => 'AnimeReprocessEpisode',
-      'show_id' => $show->mal_id,
+      'show_id' => $show->mal_id !== null ? $show->mal_id : $show->title,
       'job_data' => [
         'translation_types' => $translation_types,
         'episode_num' => $episode_num,
