@@ -57,7 +57,6 @@ class ShowManager
       // Finalize and return the show
       return Self::finalizeShowAdding($show, $queue);
     } else {
-      flash_error('The requested show was not found on MyAnimeList.');
       return null;
     }
   }

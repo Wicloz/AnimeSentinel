@@ -15,9 +15,12 @@ class ShowController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function details($show_id, $title) {
+  public function details($show_id, $title = '') {
     $show = Show::find($show_id);
     if (isset($show)) {
+      if ($title !== slugify($show->title)) {
+        return redirect($show->details_url);
+      }
       if (!visitPage('show_'.$show->id)) {
         $show->hits++;
         $show->save();
@@ -27,7 +30,7 @@ class ShowController extends Controller
       ]);
     }
 
-    else {
+    elseif (!empty($title)) {
       $show = Show::withTitle($title)->first();
       if (isset($show)) {
         return redirect($show->details_url);
@@ -35,12 +38,11 @@ class ShowController extends Controller
         $show = ShowManager::addShowWithTitle($title, 'default', false, false);
         if (isset($show)) {
           return redirect($show->details_url);
-        } else {
-          // TODO: show a proper error page
-          return redirect(fullUrl('/anime'));
         }
       }
     }
+
+    abort(404);
   }
 
   /**

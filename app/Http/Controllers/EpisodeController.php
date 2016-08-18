@@ -15,7 +15,11 @@ class EpisodeController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function gotoEpisode(Show $show, $title, $translation_type, $episode_num) {
+  public function gotoEpisode(Show $show, $title, $translation_type, $episode_num = null) {
+    if (!isset($episode_num)) {
+      $episode_num = $translation_type;
+      $translation_type = $title;
+    }
     $bestMirror = $show->episode($translation_type, $episode_num)->best_mirror;
     return redirect($bestMirror->stream_url);
   }
@@ -26,7 +30,18 @@ class EpisodeController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function episode(Show $show, $title, $translation_type, $episode_num, $streamer, $mirror) {
+  public function episode(Show $show, $title, $translation_type, $episode_num, $streamer, $mirror = null) {
+    if (!isset($mirror)) {
+      $video = Video::find([
+        'show_id' => $show->id,
+        'translation_type' => $title,
+        'episode_num' => $translation_type,
+        'streamer_id' => $episode_num,
+        'mirror' => $streamer,
+      ]);
+      return redirect($video->stream_url);
+    }
+
     $mirrors = $show->videos()
                     ->episode($translation_type, $episode_num)
                     ->with('streamer')->with('show')
