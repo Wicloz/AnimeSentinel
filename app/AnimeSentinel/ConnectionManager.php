@@ -14,11 +14,7 @@ class ConnectionManager
    */
   public static function findVideosForShow($show, $fromJob = false) {
     // Set job values
-    if ($show->mal_id !== null) {
-      $jobShowId = $show->mal_id;
-    } else {
-      $jobShowId = $show->title;
-    }
+    $jobShowId = $show->mal_id !== null ? $show->mal_id : $show->title;
     $job_dbdata = [
       ['job_task', '=', 'AnimeFindVideos'],
       ['show_id', '=', $jobShowId],
@@ -66,11 +62,7 @@ class ConnectionManager
    */
   public static function reprocessEpsiode($show, $translation_types, $episode_num, $streamer_id = null, $fromJob = false) {
     // Set job values
-    if ($show->mal_id !== null) {
-      $jobShowId = $show->mal_id;
-    } else {
-      $jobShowId = $show->title;
-    }
+    $jobShowId = $show->mal_id !== null ? $show->mal_id : $show->title;
     $job_dbdata = [
       ['job_task', '=', 'AnimeReprocessEpisode'],
       ['show_id', '=', $jobShowId],

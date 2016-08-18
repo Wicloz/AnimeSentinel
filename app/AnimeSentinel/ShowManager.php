@@ -112,11 +112,7 @@ class ShowManager
   public static function updateShowCache($show_id, $episodes = false, $queue = 'default', $fromJob = false) {
     $show = Show::find($show_id);
     // Set job values
-    if ($show->mal_id !== null) {
-      $jobShowId = $show->mal_id;
-    } else {
-      $jobShowId = $show->title;
-    }
+    $jobShowId = $show->mal_id !== null ? $show->mal_id : $show->title;
     $job_dbdata = [
       ['job_task', '=', 'ShowUpdate'],
       ['show_id', '=', $jobShowId],
