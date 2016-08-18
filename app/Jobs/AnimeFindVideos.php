@@ -24,7 +24,7 @@ class AnimeFindVideos extends Job implements ShouldQueue
     // Set special database data
     $this->db_data = [
       'job_task' => 'AnimeFindVideos',
-      'show_title' => $show->title,
+      'show_malid' => $show->mal_id,
       'job_data' => null,
     ];
   }

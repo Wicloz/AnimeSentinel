@@ -14,7 +14,7 @@ class Job extends BaseModel
    * @var array
    */
   protected $fillable = [
-    'job_task', 'show_title', 'job_data', 'queue', 'payload', 'attempts',
+    'job_task', 'show_malid', 'job_data', 'queue', 'payload', 'attempts',
   ];
 
   /**
@@ -51,7 +51,7 @@ class Job extends BaseModel
   public static function find($data) {
     if (is_array($data)) {
       return Self::where('job_task', $data['job_task'])
-                 ->where('show_title', $data['show_title'])
+                 ->where('show_malid', $data['show_malid'])
                  ->where('job_data', $data['job_data'])
                  ->first();
     }
@@ -73,13 +73,13 @@ class Job extends BaseModel
   /**
    * Returns all 'higher' jobs than the requested task, operating on the same show title.
    */
-  public static function higherThan($job_task, $show_title, $unReserved = true) {
+  public static function higherThan($job_task, $show_malid, $unReserved = true) {
     if ($unReserved) {
-      return Self::where('show_title', $show_title)->where('reserved', 0)
+      return Self::where('show_malid', $show_malid)->where('reserved', 0)
                  ->whereIn('job_task', array_get_parents(config('queue.jobhierarchy'), $job_task))
                  ->get();
     } else {
-      return Self::where('show_title', $show_title)
+      return Self::where('show_malid', $show_malid)
                  ->whereIn('job_task', array_get_parents(config('queue.jobhierarchy'), $job_task))
                  ->get();
     }
@@ -88,8 +88,8 @@ class Job extends BaseModel
   /**
    * Returns all 'lower' jobs than the requested task, operating on the same show title.
    */
-  public static function lowerThan($job_task, $show_title, $unReserved = true) {
-    return Self::where('show_title', $show_title)->where('reserved', 0)
+  public static function lowerThan($job_task, $show_malid, $unReserved = true) {
+    return Self::where('show_malid', $show_malid)->where('reserved', 0)
                ->whereIn('job_task', array_get_childs(config('queue.jobhierarchy'), $job_task))->get();
   }
 
@@ -99,12 +99,12 @@ class Job extends BaseModel
    *
    * @return string
    */
-  public static function deleteLowerThan($job_task, $show_title = null) {
+  public static function deleteLowerThan($job_task, $show_malid = null) {
     $lower_tasks = array_get_childs(config('queue.jobhierarchy'), $job_task);
 
     // Determine the 'highest' queue of all jobs that will be removed
     $queues = Self::whereIn('job_task', $lower_tasks)
-                  ->where('show_title', $show_title)
+                  ->where('show_malid', $show_malid)
                   ->where('reserved', 0)
                   ->get()->pluck('queue');
     $highestQueue = 'default';
@@ -118,7 +118,7 @@ class Job extends BaseModel
 
     // Remove all applicable jobs
     Self::whereIn('job_task', $lower_tasks)
-        ->where('show_title', $show_title)
+        ->where('show_malid', $show_malid)
         ->where('reserved', 0)
         ->delete();
 

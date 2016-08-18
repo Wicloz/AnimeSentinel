@@ -12,25 +12,6 @@ class ShowManager
    * Will also add any currently existing episodes.
    */
   public static function addShowWithTitle($title, $queue = 'default', $fromJob = false) {
-    // Remove any inferior queued jobs
-    \App\Job::deleteLowerThan('ShowAdd', $title);
-    // Set job values
-    $job_dbdata = [
-      ['job_task', '=', 'ShowAdd'],
-      ['show_title', '=', $title],
-      ['job_data', '=', json_encode(null)],
-    ];
-    // If this is queued as a job, remove it from the queue
-    \App\Job::where(array_merge($job_dbdata, [['reserved', '=', 0]]))->delete();
-    // Hovever, if that job is in progress, wait for it to complete instead of running this function,
-    // but only if this function isn't started from the job
-    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
-      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
-        sleep(1);
-      }
-      return Show::withTitle($title)->first();
-    }
-
     // Confirm this show isn't already in our databse
     if (!empty(Show::withTitle($title)->first())) {
       flash_error('The requested show has already been added to the database.');
@@ -41,8 +22,8 @@ class ShowManager
     $mal_id = MyAnimeList::getMalIdForTitle($title);
 
     if (isset($mal_id)) {
-      // Create a new show with the proper data
-      $show = Self::addShowWithMalId($mal_id, $title, $queue, $fromJob);
+      // Create and return a new show with the proper data
+      return Self::addShowWithMalId($mal_id, $queue, $fromJob);
     } else {
       // Create a mostly empty show because we don't have MAL data
       $show = Show::create([
@@ -50,23 +31,22 @@ class ShowManager
         'alts' => [$title],
         'description' => 'No Description Available',
       ]);
+      // Finalize and return the show
+      return finalizeShowAdding($show, $queue);
     }
-
-    // Return the show object
-    return $show;
   }
 
   /**
    * Adds the show with the requested MAL id to the database.
    * Will also add any currently existing episodes.
    */
-  public static function addShowWithMalId($mal_id, $title, $queue = 'default', $fromJob = false) {
+  public static function addShowWithMalId($mal_id, $queue = 'default', $fromJob = false) {
     // Remove any inferior queued jobs
-    \App\Job::deleteLowerThan('ShowAdd', $title);
+    \App\Job::deleteLowerThan('ShowAdd', $mal_id);
     // Set job values
     $job_dbdata = [
       ['job_task', '=', 'ShowAdd'],
-      ['show_title', '=', $title],
+      ['show_malid', '=', $mal_id],
       ['job_data', '=', json_encode(null)],
     ];
     // If this is queued as a job, remove it from the queue
@@ -90,6 +70,11 @@ class ShowManager
     $show = Show::create(MyAnimeList::getAnimeData($mal_id));
     Self::updateThumbnail($show);
 
+    // Finalize and return the show
+    return finalizeShowAdding($show, $queue);
+  }
+
+  private static function finalizeShowAdding($show, $queue) {
     // Set the cache updated time
     $show->cache_updated_at = Carbon::now();
     $show->save();
@@ -108,11 +93,11 @@ class ShowManager
   public static function updateShowCache($show_id, $episodes = false, $queue = 'default', $fromJob = false) {
     $show = Show::find($show_id);
     // Remove any inferior queued jobs
-    \App\Job::deleteLowerThan('ShowUpdate', $show->title);
+    \App\Job::deleteLowerThan('ShowUpdate', $show->mal_id);
     // Set job values
     $job_dbdata = [
       ['job_task', '=', 'ShowUpdate'],
-      ['show_title', '=', $show->title],
+      ['show_malid', '=', $show->mal_id],
       ['job_data', '=', json_encode(null)],
     ];
     // If this is queued as a job, remove it from the queue

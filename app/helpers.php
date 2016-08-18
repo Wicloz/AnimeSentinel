@@ -67,9 +67,9 @@ function queueJob($job, $queue = 'default') {
   $job_data = $job->db_data;
   unset($job->db_data);
 
-  if ($job_data['show_title'] !== null) {
+  if ($job_data['show_malid'] !== null) {
     // Check whether a higher job is queued
-    $highers = \App\Job::higherThan($job_data['job_task'], $job_data['show_title']);
+    $highers = \App\Job::higherThan($job_data['job_task'], $job_data['show_malid']);
     if (count($highers) > 0) {
       foreach ($highers as $higher) {
         $higher->elevateQueue($queue);
@@ -80,7 +80,7 @@ function queueJob($job, $queue = 'default') {
     // Check whether the same job is already queued
     $duplicates = \App\Job::where([
       ['job_task', '=', $job_data['job_task']],
-      ['show_title', '=', $job_data['show_title']],
+      ['show_malid', '=', $job_data['show_malid']],
       ['job_data', '=', json_encode($job_data['job_data'])],
       ['reserved', '=', 0],
     ])->get();
@@ -92,7 +92,7 @@ function queueJob($job, $queue = 'default') {
     }
 
     // Remove any lower jobs
-    $newQueue = \App\Job::deleteLowerThan($job_data['job_task'], $job_data['show_title']);
+    $newQueue = \App\Job::deleteLowerThan($job_data['job_task'], $job_data['show_malid']);
     if (in_array($newQueue, array_get_parents(config('queue.queuehierarchy'), $queue))) {
       $queue = $newQueue;
     }
@@ -102,7 +102,7 @@ function queueJob($job, $queue = 'default') {
   $job_id = dispatch($job->onQueue($queue));
   $job = \App\Job::find($job_id);
   $job->job_task = $job_data['job_task'];
-  $job->show_title = $job_data['show_title'];
+  $job->show_malid = $job_data['show_malid'];
   $job->job_data = $job_data['job_data'];
   $job->save();
 }

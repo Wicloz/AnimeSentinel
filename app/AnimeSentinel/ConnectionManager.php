@@ -14,11 +14,11 @@ class ConnectionManager
    */
   public static function findVideosForShow($show, $fromJob = false) {
     // Remove any inferior queued jobs
-    \App\Job::deleteLowerThan('AnimeFindVideos', $show->title);
+    \App\Job::deleteLowerThan('AnimeFindVideos', $show->mal_id);
     // Set job values
     $job_dbdata = [
       ['job_task', '=', 'AnimeFindVideos'],
-      ['show_title', '=', $show->title],
+      ['show_malid', '=', $show->mal_id],
       ['job_data', '=', json_encode(null)],
     ];
     // If this is queued as a job, remove it from the queue
@@ -61,11 +61,11 @@ class ConnectionManager
    */
   public static function reprocessEpsiode($show, $translation_types, $episode_num, $streamer_id = null, $fromJob = false) {
     // Remove any inferior queued jobs
-    \App\Job::deleteLowerThan('AnimeReprocessEpisode', $show->title);
+    \App\Job::deleteLowerThan('AnimeReprocessEpisode', $show->mal_id);
     // Set job values
     $job_dbdata = [
       ['job_task', '=', 'AnimeReprocessEpisode'],
-      ['show_title', '=', $show->title],
+      ['show_malid', '=', $show->mal_id],
       ['job_data', '=', json_encode([
         'translation_types' => $translation_types,
         'episode_num' => $episode_num,
@@ -126,7 +126,7 @@ class ConnectionManager
     // Set job values
     $job_dbdata = [
       ['job_task', '=', 'StreamerFindVideos'],
-      ['show_title', '=', null],
+      ['show_malid', '=', null],
       ['job_data', '=', json_encode(['streamer_id' => $streamer->id])],
     ];
     // If this is queued as a job, remove it from the queue
