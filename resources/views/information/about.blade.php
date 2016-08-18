@@ -158,7 +158,7 @@
         </tr>
         <tr>
           <td>Make disqus work.</td>
-          <td>✘</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Use jGrowl for the notification area.</td>

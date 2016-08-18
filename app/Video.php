@@ -110,7 +110,7 @@ class Video extends BaseModel
   }
 
   /**
-  * Get the full url for this videos stream page.
+  * Get the full url for this videos episode page.
   *
   * @return string
   */
@@ -119,11 +119,20 @@ class Video extends BaseModel
   }
 
   /**
+  * Get a static url for this videos episode page.
+  *
+  * @return string
+  */
+  public function getEpisodeUrlStaticAttribute() {
+    return fullUrl('/anime/'.$this->show_id.'/'.$this->translation_type.'/episode-'.$this->episode_num);
+  }
+
+  /**
   * Get the surface area of the video.
   *
   * @return integer
   */
-  public function getSurfaceAttribute() {
+  public function getVideoSurfaceAttribute() {
     $resolutions = explode('x', $this->resolution);
     return $resolutions[0] * $resolutions[1];
   }
@@ -133,13 +142,13 @@ class Video extends BaseModel
   *
   * @return integer
   */
-  public function getAspectAttribute() {
+  public function getVideoAspectAttribute() {
     $resolutions = explode('x', $this->resolution);
     return $resolutions[1] / $resolutions[0];
   }
 
   /**
-  * Get the full url for the episode page related to this video.
+  * Return the 'best' out of all mirrors for this episode.
   *
   * @return string
   */
@@ -148,13 +157,13 @@ class Video extends BaseModel
     $bestMirror = null;
 
     foreach ($mirrors as $mirror) {
-      if (playerSupport($mirror->link_video) && ($bestMirror === null || $mirror->surface > $bestMirror->surface)) {
+      if (playerSupport($mirror->link_video) && ($bestMirror === null || $mirror->video_surface > $bestMirror->video_surface)) {
         $bestMirror = $mirror;
       }
     }
     if ($bestMirror === null) {
       foreach ($mirrors as $mirror) {
-        if ($bestMirror === null || $mirror->surface > $bestMirror->surface) {
+        if ($bestMirror === null || $mirror->video_surface > $bestMirror->video_surface) {
           $bestMirror = $mirror;
         }
       }
@@ -164,7 +173,7 @@ class Video extends BaseModel
   }
 
   /**
-  * Get the full url for the episode page related to this video.
+  * Get the full url for the episode page with this mirror selected.
   *
   * @return string
   */

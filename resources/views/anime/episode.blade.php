@@ -25,7 +25,7 @@
 
   <div class="content-generic">
     <div class="streamplayer">
-      <div style="padding-top:{{ $video->aspect * 100 }}%;"></div>
+      <div style="padding-top:{{ $video->video_aspect * 100 }}%;"></div>
       @if(playerSupport($video->link_video_updated))
         <video class="streamplayer-video" controls>
           <source src="{{ $video->link_video_updated }}" type="video/mp4">
@@ -74,7 +74,7 @@
 
   <div class="content-header">Comments</div>
   @include('components.disqus', [
-    'disqus_url' => $video->episode_url,
+    'disqus_url' => $video->episode_url_static,
     'disqus_id' => 'episode:('.$video->episode_id.')',
   ])
 @endsection

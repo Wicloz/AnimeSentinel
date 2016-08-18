@@ -166,6 +166,15 @@ class Show extends BaseModel
   }
 
   /**
+  * Get a static url for this show's details page.
+  *
+  * @return string
+  */
+  public function getDetailsUrlStaticAttribute() {
+    return fullUrl('/anime/'.$this->id);
+  }
+
+  /**
   * Get the url to this show's MAL page.
   *
   * @return string

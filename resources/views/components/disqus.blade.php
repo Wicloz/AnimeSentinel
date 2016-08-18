@@ -2,8 +2,8 @@
   <div id="disqus_thread"></div>
   <script>
     var disqus_config = function () {
-        this.page.url = {{ $disqus_url }};
-        this.page.identifier = {{ $disqus_id }};
+        this.page.url = '{{ $disqus_url }}';
+        this.page.identifier = '{{ $disqus_id }}';
     };
     (function() {
         var d = document, s = d.createElement('script');

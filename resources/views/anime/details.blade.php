@@ -97,12 +97,12 @@
   <div class="content-header">Comments</div>
   @if(isset($show->mal_id))
     @include('components.disqus', [
-      'disqus_url' => $show->details_url,
-      'disqus_id' => 'show:(mal:'.$show->id.')',
+      'disqus_url' => $show->details_url_static,
+      'disqus_id' => 'show:(mal:'.$show->mal_id.')',
     ])
   @else
     @include('components.disqus', [
-      'disqus_url' => $show->details_url,
+      'disqus_url' => $show->details_url_static,
       'disqus_id' => 'show:(id:'.$show->id.')',
     ])
   @endif
