@@ -13,14 +13,19 @@ class ConnectionManager
    * This is used when a new show is added or some shows videos are broken and need to be refreshed.
    */
   public static function findVideosForShow($show, $fromJob = false) {
-    // Remove any inferior queued jobs
-    \App\Job::deleteLowerThan('AnimeFindVideos', $show->mal_id);
     // Set job values
+    if ($show->mal_id !== null) {
+      $jobShowId = $show->mal_id;
+    } else {
+      $jobShowId = $show->title;
+    }
     $job_dbdata = [
       ['job_task', '=', 'AnimeFindVideos'],
-      ['show_malid', '=', $show->mal_id],
+      ['show_id', '=', $jobShowId],
       ['job_data', '=', json_encode(null)],
     ];
+    // Remove any inferior queued jobs
+    \App\Job::deleteLowerThan('AnimeFindVideos', $jobShowId);
     // If this is queued as a job, remove it from the queue
     \App\Job::where(array_merge($job_dbdata, [['reserved', '=', 0]]))->delete();
     // Hovever, if that job is in progress, wait for it to complete instead of running this function,
@@ -60,18 +65,23 @@ class ConnectionManager
    * Removes and adds all videos for the requested show and episode.
    */
   public static function reprocessEpsiode($show, $translation_types, $episode_num, $streamer_id = null, $fromJob = false) {
-    // Remove any inferior queued jobs
-    \App\Job::deleteLowerThan('AnimeReprocessEpisode', $show->mal_id);
     // Set job values
+    if ($show->mal_id !== null) {
+      $jobShowId = $show->mal_id;
+    } else {
+      $jobShowId = $show->title;
+    }
     $job_dbdata = [
       ['job_task', '=', 'AnimeReprocessEpisode'],
-      ['show_malid', '=', $show->mal_id],
+      ['show_id', '=', $jobShowId],
       ['job_data', '=', json_encode([
         'translation_types' => $translation_types,
         'episode_num' => $episode_num,
         'streamer_id' => $streamer_id,
       ])],
     ];
+    // Remove any inferior queued jobs
+    \App\Job::deleteLowerThan('AnimeReprocessEpisode', $jobShowId);
     // If this is queued as a job, remove it from the queue
     \App\Job::where(array_merge($job_dbdata, [['reserved', '=', 0]]))->delete();
     // Hovever, if that job is in progress, wait for it to complete instead of running this function,
@@ -126,7 +136,7 @@ class ConnectionManager
     // Set job values
     $job_dbdata = [
       ['job_task', '=', 'StreamerFindVideos'],
-      ['show_malid', '=', null],
+      ['show_id', '=', null],
       ['job_data', '=', json_encode(['streamer_id' => $streamer->id])],
     ];
     // If this is queued as a job, remove it from the queue

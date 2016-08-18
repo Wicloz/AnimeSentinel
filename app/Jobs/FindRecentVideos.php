@@ -22,7 +22,7 @@ class FindRecentVideos extends Job implements ShouldQueue
     // Set special database data
     $this->db_data = [
       'job_task' => 'FindRecentVideos',
-      'show_malid' => null,
+      'show_id' => null,
       'job_data' => null,
     ];
   }
