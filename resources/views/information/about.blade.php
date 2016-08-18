@@ -194,7 +194,7 @@
         </tr>
         <tr>
           <td>Improve performance.</td>
-          <td>✘</td>
+          <td>WIP</td>
         </tr>
         <tr>
           <td>Setup donations and ads.</td>

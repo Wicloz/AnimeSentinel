@@ -2,7 +2,6 @@
 
 namespace App\AnimeSentinel;
 
-use App\MalFlag;
 use Carbon\Carbon;
 
 class MyAnimeList
@@ -38,22 +37,16 @@ class MyAnimeList
     if (empty($xml)) return [];
     $results = [];
     foreach ($xml as $entry) {
-      $flag = MalFlag::firstOrNew(['mal_id' => $entry->id]);
-      if (!$flag->exists) {
-        $flag->setFlags()->save();
+      $result = json_decode(json_encode($entry));
+      if (!is_string($result->english)) $result->english = '';
+      $json_synonyms = json_encode($result->synonyms);
+      if ($json_synonyms !== '{}') {
+        $result->synonyms = explode('; ', $json_synonyms);
+      } else {
+        $result->synonyms = [];
       }
-      if (!$flag->flagged) {
-        $result = json_decode(json_encode($entry));
-        if (!is_string($result->english)) $result->english = '';
-        $json_synonyms = json_encode($result->synonyms);
-        if ($json_synonyms !== '{}') {
-          $result->synonyms = explode('; ', $json_synonyms);
-        } else {
-          $result->synonyms = [];
-        }
-        $result->mal = true;
-        $results[] = $result;
-      }
+      $result->mal = true;
+      $results[] = $result;
     }
     return $results;
   }
@@ -217,26 +210,5 @@ class MyAnimeList
       return $carbon;
     }
     return null;
-  }
-
-  /**
-   * Finds out if the requested anime is hentai or music rather than an anime.
-   *
-   * @return stdClass
-   */
-  public static function malFlags($mal_id) {
-    $page = Downloaders::downloadPage('http://myanimelist.net/anime/'.$mal_id);
-    $flags = (object) ['hentai' => false];
-
-    $flags->music = strtolower(trim(str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'))) === 'music';
-    $set = explode('</a>', str_get_between($page, '<span class="dark_text">Genres:</span>', '</div>'));
-    foreach ($set as $item) {
-      if (trim($item) !== '') {
-        $clean = trim(str_get_between($item, '>'));
-        if (strtolower($clean) === 'hentai') $flags->hentai = true;
-      }
-    }
-
-    return $flags;
   }
 }

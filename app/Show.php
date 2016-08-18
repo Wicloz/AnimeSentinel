@@ -65,15 +65,6 @@ class Show extends BaseModel
   }
 
   /**
-  * Get the mal flag for this show.
-  *
-  * @return \Illuminate\Database\Eloquent\Relations\Relation
-  */
-  public function mal_flag() {
-    return $this->hasOne(MalFlag::class, 'mal_id', 'mal_id');
-  }
-
-  /**
   * Get the show flag for this show.
   *
   * @return \Illuminate\Database\Eloquent\Relations\Relation
