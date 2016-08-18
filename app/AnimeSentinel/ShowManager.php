@@ -32,7 +32,7 @@ class ShowManager
         'description' => 'No Description Available',
       ]);
       // Finalize and return the show
-      return finalizeShowAdding($show, $queue);
+      return Self::finalizeShowAdding($show, $queue);
     }
   }
 
@@ -71,7 +71,7 @@ class ShowManager
     Self::updateThumbnail($show);
 
     // Finalize and return the show
-    return finalizeShowAdding($show, $queue);
+    return Self::finalizeShowAdding($show, $queue);
   }
 
   private static function finalizeShowAdding($show, $queue) {
