@@ -28,7 +28,6 @@ class ShowController extends Controller
     }
 
     else {
-      $title = str_replace('-', ' ', $title);
       $show = Show::withTitle($title)->first();
       if (isset($show)) {
         return redirect($show->details_url);

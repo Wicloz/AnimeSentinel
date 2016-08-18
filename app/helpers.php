@@ -49,23 +49,6 @@ function badNotes($notes) {
   return false;
 }
 
-function fullUrl($path) {
-  $appUrl = config('app.url');
-  if (str_starts_with($path, '/')) {
-    $pos1 = strpos($path, '/');
-    $path = substr_replace($path, '', $pos1, strlen('/'));
-  }
-  if (str_ends_with($appUrl, '/')) {
-    $pos2 = strlen($appUrl) - 1;
-    $appUrl = substr_replace($appUrl, '', $pos2, strlen('/'));
-  }
-  return $appUrl.'/'.$path;
-}
-
-function slugify($text) {
-  return str_replace(' ', '-', mb_strtolower($text));
-}
-
 function queueJob($job, $queue = 'default') {
   // Prepare job data
   $job_data = $job->db_data;
@@ -151,6 +134,26 @@ function array_get_parents(array $array, $start, $parents = [], $gathered = []) 
     }
   }
   return $parents;
+}
+
+function fullUrl($path) {
+  $appUrl = config('app.url');
+  if (str_starts_with($path, '/')) {
+    $pos1 = strpos($path, '/');
+    $path = substr_replace($path, '', $pos1, strlen('/'));
+  }
+  if (str_ends_with($appUrl, '/')) {
+    $pos2 = strlen($appUrl) - 1;
+    $appUrl = substr_replace($appUrl, '', $pos2, strlen('/'));
+  }
+  return $appUrl.'/'.$path;
+}
+
+function slugify($text) {
+  $slugify = new \Cocur\Slugify\Slugify();
+  $slugify->addRule('!', '!');
+  $slugify->addRule('?', '?');
+  return $slugify->slugify($text);
 }
 
 // String Helpers //
