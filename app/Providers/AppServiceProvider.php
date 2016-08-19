@@ -16,10 +16,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
       Queue::failing(function (JobFailed $event) {
-        // TODO: send email
-        // $event->connectionName
-        // $event->job
-        // $event->data
+        \Mail::send('emails.report_bug', ['description' => 'Job Failed', 'vars' => [
+          'Job' => $event->job,
+          'Data' => $event->data,
+        ]], function ($m) {
+          $m->subject('AnimeSentinel Job Fail Report');
+          $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Reports');
+          $m->to('animesentinel@wilcodeboer.me');
+        });
       });
     }
 
