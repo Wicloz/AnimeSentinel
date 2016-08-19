@@ -47,7 +47,7 @@ class animeshow
     ]);
 
     // Get mirror data for each episode
-    foreach ($episodes as $episode) {
+    foreach (array_reverse($episodes) as $episode) {
       // Complete episode data
       $episode = Self::seekCompleteEpisode($episode, $alt);
       if (empty($episode)) {
