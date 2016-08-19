@@ -113,8 +113,12 @@
           <td>✘</td>
         </tr>
         <tr>
-          <td>Mail admins whenever something fails.</td>
-          <td>✘</td>
+          <td>Send reports when an 'anomaly' is detected.</td>
+          <td>WIP</td>
+        </tr>
+        <tr>
+          <td>Send reports for certain bugs and failures.</td>
+          <td>WIP</td>
         </tr>
         <tr>
           <td>Review classnames and filenames for the Jobs and AnimeSentinel stuff.</td>

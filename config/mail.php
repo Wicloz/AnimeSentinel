@@ -55,7 +55,7 @@ return [
     |
     */
 
-    'from' => ['address' => 'support@wilcodeboer.me', 'name' => 'Animesentinel Support'],
+    'from' => ['address' => 'animesentinel@wilcodeboer.me', 'name' => 'Animesentinel Support'],
 
     /*
     |--------------------------------------------------------------------------
@@ -108,5 +108,17 @@ return [
     */
 
     'sendmail' => '/usr/sbin/sendmail -bs',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Email Adresses
+    |--------------------------------------------------------------------------
+    |
+    | These email adresses will be used for mails that need to be send to
+    | administrators.
+    |
+    */
+
+    'admin_adresses' => ['wfh@wilcodeboer.me'],
 
 ];

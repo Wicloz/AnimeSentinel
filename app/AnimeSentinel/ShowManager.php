@@ -54,6 +54,10 @@ class ShowManager
         'alts' => [$title],
         'description' => 'No Description Available',
       ]);
+      // Mail an anomaly report
+      mailAnomaly($show, 'Could not find show on MAL.', [
+        'Run From a Job' => $fromJob ? 'Yes' : 'No',
+      ]);
       // Finalize and return the show
       return Self::finalizeShowAdding($show, $queue);
     } else {
