@@ -25,7 +25,7 @@
     <h2>Subbed</h2>
     <ul class="list-group episode-list">
       @if(count($show->episodes('sub')) > 0)
-        @foreach($show->episodes('sub') as $episode)
+        @foreach($show->episodes('sub')->load('show') as $episode)
           <li class="list-group-item">
             <div class="row">
               <div class="col-xs-6">
@@ -62,12 +62,8 @@
     <div class="content-close"></div>
     <h2>Dubbed</h2>
     <ul class="list-group episode-list">
-      @if($show->videos_initialised && count($show->episodes('dub')) === 0)
-        <li class="list-group-item">
-          No Episodes Found
-        </li>
-      @elseif(count($show->episodes('dub')) > 0)
-        @foreach($show->episodes('dub') as $episode)
+      @if(count($show->episodes('dub')) > 0)
+        @foreach($show->episodes('dub')->load('show') as $episode)
           <li class="list-group-item">
             <div class="row">
               <div class="col-xs-6">
@@ -83,11 +79,21 @@
             </div>
           </li>
         @endforeach
-      @endif
-      @if(!$show->videos_initialised)
-        <li class="list-group-item">
-          Searching for episodes ...
-        </li>
+        @if(!$show->videos_initialised)
+          <li class="list-group-item">
+            Searching for more episodes ...
+          </li>
+        @endif
+      @else
+        @if($show->videos_initialised)
+          <li class="list-group-item">
+            No Episodes Found
+          </li>
+        @elseif(!$show->videos_initialised)
+          <li class="list-group-item">
+            Searching for episodes ...
+          </li>
+        @endif
       @endif
       <!-- TODO: add next episode prediction -->
     </ul>

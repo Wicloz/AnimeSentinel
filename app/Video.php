@@ -88,9 +88,14 @@ class Video extends BaseModel
   * @return array
   */
   public function getStreamersAttribute() {
-    $streamer_ids = Self::where('show_id', $this->show_id)->episode($this->translation_type, $this->episode_num)
-                       ->distinct()->pluck('streamer_id');
-    return Streamer::whereIn('id', $streamer_ids)->get();
+    $show = $this;
+    return Streamer::whereIn('id', function ($query) use ($show) {
+                       $query->select('streamer_id')
+                             ->from('videos')
+                             ->where('show_id', $show->show_id)
+                             ->where('translation_type', $show->translation_type)
+                             ->where('episode_num', $show->episode_num);
+                     })->get();
   }
 
   /**
