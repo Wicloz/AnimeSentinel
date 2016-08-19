@@ -142,6 +142,7 @@ class Show extends BaseModel
                 ->where('translation_type', $translation_type)
                 ->distinctOn('episode_num')
                 ->orderBy('episode_num', 'desc')
+                ->orderBy('uploadtime', 'asc')
                 ->get();
   }
 
