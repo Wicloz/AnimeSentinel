@@ -141,7 +141,7 @@ class Show extends BaseModel
     return $this->videos()
                 ->where('translation_type', $translation_type)
                 ->distinctOn('episode_num')
-                ->orderBy('episode_num', 'asc')
+                ->orderBy('episode_num', 'desc')
                 ->get();
   }
 
