@@ -144,8 +144,8 @@ function array_get_parents(array $array, $start, $parents = [], $gathered = []) 
   return $parents;
 }
 
-function fullUrl($path) {
-  $appUrl = config('app.url');
+function fullUrl($path, $production = false) {
+  $appUrl = $production ? config('app.url_production') : config('app.url');
   if (str_starts_with($path, '/')) {
     $pos1 = strpos($path, '/');
     $path = substr_replace($path, '', $pos1, strlen('/'));
@@ -155,6 +155,16 @@ function fullUrl($path) {
     $appUrl = substr_replace($appUrl, '', $pos2, strlen('/'));
   }
   return $appUrl.'/'.$path;
+}
+
+function staticUrl($show, $episode = null) {
+  if (!isset($episode)) {
+    $path = '/anime/-/'.str_replace(' ', '%20', $show->title);
+  }
+  else {
+    $path = '/anime/-/'.str_replace(' ', '%20', $show->title).'/'.$episode->translation_type.'/episode-'.$episode->episode_num;
+  }
+  return fullUrl($path, true);
 }
 
 function slugify($text) {

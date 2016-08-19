@@ -124,7 +124,7 @@ class Video extends BaseModel
   * @return string
   */
   public function getEpisodeUrlStaticAttribute() {
-    return fullUrl('/anime/'.$this->show_id.'/'.$this->translation_type.'/episode-'.$this->episode_num);
+    return staticUrl($this->show, $this);
   }
 
   /**

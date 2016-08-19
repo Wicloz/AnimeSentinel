@@ -16,7 +16,9 @@ class ShowController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function details($show_id, $title = '') {
-    $show = Show::find($show_id);
+    if (is_numeric($show_id)) {
+      $show = Show::find($show_id);
+    }
     if (isset($show)) {
       if ($title !== slugify($show->title)) {
         return redirect($show->details_url);

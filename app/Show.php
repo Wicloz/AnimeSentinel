@@ -171,7 +171,7 @@ class Show extends BaseModel
   * @return string
   */
   public function getDetailsUrlStaticAttribute() {
-    return fullUrl('/anime/'.$this->id);
+    return staticUrl($this);
   }
 
   /**
