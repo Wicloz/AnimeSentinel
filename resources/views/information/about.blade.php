@@ -140,6 +140,10 @@
           <td>Make anime data caching time smarter and more dynamic.</td>
           <td>✘</td>
         </tr>
+        <tr>
+          <td>Make sure that delayed hd video uploads are handled properly.</td>
+          <td>✘</td>
+        </tr>
       </tbody>
     </table>
     <div class="content-close"></div>
