@@ -124,12 +124,21 @@ class template
     // Get all mirrors data
     $mirrors = Self::seekMirrors($video->link_episode);
 
+    // Complete mirror data and return video link
+    $mirror = Self::seekCompleteMirror($mirrors[$video->mirror]);
+    return $mirror['link_video'];
+
     // Loop through mirror list
+    $index = 0;
     foreach ($mirrors as $mirror) {
       // Complete mirror data
       $mirror = Self::seekCompleteMirror($mirror);
-      // Determine which link to return (TODO)
-      if ($mirror['resolution'] === $video->resolution) {
+      // If translation types match, increment index
+      if ($mirror['translation_type'] === $video->translation_type) {
+        $index++;
+      }
+      // Once index matches the mirror id, return the video link
+      if ($index === $video->mirror) {
         return $mirror['link_video'];
       }
     }

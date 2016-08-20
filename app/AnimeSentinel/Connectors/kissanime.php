@@ -249,16 +249,9 @@ class kissanime
   public static function findVideoLink($video) {
     // Get all mirrors data
     $mirrors = Self::seekMirrors($video->link_episode);
-
-    // Loop through mirror list
-    foreach ($mirrors as $mirror) {
-      // Complete mirror data
-      $mirror = Self::seekCompleteMirror($mirror);
-      // Determine which link to return
-      if ($mirror['resolution'] === $video->resolution) {
-        return $mirror['link_video'];
-      }
-    }
+    // Complete mirror data and return video link
+    $mirror = Self::seekCompleteMirror($mirrors[$video->mirror]);
+    return $mirror['link_video'];
 
     return $video->link_video;
   }

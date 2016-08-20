@@ -21,7 +21,7 @@ class Video extends BaseModel
    *
    * @var array
    */
-  protected $dates = ['uploadtime', 'cache_updated_at', 'created_at', 'updated_at'];
+  protected $dates = ['uploadtime', 'created_at', 'updated_at'];
 
   /**
    * Overwrite the save method to properly handle the compound key.
@@ -223,11 +223,12 @@ class Video extends BaseModel
   * @return string
   */
   public function getLinkVideoUpdatedAttribute() {
-    // TODO: proper check
-    if ($this->cache_updated_at->diffInHours(Carbon::now()) >= 2) {
-      $this->link_video = VideoManager::findVideoLink($this);
-      $this->cache_updated_at = Carbon::now();
-      $this->save();
+    if (playerSupport($this->link_video)) {
+      $data = json_decode(shell_exec('"C:\\ffmpeg\\bin\\ffprobe.exe" -v quiet -print_format json -show_streams "'. $this->link_video .'"'));
+      if (json_encode($data) === '{}') {
+        $this->link_video = VideoManager::findVideoLink($this);
+        VideoManager::saveVideos([$this]);
+      }
     }
     return $this->link_video;
   }

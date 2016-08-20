@@ -325,7 +325,7 @@
       <tbody>
         <tr>
           <td>Get video data such as resolution and playback length directly from the video file.</td>
-          <td>✘</td>
+          <td>WIP</td>
         </tr>
         <tr>
           <td>Allow videos to be played synchronously with friends.</td>
