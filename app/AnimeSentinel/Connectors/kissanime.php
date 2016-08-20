@@ -250,7 +250,7 @@ class kissanime
     // Get all mirrors data
     $mirrors = Self::seekMirrors($video->link_episode);
     // Complete mirror data and return video link
-    $mirror = Self::seekCompleteMirror($mirrors[$video->mirror]);
+    $mirror = Self::seekCompleteMirror($mirrors[$video->mirror - 1]);
     return $mirror['link_video'];
 
     return $video->link_video;
