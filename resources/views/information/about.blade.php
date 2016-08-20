@@ -134,11 +134,11 @@
         </tr>
         <tr>
           <td>Fix 'Saiki Kusuo no Ψ-nan' not working on kissanime.</td>
-          <td>✘</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Improve anime title slugs.</td>
-          <td>✘</td>
+          <td>✔</td>
         </tr>
       </tbody>
     </table>

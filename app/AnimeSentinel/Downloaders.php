@@ -10,6 +10,14 @@ class Downloaders
    * @return string
    */
   public static function downloadPage($url) {
+    $replace = [
+      'Ψ' => '%CE%A8',
+      'ψ' => '%CF%88',
+    ];
+    foreach ($replace as $from => $to) {
+      $url = str_replace($from, $to, $url);
+    }
+
     if (strpos($url, 'kissanime.to') !== false) {
       $response = Self::downloadCloudFlare($url, 'kissanime');
     } elseif (strpos($url, 'gogoanime.io') !== false) {
@@ -23,15 +31,6 @@ class Downloaders
       curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
       $response = htmlentities_decode(curl_exec($curl));
       curl_close($curl);
-    }
-
-    $replace = [
-      '┬á' => ' ',
-      '╬¿' => 'Ψ',
-      '╬ö' => 'Δ',
-    ];
-    foreach ($replace as $from => $to) {
-      $response = str_replace($from, $to, $response);
     }
 
     return $response;

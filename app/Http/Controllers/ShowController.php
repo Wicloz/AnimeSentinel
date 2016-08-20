@@ -33,6 +33,7 @@ class ShowController extends Controller
     }
 
     elseif (!empty($title)) {
+      $title = str_replace('‑', ' ', $title);
       $show = Show::withTitle($title)->first();
       if (isset($show)) {
         return redirect($show->details_url);

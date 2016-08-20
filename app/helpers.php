@@ -168,10 +168,7 @@ function staticUrl($show, $episode = null) {
 }
 
 function slugify($text) {
-  $slugify = new \Cocur\Slugify\Slugify();
-  $slugify->addRule('!', '!');
-  $slugify->addRule('?', '?');
-  return $slugify->slugify($text);
+  return str_replace(' ', '‑', mb_strtolower($text));
 }
 
 // String Helpers //
