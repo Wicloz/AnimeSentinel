@@ -172,7 +172,7 @@ class Show extends BaseModel
   * @return string
   */
   public function getDetailsUrlStaticAttribute() {
-    return staticUrl($this);
+    return fullUrl('/anime/-/'.slugify($this->title), true);
   }
 
   /**

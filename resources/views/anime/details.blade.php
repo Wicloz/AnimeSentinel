@@ -104,12 +104,12 @@
   @if(isset($show->mal_id))
     @include('components.disqus', [
       'disqus_url' => $show->details_url_static,
-      'disqus_id' => 'show:(mal:'.$show->mal_id.')',
+      'disqus_id' => 'show:('.json_encode(['mal_id' => $show->mal_id]).')',
     ])
   @else
     @include('components.disqus', [
       'disqus_url' => $show->details_url_static,
-      'disqus_id' => 'show:(id:'.$show->id.')',
+      'disqus_id' => 'show:('.json_encode(['show_id' => $show->show_id]).')',
     ])
   @endif
 @endsection

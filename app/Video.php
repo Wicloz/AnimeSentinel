@@ -105,9 +105,17 @@ class Video extends BaseModel
   */
   public function getEpisodeIdAttribute() {
     if (isset($this->mal_id)) {
-      return 'mal:'.$this->mal_id.',tt:'.$this->translation_type.',num:'.$this->episode_num;
+      return json_encode([
+        'mal_id' => $this->mal_id,
+        'translation_type' => $this->translation_type,
+        'episode_num' => $this->episode_num,
+      ]);
     } else {
-      return 'id:'.$this->show_id.',tt:'.$this->translation_type.',num:'.$this->episode_num;
+      return json_encode([
+        'show_id' => $this->show_id,
+        'translation_type' => $this->translation_type,
+        'episode_num' => $this->episode_num,
+      ]);
     }
   }
 
@@ -126,7 +134,7 @@ class Video extends BaseModel
   * @return string
   */
   public function getEpisodeUrlStaticAttribute() {
-    return staticUrl($this->show, $this);
+    return fullUrl('/anime/-/'.slugify($this->show->title).'/'.$this->translation_type.'/episode-'.$this->episode_num, true);
   }
 
   /**

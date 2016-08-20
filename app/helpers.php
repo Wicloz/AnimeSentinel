@@ -157,16 +157,6 @@ function fullUrl($path, $production = false) {
   return $appUrl.'/'.$path;
 }
 
-function staticUrl($show, $episode = null) {
-  if (!isset($episode)) {
-    $path = '/anime/-/'.str_replace(' ', '%20', $show->title);
-  }
-  else {
-    $path = '/anime/-/'.str_replace(' ', '%20', $show->title).'/'.$episode->translation_type.'/episode-'.$episode->episode_num;
-  }
-  return fullUrl($path, true);
-}
-
 function slugify($text) {
   return str_replace(' ', '‑', mb_strtolower($text));
 }
