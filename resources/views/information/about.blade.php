@@ -193,6 +193,10 @@
           <td>✘</td>
         </tr>
         <tr>
+          <td>Add descriptions to MAL search results.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
           <td>Improve pages based on feedback.</td>
           <td>✘</td>
         </tr>

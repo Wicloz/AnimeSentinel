@@ -1,5 +1,6 @@
-Report from AnimeSentinel:
+Report from AnimeSentinel:<br>
 -------------------------------------------------------------------
+<br>
 Show:
 <ul>
   <li>Show Title: {{ $show->title }}</li>
@@ -8,7 +9,8 @@ Show:
   <li>Show Link: <a>{{ $show->details_url_static }}</a></li>
 </ul>
 -------------------------------------------------------------------
-Report:
+<br>
+Report:<br>
 - {{ $description }} -
 <ul>
   @foreach($vars as $key => $value)
