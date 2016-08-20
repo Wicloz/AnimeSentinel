@@ -10,13 +10,9 @@ class Downloaders
    * @return string
    */
   public static function downloadPage($url) {
-    $replace = [
-      'Ψ' => '%CE%A8',
-      'ψ' => '%CF%88',
-    ];
-    foreach ($replace as $from => $to) {
-      $url = str_replace($from, $to, $url);
-    }
+    $url = preg_replace_callback('/([α-ωΑ-Ω])/u', function($matches) {
+      return urlencode($matches[1]);
+    }, $url);
 
     if (strpos($url, 'kissanime.to') !== false) {
       $response = Self::downloadCloudFlare($url, 'kissanime');
