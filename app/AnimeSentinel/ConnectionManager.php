@@ -48,13 +48,6 @@ class ConnectionManager
       }
     }
 
-    // Mail an anomaly report if no videos were found
-    if (count($videos) == 0) {
-      mailAnomaly($show, 'Could not find any videos when searching for all videos.', [
-        'Run From a Job' => $fromJob ? 'Yes' : 'No',
-      ]);
-    }
-
     // Remove all existing videos for this show
     $show->videos()->delete();
     // Save the new videos
@@ -62,6 +55,13 @@ class ConnectionManager
     // Mark show as initialised
     $show->videos_initialised = true;
     $show->save();
+
+    // Mail an anomaly report if no videos were found
+    if (count($videos) == 0) {
+      mailAnomaly($show, 'Could not find any videos when searching for all videos.', [
+        'Run From a Job' => $fromJob ? 'Yes' : 'No',
+      ]);
+    }
   }
 
   /**
@@ -112,16 +112,6 @@ class ConnectionManager
       }
     }
 
-    // Mail an anomaly report if no videos were found
-    if (count($videos) == 0) {
-      mailAnomaly($show, 'Could not find any videos when reprocessing an episode.', [
-        'Translation Types' => json_encode($translation_types),
-        'Epsiode Number' => $episode_num,
-        'Streaming Site' => isset($streamer_id) ? $streamer_id : 'NA',
-        'Run From a Job' => $fromJob ? 'Yes' : 'No',
-      ]);
-    }
-
     // Remove all existing videos for this episode
     foreach ($translation_types as $translation_type) {
       if ($streamer_id === null) {
@@ -135,6 +125,16 @@ class ConnectionManager
     // Mark show as initialised
     $show->videos_initialised = true;
     $show->save();
+
+    // Mail an anomaly report if no videos were found
+    if (count($videos) == 0) {
+      mailAnomaly($show, 'Could not find any videos when reprocessing an episode.', [
+        'Translation Types' => json_encode($translation_types),
+        'Epsiode Number' => $episode_num,
+        'Streaming Site' => isset($streamer_id) ? $streamer_id : 'NA',
+        'Run From a Job' => $fromJob ? 'Yes' : 'No',
+      ]);
+    }
   }
 
   /**
