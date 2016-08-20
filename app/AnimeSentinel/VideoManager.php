@@ -15,7 +15,7 @@ class VideoManager
   public static function saveVideos($videos) {
     foreach ($videos as $video) {
       if (playerSupport($video->link_video)) {
-        $data = json_decode(shell_exec('"C:\\ffmpeg\\bin\\ffprobe.exe" -v quiet -print_format json -show_streams "'. $video->link_video .'"'));
+        $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_streams "'. $video->link_video .'"'));
         foreach ($data->streams as $stream) {
           if ($stream->codec_type === 'video') {
             $video->encoding = 'video/'.$stream->codec_name;

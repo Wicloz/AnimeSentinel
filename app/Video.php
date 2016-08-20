@@ -224,7 +224,7 @@ class Video extends BaseModel
   */
   public function getLinkVideoUpdatedAttribute() {
     if (playerSupport($this->link_video)) {
-      $data = json_decode(shell_exec('"C:\\ffmpeg\\bin\\ffprobe.exe" -v quiet -print_format json -show_streams "'. $this->link_video .'"'));
+      $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_format "'. $this->link_video .'"'));
       if (json_encode($data) === '{}') {
         $this->link_video = VideoManager::findVideoLink($this);
         VideoManager::saveVideos([$this]);
