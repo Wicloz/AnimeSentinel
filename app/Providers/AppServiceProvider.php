@@ -17,8 +17,8 @@ class AppServiceProvider extends ServiceProvider
     {
       Queue::failing(function (JobFailed $event) {
         \Mail::send('emails.report_bug', ['description' => 'Job Failed', 'vars' => [
-          'Job' => $event->job,
-          'Data' => $event->data,
+          'Job' => json_encode($event->job),
+          'Data' => json_encode($event->data),
         ]], function ($m) {
           $m->subject('AnimeSentinel Job Fail Report');
           $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Reports');

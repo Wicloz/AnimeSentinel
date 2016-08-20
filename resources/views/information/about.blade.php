@@ -136,6 +136,10 @@
           <td>Improve anime title slugs.</td>
           <td>✔</td>
         </tr>
+        <tr>
+          <td>Make anime data caching time smarter and more dynamic.</td>
+          <td>✘</td>
+        </tr>
       </tbody>
     </table>
     <div class="content-close"></div>
