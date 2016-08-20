@@ -81,10 +81,6 @@
           <td>Layout selection needs to be more persistent</td>
         </tr>
         <tr>
-          <td>Allow browsing of animes by first character.</td>
-          <td>✘</td>
-        </tr>
-        <tr>
           <td>Allow adding of animes and episodes.</td>
           <td>✔</td>
         </tr>
@@ -194,6 +190,14 @@
         </tr>
         <tr>
           <td>Improve pages based on feedback.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Allow browsing of animes by first character.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Allow browsing of animes by genre and type.</td>
           <td>✘</td>
         </tr>
         <tr>
