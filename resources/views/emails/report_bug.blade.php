@@ -1,7 +1,8 @@
 Report from AnimeSentinel:<br>
 -------------------------------------------------------------------
-<br>
-- {{ $description }} -
+<p>
+  - {{ $description }} -
+</p>
 <ul>
   @foreach($vars as $key => $value)
     <li>{{ $key }}: {{ $value }}</li>
