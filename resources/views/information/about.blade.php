@@ -137,7 +137,7 @@
           <td>✘</td>
         </tr>
         <tr>
-          <td>Improve show title slugs.</td>
+          <td>Improve anime title slugs.</td>
           <td>✘</td>
         </tr>
       </tbody>
@@ -207,6 +207,10 @@
         <tr>
           <td>Improve performance.</td>
           <td>WIP</td>
+        </tr>
+        <tr>
+          <td>Use a more dynamic caching expiration time.</td>
+          <td>✘</td>
         </tr>
         <tr>
           <td>Setup donations and ads.</td>
@@ -289,6 +293,10 @@
         </tr>
         <tr>
           <td>Change shows from 'plan to watch' to 'watching' on users MAL accounts when an epsiode gets added.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Add 'watched' marks next to episodes on anime detail pages.</td>
           <td>✘</td>
         </tr>
       </tbody>
