@@ -138,10 +138,10 @@
         </tr>
         <tr>
           <td>Make anime data caching time smarter and more dynamic.</td>
-          <td>✘</td>
+          <td>WIP</td>
         </tr>
         <tr>
-          <td>Make sure that delayed hd video uploads are handled properly.</td>
+          <td>Make sure that delayed HD video uploads are handled properly.</td>
           <td>✘</td>
         </tr>
       </tbody>

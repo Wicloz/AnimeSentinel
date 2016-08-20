@@ -201,8 +201,8 @@ class Show extends BaseModel
   * Update this show's cached infomation when needed.
   */
   public function handleCaching() {
-    // TODO: dynamic cache time
-    if ($this->cache_updated_at->diffInHours(Carbon::now()) >= 48) {
+    // TODO: smarter cache time
+    if ($this->cache_updated_at->diffInHours(Carbon::now()) >= rand(168, 336)) {
       ShowManager::updateShowCache($this->id);
     }
   }
