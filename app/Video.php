@@ -39,6 +39,24 @@ class Video extends BaseModel
   }
 
   /**
+   * Finds and saves the metadata for this video.
+   */
+  public function setVideoMetaData() {
+    if (playerSupport($this->link_video)) {
+      $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_streams "'. $this->link_video .'"'));
+      foreach ($data->streams as $stream) {
+        if ($stream->codec_type === 'video') {
+          $this->encoding = 'video/'.$stream->codec_name;
+          $this->resolution = $stream->width.'x'.$stream->height;
+          $this->duration = $stream->duration;
+          //$this->uploadtime = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
+          break;
+        }
+      }
+    }
+  }
+
+  /**
    * Overwrite the find method to properly handle the compound key.
    */
   public static function find($data) {
@@ -227,7 +245,8 @@ class Video extends BaseModel
       $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_format "'. $this->link_video .'"'));
       if (json_encode($data) === '{}') {
         $this->link_video = VideoManager::findVideoLink($this);
-        VideoManager::saveVideos([$this]);
+        $this->setVideoMetaData();
+        $this->save();
       }
     }
     return $this->link_video;
