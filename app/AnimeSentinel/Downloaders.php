@@ -25,6 +25,15 @@ class Downloaders
       curl_close($curl);
     }
 
+    $replace = [
+      '┬á' => ' ',
+      '╬¿' => 'Ψ',
+      '╬ö' => 'Δ',
+    ];
+    foreach ($replace as $from => $to) {
+      $response = str_replace($from, $to, $response);
+    }
+
     return $response;
   }
 

@@ -132,6 +132,14 @@
           <td>If a job is in progress and it's related task gets executed through other means, don't run the task but wait for the job to finish.</td>
           <td>✔</td>
         </tr>
+        <tr>
+          <td>Fix 'Saiki Kusuo no Ψ-nan' not working on kissanime.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Improve show title slugs.</td>
+          <td>✘</td>
+        </tr>
       </tbody>
     </table>
     <div class="content-close"></div>
