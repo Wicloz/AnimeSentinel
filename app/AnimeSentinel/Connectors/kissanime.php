@@ -135,51 +135,11 @@ class kissanime
 
   private static function seekCompleteEpisode($episode, $decrement) {
     // Complete episode data
-    $episode['episode_num'] = trim(str_replace('(Sub)', '', str_replace('(Dub)', '', $episode['episode_num'])));
+    $episode['notes'] = '';
+    $episode['episode_num'] = Self::convertEpisodeToNumber($episode['episode_num'], $episode['notes']);
 
-    // Discard ops, eds and previews
-    if (str_starts_with($episode['episode_num'], '_OP') || str_starts_with($episode['episode_num'], '_ED') || str_starts_with($episode['episode_num'], '_Preview')) {
+    if ($episode['episode_num'] === false) {
       return false;
-    }
-    else {
-      $special = false;
-      // Handle numbered specials
-      if (str_starts_with($episode['episode_num'], '_Special')) {
-        $special = true;
-      }
-      // Strip '_' and type names from the start of the text, followed by trimming
-      $remove = [
-        '_',
-        'Episode',
-        'Movie',
-        'Special',
-        'ONA',
-        'OVA',
-      ];
-      foreach ($remove as $item) {
-        if (str_starts_with($episode['episode_num'], $item)) {
-          $episode['episode_num'] = trim(str_replace_first($item, '', $episode['episode_num']));
-        }
-      }
-      if (!$special) {
-        // Try to get the episode number
-        $episode_num = str_get_between('-'.$episode['episode_num'], '-', ' ');
-        if ($episode_num === false) {
-          $episode_num = str_get_between('-'.$episode['episode_num'], '-', '');
-        }
-        // If that's not a number, set it to 1
-        if (!is_numeric($episode_num)) {
-          $episode_num = 1;
-        }
-        // Strip numbers from the start of the text and trim, set that as the notes
-        $episode['notes'] = trim(preg_replace('/^[0-9]+/u', '', $episode['episode_num']));
-      }
-      else {
-        $episode_num = 0;
-        $episode['notes'] = trim($episode['episode_num']);
-      }
-      // Set the episode number to the working value
-      $episode['episode_num'] = $episode_num;
     }
 
     $episode['episode_num'] -= $decrement;
@@ -192,6 +152,55 @@ class kissanime
   private static function seekCompleteMirror($mirror) {
     // Complete mirror data
     return $mirror;
+  }
+
+  private static function convertEpisodeToNumber($text, & $notes = '') {
+    $text = trim(str_replace('(Sub)', '', str_replace('(Dub)', '', $text)));
+
+    // Discard ops, eds and previews
+    if (str_starts_with($text, '_OP') || str_starts_with($text, '_ED') || str_starts_with($text, '_Preview')) {
+      return false;
+    }
+    else {
+      $special = false;
+      // Handle numbered specials
+      if (str_starts_with($text, '_Special')) {
+        $special = true;
+      }
+      // Strip '_' and type names from the start of the text, followed by trimming
+      $remove = [
+        '_',
+        'Episode',
+        'Movie',
+        'Special',
+        'ONA',
+        'OVA',
+      ];
+      foreach ($remove as $item) {
+        if (str_starts_with($text, $item)) {
+          $text = trim(str_replace_first($item, '', $text));
+        }
+      }
+      if (!$special) {
+        // Try to get the episode number
+        $episode_num = str_get_between('-'.$text, '-', ' ');
+        if ($episode_num === false) {
+          $episode_num = str_get_between('-'.$text, '-', '');
+        }
+        // If that's not a number, set it to 1
+        if (!is_numeric($episode_num)) {
+          $episode_num = 1;
+        }
+        // Strip numbers from the start of the text and trim, set that as the notes
+        $notes = trim(preg_replace('/^[0-9]+/u', '', $text));
+      }
+      else {
+        $episode_num = 0;
+        $notes = trim($text);
+      }
+
+      return $episode_num;
+    }
   }
 
   private static function findDecrement($episodes) {
@@ -220,14 +229,15 @@ class kissanime
     $page = Downloaders::downloadPage('http://kissanime.to');
 
     // Scrape the 'recently aired' page
-    $data = Helpers::scrape_page(str_get_between($page, '<div class="items">', '<div class="clear">'), '</a>', [
+    $dataRaw = Helpers::scrape_page(str_get_between($page, '<div class="items">', '<div class="clear">'), '</a>', [
       'link_stream' => [true, 'href="', '"'],
       'title' => [false, '<br />', '<br />'],
       'episode_num' => [false, '<span class=\'textDark\'>', '</span>'],
     ]);
 
     // Complete and return data
-    foreach ($data as $index => $item) {
+    $data = [];
+    foreach ($dataRaw as $item) {
       // Determine translation type and clean up title
       $item['translation_type'] = 'sub';
       $item['title'] = trim(str_replace('(Sub)', '', $item['title']));
@@ -243,22 +253,15 @@ class kissanime
       $episodes = Helpers::scrape_page(str_get_between($page, '<tr style="height: 10px">', '</table>'), '</td>', [
         'episode_num' => [true, $alt, ' online in high quality'],
         'link_episode' => [false, 'href="', '"'],
+        'uploadtime' => [false, '<td>', ''],
       ]);
       $decrement = Self::findDecrement($episodes);
-
       // Determine actual episode number
-      if (str_contains($item['episode_num'], 'Episode ')) {
-        $episode_num = str_get_between($item['episode_num'], 'Episode ', ' ');
-        if ($episode_num === false) {
-          $episode_num = str_get_between($item['episode_num'], 'Episode ', '');
-        }
-        $item['episode_num'] = $episode_num - $decrement;
-      }
-      else {
-        $item['episode_num'] = 1;
-      }
+      $item['episode_num'] = Self::convertEpisodeToNumber($item['episode_num']) - $decrement;
 
-      $data[$index] = $item;
+      if (!empty($item)) {
+        $data[] = $item;
+      }
     }
 
     return $data;
