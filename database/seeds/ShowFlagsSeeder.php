@@ -130,5 +130,12 @@ class ShowFlagsSeeder extends Seeder
       "Gintama: Aizome Kaori-hen" => "+",
     ];
     $gintamaaizomekaorihen->save();
+
+    $hobomainichioonamappoidouga = ShowFlag::findOrNew(31121);
+    $hobomainichioonamappoidouga->mal_id = 31121;
+    $hobomainichioonamappoidouga->alt_rules = [
+      "Monster Musume no Iru Nichijou: Hobo Mainichi OO! Namappoi Douga" => "+",
+    ];
+    $hobomainichioonamappoidouga->save();
   }
 }
