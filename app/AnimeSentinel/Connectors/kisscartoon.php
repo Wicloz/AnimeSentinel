@@ -90,10 +90,13 @@ class kisscartoon
 
     // Scrape the page for episode data
     $episodes = Helpers::scrape_page(str_get_between($page, '<tr style="height: 10px">', '</table>'), '</td>', [
-      'episode_num' => [true, $alt, ' online in high quality'],
+      'episode_num' => [true, 'in high quality">', '</a>'],
       'link_episode' => [false, 'href="', '"'],
       'uploadtime' => [false, '<td>', ''],
     ]);
+    foreach ($episodes as $index => $episode) {
+      $episodes[$index]['episode_num'] = trim(str_replace($alt, '', $episode['episode_num']));
+    }
 
     // Find the decrement
     $decrement = Self::findDecrement($episodes);
@@ -251,10 +254,13 @@ class kisscartoon
       $alt = trim(str_get_between($page, '<div class="barTitle">', 'information'));
       // Scrape the page for episode data
       $episodes = Helpers::scrape_page(str_get_between($page, '<tr style="height: 10px">', '</table>'), '</td>', [
-        'episode_num' => [true, $alt, ' online in high quality'],
+        'episode_num' => [true, 'in high quality">', '</a>'],
         'link_episode' => [false, 'href="', '"'],
         'uploadtime' => [false, '<td>', ''],
       ]);
+      foreach ($episodes as $index => $episode) {
+        $episodes[$index]['episode_num'] = trim(str_replace($alt, '', $episode['episode_num']));
+      }
       $decrement = Self::findDecrement($episodes);
       // Determine actual episode number
       $item['episode_num'] = Self::convertEpisodeToNumber($item['episode_num']) - $decrement;
