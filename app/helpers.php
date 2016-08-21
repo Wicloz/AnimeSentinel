@@ -176,7 +176,9 @@ function str_get_between($string, $start, $end = '', $last = false) {
   if (empty($end)) {
     return substr($string, $ini);
   } else {
-    $len = strpos($string, $end, $ini) - $ini;
+    $len = strpos($string, $end, $ini);
+    if ($len === false) return false;
+    $len -= $ini;
     return substr($string, $ini, $len);
   }
 }
