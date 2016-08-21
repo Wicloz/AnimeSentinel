@@ -10,7 +10,7 @@ class Downloaders
    * @return string
    */
   public static function downloadPage($url) {
-    $url = preg_replace_callback('/([α-ωΑ-Ω])/u', function($matches) {
+    $url = preg_replace_callback('/([^a-zA-Z0-9\\:\\+\\&\\?\\-\\_\\/\\\\])/u', function($matches) {
       return urlencode($matches[1]);
     }, $url);
 
