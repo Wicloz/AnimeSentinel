@@ -1,6 +1,6 @@
 <?php
 
-//php artisan queue:listen --queue=periodic_high,periodic_low,default --timeout=1800 --tries=1
+//php artisan queue:listen --queue=periodic_high,periodic_low,default --timeout=7200 --tries=1
 
 /*
 |--------------------------------------------------------------------------

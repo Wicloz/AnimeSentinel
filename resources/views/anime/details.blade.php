@@ -22,7 +22,7 @@
 
   <div class="content-header">Episodes</div>
   <div class="content-generic">
-    <h2>Subbed</h2>
+    <h2 style="margin-top:5px;">Subbed</h2>
     <ul class="list-group episode-list">
       @if(count($show->episodes('sub')) > 0)
         @foreach($show->episodes('sub')->load('show') as $episode)
