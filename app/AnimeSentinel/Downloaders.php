@@ -14,9 +14,9 @@ class Downloaders
       return urlencode($matches[1]);
     }, $url);
 
-    if (strpos($url, 'kissanime.to') !== false) {
+    if (str_contains($url, 'kissanime.to')) {
       $response = Self::downloadCloudFlare($url, 'kissanime');
-    } elseif (strpos($url, 'gogoanime.io') !== false) {
+    } elseif (str_contains($url, 'gogoanime.io')) {
       $response = Self::downloadCloudFlare($url, 'gogoanime');
     }
 
@@ -69,7 +69,7 @@ class Downloaders
     $response = htmlentities_decode(curl_exec($curl));
     curl_close($curl);
 
-    if (strpos($response, '<title>Please wait 5 seconds...</title>') !== false) {
+    if (str_contains($response, '<title>Please wait 5 seconds...</title>')) {
       Self::requestCloudFlareData($url, $cookieid);
       return Self::downloadCloudFlare($url, $cookieid);
     }

@@ -45,7 +45,7 @@ class Helpers
 
         if (empty($value[3])) {
           // Find content between the requested strings
-          if (strpos($line, $value[1]) !== false && (empty($value[2]) || strpos($line, $value[2]) !== false)) {
+          if (str_contains($line, $value[1]) && (empty($value[2]) || str_contains($line, $value[2]))) {
             if ($value[0]) {
               $results[] = [
                 $key => str_get_between($line, $value[1], $value[2])
@@ -58,7 +58,7 @@ class Helpers
 
         else {
           // Set content depending on string presence
-          if (strpos($line, $value[3]) !== false) {
+          if (str_contains($line, $value[3])) {
             $data = $value[2];
           } else {
             $data = $value[1];

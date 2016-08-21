@@ -25,13 +25,13 @@ class kissanime
       $page = Downloaders::downloadPage('http://kissanime.to/Search/Anime?keyword='.str_replace(' ', '+', $alt));
 
       // First check whether we already have an episode page
-      if (strpos($page, '<meta name="description" content="Watch online and download ') !== false) {
+      if (str_contains($page, '<meta name="description" content="Watch online and download ')) {
         $link_stream = str_get_between($page, '<a Class="bigChar" href="', '">');
         if (!in_array($link_stream, $processedLinks)) {
           // Search for videos
           $videos = array_merge($videos, Self::seekEpisodes($page, $show, $alt, [
             'link_stream' => 'http://kissanime.to'.$link_stream,
-            'translation_type' => (strpos(str_get_between($page, '<title>', '</title>'), '(Dub)') !== false ? 'dub' : 'sub'),
+            'translation_type' => (str_contains(str_get_between($page, '<title>', '</title>'), '(Dub)') ? 'dub' : 'sub'),
           ], $req_episode_num));
           $processedLinks[] = $link_stream;
           continue;
@@ -47,7 +47,7 @@ class kissanime
         // Determine translation type and clean up title
         $result['translation_type'] = 'sub';
         $result['title'] = trim(str_replace('(Sub)', '', $result['title']));
-        if (strpos($result['title'], '(Dub)') !== false) {
+        if (str_contains($result['title'], '(Dub)')) {
           $result['translation_type'] = 'dub';
         }
         $result['title'] = trim(str_replace('(Dub)', '', $result['title']));
@@ -138,67 +138,45 @@ class kissanime
     $episode['episode_num'] = trim(str_replace('(Sub)', '', str_replace('(Dub)', '', $episode['episode_num'])));
 
     // Discard ops, eds and previews
-    // Strip '_' from the start
-    // Strip type names from the start
-    // Trim
-    // Convert to int -> episode_num
-    // If that failed, set episode_num to 1
-    // Strip numbers from start
-    // Trim
-    // Set as note
-
-    if (strpos($episode['link_episode'], '/Episode?') !== false || strpos($episode['link_episode'], '/Episode-') !== false) {
-      $line = $episode['episode_num'];
-      $episode['episode_num'] = str_get_between($line, 'Episode ', ' ');
-      $episode['notes'] = str_get_between($line, 'Episode '.$episode['episode_num'].' ');
-    }
-    elseif (strpos($episode['link_episode'], '/Movie?') !== false || strpos($episode['link_episode'], '/Movie-') !== false) {
-      $episode['notes'] = str_get_between($episode['episode_num'], 'Movie ');
-      if ($episode['notes'] === false) {
-        $episode['notes'] = $episode['episode_num'];
-      }
-      $episode['episode_num'] = 1;
-    }
-    elseif (strpos($episode['link_episode'], '/Special?') !== false || strpos($episode['link_episode'], '/Special-') !== false) {
-      $episode['notes'] = str_get_between($episode['episode_num'], 'Special ');
-      if ($episode['notes'] === false) {
-        $episode['notes'] = $episode['episode_num'];
-      }
-      $episode['episode_num'] = 1;
-    }
-    elseif (strpos($episode['link_episode'], '/OVA?') !== false || strpos($episode['link_episode'], '/OVA-') !== false) {
-      $episode['notes'] = str_get_between($episode['episode_num'], 'OVA ');
-      if ($episode['notes'] === false) {
-        $episode['notes'] = $episode['episode_num'];
-      }
-      $episode['episode_num'] = 1;
-    }
-    elseif (strpos($episode['link_episode'], '/ONA?') !== false || strpos($episode['link_episode'], '/ONA-') !== false) {
-      $episode['notes'] = str_get_between($episode['episode_num'], 'ONA ');
-      if ($episode['notes'] === false) {
-        $episode['notes'] = $episode['episode_num'];
-      }
-      $episode['episode_num'] = 1;
-    }
-    elseif (strpos($episode['link_episode'], '/CBM?') !== false || strpos($episode['link_episode'], '/CBM-') !== false) {
-      $line = $episode['episode_num'];
-      $episode['episode_num'] = str_get_between($line, 'Episode ', ' ');
-      if ($episode['episode_num'] === false) {
-        $episode['notes'] = str_get_between($line, 'Episode ');
-      } else {
-        $episode['notes'] = str_get_between($line, 'Episode '.$episode['episode_num'].' ');
-      }
-      if (!is_numeric($episode['episode_num'])) {
-        $episode['episode_num'] = 1;
-      }
+    if (str_starts_with($episode['episode_num'], '_OP') || str_starts_with($episode['episode_num'], '_ED') || str_starts_with($episode['episode_num'], '_Preview')) {
+      return false;
     }
     else {
-      $line = $episode['episode_num'];
-      $episode['episode_num'] = str_get_between('-'.$line, '-', ' ');
-      if (!is_numeric($episode['episode_num'])) {
-        return false;
+      $special = false;
+      // Handle numbered specials
+      if (str_starts_with($episode['episode_num'], '_Special')) {
+        $special = true;
       }
-      $episode['notes'] = str_get_between($line, $episode['episode_num'].' ');
+      // Strip '_' and type names from the start of the text, followed by trimming
+      $remove = [
+        '_',
+        'Episode',
+        'Movie',
+        'Special',
+        'ONA',
+        'OVA',
+      ];
+      foreach ($remove as $item) {
+        if (str_starts_with($episode['episode_num'], $item)) {
+          $episode['episode_num'] = trim(str_replace_first($item, '', $episode['episode_num']));
+        }
+      }
+      if (!$special) {
+        // Try to get the episode number
+        $episode_num = str_get_between('-'.$episode['episode_num'], '-');
+        // If that's not a number, set it to 1
+        if (!is_numeric($episode_num)) {
+          $episode_num = 1;
+        }
+        // Strip numbers from the start of the text and trim, set that as the notes
+        $episode['notes'] = trim(preg_replace('/^[0-9]+/u', '', $episode['episode_num']));
+      }
+      else {
+        $episode_num = 0;
+        $episode['notes'] = trim($episode['episode_num']);
+      }
+      // Set the episode number to the working value
+      $episode['episode_num'] = $episode_num;
     }
 
     $episode['episode_num'] -= $decrement;
@@ -250,7 +228,7 @@ class kissanime
       // Determine translation type and clean up title
       $item['translation_type'] = 'sub';
       $item['title'] = trim(str_replace('(Sub)', '', $item['title']));
-      if (strpos($item['title'], '(Dub)') !== false) {
+      if (str_contains($item['title'], '(Dub)')) {
         $item['translation_type'] = 'dub';
       }
       $item['title'] = trim(str_replace('(Dub)', '', $item['title']));
@@ -265,7 +243,7 @@ class kissanime
       $decrement = Self::findDecrement($episodes);
 
       // Determine actual episode number
-      if (strpos($item['episode_num'], 'Episode ') !== false) {
+      if (str_contains($item['episode_num'], 'Episode ')) {
         $episode_num = str_get_between($item['episode_num'], 'Episode ', ' ');
         if ($episode_num === false) {
           $episode_num = str_get_between($item['episode_num'], 'Episode ', '');

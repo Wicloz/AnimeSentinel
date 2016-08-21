@@ -43,7 +43,7 @@ function visitPage($id) {
 }
 
 function playerSupport($filename) {
-  if (str_ends_with($filename, '.mp4') || strpos($filename, 'redirector.googlevideo.com') !== false || strpos($filename, '2.bp.blogspot.com') !== false) {
+  if (str_ends_with($filename, '.mp4') || str_contains($filename, 'redirector.googlevideo.com') || str_contains($filename, '2.bp.blogspot.com')) {
     return true;
   }
   return false;
@@ -51,7 +51,7 @@ function playerSupport($filename) {
 
 function badNotes($notes) {
   $notes = strtolower($notes);
-  if (strpos($notes, 'lq') !== false || strpos($notes, 'broken') !== false) {
+  if (str_contains($notes, 'lq') || str_contains($notes, 'broken')) {
     return true;
   }
   return false;
@@ -147,12 +147,10 @@ function array_get_parents(array $array, $start, $parents = [], $gathered = []) 
 function fullUrl($path, $production = false) {
   $appUrl = $production ? config('app.url_production') : config('app.url');
   if (str_starts_with($path, '/')) {
-    $pos1 = strpos($path, '/');
-    $path = substr_replace($path, '', $pos1, strlen('/'));
+    $path = str_replace_first('/', '', $path);
   }
   if (str_ends_with($appUrl, '/')) {
-    $pos2 = strlen($appUrl) - 1;
-    $appUrl = substr_replace($appUrl, '', $pos2, strlen('/'));
+    $appUrl = str_replace_last('/', '', $appUrl);
   }
   return $appUrl.'/'.$path;
 }
@@ -189,12 +187,12 @@ function match_fuzzy($title1, $title2) {
 
 function str_starts_with($haystack, $needle) {
   // search backwards starting from haystack length characters from the end
-  return $needle === "" || strrpos($haystack, $needle, - strlen($haystack)) !== false;
+  return $needle === '' || strrpos($haystack, $needle, - strlen($haystack)) !== false;
 }
 
 function str_ends_with($haystack, $needle) {
   // search forward starting from end minus needle length characters
-  return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== false);
+  return $needle === '' || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== false);
 }
 
 function str_fuzz($string) {

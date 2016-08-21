@@ -18,7 +18,7 @@ class template
     // Try all alts to get a valid episode page
     foreach ($show->alts as $alt) {
       $page = Downloaders::downloadPage('TODO');
-      if (strpos($page, 'TODO') !== false) {
+      if (str_contains($page, 'TODO')) {
         return Self::seekEpisodes($page, $show, $alt, [], $req_episode_num);
       }
     }

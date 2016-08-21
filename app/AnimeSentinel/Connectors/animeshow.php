@@ -19,7 +19,7 @@ class animeshow
     // Try all alts to get a valid episode page
     foreach ($show->alts as $alt) {
       $page = Downloaders::downloadPage('http://animeshow.tv/'.str_urlify($alt));
-      if (strpos($page, 'episodes online in high quality with professional English subtitles on AnimeShow.tv"/>') !== false) {
+      if (str_contains($page, 'episodes online in high quality with professional English subtitles on AnimeShow.tv"/>')) {
         return Self::seekEpisodes($page, $show, $alt, [], $req_episode_num);
       }
     }
@@ -99,10 +99,10 @@ class animeshow
     $mirror['link_video'] = str_get_between($page, '<iframe width="100%" height="100%" id="video_embed" scrolling="no" src="', '"');
     $page = Downloaders::downloadPage($mirror['link_video']);
     // Grab source link depending on mirror site
-    if (strpos($mirror['link_video'], 'mp4upload') !== false) {
+    if (str_contains($mirror['link_video'], 'mp4upload')) {
       $mirror['link_video'] = str_get_between($page, '"file": "', '"');
     }
-    if (strpos($mirror['link_video'], 'auengine') !== false) {
+    if (str_contains($mirror['link_video'], 'auengine')) {
       $mirror['link_video'] = str_get_between($page, 'var video_link = \'', '\';');
     }
     return $mirror;

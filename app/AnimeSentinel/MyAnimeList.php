@@ -135,7 +135,7 @@ class MyAnimeList
     $alts[] = $title;
     $set = explode('</div>', str_get_between($page, '<h2>Alternative Titles</h2>', '<br />'));
     foreach ($set as $line) {
-      if (trim($line) !== '' && strpos($line, '<span class="dark_text">Japanese:</span>') === false) {
+      if (trim($line) !== '' && str_contains($line, '<span class="dark_text">Japanese:</span>')) {
         $list = trim(str_get_between($line, '</span>'));
         $alts = array_merge($alts, explode(', ', $list));
       }
