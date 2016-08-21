@@ -181,12 +181,17 @@ class MyAnimeList
       $thumbnail_id = null;
     }
 
+    $description = trim(str_get_between($page, '<span itemprop="description">', '<h2 style="margin-top: 15px;">'));
+    if (str_ends_with($description, '</span>')) {
+      $description = trim(str_replace_last('</span>', '', $description));
+    }
+
     return [
       'mal_id' => $mal_id,
       'thumbnail_id' => $thumbnail_id,
       'title' => $title,
       'alts' => Helpers::mergeFlagAlts($alts, $mal_id),
-      'description' => trim(str_get_between($page, '<span itemprop="description">', '</span>')),
+      'description' => $description,
       'type' => strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'), '>'))),
       'genres' => $genres,
       'episode_amount' => $amount,
