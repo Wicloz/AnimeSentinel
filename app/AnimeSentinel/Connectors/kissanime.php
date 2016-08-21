@@ -163,7 +163,10 @@ class kissanime
       }
       if (!$special) {
         // Try to get the episode number
-        $episode_num = str_get_between('-'.$episode['episode_num'], '-');
+        $episode_num = str_get_between('-'.$episode['episode_num'], '-', ' ');
+        if ($episode_num === false) {
+          $episode_num = str_get_between('-'.$episode['episode_num'], '-', '');
+        }
         // If that's not a number, set it to 1
         if (!is_numeric($episode_num)) {
           $episode_num = 1;
@@ -235,9 +238,10 @@ class kissanime
 
       // Determine the decrement
       $page = Downloaders::downloadPage('http://kissanime.to/'.$item['link_stream']);
+      $alt = trim(str_get_between($page, '<div class="barTitle">', 'information'));
       // Scrape the page for episode data
       $episodes = Helpers::scrape_page(str_get_between($page, '<tr style="height: 10px">', '</table>'), '</td>', [
-        'episode_num' => [true, 'Watch anime ', ' in high quality'],
+        'episode_num' => [true, $alt, ' online in high quality'],
         'link_episode' => [false, 'href="', '"'],
       ]);
       $decrement = Self::findDecrement($episodes);
