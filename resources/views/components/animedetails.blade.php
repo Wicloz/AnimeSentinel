@@ -45,11 +45,11 @@
     @endif
   </p>
   <p>
-    <strong>Aired Since:</strong>
-    @if(!empty($details->first_video))
-      {{ $details->first_video->uploadtime->toFormattedDateString() }}
+    <strong>Airing:</strong>
+    @if(empty($details->airing_start) && empty($details->airing_end))
+      Unknown
     @else
-      Upcoming
+      {{ !empty($details->airing_start) ? $details->airing_start->toFormattedDateString() : '?' }} to {{ !empty($details->airing_end) ? $details->airing_end->toFormattedDateString() : '?' }}
     @endif
   </p>
   <div class="content-close"></div>
