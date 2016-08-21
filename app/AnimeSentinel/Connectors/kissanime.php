@@ -56,6 +56,7 @@ class kissanime
         foreach ($show->alts as $alt2) {
           if (match_fuzzy($alt2, $result['title'])) {
             $matches = true;
+            $alt = $alt2;
             break;
           }
         }
@@ -85,10 +86,11 @@ class kissanime
       'show_id' => $show->id,
       'streamer_id' => 'kissanime',
     ]);
+    $alt = trim(str_get_between($page, '<div class="barTitle">', 'information'));
 
     // Scrape the page for episode data
     $episodes = Helpers::scrape_page(str_get_between($page, '<tr style="height: 10px">', '</table>'), '</td>', [
-      'episode_num' => [true, 'Watch anime ', ' in high quality'],
+      'episode_num' => [true, $alt, ' online in high quality'],
       'link_episode' => [false, 'href="', '"'],
       'uploadtime' => [false, '<td>', ''],
     ]);
@@ -133,30 +135,62 @@ class kissanime
 
   private static function seekCompleteEpisode($episode, $decrement) {
     // Complete episode data
-    if (strpos($episode['link_episode'], '/Episode-') !== false) {
+    $episode['episode_num'] = trim(str_replace('(Sub)', '', str_replace('(Dub)', '', $episode['episode_num'])));
+
+    if (strpos($episode['link_episode'], '/Episode?') !== false || strpos($episode['link_episode'], '/Episode-') !== false) {
       $line = $episode['episode_num'];
       $episode['episode_num'] = str_get_between($line, 'Episode ', ' ');
-      $episode['notes'] = str_get_between($line, 'Episode '.$episode['episode_num'].' ', ' online');
+      $episode['notes'] = str_get_between($line, 'Episode '.$episode['episode_num'].' ');
     }
-    elseif (strpos($episode['link_episode'], '/Movie?') !== false) {
-      $episode['notes'] = str_get_between($episode['episode_num'], 'Movie ', ' online', true);
+    elseif (strpos($episode['link_episode'], '/Movie?') !== false || strpos($episode['link_episode'], '/Movie-') !== false) {
+      $episode['notes'] = str_get_between($episode['episode_num'], 'Movie ');
+      if ($episode['notes'] === false) {
+        $episode['notes'] = $episode['episode_num'];
+      }
       $episode['episode_num'] = 1;
     }
-    elseif (strpos($episode['link_episode'], '/Special?') !== false) {
-      $episode['notes'] = str_get_between($episode['episode_num'], 'Special ', ' online', true);
+    elseif (strpos($episode['link_episode'], '/Special?') !== false || strpos($episode['link_episode'], '/Special-') !== false) {
+      $episode['notes'] = str_get_between($episode['episode_num'], 'Special ');
+      if ($episode['notes'] === false) {
+        $episode['notes'] = $episode['episode_num'];
+      }
       $episode['episode_num'] = 1;
     }
-    elseif (strpos($episode['link_episode'], '/OVA?') !== false) {
-      $episode['notes'] = str_get_between($episode['episode_num'], 'OVA ', ' online', true);
+    elseif (strpos($episode['link_episode'], '/OVA?') !== false || strpos($episode['link_episode'], '/OVA-') !== false) {
+      $episode['notes'] = str_get_between($episode['episode_num'], 'OVA ');
+      if ($episode['notes'] === false) {
+        $episode['notes'] = $episode['episode_num'];
+      }
       $episode['episode_num'] = 1;
     }
-    elseif (strpos($episode['link_episode'], '/ONA?') !== false) {
-      $episode['notes'] = str_get_between($episode['episode_num'], 'ONA ', ' online', true);
+    elseif (strpos($episode['link_episode'], '/ONA?') !== false || strpos($episode['link_episode'], '/ONA-') !== false) {
+      $episode['notes'] = str_get_between($episode['episode_num'], 'ONA ');
+      if ($episode['notes'] === false) {
+        $episode['notes'] = $episode['episode_num'];
+      }
       $episode['episode_num'] = 1;
+    }
+    elseif (strpos($episode['link_episode'], '/CBM?') !== false || strpos($episode['link_episode'], '/CBM-') !== false) {
+      $line = $episode['episode_num'];
+      $episode['episode_num'] = str_get_between($line, 'Episode ', ' ');
+      if ($episode['episode_num'] === false) {
+        $episode['notes'] = str_get_between($line, 'Episode ');
+      } else {
+        $episode['notes'] = str_get_between($line, 'Episode '.$episode['episode_num'].' ');
+      }
+      if (!is_numeric($episode['episode_num'])) {
+        $episode['episode_num'] = 1;
+      }
     }
     else {
-      return false;
+      $line = $episode['episode_num'];
+      $episode['episode_num'] = str_get_between('-'.$line, '-', ' ');
+      if (!is_numeric($episode['episode_num'])) {
+        return false;
+      }
+      $episode['notes'] = str_get_between($line, $episode['episode_num'].' ');
     }
+
     $episode['episode_num'] -= $decrement;
     $episode['notes'] = trim(str_replace('[', '(', str_replace(']', ')', $episode['notes'])));
     $episode['link_episode'] = 'http://kissanime.to'.$episode['link_episode'];
@@ -172,11 +206,9 @@ class kissanime
   private static function findDecrement($episodes) {
     // Find the lowest episode number
     foreach ($episodes as $episode) {
-      if (strpos($episode['link_episode'], '/Episode-') !== false) {
-        $ep_num = (int) str_get_between($episode['episode_num'], 'Episode ', ' ');
-        if (!isset($lowest_ep) || $ep_num < $lowest_ep) {
-          $lowest_ep = $ep_num;
-        }
+      $episode = Self::seekCompleteEpisode($episode, 0);
+      if (!empty($episode) && (!isset($lowest_ep) || $episode['episode_num'] < $lowest_ep)) {
+        $lowest_ep = $episode['episode_num'];
       }
     }
     if (!isset($lowest_ep) || $lowest_ep <= 0) {
