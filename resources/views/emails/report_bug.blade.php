@@ -1,4 +1,4 @@
-Report from AnimeSentinel:<br>
+Report from AnimeSentinel ({{ config('app.env') }}):<br>
 -------------------------------------------------------------------
 <p>
   - {{ $description }} -

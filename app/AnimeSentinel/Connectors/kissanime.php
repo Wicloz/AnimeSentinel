@@ -137,6 +137,16 @@ class kissanime
     // Complete episode data
     $episode['episode_num'] = trim(str_replace('(Sub)', '', str_replace('(Dub)', '', $episode['episode_num'])));
 
+    // Discard ops, eds and previews
+    // Strip '_' from the start
+    // Strip type names from the start
+    // Trim
+    // Convert to int -> episode_num
+    // If that failed, set episode_num to 1
+    // Strip numbers from start
+    // Trim
+    // Set as note
+
     if (strpos($episode['link_episode'], '/Episode?') !== false || strpos($episode['link_episode'], '/Episode-') !== false) {
       $line = $episode['episode_num'];
       $episode['episode_num'] = str_get_between($line, 'Episode ', ' ');
