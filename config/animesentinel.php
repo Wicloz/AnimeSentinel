@@ -46,4 +46,26 @@ return [
 
     'kissanime_password_cookie' => env('KISSANIME_PASS', ''),
 
+    /*
+    |--------------------------------------------------------------------------
+    | KissCartoon username cookie
+    |--------------------------------------------------------------------------
+    |
+    | This is the username cookie which will be used for KissCartoon page downloads.
+    |
+    */
+
+    'kisscartoon_username_cookie' => env('KISSCARTOON_USER', ''),
+
+    /*
+    |--------------------------------------------------------------------------
+    | KissCartoon password cookie
+    |--------------------------------------------------------------------------
+    |
+    | This is the password cookie which will be used for KissCartoon page downloads.
+    |
+    */
+
+    'kisscartoon_password_cookie' => env('KISSCARTOON_PASS', ''),
+
 ];
