@@ -59,6 +59,12 @@ class MalcacheSearch extends BaseModel
     $this->attributes['results'] = json_encode($value);
   }
 
+  /**
+   * Returns and caches search results from MAL.
+   * These are returned from the cache whenever possible.
+   *
+   * @return array
+   */
   public static function search($query) {
     $query = mb_strtolower($query);
     $search = Self::firstOrNew(['query' => $query]);

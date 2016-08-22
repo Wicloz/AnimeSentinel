@@ -85,8 +85,17 @@ class Show extends BaseModel
     $title = preg_replace('/[α-ωΑ-Ω]/u', '\\u03__', $title);
     // encode to json, then escape all unescaped \'s
     $title = preg_replace('/([^\\\\])\\\\([^\\\\])/u', '$1\\\\\\\\$2', json_encode($title));
-
+    // return
     return $query->whereLike('alts', '%'.$title.'%');
+  }
+
+  /**
+   * Searches for shows matching the requested query, ordered by relevance.
+   *
+   * @return array
+   */
+  public static function search($query) {
+    return [];
   }
 
   /**

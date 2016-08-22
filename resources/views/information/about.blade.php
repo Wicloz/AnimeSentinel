@@ -62,11 +62,11 @@
         </tr>
         <tr>
           <td>Add anime only existing in our database to the search results where required.</td>
-          <td>✘</td>
+          <td>WIP</td>
         </tr>
         <tr>
           <td>Allow searching in only our database, only MAL, or both.</td>
-          <td>✘</td>
+          <td>WIP</td>
         </tr>
         <tr>
           <td>Add buttons to the search results to add anime or add it and go to the details page.</td>

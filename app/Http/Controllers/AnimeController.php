@@ -122,13 +122,26 @@ class AnimeController extends Controller
       ], [], [
         'q' => 'query'
       ]);
-      $results = MalcacheSearch::search($request->q);
 
-      // Expand results which are in our databse
+      if ($request->mode === 'mal') {
+        $results = MalcacheSearch::search($request->q);
+      }
+
+      elseif ($request->mode === 'as') {
+        $results = MalcacheSearch::search($request->q);
+      }
+
+      else {
+
+      }
+
+      // Expand MAL results which are in our database
       foreach ($results as $index => $result) {
-        $show = Show::where('mal_id', $result->mal_id)->first();
-        if (!empty($show)) {
-          $results[$index] = $show;
+        if ($result->mal) {
+          $show = Show::where('mal_id', $result->mal_id)->first();
+          if (!empty($show)) {
+            $results[$index] = $show;
+          }
         }
       }
     }
