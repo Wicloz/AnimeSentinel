@@ -7,6 +7,7 @@ use App\Http\Requests;
 
 use App\Show;
 use App\Video;
+use App\MalcacheSearch;
 use App\AnimeSentinel\MyAnimeList;
 
 class AnimeController extends Controller
@@ -118,7 +119,7 @@ class AnimeController extends Controller
 
     if (isset($request->q)) {
       $this->validate($request, [
-        'q' => ['required', 'min:3']
+        'q' => ['required', 'min:3', 'max:255']
       ], [], [
         'q' => 'query'
       ]);
