@@ -8,7 +8,6 @@ use App\Http\Requests;
 use App\Show;
 use App\Video;
 use App\MalcacheSearch;
-use App\AnimeSentinel\MyAnimeList;
 
 class AnimeController extends Controller
 {
@@ -123,7 +122,7 @@ class AnimeController extends Controller
       ], [], [
         'q' => 'query'
       ]);
-      $results = MyAnimeList::search($request->q);
+      $results = MalcacheSearch::search($request->q);
 
       // Expand results which are in our databse
       foreach ($results as $index => $result) {

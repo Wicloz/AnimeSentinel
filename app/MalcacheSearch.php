@@ -2,6 +2,9 @@
 
 namespace App;
 
+use App\AnimeSentinel\MyAnimeList;
+use Carbon\Carbon;
+
 class MalcacheSearch extends BaseModel
 {
   /**
@@ -11,7 +14,7 @@ class MalcacheSearch extends BaseModel
    */
   protected $table = 'malcache_search';
 
-  public $primaryKey = 'mal_id';
+  public $primaryKey = 'query';
   public $incrementing = false;
 
   /**
@@ -34,9 +37,36 @@ class MalcacheSearch extends BaseModel
    * Encode and decode the results attribute.
    */
   public function getResultsAttribute($value) {
-    return json_decode($value);
+    $results = json_decode($value);
+    foreach ($results as $index => $result) {
+      if (isset($result->airing_start)) {
+        $airing_start = serialize($result->airing_start);
+        $airing_start = preg_replace('@^O:8:"stdClass":@','O:13:"Carbon\Carbon":', $airing_start);
+        $result->airing_start = unserialize($airing_start);
+      }
+      if (isset($result->airing_end)) {
+        $airing_end = serialize($result->airing_end);
+        $airing_end = preg_replace('@^O:8:"stdClass":@','O:13:"Carbon\Carbon":', $airing_end);
+        $result->airing_end = unserialize($airing_end);
+      }
+      $results[$index] = $result;
+    }
+    return $results;
   }
   public function setResultsAttribute($value) {
     $this->attributes['results'] = json_encode($value);
+  }
+
+  public static function search($query) {
+    $query = mb_strtolower($query);
+    $search = Self::firstOrNew(['query' => $query]);
+
+    if (empty($search->results) || $search->cache_updated_at->diffInHours(Carbon::now()) >= rand(24, 48)) {
+      $search->results = MyAnimeList::search($query);
+      $search->cache_updated_at = Carbon::now();
+      $search->save();
+    }
+
+    return $search->results;
   }
 }
