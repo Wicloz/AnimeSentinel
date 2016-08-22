@@ -43,12 +43,12 @@ class Video extends BaseModel
    */
   public function setVideoMetaData() {
     if (playerSupport($this->link_video)) {
-      $data = $this->getVideoMetaData();
+      $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_streams -show_format "'. $this->link_video .'"'));
 
       if (!isset($data)) {
         dd($this);
       }
-      if (!isset($data->streams)) {
+      if (!isset($data->streams) || !isset($data->format)) {
         $this->setVideoMetaData();
         return;
       }
@@ -56,21 +56,20 @@ class Video extends BaseModel
       foreach ($data->streams as $stream) {
         if ($stream->codec_type === 'video') {
           $this->resolution = $stream->width.'x'.$stream->height;
-          $this->duration = $stream->duration;
-          //$this->uploadtime = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
+          if (isset($stream->tags->creation_time)) {
+            $time = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
+            $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
+          }
           break;
         }
       }
+      $this->duration = $data->format->duration;
+      $this->encoding = 'video/'.explode(',', $data->format->format_name)[0];
+      if (isset($data->format->tags->creation_time)) {
+        $time = Carbon::createFromFormat('Y-m-d H:i:s', $data->format->tags->creation_time);
+        $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
+      }
     }
-  }
-
-  /**
-   * Uses ffprobe to find and return metadata for this video.
-   *
-   * @return stdClass
-   */
-  public function getVideoMetaData() {
-    return json_decode(shell_exec('ffprobe -v quiet -print_format json -show_streams "'. $this->link_video .'"'));
   }
 
   /**
@@ -259,7 +258,7 @@ class Video extends BaseModel
   */
   public function getLinkVideoUpdatedAttribute() {
     if (playerSupport($this->link_video)) {
-      $data = $this->getVideoMetaData();
+      $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_format "'. $this->link_video .'"'));
       if (json_encode($data) === '{}') {
         $this->link_video = VideoManager::findVideoLink($this);
         $this->setVideoMetaData();
