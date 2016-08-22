@@ -228,6 +228,10 @@
           <td>Setup donations and ads.</td>
           <td>✘</td>
         </tr>
+        <tr>
+          <td>Improve title based searches through our database.</td>
+          <td>WIP</td>
+        </tr>
       </tbody>
     </table>
     <h2>Other</h2>

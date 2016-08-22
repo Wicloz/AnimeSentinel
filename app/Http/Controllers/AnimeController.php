@@ -133,8 +133,8 @@ class AnimeController extends Controller
 
       else {
         $results = Show::search($request->q, 64, false);
-        $mal_ids = $results->pluck('mal_id')->all();
         $resultsMal = MalcacheSearch::search($request->q, 64);
+        $mal_ids = $results->pluck('mal_id')->all();
         foreach ($resultsMal as $result) {
           if ($results->count() < 64 && !in_array($result->mal_id, $mal_ids)) {
             $results->push($result);

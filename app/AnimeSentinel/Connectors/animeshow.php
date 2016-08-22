@@ -18,7 +18,7 @@ class animeshow
   public static function seek($show, $req_episode_num = null) {
     // Try all alts to get a valid episode page
     foreach ($show->alts as $alt) {
-      $page = Downloaders::downloadPage('http://animeshow.tv/'.str_urlify($alt));
+      $page = Downloaders::downloadPage('http://animeshow.tv/'.str_slugify($alt));
       if (str_contains($page, 'episodes online in high quality with professional English subtitles on AnimeShow.tv"/>')) {
         return Self::seekEpisodes($page, $show, $alt, [], $req_episode_num);
       }
@@ -37,7 +37,7 @@ class animeshow
     $data_stream = array_merge($data, [
       'show_id' => $show->id,
       'streamer_id' => 'animeshow',
-      'link_stream' => 'http://animeshow.tv/'.str_urlify($alt),
+      'link_stream' => 'http://animeshow.tv/'.str_slugify($alt),
     ]);
 
     // Scrape the page for episode data
@@ -88,7 +88,7 @@ class animeshow
 
   private static function seekCompleteEpisode($episode, $alt) {
     // Complete episode data
-    $episode['link_episode'] = 'http://animeshow.tv/'.str_urlify($alt).'-episode-'.$episode['episode_num'].'/';
+    $episode['link_episode'] = 'http://animeshow.tv/'.str_slugify($alt).'-episode-'.$episode['episode_num'].'/';
     $episode['uploadtime'] = Carbon::createFromFormat('d M Y', $episode['uploadtime']);
     return $episode;
   }

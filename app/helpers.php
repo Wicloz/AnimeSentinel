@@ -201,7 +201,7 @@ function str_fuzz($string) {
   return str_replace(' & ', '&', str_replace(' to ', '&', str_replace(' and ', '&', mb_strtolower(trim($string)))));
 }
 
-function str_urlify($string) {
+function str_slugify($string, $delim = '-', $preg = '/[^a-zA-Z0-9α-ωΑ-Ω\\-\\_]/u') {
   $string = mb_strtolower(trim($string));
   $replace = [
     '\'' => '',
@@ -210,10 +210,10 @@ function str_urlify($string) {
   foreach ($replace as $from => $to) {
     $string = str_replace($from, $to, $string);
   }
-  $string = preg_replace('/[^a-zA-Z0-9α-ωΑ-Ω\\-\\_]/u', '-', $string);
-  $string = preg_replace('/-+/', '-', $string);
-  $string = preg_replace('/^-+/', '', $string);
-  $string = preg_replace('/-+$/', '', $string);
+  $string = preg_replace($preg, $delim, $string);
+  $string = preg_replace('/'.$delim.'+/', $delim, $string);
+  $string = preg_replace('/^'.$delim.'+/', '', $string);
+  $string = preg_replace('/'.$delim.'+$/', '', $string);
   return $string;
 }
 
