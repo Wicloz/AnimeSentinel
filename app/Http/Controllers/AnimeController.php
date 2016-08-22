@@ -123,7 +123,7 @@ class AnimeController extends Controller
         'q' => 'query'
       ]);
 
-      if ($request->mode === 'mal') {
+      if ($request->mal === 'mal') {
         $results = MalcacheSearch::search($request->q, 64);
       }
 
@@ -133,11 +133,18 @@ class AnimeController extends Controller
 
       else {
         $results = Show::search($request->q, 64, false);
+        $mal_ids = $results->pluck('mal_id')->all();
+        $resultsMal = MalcacheSearch::search($request->q, 64);
+        foreach ($resultsMal as $result) {
+          if ($results->count() < 64 && !in_array($result->mal_id, $mal_ids)) {
+            $results->push($result);
+          }
+        }
       }
 
       // Expand MAL results which are in our database
       foreach ($results as $index => $result) {
-        if ($result->mal) {
+        if (!empty($result->mal)) {
           $show = Show::where('mal_id', $result->mal_id)->first();
           if (!empty($show)) {
             $results[$index] = $show;

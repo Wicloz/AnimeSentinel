@@ -78,15 +78,19 @@ class Show extends BaseModel
    *
    * @return \Illuminate\Database\Eloquent\Builder
    */
-  public function scopeWithTitle($query, $title) {
+  public function scopeWithTitle($query, $title, $allowPartial = false) {
     // fuzz title, allow matching of ' and ', ' to ' and '&' to each other
     $title = str_replace('&', '%', str_fuzz($title));
     // allow case insensitive matching of greek characters
     $title = preg_replace('/[α-ωΑ-Ω]/u', '\\u03__', $title);
     // encode to json, then escape all unescaped \'s
     $title = preg_replace('/([^\\\\])\\\\([^\\\\])/u', '$1\\\\\\\\$2', json_encode($title));
-    // return
-    return $query->whereLike('alts', '%'.$title.'%');
+    // return final query
+    if (!$allowPartial) {
+      return $query->whereLike('alts', '%'.$title.'%');
+    } else {
+      return $query->whereLike('alts', '%'.str_replace_last('"', '', str_replace_first('"', '', $title).'%'));
+    }
   }
 
   /**
@@ -95,7 +99,14 @@ class Show extends BaseModel
    * @return array
    */
   public static function search($query, $limit, $fill = true) {
-    return [];
+    $results = [];
+
+    // first match with full titles
+    $results = Self::orderBy('hits', 'desc')->take($limit)->withTitle($query)->get();
+    // match with partial titles
+    $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($query, true)->get()->all());
+
+    return $results;
   }
 
   /**

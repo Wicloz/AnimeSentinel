@@ -61,10 +61,6 @@
           <td>✔</td>
         </tr>
         <tr>
-          <td>Add anime only existing in our database to the search results where required.</td>
-          <td>WIP</td>
-        </tr>
-        <tr>
           <td>Allow searching in only our database, only MAL, or both.</td>
           <td>WIP</td>
         </tr>

@@ -75,6 +75,6 @@ class MalcacheSearch extends BaseModel
       $search->save();
     }
 
-    return $search->results;
+    return collect($search->results);
   }
 }
