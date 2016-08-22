@@ -56,7 +56,7 @@ class MyAnimeList
    *
    * @return array
    */
-  public static function search($query) {
+  public static function search($query, $limit) {
     $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace(' ', '+', $query).'&type=0&score=0&status=0&p=0&r=0&sm=0&sd=0&sy=0&em=0&ed=0&ey=0&c[]=a&c[]=b&c[]=d&c[]=e&gx=1&genre[]=12');
     $shows = array_slice(Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
       'mal_id' => [true, 'http://myanimelist.net/anime/', '/'],
@@ -66,7 +66,7 @@ class MyAnimeList
       'type' => [false, 'width="45">', '</td>'],
       'episode_amount' => [false, 'width="40">', '</td>'],
       'airing' => [false, 'width="80">', ''],
-    ]), 0, 64);
+    ]), 0, $limit);
 
     $results = [];
     foreach ($shows as $show) {

@@ -124,15 +124,15 @@ class AnimeController extends Controller
       ]);
 
       if ($request->mode === 'mal') {
-        $results = MalcacheSearch::search($request->q);
+        $results = MalcacheSearch::search($request->q, 64);
       }
 
       elseif ($request->mode === 'as') {
-        $results = MalcacheSearch::search($request->q);
+        $results = Show::search($request->q, 64);
       }
 
       else {
-
+        $results = Show::search($request->q, 64, false);
       }
 
       // Expand MAL results which are in our database

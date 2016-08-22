@@ -65,12 +65,12 @@ class MalcacheSearch extends BaseModel
    *
    * @return array
    */
-  public static function search($query) {
+  public static function search($query, $limit) {
     $query = mb_strtolower($query);
     $search = Self::firstOrNew(['query' => $query]);
 
     if (empty($search->results) || $search->cache_updated_at->diffInHours(Carbon::now()) >= rand(24, 48)) {
-      $search->results = MyAnimeList::search($query);
+      $search->results = MyAnimeList::search($query, $limit);
       $search->cache_updated_at = Carbon::now();
       $search->save();
     }

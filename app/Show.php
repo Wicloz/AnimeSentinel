@@ -94,7 +94,7 @@ class Show extends BaseModel
    *
    * @return array
    */
-  public static function search($query) {
+  public static function search($query, $limit, $fill = true) {
     return [];
   }
 
