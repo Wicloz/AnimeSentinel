@@ -43,10 +43,18 @@ class Video extends BaseModel
    */
   public function setVideoMetaData() {
     if (playerSupport($this->link_video)) {
-      $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_streams "'. $this->link_video .'"'));
+      $data = $this->getVideoMetaData();
+
+      if (!isset($data)) {
+        dd($this);
+      }
+      if (!isset($data->streams)) {
+        $this->setVideoMetaData();
+        return;
+      }
+
       foreach ($data->streams as $stream) {
         if ($stream->codec_type === 'video') {
-          $this->encoding = 'video/'.$stream->codec_name;
           $this->resolution = $stream->width.'x'.$stream->height;
           $this->duration = $stream->duration;
           //$this->uploadtime = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
@@ -54,6 +62,15 @@ class Video extends BaseModel
         }
       }
     }
+  }
+
+  /**
+   * Uses ffprobe to find and return metadata for this video.
+   *
+   * @return stdClass
+   */
+  public function getVideoMetaData() {
+    return json_decode(shell_exec('ffprobe -v quiet -print_format json -show_streams "'. $this->link_video .'"'));
   }
 
   /**
@@ -242,7 +259,7 @@ class Video extends BaseModel
   */
   public function getLinkVideoUpdatedAttribute() {
     if (playerSupport($this->link_video)) {
-      $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_format "'. $this->link_video .'"'));
+      $data = $this->getVideoMetaData();
       if (json_encode($data) === '{}') {
         $this->link_video = VideoManager::findVideoLink($this);
         $this->setVideoMetaData();

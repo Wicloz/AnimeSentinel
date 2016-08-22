@@ -97,12 +97,13 @@ class animeshow
     // Complete mirror data
     $page = Downloaders::downloadPage($mirror['link_video']);
     $mirror['link_video'] = str_get_between($page, '<iframe width="100%" height="100%" id="video_embed" scrolling="no" src="', '"');
-    $page = Downloaders::downloadPage($mirror['link_video']);
     // Grab source link depending on mirror site
     if (str_contains($mirror['link_video'], 'mp4upload')) {
+      $page = Downloaders::downloadPage($mirror['link_video']);
       $mirror['link_video'] = str_get_between($page, '"file": "', '"');
     }
     if (str_contains($mirror['link_video'], 'auengine')) {
+      $page = Downloaders::downloadPage($mirror['link_video']);
       $mirror['link_video'] = str_get_between($page, 'var video_link = \'', '\';');
     }
     return $mirror;
