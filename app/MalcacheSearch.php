@@ -38,18 +38,20 @@ class MalcacheSearch extends BaseModel
    */
   public function getResultsAttribute($value) {
     $results = json_decode($value);
-    foreach ($results as $index => $result) {
-      if (isset($result->airing_start)) {
-        $airing_start = serialize($result->airing_start);
-        $airing_start = preg_replace('@^O:8:"stdClass":@','O:13:"Carbon\Carbon":', $airing_start);
-        $result->airing_start = unserialize($airing_start);
+    if (isset($results)) {
+      foreach ($results as $index => $result) {
+        if (isset($result->airing_start)) {
+          $airing_start = serialize($result->airing_start);
+          $airing_start = preg_replace('@^O:8:"stdClass":@','O:13:"Carbon\Carbon":', $airing_start);
+          $result->airing_start = unserialize($airing_start);
+        }
+        if (isset($result->airing_end)) {
+          $airing_end = serialize($result->airing_end);
+          $airing_end = preg_replace('@^O:8:"stdClass":@','O:13:"Carbon\Carbon":', $airing_end);
+          $result->airing_end = unserialize($airing_end);
+        }
+        $results[$index] = $result;
       }
-      if (isset($result->airing_end)) {
-        $airing_end = serialize($result->airing_end);
-        $airing_end = preg_replace('@^O:8:"stdClass":@','O:13:"Carbon\Carbon":', $airing_end);
-        $result->airing_end = unserialize($airing_end);
-      }
-      $results[$index] = $result;
     }
     return $results;
   }
