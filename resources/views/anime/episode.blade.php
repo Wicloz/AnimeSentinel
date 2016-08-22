@@ -28,7 +28,10 @@
       <div style="padding-top:{{ $video->video_aspect * 100 }}%;"></div>
       @if(playerSupport($video->link_video))
         <video class="streamplayer-video" controls>
-          <source src="{{ $video->link_video_updated }}" type="video/mp4">
+          <source src="{{ $video->link_video_updated }}" type="{{ $video->encoding }}">
+          <source src="{{ $video->link_video }}" type="video/mp4">
+          <source src="{{ $video->link_video }}" type="video/ogg">
+          <source src="{{ $video->link_video }}" type="video/webm">
           Your browser does not support the video tag.
         </video>
       @else
