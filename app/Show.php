@@ -86,15 +86,7 @@ class Show extends BaseModel
     // encode to json, then escape all unescaped \'s
     $title = preg_replace('/([^\\\\])\\\\([^\\\\])/u', '$1\\\\\\\\$2', json_encode($title));
 
-    switch (config('database.default')) {
-      case 'pgsql':
-        $operator = 'ilike';
-      break;
-      default:
-        $operator = 'like';
-      break;
-    }
-    return $query->where('alts', $operator, '%'.$title.'%');
+    return $query->whereLike('alts', '%'.$title.'%');
   }
 
   /**

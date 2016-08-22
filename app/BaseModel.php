@@ -58,4 +58,16 @@ abstract class BaseModel extends Model
       break;
     }
   }
+
+  public function scopeWhereLike($query, $attribute, $like) {
+    switch (config('database.default')) {
+      case 'pgsql':
+        $operator = 'ilike';
+      break;
+      default:
+        $operator = 'like';
+      break;
+    }
+    return $query->where($attribute, $operator, $like);
+  }
 }

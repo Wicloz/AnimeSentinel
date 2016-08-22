@@ -12,78 +12,49 @@
         <a {{ $syn_mal ? 'target="_blank"' : '' }} href="{{ $syn_show->details_url }}">{{ $syn_show->title }}</a>
       </div>
 
-      @if(!$syn_mal)
-        <div class="row">
-          <div class="col-sm-9">
-            <div class="synopsis-description">
+      <div class="row">
+        <div class="col-sm-9">
+          <div class="synopsis-description">
+            {!! $syn_show->description !!}
+            <!--
+            <div class="synopsis-description-top">
               {!! $syn_show->description !!}
-              <!--
-              <div class="synopsis-description-top">
-                {!! $syn_show->description !!}
-              </div>
-              -->
-              <!--
-              <div class="collapsed toggle" data-toggle="collapse" data-target="#description-{{ $syn_unique }}">
-                &laquo; Toggle Description &raquo;
-              </div>
-              <div class="collapse" id="description-{{ $syn_unique }}">
-                {!! $syn_show->description !!}
-              </div>
-              -->
             </div>
-          </div>
-
-          <div class="col-sm-3">
-            <div class="synopsis-details">
-              <p><strong>Type:</strong> {{ ucwords($syn_show->type) }}</p>
-              <p><strong>Episodes:</strong> {{ $syn_show->episode_amount or 'Unknown' }}</p>
-              <p>
-                <strong>Duration:</strong>
-                @if(isset($syn_show->episode_duration))
-                  {{ $syn_show->episode_duration }} min. per ep.
-                @else
-                  Unknown
-                @endif
-              </p>
-              <p>
-                <strong>Airing:</strong>
-                @if(empty($syn_show->airing_start) && empty($syn_show->airing_end))
-                  Unknown
-                @else
-                  {{ !empty($syn_show->airing_start) ? $syn_show->airing_start->toFormattedDateString() : '?' }} to {{ !empty($syn_show->airing_end) ? $syn_show->airing_end->toFormattedDateString() : '?' }}
-                @endif
-              </p>
+            -->
+            <!--
+            <div class="collapsed toggle" data-toggle="collapse" data-target="#description-{{ $syn_unique }}">
+              &laquo; Toggle Description &raquo;
             </div>
+            <div class="collapse" id="description-{{ $syn_unique }}">
+              {!! $syn_show->description !!}
+            </div>
+            -->
           </div>
         </div>
 
-      @else
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="synopsis-description">
-              <p>This show is not in our database yet.</p>
-              <div class="row">
-                <div class="col-sm-3">
-                  <form action="{{ fullUrl('/anime/add') }}" method="POST">
-                    {{ csrf_field() }}
-                    <input type="hidden" name="mal_id" value="{{ $syn_show->mal_id }}"></input>
-                    <input type="hidden" name="gotodetails" value="0"></input>
-                    <button type="submit" class="btn btn-primary">Add and return to Search Results</button>
-                  </form>
-                </div>
-                <div class="col-sm-3">
-                  <form action="{{ fullUrl('/anime/add') }}" method="POST">
-                    {{ csrf_field() }}
-                    <input type="hidden" name="mal_id" value="{{ $syn_show->mal_id }}"></input>
-                    <input type="hidden" name="gotodetails" value="1"></input>
-                    <button type="submit" class="btn btn-primary">Add and go to Details Page</button>
-                  </form>
-                </div>
-              </div>
-            </div>
+        <div class="col-sm-3">
+          <div class="synopsis-details">
+            <p><strong>Type:</strong> {{ ucwords($syn_show->type) }}</p>
+            <p><strong>Episodes:</strong> {{ $syn_show->episode_amount or 'Unknown' }}</p>
+            <p>
+              <strong>Duration:</strong>
+              @if(isset($syn_show->episode_duration))
+                {{ $syn_show->episode_duration }} min. per ep.
+              @else
+                Unknown
+              @endif
+            </p>
+            <p>
+              <strong>Airing:</strong>
+              @if(empty($syn_show->airing_start) && empty($syn_show->airing_end))
+                Unknown
+              @else
+                {{ !empty($syn_show->airing_start) ? $syn_show->airing_start->toFormattedDateString() : '?' }} to {{ !empty($syn_show->airing_end) ? $syn_show->airing_end->toFormattedDateString() : '?' }}
+              @endif
+            </p>
           </div>
         </div>
-      @endif
+      </div>
 
       @if(!$syn_mal)
         <div class="synopsis-bottombar">
@@ -103,9 +74,7 @@
               <div class="col-sm-3">
                 Uploaded on {{ $syn_video->uploadtime->format('M j, Y (l)') }}
               </div>
-
             @else
-
               <div class="col-sm-6">
                 @if(!isset($syn_show->latest_sub))
                   @if(!$syn_show->videos_initialised)
@@ -133,6 +102,31 @@
                 @endif
               </div>
             @endif
+          </div>
+        </div>
+
+      @else
+        <div class="synopsis-bottombar">
+          <div class="row">
+            <div class="col-sm-4">
+              This show is not in our database yet.
+            </div>
+            <div class="col-sm-4">
+              <form action="{{ fullUrl('/anime/add') }}" method="POST">
+                {{ csrf_field() }}
+                <input type="hidden" name="mal_id" value="{{ $syn_show->mal_id }}"></input>
+                <input type="hidden" name="gotodetails" value="0"></input>
+                <button type="submit" class="btn btn-primary">Add and return to Search Results</button>
+              </form>
+            </div>
+            <div class="col-sm-4">
+              <form action="{{ fullUrl('/anime/add') }}" method="POST">
+                {{ csrf_field() }}
+                <input type="hidden" name="mal_id" value="{{ $syn_show->mal_id }}"></input>
+                <input type="hidden" name="gotodetails" value="1"></input>
+                <button type="submit" class="btn btn-primary">Add and go to Details Page</button>
+              </form>
+            </div>
           </div>
         </div>
       @endif

@@ -57,26 +57,43 @@ class MyAnimeList
    * @return array
    */
   public static function search($query) {
-    $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace(' ', '+', $query).'&gx=1&genre[]=12');
+    $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace(' ', '+', $query).'&type=0&score=0&status=0&p=0&r=0&sm=0&sd=0&sy=0&em=0&ed=0&ey=0&c[]=a&c[]=b&c[]=d&c[]=e&gx=1&genre[]=12');
     $shows = array_slice(Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
       'mal_id' => [true, 'http://myanimelist.net/anime/', '/'],
       'thumbnail_url' => [false, '/images/anime/', '?'],
       'title' => [false, '<strong>', '</strong>'],
+      'description' => [false, '<div class="pt4">', '</div>'],
+      'type' => [false, 'width="45">', '</td>'],
+      'episode_amount' => [false, 'width="40">', '</td>'],
+      'airing' => [false, 'width="80">', ''],
     ]), 0, 64);
 
     $results = [];
     foreach ($shows as $show) {
-      $result = new \stdClass();
-      $result->mal = true;
-      $result->mal_id = $show['mal_id'];
-      $result->title = $show['title'];
-      if (!empty($show['thumbnail_url'])) {
-        $result->thumbnail_url = 'http://cdn.myanimelist.net/images/anime/'.$show['thumbnail_url'];
-      } else {
-        $result->thumbnail_url = '';
+      if (trim($show['type']) !== 'Music') {
+        $result = new \stdClass();
+        $result->mal = true;
+        $result->mal_id = $show['mal_id'];
+        $result->title = $show['title'];
+        $result->type = strtolower(trim($show['type']));
+        $result->episode_amount = trim($show['episode_amount']);
+        if (str_contains($show['description'], '</a>')) {
+          $result->description = str_get_between('-'.$show['description'], '-', '<a');
+        } else {
+          $result->description = $show['description'];
+        }
+        $airing = explode('</td>', $show['airing']);
+        $result->airing_start = Self::convertSearchAiringToCarbon(trim($airing[0]));
+        $result->airing_end = Self::convertSearchAiringToCarbon(trim(str_get_between($airing[1], 'width="80">')));
+
+        if (!empty($show['thumbnail_url'])) {
+          $result->thumbnail_url = 'http://cdn.myanimelist.net/images/anime/'.$show['thumbnail_url'];
+        } else {
+          $result->thumbnail_url = '';
+        }
+        $result->details_url = 'http://myanimelist.net/anime/'.$show['mal_id'];
+        $results[] = $result;
       }
-      $result->details_url = 'http://myanimelist.net/anime/'.$show['mal_id'];
-      $results[] = $result;
     }
     return $results;
   }
@@ -95,7 +112,7 @@ class MyAnimeList
       $alts[] = $result->title;
       $alts[] = $result->english;
       $alts = Helpers::mergeFlagAlts(array_merge($alts, $result->synonyms), $result->id);
-      // Check for a match
+      // Check for a title match
       foreach ($alts as $alt) {
         if (match_fuzzy($alt, $title)) {
           return $result->id;
@@ -107,14 +124,17 @@ class MyAnimeList
     $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace(' ', '+', $title).'&gx=1&genre[]=12');
     $shows = array_slice(Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
       'mal_id' => [true, 'http://myanimelist.net/anime/', '/'],
+      'type' => [false, 'width="45">', '</td>'],
     ]), 0, 8);
     foreach ($shows as $show) {
-      // Get MAL data
-      $data = Self::getAnimeData($show['mal_id']);
-      // Check if the title is an alt
-      foreach ($data['alts'] as $alt) {
-        if (match_fuzzy($alt, $title)) {
-          return $show['mal_id'];
+      if (trim($show['type']) !== 'Music') {
+        // Get MAL data
+        $data = Self::getAnimeData($show['mal_id']);
+        // Check for a title match
+        foreach ($data['alts'] as $alt) {
+          if (match_fuzzy($alt, $title)) {
+            return $show['mal_id'];
+          }
         }
       }
     }
@@ -169,10 +189,10 @@ class MyAnimeList
     if ($aired !== 'Not available') {
       $aired = explode(' to ', $aired);
       if ($aired[0] !== '?') {
-        $airing_start = Self::convertAiringToCarbon($aired[0]);
+        $airing_start = Self::convertDetailsAiringToCarbon($aired[0]);
       }
       if ($aired[count($aired) - 1] !== '?') {
-        $airing_end = Self::convertAiringToCarbon($aired[count($aired) - 1]);
+        $airing_end = Self::convertDetailsAiringToCarbon($aired[count($aired) - 1]);
       }
     }
 
@@ -201,7 +221,7 @@ class MyAnimeList
     ];
   }
 
-  private static function convertAiringToCarbon($string) {
+  private static function convertDetailsAiringToCarbon($string) {
     if (count(explode(' ', $string)) === 3) {
       $carbon = Carbon::createFromFormat('M j, Y', $string);
       return $carbon;
@@ -212,6 +232,22 @@ class MyAnimeList
     }
     if (count(explode(' ', $string)) === 1) {
       $carbon = Carbon::createFromFormat('Y', $string)->day(1)->month(1);
+      return $carbon;
+    }
+    return null;
+  }
+
+  private static function convertSearchAiringToCarbon($string) {
+    $bits = explode('-', $string);
+    if (count($bits) === 3) {
+      foreach ($bits as $index => $bit) {
+        if (str_contains($bit, '?')) {
+          $bits[$index] = 1;
+        }
+      }
+      $carbon = new Carbon();
+      $year = Carbon::createFromFormat('y', $bits[2]);
+      $carbon->year($year->year)->month($bits[0])->day($bits[1]);
       return $carbon;
     }
     return null;

@@ -1,0 +1,19 @@
+// main: app.scss
+@import 'vars';
+
+.searchbar-top {
+  background-color: $background_colour-content_header;
+  padding: 15px 15px 0px;
+  float: left;
+  width: 100%;
+  input {
+    display: inline-block;
+    width: calc(100% - 80px);
+  }
+  submit {
+    display: inline-block;
+  }
+  > .form-group {
+    margin-bottom: 15px;
+  }
+}

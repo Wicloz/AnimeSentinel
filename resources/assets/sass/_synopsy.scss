@@ -63,6 +63,11 @@
     background-color: $background_colour-content_header;
     padding: 5px 10px;
     font-size: 16px;
+
+    button {
+      padding: 0px 5px;
+      margin-top: -3px;
+    }
   }
 }
 
