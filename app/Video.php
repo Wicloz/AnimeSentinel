@@ -58,7 +58,7 @@ class Video extends BaseModel
           $this->resolution = $stream->width.'x'.$stream->height;
           if (isset($stream->tags->creation_time)) {
             $time = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
-            $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
+            $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
           }
           break;
         }
@@ -67,7 +67,7 @@ class Video extends BaseModel
       $this->encoding = 'video/'.explode(',', $data->format->format_name)[0];
       if (isset($data->format->tags->creation_time)) {
         $time = Carbon::createFromFormat('Y-m-d H:i:s', $data->format->tags->creation_time);
-        $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
+        $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
       }
     }
   }
