@@ -190,6 +190,7 @@ class ShowManager
       $remote = 'http://cdn.myanimelist.net/images/anime/'.str_replace('-', '/', $show->thumbnail_id);
       $local = __DIR__.'/../../public/media/thumbnails/'.$show->thumbnail_id;
       copy($remote, $local);
+      @chown($local, 'www-data');
     }
   }
 }
