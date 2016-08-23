@@ -4,16 +4,16 @@
 @section('content-top')
   <div class="container-fluid searchbar-top">
     <form method="GET">
-      <div class="form-group">
-        <label for="search-mode">Search Source</label>
-        <select class="form-control" id="search-mode" name="mode">
-          <option value="mal" {{ request('mode') === 'mal' ? 'selected' : '' }}>MyAnimeList</option>
-          <option value="as" {{ request('mode') === 'as' ? 'selected' : '' }}>AnimeSentinel</option>
-          <option value="hybrid" {{ request('mode') !== 'mal' && request('mode') !== 'as' ? 'selected' : '' }}>Both</option>
+      <div class="form-group group-source">
+        <label for="search-source">Search Source:</label>
+        <select class="form-control" id="search-source" name="source">
+          <option value="mal" {{ request('source') === 'mal' ? 'selected' : '' }}>MyAnimeList</option>
+          <option value="as" {{ request('source') === 'as' ? 'selected' : '' }}>AnimeSentinel</option>
+          <option value="" {{ request('source') !== 'mal' && request('source') !== 'as' ? 'selected' : '' }}>Both</option>
         </select>
       </div>
-      <div class="form-group searchfield">
-        <label class="sr-only" for="search-query">Search Query</label>
+      <div class="form-group group-search">
+        <label for="search-query">Search Query:</label>
         <div class="input-group">
           <div class="input-group-addon loop">&#128269;</div>
           <input type="text" class="form-control" id="search-query" name="q" value="{{ request('q') }}" placeholder="Search ...">

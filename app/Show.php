@@ -108,19 +108,19 @@ class Show extends BaseModel
 
     // match with partial titles, with non-alphanumeric characters ignored
     $thisQuery = str_slugify($query, '%', '/[^a-zA-Z0-9]/u');
-    if (strlen($thisQuery) >= 3) {
+    if (strlen(str_replace('%', '', $thisQuery)) >= 3) {
       $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($thisQuery, true)->get()->all());
     }
     // match with partial titles, with non-alphabetic characters ignored
     $thisQuery = str_slugify($query, '%', '/[^a-zA-Z]/u');
-    if (strlen($thisQuery) >= 3) {
+    if (strlen(str_replace('%', '', $thisQuery)) >= 3) {
       $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($thisQuery, true)->get()->all());
     }
 
     if ($fill) {
       // match any titles with the same letters in the same order, at any location
       $thisQuery = str_slugify($query, '%', '/[^a-zA-Z]/u');
-      if (strlen($thisQuery) >= 3) {
+      if (strlen(str_replace('%', '', $thisQuery)) >= 3) {
         $thisQuery = '%'.str_slugify($thisQuery, '$1%', '/([a-zA-Z])/u');
         $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($thisQuery)->get()->all());
       }

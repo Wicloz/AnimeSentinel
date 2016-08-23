@@ -62,7 +62,7 @@
         </tr>
         <tr>
           <td>Allow searching in only our database, only MAL, or both.</td>
-          <td>WIP</td>
+          <td>Source selection needs to be more persistent</td>
         </tr>
         <tr>
           <td>Add buttons to the search results to add anime or add it and go to the details page.</td>

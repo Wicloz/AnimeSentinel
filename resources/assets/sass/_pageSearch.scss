@@ -3,18 +3,33 @@
 
 .searchbar-top {
   background-color: $background_colour-content_header;
-  padding: 15px;
+  padding: 15px 15px 0px;
   width: 100%;
   form {
     .loop {
       font-size: 18px;
     }
-    .searchfield {
-      //width: calc(100% - 80px);
-      //display: inline-block;
+    .group-search {
+      width: calc(100% - 67.8167px - 15px);
+      display: inline-block;
     }
-    submit {
-      //display: inline-block;
+    .group-source {
+      margin-bottom: 5px;
+    }
+    button {
+      display: inline-block;
+      margin-top: 25px;
+    }
+    @media (min-width: 768px) {
+      .group-source {
+        width: auto;
+        display: inline-block;
+        float: left;
+      }
+      .group-search {
+        width: calc(100% - 67.8167px - 15px - 140.75px - 15px);
+        margin-left: 15px;
+      }
     }
   }
 }

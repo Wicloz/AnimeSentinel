@@ -123,11 +123,11 @@ class AnimeController extends Controller
         'q' => 'query'
       ]);
 
-      if ($request->mode === 'mal') {
+      if ($request->source === 'mal') {
         $results = MalcacheSearch::search($request->q, 64);
       }
 
-      elseif ($request->mode === 'as') {
+      elseif ($request->source === 'as') {
         $results = Show::search($request->q, 64);
       }
 
