@@ -2,5 +2,5 @@
 php artisan down
 git pull -r
 nodejs ./node_modules/gulp/bin/gulp.js --production
-php artisan db:seed
+php artisan db:seed --force
 php artisan up
