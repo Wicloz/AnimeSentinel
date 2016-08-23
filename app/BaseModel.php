@@ -12,6 +12,7 @@ abstract class BaseModel extends Model
   }
 
   // NOTE: must not be followed by ->where() or ->select()
+  // TODO: make more secure against SQL injection
   public function scopeDistinctOn($query, $columns) {
     if (!is_array($columns)) {
       $columns = [$columns];

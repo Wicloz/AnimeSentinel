@@ -52,18 +52,23 @@
               @if($mirror->resolution === $resolution)
                 <div class="col-sm-4">
                   <a class="episode-block {{ $mirror->id === $video->id ? 'episode-block-active' : '' }}" href="{{ $mirror->stream_url }}">
-                    <p>Original Streamer: {{ $mirror->streamer->name }}</p>
-                    @if(playerSupport($mirror->link_video))
-                      <p class="episode-info-good">HTML5 Player: Yes</p>
-                    @else
-                      <p class="episode-info-bad">HTML5 Player: No</p>
-                    @endif
-                    <p>Duration: {{ isset($mirror->duration) ? fancyDuration($mirror->duration) : 'Unknown'}}</p>
-                    @if(!empty($mirror->notes) && badNotes($mirror->notes))
-                      <p>Notes: <span class="episode-info-bad">{{ $mirror->notes }}</span></p>
-                    @elseif(!empty($mirror->notes))
-                      <p>Notes: {{ $mirror->notes }}</p>
-                    @endif
+                    <div class="row">
+                      <div class="col-xs-8">
+                        <p><strong>Original Streamer:</strong> {{ $mirror->streamer->name }}</p>
+                        @if(playerSupport($mirror->link_video))
+                          <p class="episode-info-good"><strong>HTML5 Player:</strong> Yes</p>
+                        @else
+                          <p class="episode-info-bad"><strong>HTML5 Player:</strong> No</p>
+                        @endif
+                        <p><strong>Duration:</strong> {{ isset($mirror->duration) ? fancyDuration($mirror->duration) : 'Unknown'}}</p>
+                      </div>
+                      <div class="col-xs-4 align-center">
+                        @if(!empty($mirror->notes))
+                          <p><strong>- Notes -</strong></p>
+                          <p class="{{ badNotes($mirror->notes) ? 'episode-info-bad' : '' }}">{{ $mirror->notes }}</p>
+                        @endif
+                      </div>
+                    </div>
                   </a>
                 </div>
               @endif

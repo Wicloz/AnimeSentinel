@@ -40,12 +40,16 @@ a:focus, a:hover {
 
 }
 
-@media (min-width: 992px) {
-  .searchbar-top {
-    width: 90%;
-    margin-left: 5%;
-    margin-bottom: 20px;
-  }
+.align-left {
+  text-align: left;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.align-center {
+  text-align: center;
 }
 
 // List Group Restyling //

@@ -6,9 +6,6 @@
   padding: 15px 15px 0px;
   width: 100%;
   margin-top: -19px;
-  @media (min-width: 992px) {
-    margin-top: 0px;
-  }
   form {
     .loop {
       font-size: 18px;
@@ -41,5 +38,14 @@
         margin-top: 20px;
       }
     }
+  }
+}
+
+@media (min-width: 992px) {
+  .searchbar-top {
+    width: 90%;
+    margin-top: 0px;
+    margin-left: 5%;
+    margin-bottom: 20px;
   }
 }
