@@ -165,6 +165,16 @@ class Show extends BaseModel
   }
 
   /**
+  * Get the last uploaded video
+  *
+  * @return Video
+  */
+  public function getLastVideoAttribute() {
+    return $this->videos()->orderBy('uploadtime', 'desc')->first();
+  }
+
+
+  /**
   * Get a list of episodes of the requested type.
   *
   * @return array

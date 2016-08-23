@@ -34,12 +34,24 @@
 
         <div class="col-sm-3">
           <div class="synopsis-details">
+            <p>
+              <strong>Status:</strong>
+              @if(!isset($syn_show->latest_sub->episode_num))
+                Upcoming
+              @elseif(!isset($syn_show->episode_amount))
+                Unknown
+              @elseif($syn_show->latest_sub->episode_num >= $syn_show->episode_amount)
+                Completed
+              @else
+                Currently Airing
+              @endif
+            </p>
             <p><strong>Type:</strong> {{ ucwords($syn_show->type) }}</p>
-            <p><strong>Episodes:</strong> {{ $syn_show->episode_amount or 'Unknown' }}</p>
+            <p><strong>Total Episodes:</strong> {{ $syn_show->episode_amount or 'Unknown' }}</p>
             <p>
               <strong>Duration:</strong>
               @if(isset($syn_show->episode_duration))
-                {{ $syn_show->episode_duration }} min. per ep.
+                {{ fancyDuration($syn_show->episode_duration * 60, false) }} per ep.
               @else
                 Unknown
               @endif

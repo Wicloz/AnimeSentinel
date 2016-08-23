@@ -2,8 +2,14 @@
 @import 'vars';
 
 .details-thumbnail {
-  width: 100%;
-  margin-bottom: 15px;
+  display: none;
+}
+@media (min-width: 992px) {
+  .details-thumbnail {
+    display: block;
+    width: 100%;
+    margin-bottom: 15px;
+  }
 }
 
 .episode-list {

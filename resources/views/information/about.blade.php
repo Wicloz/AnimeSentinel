@@ -169,6 +169,14 @@
           <td>✘</td>
         </tr>
         <tr>
+          <td>Provide links to the multiple streamer related pages.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
+          <td>Show the hits counter at several locations.</td>
+          <td>✘</td>
+        </tr>
+        <tr>
           <td>Make disqus work.</td>
           <td>✔</td>
         </tr>

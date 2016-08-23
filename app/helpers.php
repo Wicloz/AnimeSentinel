@@ -57,6 +57,19 @@ function badNotes($notes) {
   return false;
 }
 
+function fancyDuration($seconds, $showSeconds = true) {
+  $hours = floor($seconds / 3600);
+  $minutes = floor(($seconds - ($hours * 3600)) / 60);
+  $seconds = round($seconds - ($minutes * 60) - ($hours * 3600));
+  if ($hours > 0) {
+    return $hours.' h. '.$minutes.' min.';
+  } elseif($showSeconds) {
+    return $minutes.' min. '.$seconds.' sec.';
+  } else {
+    return $minutes.' min.';
+  }
+}
+
 function queueJob($job, $queue = 'default') {
   // Prepare job data
   $job_data = $job->db_data;
