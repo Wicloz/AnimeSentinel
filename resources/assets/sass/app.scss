@@ -105,6 +105,10 @@ img {
   float: right;
 }
 
+.arrow-left:focus, .arrow-right:focus {
+  outline: none;
+}
+
 .arrow-hide {
   visibility: hidden;
 }
