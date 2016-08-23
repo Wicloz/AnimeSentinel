@@ -15,6 +15,7 @@
     }
     .group-source {
       margin-bottom: 5px;
+      margin-top: -5px;
     }
     button {
       display: inline-block;
@@ -28,7 +29,12 @@
       }
       .group-search {
         width: calc(100% - 67.8167px - 15px - 140.75px - 15px);
+        float: left;
+        margin-top: -5px;
         margin-left: 15px;
+      }
+      button {
+        margin-top: 20px;
       }
     }
   }
