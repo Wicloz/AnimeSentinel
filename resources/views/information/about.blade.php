@@ -133,8 +133,8 @@
           <td>✔</td>
         </tr>
         <tr>
-          <td>Make anime data caching time smarter and more dynamic.</td>
-          <td>WIP</td>
+          <td>Make anime data caching time more dynamic.</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Make sure that delayed HD video uploads are handled properly.</td>
@@ -221,7 +221,7 @@
           <td>WIP</td>
         </tr>
         <tr>
-          <td>Use a more dynamic caching expiration time.</td>
+          <td>Use a smarter caching expiration time.</td>
           <td>✘</td>
         </tr>
         <tr>
