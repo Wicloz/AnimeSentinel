@@ -41,18 +41,17 @@ class Video extends BaseModel
   /**
    * Finds and saves the metadata for this video.
    */
-  public function setVideoMetaData($tries = 0) {
+  public function setVideoMetaData($tries = 1) {
     if (playerSupport($this->link_video)) {
       $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_streams -show_format "'. $this->link_video .'"'));
 
       if (!isset($data->streams) || !isset($data->format)) {
         if ($tries >= 9) {
           $this->encoding = null;
-          $this->link_video = 'TODO';
+          return false;
         } else {
-          $this->setVideoMetaData($tries + 1);
+          return $this->setVideoMetaData($tries + 1);
         }
-        return;
       }
 
       foreach ($data->streams as $stream) {
@@ -76,6 +75,7 @@ class Video extends BaseModel
     else {
       $this->encoding = 'embed';
     }
+    return true;
   }
 
   /**

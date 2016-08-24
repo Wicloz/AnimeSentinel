@@ -35,7 +35,7 @@
           Your browser does not support the video tag.
         </video>
       @else
-        <iframe class="streamplayer-video" src="{{ $video->link_video_updated }}" scrolling="no"></iframe>
+        <iframe class="streamplayer-video" src="{{ $video->link_video }}" scrolling="no"></iframe>
       @endif
     </div>
   </div>
