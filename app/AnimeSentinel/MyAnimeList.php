@@ -89,7 +89,7 @@ class MyAnimeList
         if (!empty($show['thumbnail_id'])) {
           $result->thumbnail_url = 'https://myanimelist.cdn-dena.com/images/anime/'.$show['thumbnail_id'];
         } else {
-          $result->thumbnail_url = '';
+          $result->thumbnail_url = 'TODO';
         }
         $result->details_url = 'https://myanimelist.net/anime/'.$show['mal_id'];
         $results[] = $result;

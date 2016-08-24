@@ -45,13 +45,13 @@ class Video extends BaseModel
     if (playerSupport($this->link_video)) {
       $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_streams -show_format "'. $this->link_video .'"'));
 
-      if (!isset($data)) {
-        $this->link_video = '404';
-        $this->encoding = null;
-        return;
-      }
       if (!isset($data->streams) || !isset($data->format)) {
-        $this->setVideoMetaData($tries + 1);
+        if ($tries >= 9) {
+          $this->encoding = null;
+          $this->link_video = 'TODO';
+        } else {
+          $this->setVideoMetaData($tries + 1);
+        }
         return;
       }
 
