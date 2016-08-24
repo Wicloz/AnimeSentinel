@@ -15,7 +15,7 @@ class MyAnimeList
   private static function searchApiXml($query) {
     // Preform curl request
     $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL, 'http://myanimelist.net/api/anime/search.xml?q='.str_replace(' ', '+', $query));
+    curl_setopt($curl, CURLOPT_URL, 'https://myanimelist.net/api/anime/search.xml?q='.str_replace(' ', '+', $query));
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_USERNAME, config('animesentinel.mal_username'));
     curl_setopt($curl, CURLOPT_PASSWORD, config('animesentinel.mal_password'));
@@ -57,9 +57,9 @@ class MyAnimeList
    * @return array
    */
   public static function search($query, $limit) {
-    $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace(' ', '+', $query).'&type=0&score=0&status=0&p=0&r=0&sm=0&sd=0&sy=0&em=0&ed=0&ey=0&c[]=a&c[]=b&c[]=d&c[]=e&gx=1&genre[]=12');
+    $page = Downloaders::downloadPage('https://myanimelist.net/anime.php?q='.str_replace(' ', '+', $query).'&type=0&score=0&status=0&p=0&r=0&sm=0&sd=0&sy=0&em=0&ed=0&ey=0&c[]=a&c[]=b&c[]=d&c[]=e&gx=1&genre[]=12');
     $shows = array_slice(Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
-      'mal_id' => [true, 'http://myanimelist.net/anime/', '/'],
+      'mal_id' => [true, 'https://myanimelist.net/anime/', '/'],
       'thumbnail_url' => [false, '/images/anime/', '?'],
       'title' => [false, '<strong>', '</strong>'],
       'description' => [false, '<div class="pt4">', '</div>'],
@@ -91,7 +91,7 @@ class MyAnimeList
         } else {
           $result->thumbnail_url = '';
         }
-        $result->details_url = 'http://myanimelist.net/anime/'.$show['mal_id'];
+        $result->details_url = 'https://myanimelist.net/anime/'.$show['mal_id'];
         $results[] = $result;
       }
     }
@@ -121,9 +121,9 @@ class MyAnimeList
     }
 
     // If that fails, try using the regular search
-    $page = Downloaders::downloadPage('http://myanimelist.net/anime.php?q='.str_replace(' ', '+', $title).'&gx=1&genre[]=12');
+    $page = Downloaders::downloadPage('https://myanimelist.net/anime.php?q='.str_replace(' ', '+', $title).'&gx=1&genre[]=12');
     $shows = array_slice(Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
-      'mal_id' => [true, 'http://myanimelist.net/anime/', '/'],
+      'mal_id' => [true, 'https://myanimelist.net/anime/', '/'],
       'type' => [false, 'width="45">', '</td>'],
     ]), 0, 8);
     foreach ($shows as $show) {
@@ -148,7 +148,7 @@ class MyAnimeList
    * @return array
    */
   public static function getAnimeData($mal_id) {
-    $page = Downloaders::downloadPage('http://myanimelist.net/anime/'.$mal_id);
+    $page = Downloaders::downloadPage('https://myanimelist.net/anime/'.$mal_id);
 
     $title = trim(str_get_between($page, '<span itemprop="name">', '</span>'));
 

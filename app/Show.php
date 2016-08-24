@@ -224,7 +224,7 @@ class Show extends BaseModel
   */
   public function getMalUrlAttribute() {
     if (isset($this->mal_id)) {
-      return 'http://myanimelist.net/anime/'.$this->mal_id;
+      return 'https://myanimelist.net/anime/'.$this->mal_id;
     } else {
       return null;
     }
