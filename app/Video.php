@@ -207,10 +207,18 @@ class Video extends BaseModel
     $bestMirror = null;
 
     foreach ($mirrors as $mirror) {
-      if (playerSupport($mirror->link_video) && ($bestMirror === null || $mirror->video_surface > $bestMirror->video_surface)) {
+      if (playerSupport($mirror->link_video) && $mirror->encoding !== 'broken' && ($bestMirror === null || $mirror->video_surface > $bestMirror->video_surface)) {
         $bestMirror = $mirror;
       }
     }
+    if ($bestMirror === null) {
+      foreach ($mirrors as $mirror) {
+        if ($mirror->encoding !== 'broken' && ($bestMirror === null || $mirror->video_surface > $bestMirror->video_surface)) {
+          $bestMirror = $mirror;
+        }
+      }
+    }
+
     if ($bestMirror === null) {
       foreach ($mirrors as $mirror) {
         if ($bestMirror === null || $mirror->video_surface > $bestMirror->video_surface) {
