@@ -26,9 +26,9 @@
   <div class="content-generic">
     <div class="streamplayer">
       <div style="padding-top:{{ $video->video_aspect * 100 }}%;"></div>
-      @if(playerSupport($video->link_video))
+      @if(playerSupport($video->link_video_updated))
         <video class="streamplayer-video" controls>
-          <source src="{{ $video->link_video_updated }}" type="{{ $video->encoding }}">
+          <source src="{{ $video->link_video }}" type="{{ $video->encoding }}">
           <source src="{{ $video->link_video }}" type="video/mp4">
           <source src="{{ $video->link_video }}" type="video/ogg">
           <source src="{{ $video->link_video }}" type="video/webm">
@@ -66,6 +66,9 @@
                         @if(!empty($mirror->notes))
                           <p><strong>- Notes -</strong></p>
                           <p class="{{ badNotes($mirror->notes) ? 'episode-info-bad' : '' }}">{{ $mirror->notes }}</p>
+                        @endif
+                        @if($mirror->encoding === 'broken')
+                          <p class="episode-info-bad"><strong>- Broken -</strong></p>
                         @endif
                       </div>
                     </div>
