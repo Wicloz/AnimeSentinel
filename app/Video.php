@@ -61,7 +61,6 @@ class Video extends BaseModel
           if (isset($stream->tags->creation_time)) {
             $time = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
             $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
-            $this->test1 = $time;
           }
           break;
         }
@@ -71,7 +70,6 @@ class Video extends BaseModel
       if (isset($data->format->tags->creation_time)) {
         $time = Carbon::createFromFormat('Y-m-d H:i:s', $data->format->tags->creation_time);
         $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
-        $this->test2 = $time;
       }
     }
 
