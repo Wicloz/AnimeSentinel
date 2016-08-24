@@ -60,7 +60,7 @@ class MyAnimeList
     $page = Downloaders::downloadPage('https://myanimelist.net/anime.php?q='.str_replace(' ', '+', $query).'&type=0&score=0&status=0&p=0&r=0&sm=0&sd=0&sy=0&em=0&ed=0&ey=0&c[]=a&c[]=b&c[]=d&c[]=e&gx=1&genre[]=12');
     $shows = array_slice(Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
       'mal_id' => [true, 'https://myanimelist.net/anime/', '/'],
-      'thumbnail_url' => [false, '/images/anime/', '?'],
+      'thumbnail_id' => [false, '/images/anime/', '?'],
       'title' => [false, '<strong>', '</strong>'],
       'description' => [false, '<div class="pt4">', '</div>'],
       'type' => [false, 'width="45">', '</td>'],
@@ -86,8 +86,8 @@ class MyAnimeList
         $result->airing_start = Self::convertSearchAiringToCarbon(trim($airing[0]));
         $result->airing_end = Self::convertSearchAiringToCarbon(trim(str_get_between($airing[1], 'width="80">')));
 
-        if (!empty($show['thumbnail_url'])) {
-          $result->thumbnail_url = 'https://myanimelist.cdn-dena.com/images/anime/'.$show['thumbnail_url'];
+        if (!empty($show['thumbnail_id'])) {
+          $result->thumbnail_url = 'https://myanimelist.cdn-dena.com/images/anime/'.$show['thumbnail_id'];
         } else {
           $result->thumbnail_url = '';
         }
