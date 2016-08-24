@@ -46,7 +46,8 @@ class Video extends BaseModel
       $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_streams -show_format "'. $this->link_video .'"'));
 
       if (!isset($data)) {
-        dd($this);
+        $this->link_video = '404';
+        return;
       }
       if (!isset($data->streams) || !isset($data->format)) {
         $this->setVideoMetaData();
@@ -58,7 +59,7 @@ class Video extends BaseModel
           $this->resolution = $stream->width.'x'.$stream->height;
           if (isset($stream->tags->creation_time)) {
             $time = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
-            $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
+            $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
           }
           break;
         }
@@ -67,7 +68,7 @@ class Video extends BaseModel
       $this->encoding = 'video/'.explode(',', $data->format->format_name)[0];
       if (isset($data->format->tags->creation_time)) {
         $time = Carbon::createFromFormat('Y-m-d H:i:s', $data->format->tags->creation_time);
-        $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
+        $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
       }
     }
   }
