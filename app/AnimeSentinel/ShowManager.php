@@ -187,7 +187,7 @@ class ShowManager
    */
   private static function updateThumbnail($show) {
     if (!empty($show->thumbnail_id)) {
-      $remote = 'https://cdn.myanimelist.net/images/anime/'.str_replace('-', '/', $show->thumbnail_id);
+      $remote = 'https://myanimelist.cdn-dena.com/images/anime/'.str_replace('-', '/', $show->thumbnail_id);
       $local = __DIR__.'/../../public/media/thumbnails/'.$show->thumbnail_id;
       copy($remote, $local);
       @chown($local, 'www-data');
