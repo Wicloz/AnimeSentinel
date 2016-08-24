@@ -87,7 +87,7 @@ class MyAnimeList
         $result->airing_end = Self::convertSearchAiringToCarbon(trim(str_get_between($airing[1], 'width="80">')));
 
         if (!empty($show['thumbnail_url'])) {
-          $result->thumbnail_url = 'http://cdn.myanimelist.net/images/anime/'.$show['thumbnail_url'];
+          $result->thumbnail_url = 'https://cdn.myanimelist.net/images/anime/'.$show['thumbnail_url'];
         } else {
           $result->thumbnail_url = '';
         }
@@ -196,7 +196,7 @@ class MyAnimeList
       }
     }
 
-    $thumbnail_id = str_replace('/', '-', str_get_between($page, 'src="http://cdn.myanimelist.net/images/anime/', '"'));
+    $thumbnail_id = str_replace('/', '-', str_get_between($page, 'src="https://cdn.myanimelist.net/images/anime/', '"'));
     if (empty($thumbnail_id)) {
       $thumbnail_id = null;
     }
