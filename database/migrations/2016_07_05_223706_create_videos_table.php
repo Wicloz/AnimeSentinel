@@ -32,7 +32,7 @@ class CreateVideosTable extends Migration
             $table->dateTime('uploadtime')->nullable()->default(null);     // video
             $table->string('resolution')->nullable()->default(null);       // video
             $table->float('duration')->nullable()->default(null);          // video
-            $table->string('encoding')->default('embed');                  // video
+            $table->string('encoding')->nullable()->default(null);         // video
 
             $table->timestamps();
 

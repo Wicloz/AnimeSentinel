@@ -41,16 +41,17 @@ class Video extends BaseModel
   /**
    * Finds and saves the metadata for this video.
    */
-  public function setVideoMetaData() {
+  public function setVideoMetaData($tries = 0) {
     if (playerSupport($this->link_video)) {
       $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_streams -show_format "'. $this->link_video .'"'));
 
       if (!isset($data)) {
         $this->link_video = '404';
+        $this->encoding = null;
         return;
       }
       if (!isset($data->streams) || !isset($data->format)) {
-        $this->setVideoMetaData();
+        $this->setVideoMetaData($tries + 1);
         return;
       }
 
@@ -60,6 +61,7 @@ class Video extends BaseModel
           if (isset($stream->tags->creation_time)) {
             $time = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
             $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
+            $this->test1 = $time;
           }
           break;
         }
@@ -69,7 +71,12 @@ class Video extends BaseModel
       if (isset($data->format->tags->creation_time)) {
         $time = Carbon::createFromFormat('Y-m-d H:i:s', $data->format->tags->creation_time);
         $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
+        $this->test2 = $time;
       }
+    }
+
+    else {
+      $this->encoding = 'embed';
     }
   }
 
