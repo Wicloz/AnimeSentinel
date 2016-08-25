@@ -6,7 +6,7 @@ Show:
   <li>Show Title: {{ $show->title }}</li>
   <li>Show Id: {{ $show->id }}</li>
   <li>Show MAL Id: {{ $show->mal_id or 'NA' }}</li>
-  <li>Show Link: <a href="{{ $show->details_url_static }}">{{ $show->details_url_static }}</a></li>
+  <li>Show Link: <a href="{{ $show->details_url }}">{{ $show->details_url }}</a></li>
 </ul>
 -------------------------------------------------------------------
 <br>
