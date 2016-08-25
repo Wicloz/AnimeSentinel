@@ -11,7 +11,7 @@ class VideoManager
   /**
    * Saves an array of video objects and queues a job to set their metadata.
    */
-  public static function saveVideos($videos, $queue = 'default') {
+  public static function saveVideos($videos, $queue = 'low') {
     foreach ($videos as $video) {
       $video->save();
       if (playerSupport($video->link_video)) {
