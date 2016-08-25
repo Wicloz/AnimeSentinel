@@ -20,8 +20,17 @@ class EpisodeController extends Controller
       $episode_num = $translation_type;
       $translation_type = $title;
     }
-    $bestMirror = $show->videos()->episode($translation_type, $episode_num)->first()->best_mirror;
-    return redirect($bestMirror->stream_url);
+
+    $bestMirror1 = $show->videos()->episode($translation_type, $episode_num)->first()->best_mirror;
+    $bestMirror1->refreshVideoLink();
+    $bestMirror2 = $show->videos()->episode($translation_type, $episode_num)->first()->best_mirror;
+    while ($bestMirror1->id !== $bestMirror2->id) {
+      $bestMirror2->refreshVideoLink();
+      $bestMirror1 = $bestMirror2;
+      $bestMirror2 = $show->videos()->episode($translation_type, $episode_num)->first()->best_mirror;
+    }
+
+    return redirect($bestMirror2->stream_url);
   }
 
   /**
