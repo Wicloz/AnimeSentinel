@@ -97,7 +97,8 @@ return [
       'ShowUpdate(true)',
       [
         'AnimeFindVideos',
-        'AnimeReprocessEpisode',
+        ['AnimeReprocessEpisode'],
+        ['VideoSetMetadata'],
       ],
       [
         'ShowUpdate(false)',
@@ -117,7 +118,9 @@ return [
     'queuehierarchy' => [
       'periodic_high',
       'periodic_low',
+      'high',
       'default',
+      'low',
     ],
 
 ];

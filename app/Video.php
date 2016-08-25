@@ -270,17 +270,15 @@ class Video extends BaseModel
   *
   * @return string
   */
-  public function getLinkVideoUpdatedAttribute() {
+  public function refreshVideoLink() {
     if (playerSupport($this->link_video)) {
       $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_format "'. $this->link_video .'"'));
       if (json_encode($data) === '{}') {
         $this->link_video = VideoManager::findVideoLink($this);
-        $this->setVideoMetaData();
-        $this->save();
+        VideoManager::setMetaDataFor($this);
       }
-      elseif ($this->encoding === 'broken' || $this->encoding === 'embed') {
-        $this->setVideoMetaData();
-        $this->save();
+      elseif ($this->encoding === 'broken' || $this->encoding === 'embed' || $this->encoding === null) {
+        VideoManager::setMetaDataFor($this);
       }
     }
     return $this->link_video;

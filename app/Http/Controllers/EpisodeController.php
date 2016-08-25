@@ -20,7 +20,7 @@ class EpisodeController extends Controller
       $episode_num = $translation_type;
       $translation_type = $title;
     }
-    $bestMirror = $show->episode($translation_type, $episode_num)->best_mirror;
+    $bestMirror = $show->videos()->episode($translation_type, $episode_num)->first()->best_mirror;
     return redirect($bestMirror->stream_url);
   }
 
@@ -51,27 +51,25 @@ class EpisodeController extends Controller
       return redirect($video->stream_url);
     }
 
-    $mirrors = $show->videos()
-                    ->episode($translation_type, $episode_num)
-                    ->with('streamer')->with('show')
-                    ->get();
-    if (count($mirrors) == 0) {
-      abort(404);
-    }
-
-    $video = Video::find([
-      'show_id' => $show->id,
-      'translation_type' => $translation_type,
-      'episode_num' => $episode_num,
+    $video = $show->videos()->episode($translation_type, $episode_num)->where([
       'streamer_id' => $streamer,
       'mirror' => $mirror,
-    ]);
+    ])->first();
     if (empty($video)) {
       abort(404);
     }
     if (!visitPage('video_'.$video->id)) {
       $video->hits++;
       $video->save();
+    }
+    $video->refreshVideoLink();
+
+    $mirrors = $show->videos()
+                    ->episode($translation_type, $episode_num)
+                    ->with('streamer')->with('show')
+                    ->get();
+    if (count($mirrors) == 0) {
+      abort(404);
     }
 
     $resolutions = [];
@@ -108,7 +106,8 @@ class EpisodeController extends Controller
       $video->hits++;
       $video->save();
     }
+    $video->refreshVideoLink();
     // TODO: improve this
-    return redirect($video->link_video_updated);
+    return redirect($video->link_video);
   }
 }

@@ -189,17 +189,6 @@ class Show extends BaseModel
   }
 
   /**
-  * Get the episode of the requested type and number.
-  *
-  * @return Video
-  */
-  public function episode($translation_type, $episode_num) {
-    return $this->videos()
-                ->episode($translation_type, $episode_num)
-                ->first();
-  }
-
-  /**
   * Get the full url for this show's details page.
   *
   * @return string
