@@ -9,5 +9,6 @@ Features will include:
  - <strike>Provide links to locations where a certain anime is streamed. Possibly</strike> stream those video's directly from this site.
 
 UPDATE: The site should be live here, but with questionable stablity: https://anime.wilcodeboer.me/
+
 I really need an actual server:
 https://sharex.wilcodeboer.me/?id=nFxQ1CXvBayp61S
