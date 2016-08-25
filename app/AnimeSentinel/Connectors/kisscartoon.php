@@ -128,12 +128,15 @@ class kisscartoon
   private static function seekMirrors($link_episode) {
     // Get episode page
     $page = Downloaders::downloadPage($link_episode);
-    // Scrape the page for mirror data
-    $mirrors = Helpers::scrape_page(str_get_between($page, 'id="divDownload">', '</div>'), '</a>', [
-      'link_video' => [true, 'href="', '"'],
-      'resolution' => [false, '>', '.'],
-    ]);
-    return $mirrors;
+    if (!str_contains($page, '<meta name="description" content="Watch cartoons online in high quality. Free download high quality cartoons. Various formats from 240p to 720p HD (or even 1080p). HTML5 available for mobile devices"/>')) {
+      // Scrape the page for mirror data
+      $mirrors = Helpers::scrape_page(str_get_between($page, 'id="divDownload">', '</div>'), '</a>', [
+        'link_video' => [true, 'href="', '"'],
+        'resolution' => [false, '>', '.'],
+      ]);
+      return $mirrors;
+    }
+    return [];
   }
 
   private static function seekCompleteEpisode($episode, $decrement) {

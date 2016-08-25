@@ -73,17 +73,20 @@ class animeshow
   private static function seekMirrors($link_episode) {
     // Get episode page
     $page = Downloaders::downloadPage($link_episode);
-    // Create first entry
-    $mirrors = [[
-      'link_video' => $link_episode,
-    ]];
-    // Scrape the page for mirror data
-    $mirrors = Helpers::scrape_page(str_get_between($page, '<div id="episode_mirrors">', '<br />'), '</div>', [
-      'link_video' => [true, '<a href="', '/"'],
-      'translation_type' => [false, '<div class="episode_mirrors_type_', '"'],
-      'resolution' => [false, '1280x720', '1920x1080', 'class="glyphicon glyphicon-hd-video"'],
-    ], $mirrors);
-    return $mirrors;
+    if (!str_contains($page, '<title>Watch Anime - AnimeShow.tv</title>')) {
+      // Create first entry
+      $mirrors = [[
+        'link_video' => $link_episode,
+      ]];
+      // Scrape the page for mirror data
+      $mirrors = Helpers::scrape_page(str_get_between($page, '<div id="episode_mirrors">', '<br />'), '</div>', [
+        'link_video' => [true, '<a href="', '/"'],
+        'translation_type' => [false, '<div class="episode_mirrors_type_', '"'],
+        'resolution' => [false, '1280x720', '1920x1080', 'class="glyphicon glyphicon-hd-video"'],
+      ], $mirrors);
+      return $mirrors;
+    }
+    return [];
   }
 
   private static function seekCompleteEpisode($episode, $alt) {

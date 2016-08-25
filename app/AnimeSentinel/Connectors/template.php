@@ -70,11 +70,14 @@ class template
   private static function seekMirrors($link_episode) {
     // Get episode page
     $page = Downloaders::downloadPage($link_episode);
-    // Scrape the page for mirror data
-    $mirrors = Helpers::scrape_page(str_get_between($page, 'TODO', 'TODO'), 'TODO', [
-      'TODO' => [true, 'TODO', 'TODO'],
-    ]);
-    return $mirrors;
+    if (!str_contains($page, 'TODO')) {
+      // Scrape the page for mirror data
+      $mirrors = Helpers::scrape_page(str_get_between($page, 'TODO', 'TODO'), 'TODO', [
+        'TODO' => [true, 'TODO', 'TODO'],
+      ]);
+      return $mirrors;
+    }
+    return [];
   }
 
   private static function seekCompleteEpisode($episode) {
