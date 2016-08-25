@@ -8,5 +8,6 @@ Features will include:
  - Index which anime are streamed on which locations. Since this is A LOT of data, it must be done dynamically. As in, only start searching for relevant data once a user requests it, then store it forever.
  - <strike>Provide links to locations where a certain anime is streamed. Possibly</strike> stream those video's directly from this site.
 
+UPDATE: The site should be live here, but with questionable stablity: https://anime.wilcodeboer.me/
 I really need an actual server:
 https://sharex.wilcodeboer.me/?id=nFxQ1CXvBayp61S
