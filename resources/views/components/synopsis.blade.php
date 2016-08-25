@@ -46,7 +46,7 @@
                 Currently Airing
               @endif
             </p>
-            <p><strong>Type:</strong> {{ ucwords($syn_show->type) }}</p>
+            <p><strong>Type:</strong> {{ isset($syn_show->type) ? ucwords($syn_show->type) : 'Unknown' }}</p>
             <p><strong>Total Episodes:</strong> {{ $syn_show->episode_amount or 'Unknown' }}</p>
             <p>
               <strong>Duration:</strong>

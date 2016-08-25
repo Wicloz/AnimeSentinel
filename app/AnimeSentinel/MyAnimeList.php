@@ -76,7 +76,13 @@ class MyAnimeList
         $result->mal_id = $show['mal_id'];
         $result->title = $show['title'];
         $result->type = strtolower(trim($show['type']));
+        if ($result->type === '-') {
+          $result->type = null;
+        }
         $result->episode_amount = trim($show['episode_amount']);
+        if ($result->episode_amount === '-') {
+          $result->episode_amount = null;
+        }
         if (str_contains($show['description'], '</a>')) {
           $result->description = str_get_between('-'.$show['description'], '-', '<a');
         } else {
@@ -206,13 +212,15 @@ class MyAnimeList
       $description = trim(str_replace_last('</span>', '', $description));
     }
 
+    $type = strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'), '>')));
+
     return [
       'mal_id' => $mal_id,
       'thumbnail_id' => $thumbnail_id,
       'title' => $title,
       'alts' => Helpers::mergeFlagAlts($alts, $mal_id),
       'description' => $description,
-      'type' => strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'), '>'))),
+      'type' => !empty($type) ? $type : null,
       'genres' => $genres,
       'episode_amount' => $amount,
       'episode_duration' => $duration,
