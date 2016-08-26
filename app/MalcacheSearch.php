@@ -34,7 +34,16 @@ class MalcacheSearch extends BaseModel
   ];
 
   /**
-   * Encode and decode the results attribute.
+   * The attributes that should be casted to native types.
+   *
+   * @var array
+   */
+  protected $casts = [
+    'results' => 'array',
+  ];
+
+  /**
+   * Properly decode the results attribute.
    */
   public function getResultsAttribute($value) {
     $results = json_decode($value);
@@ -54,9 +63,6 @@ class MalcacheSearch extends BaseModel
       }
     }
     return $results;
-  }
-  public function setResultsAttribute($value) {
-    $this->attributes['results'] = json_encode($value);
   }
 
   /**

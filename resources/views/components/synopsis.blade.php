@@ -36,14 +36,22 @@
           <div class="synopsis-details">
             <p>
               <strong>Status:</strong>
-              @if(!isset($syn_show->latest_sub->episode_num))
-                Upcoming
-              @elseif(!isset($syn_show->episode_amount))
-                Unknown
-              @elseif($syn_show->latest_sub->episode_num >= $syn_show->episode_amount)
-                Completed
+              @if($syn_mal)
+                @if(!isset($syn_show->airing_start) || Carbon\Carbon::now()->endOfDay()->lt($syn_show->airing_start))
+                  Upcoming
+                @elseif(!isset($syn_show->airing_end) || Carbon\Carbon::now()->startOfDay()->lte($syn_show->airing_end))
+                  Currently Airing
+                @else
+                  Completed
+                @endif
               @else
-                Currently Airing
+                @if(!isset($syn_show->latest_sub->episode_num))
+                  Upcoming
+                @elseif(!isset($syn_show->episode_amount) || $syn_show->latest_sub->episode_num < $syn_show->episode_amount)
+                  Currently Airing
+                @else
+                  Completed
+                @endif
               @endif
             </p>
             <p><strong>Type:</strong> {{ isset($syn_show->type) ? ucwords($syn_show->type) : 'Unknown' }}</p>

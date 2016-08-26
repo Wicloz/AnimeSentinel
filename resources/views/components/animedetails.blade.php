@@ -53,12 +53,10 @@
     <strong>Status:</strong>
     @if(!isset($details->latest_sub->episode_num))
       Upcoming
-    @elseif(!isset($details->episode_amount))
-      Unknown
-    @elseif($details->latest_sub->episode_num >= $details->episode_amount)
-      Completed
-    @else
+    @elseif(!isset($details->episode_amount) || $details->latest_sub->episode_num < $details->episode_amount)
       Currently Airing
+    @else
+      Completed
     @endif
   </p>
   <p>
