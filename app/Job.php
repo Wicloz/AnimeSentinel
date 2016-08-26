@@ -107,7 +107,7 @@ class Job extends BaseModel
                   ->where('show_id', $show_id)
                   ->where('reserved', 0)
                   ->get()->pluck('queue');
-    $highestQueue = 'default';
+    $highestQueue = collect(config('queue.queuehierarchy'))->collapse()->last();
     if (count($queues) > 0) {
       foreach ($queues as $queue) {
         if (in_array($queue, array_get_parents(config('queue.queuehierarchy'), $highestQueue))) {
