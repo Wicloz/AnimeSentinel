@@ -144,6 +144,10 @@
           <td>Improve the way selection by 'title' or 'id' is handled.</td>
           <td>✔</td>
         </tr>
+        <tr>
+          <td>Properly handle timezones.</td>
+          <td>✘</td>
+        </tr>
       </tbody>
     </table>
     <div class="content-close"></div>
