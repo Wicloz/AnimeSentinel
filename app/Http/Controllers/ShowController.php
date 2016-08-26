@@ -19,20 +19,31 @@ class ShowController extends Controller
     if (is_numeric($show_id)) {
       $show = Show::find($show_id);
     }
+
     if (isset($show)) {
-      if ($title !== slugify($show->title)) {
+      if ($title === slugify($show->title)) {
+        if (!visitPage('show_'.$show->id)) {
+          $show->hits++;
+          $show->save();
+        }
+        return view('anime.details', [
+          'show' => $show
+        ]);
+      }
+
+      elseif (empty($title)) {
         return redirect($show->details_url);
       }
-      if (!visitPage('show_'.$show->id)) {
-        $show->hits++;
-        $show->save();
+      else {
+        foreach ($show->alts as $alt) {
+          if ($title === slugify($alt)) {
+            return redirect($show->details_url);
+          }
+        }
       }
-      return view('anime.details', [
-        'show' => $show
-      ]);
     }
 
-    elseif (!empty($title)) {
+    if (!empty($title)) {
       $title = str_replace('‑', ' ', $title);
       $show = Show::withTitle($title)->first();
       if (isset($show)) {

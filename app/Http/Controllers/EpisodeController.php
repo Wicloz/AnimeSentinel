@@ -67,10 +67,6 @@ class EpisodeController extends Controller
     if (empty($video)) {
       abort(404);
     }
-    if (!visitPage('video_'.$video->id)) {
-      $video->hits++;
-      $video->save();
-    }
     $video->refreshVideoLink();
 
     $mirrors = $show->videos()
@@ -81,12 +77,7 @@ class EpisodeController extends Controller
       abort(404);
     }
 
-    $resolutions = [];
-    foreach ($mirrors as $mirror) {
-      if (!in_array($mirror->resolution, $resolutions)) {
-        $resolutions[] = $mirror->resolution;
-      }
-    }
+    $resolutions = $mirrors->pluck('resolution')->unique()->all();
     usort($resolutions, function ($a, $b) {
       $aex = explode('x', $a);
       $a = $aex[0] * $aex[1];
@@ -96,6 +87,10 @@ class EpisodeController extends Controller
       return ($a > $b) ? -1 : 1;
     });
 
+    if (!visitPage('video_'.$video->id)) {
+      $video->hits++;
+      $video->save();
+    }
     return view('anime.episode', [
       'show' => $show,
       'video' => $video,

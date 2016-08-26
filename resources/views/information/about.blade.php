@@ -142,7 +142,7 @@
         </tr>
         <tr>
           <td>Improve the way selection by 'title' or 'id' is handled.</td>
-          <td>✘</td>
+          <td>WIP</td>
         </tr>
       </tbody>
     </table>
@@ -169,7 +169,7 @@
           <td>WIP</td>
         </tr>
         <tr>
-          <td>Create the sites for streamer infromation.</td>
+          <td>Create the pages for streamer infromation.</td>
           <td>✘</td>
         </tr>
         <tr>
@@ -209,15 +209,11 @@
           <td>✔</td>
         </tr>
         <tr>
-          <td>Improve pages based on feedback.</td>
-          <td>✘</td>
-        </tr>
-        <tr>
           <td>Allow browsing of animes by first character.</td>
           <td>✘</td>
         </tr>
         <tr>
-          <td>Allow browsing of animes by genre and type.</td>
+          <td>Allow browsing/searching of animes by genre and type.</td>
           <td>✘</td>
         </tr>
         <tr>
@@ -243,6 +239,10 @@
         <tr>
           <td>Improve title based searches through our database.</td>
           <td>WIP</td>
+        </tr>
+        <tr>
+          <td>Improve pages based on feedback.</td>
+          <td>✘</td>
         </tr>
       </tbody>
     </table>

@@ -160,7 +160,7 @@ class Video extends BaseModel
   }
 
   /**
-  * Get the full url for this videos episode page.
+  * Get the full url for this episode page.
   *
   * @return string
   */
@@ -169,12 +169,30 @@ class Video extends BaseModel
   }
 
   /**
-  * Get a static url for this videos episode page.
+  * Get a static url for this episode page.
   *
   * @return string
   */
   public function getEpisodeUrlStaticAttribute() {
     return fullUrl('/anime/-/'.slugify($this->show->title).'/'.$this->translation_type.'/episode-'.$this->episode_num, true);
+  }
+
+  /**
+  * Get the full url for the episode page with this mirror selected.
+  *
+  * @return string
+  */
+  public function getStreamUrlAttribute() {
+    return fullUrl('/anime/'.$this->show_id.'/'.slugify($this->show->title).'/'.$this->translation_type.'/episode-'.$this->episode_num.'/'.$this->streamer_id.'/'.$this->mirror);
+  }
+
+  /**
+  * Get a static url for the episode page with this mirror selected.
+  *
+  * @return string
+  */
+  public function getStreamUrlStaticAttribute() {
+    return fullUrl('/anime/-/'.slugify($this->show->title).'/'.$this->translation_type.'/episode-'.$this->episode_num.'/'.$this->streamer_id.'/'.$this->mirror, true);
   }
 
   /**
@@ -228,15 +246,6 @@ class Video extends BaseModel
     }
 
     return $bestMirror;
-  }
-
-  /**
-  * Get the full url for the episode page with this mirror selected.
-  *
-  * @return string
-  */
-  public function getStreamUrlAttribute() {
-    return fullUrl('/anime/'.$this->show_id.'/'.slugify($this->show->title).'/'.$this->translation_type.'/episode-'.$this->episode_num.'/'.$this->streamer_id.'/'.$this->mirror);
   }
 
   /**
