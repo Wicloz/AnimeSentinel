@@ -316,10 +316,6 @@
           <td>✘</td>
         </tr>
         <tr>
-          <td>Cache MAL data for users.</td>
-          <td>✘</td>
-        </tr>
-        <tr>
           <td>Notify users (based on their settings) when a new episode is available.</td>
           <td>✘</td>
         </tr>
