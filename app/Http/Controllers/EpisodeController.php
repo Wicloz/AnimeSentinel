@@ -15,19 +15,27 @@ class EpisodeController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function gotoEpisode(Show $show, $title, $translation_type, $episode_num = null) {
-    if (!isset($episode_num)) {
-      $episode_num = $translation_type;
-      $translation_type = $title;
+  public function gotoEpisode($show_id, $title, $translation_type, $episode_num) {
+    $show = Show::getShowFromUrl($show_id, $title);
+    if (!isset($show)) {
+      abort(404);
+    }
+    if ($show->id !== (int) $show_id || $title !== slugify($show->title)) {
+      return redirect($show->details_url.'/'.$translation_type.'/episode-'.$episode_num);
     }
 
-    $bestMirror1 = $show->videos()->episode($translation_type, $episode_num)->first()->best_mirror;
+    $episode = $show->videos()->episode($translation_type, $episode_num)->first();
+    if (!isset($episode)) {
+      abort(404);
+    }
+
+    $bestMirror1 = $episode->best_mirror;
     $bestMirror1->refreshVideoLink();
-    $bestMirror2 = $show->videos()->episode($translation_type, $episode_num)->first()->best_mirror;
+    $bestMirror2 = $episode->best_mirror;
     while ($bestMirror1->id !== $bestMirror2->id) {
       $bestMirror2->refreshVideoLink();
       $bestMirror1 = $bestMirror2;
-      $bestMirror2 = $show->videos()->episode($translation_type, $episode_num)->first()->best_mirror;
+      $bestMirror2 = $episode->best_mirror;
     }
 
     return redirect($bestMirror2->stream_url);
@@ -39,32 +47,20 @@ class EpisodeController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function episode(Show $show, $title, $translation_type, $episode_num, $streamer, $mirror = null) {
-    if (!isset($mirror)) {
-      $video = Video::find([
-        'show_id' => $show->id,
-        'translation_type' => $title,
-        'episode_num' => $translation_type,
-        'streamer_id' => $episode_num,
-        'mirror' => $streamer,
-      ]);
-      return redirect($video->stream_url);
-    } elseif ($title !== slugify($show->title)) {
-      $video = Video::find([
-        'show_id' => $show->id,
-        'translation_type' => $translation_type,
-        'episode_num' => $episode_num,
-        'streamer_id' => $streamer,
-        'mirror' => $mirror,
-      ]);
-      return redirect($video->stream_url);
+  public function episode($show_id, $title, $translation_type, $episode_num, $streamer, $mirror) {
+    $show = Show::getShowFromUrl($show_id, $title);
+    if (!isset($show)) {
+      abort(404);
+    }
+    if ($show->id !== (int) $show_id || $title !== slugify($show->title)) {
+      return redirect($show->details_url.'/'.$translation_type.'/episode-'.$episode_num.'/'.$streamer.'/'.$mirror);
     }
 
     $video = $show->videos()->episode($translation_type, $episode_num)->where([
       'streamer_id' => $streamer,
       'mirror' => $mirror,
     ])->first();
-    if (empty($video)) {
+    if (!isset($video)) {
       abort(404);
     }
     $video->refreshVideoLink();
@@ -77,15 +73,14 @@ class EpisodeController extends Controller
       abort(404);
     }
 
-    $resolutions = $mirrors->pluck('resolution')->unique()->all();
-    usort($resolutions, function ($a, $b) {
+    $resolutions = $mirrors->pluck('resolution')->unique()->sort(function ($a, $b) {
       $aex = explode('x', $a);
       $a = $aex[0] * $aex[1];
       $bex = explode('x', $b);
       $b = $bex[0] * $bex[1];
       if ($a === $b) return 0;
       return ($a > $b) ? -1 : 1;
-    });
+    })->values();
 
     if (!visitPage('video_'.$video->id)) {
       $video->hits++;

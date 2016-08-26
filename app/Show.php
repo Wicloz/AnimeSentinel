@@ -130,6 +130,44 @@ class Show extends BaseModel
   }
 
   /**
+   * Find the show with the given URL data.
+   * Return null if no show was found.
+   *
+   * @return \App\Show
+   */
+  public static function getShowFromUrl($show_id, $title) {
+    if (is_numeric($show_id)) {
+      $show = Show::find($show_id);
+    }
+
+    if (isset($show)) {
+      if ($title === slugify($show->title) || empty($title)) {
+        return $show;
+      }
+      else {
+        foreach ($show->alts as $alt) {
+          if ($title === slugify($alt)) {
+            return $show;
+          }
+        }
+      }
+    }
+
+    if (!empty($title)) {
+      $title = str_replace('‑', ' ', $title);
+      $show = Show::withTitle($title)->first();
+      if (isset($show)) {
+        return $show;
+      } else {
+        $show = ShowManager::addShowWithTitle($title, 'default', false, false);
+        return $show;
+      }
+    }
+
+    return null;
+  }
+
+  /**
   * Get the latest subbed episode number for this show.
   *
   * @return integer

@@ -142,7 +142,7 @@
         </tr>
         <tr>
           <td>Improve the way selection by 'title' or 'id' is handled.</td>
-          <td>WIP</td>
+          <td>✔</td>
         </tr>
       </tbody>
     </table>

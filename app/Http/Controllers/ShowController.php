@@ -16,12 +16,10 @@ class ShowController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function details($show_id, $title = '') {
-    if (is_numeric($show_id)) {
-      $show = Show::find($show_id);
-    }
+    $show = Show::getShowFromUrl($show_id, $title);
 
     if (isset($show)) {
-      if ($title === slugify($show->title)) {
+      if ($show->id === (int) $show_id && $title === slugify($show->title)) {
         if (!visitPage('show_'.$show->id)) {
           $show->hits++;
           $show->save();
@@ -30,29 +28,8 @@ class ShowController extends Controller
           'show' => $show
         ]);
       }
-
-      elseif (empty($title)) {
-        return redirect($show->details_url);
-      }
       else {
-        foreach ($show->alts as $alt) {
-          if ($title === slugify($alt)) {
-            return redirect($show->details_url);
-          }
-        }
-      }
-    }
-
-    if (!empty($title)) {
-      $title = str_replace('‑', ' ', $title);
-      $show = Show::withTitle($title)->first();
-      if (isset($show)) {
         return redirect($show->details_url);
-      } else {
-        $show = ShowManager::addShowWithTitle($title, 'default', false, false);
-        if (isset($show)) {
-          return redirect($show->details_url);
-        }
       }
     }
 
