@@ -167,27 +167,24 @@ class kissanime
     if (str_starts_with($text, '_OP') || str_starts_with($text, '_ED') || str_starts_with($text, '_Preview')) {
       return false;
     }
+
     else {
-      $special = false;
-      // Handle numbered specials
-      if (str_starts_with($text, '_Special')) {
-        $special = true;
-      }
-      // Strip '_' and type names from the start of the text, followed by trimming
-      $remove = [
-        '_',
-        'Episode',
-        'Movie',
-        'Special',
-        'ONA',
-        'OVA',
-      ];
-      foreach ($remove as $item) {
-        if (str_starts_with($text, $item)) {
-          $text = trim(str_replace_first($item, '', $text));
+      if (!str_starts_with($text, '_Special ') && !str_starts_with($text, '_Specail ')) {
+        // Strip '_' and type names from the start of the text, followed by trimming
+        $remove = [
+          '_',
+          'Episode',
+          'Movie',
+          'Special',
+          'Specail',
+          'ONA',
+          'OVA',
+        ];
+        foreach ($remove as $item) {
+          if (str_starts_with($text, $item)) {
+            $text = trim(str_replace_first($item, '', $text));
+          }
         }
-      }
-      if (!$special) {
         // Try to get the episode number
         $episode_num = str_get_between('-'.$text, '-', ' ');
         if ($episode_num === false) {
@@ -200,11 +197,14 @@ class kissanime
         // Strip numbers from the start of the text and trim, set that as the notes
         $notes = trim(preg_replace('/^[0-9]+/u', '', $text));
       }
+
       else {
-        $episode_num = 0;
+        // Handle numbered specials
+        $episode_num = -1;
         $notes = trim($text);
       }
 
+      $notes = str_replace('_Specail', '_Special', $text);
       return $episode_num;
     }
   }
