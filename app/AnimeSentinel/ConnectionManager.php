@@ -211,10 +211,11 @@ class ConnectionManager
             // Try to update the show cache if it does not have a mal id set
             if ($show->mal_id === null) {
               $show = ShowManager::updateShowCache($show->id, false, 'periodic_high');
-              if ($show && $show->mal_id !== null) {
+              if (!empty($show) && $show->mal_id !== null) {
                 $addedShows[] = $show->id;
+              } else {
+                $show = Show::withTitle($item['title'])->first();
               }
-              $show = Show::withTitle($item['title'])->first();
             }
 
             // Otherwise, if this show is not new and the epsiode does not exist, queue the finding of all videos for the data
