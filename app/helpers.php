@@ -177,10 +177,15 @@ function slugify($text) {
 function str_get_between($string, $start, $end = '', $last = false) {
   // TODO: improve this function
 
-  if ($last) {
-    $ini = strrpos($string, $start);
-  } else {
-    $ini = strpos($string, $start);
+  if (empty($start)) {
+    $ini = 0;
+  }
+  else {
+    if ($last) {
+      $ini = strrpos($string, $start);
+    } else {
+      $ini = strpos($string, $start);
+    }
   }
 
   if ($ini === false) return false;

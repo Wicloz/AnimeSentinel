@@ -84,7 +84,7 @@ class MyAnimeList
           $result->episode_amount = null;
         }
         if (str_contains($show['description'], '</a>')) {
-          $result->description = str_get_between('-'.$show['description'], '-', '<a');
+          $result->description = str_get_between($show['description'], '', '<a');
         } else {
           $result->description = $show['description'];
         }

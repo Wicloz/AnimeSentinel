@@ -186,9 +186,9 @@ class kissanime
           }
         }
         // Try to get the episode number
-        $episode_num = str_get_between('-'.$text, '-', ' ');
+        $episode_num = str_get_between($text, '', ' ');
         if ($episode_num === false) {
-          $episode_num = str_get_between('-'.$text, '-', '');
+          $episode_num = str_get_between($text, '', '');
         }
         // If that's not a number, set it to 1
         if (!is_numeric($episode_num)) {
@@ -204,7 +204,6 @@ class kissanime
         $notes = trim($text);
       }
 
-      $notes = str_replace('_Specail', '_Special', $text);
       return $episode_num;
     }
   }
