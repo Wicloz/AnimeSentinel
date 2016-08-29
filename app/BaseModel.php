@@ -11,8 +11,8 @@ abstract class BaseModel extends Model
     parent::__construct($attributes);
   }
 
-  // NOTE: must not be followed by ->where() or ->select()
   // TODO: make more secure against SQL injection
+  // NOTE: must not be followed by ->where() or ->select()
   public function scopeDistinctOn($query, $columns) {
     if (!is_array($columns)) {
       $columns = [$columns];
@@ -38,6 +38,10 @@ abstract class BaseModel extends Model
         return $query->groupBy($columns)->distinct();
       break;
 
+      case 'sqlite':
+        return $query->groupBy($columns)->distinct();
+      break;
+
       default:
         dd('\'distinctOn\' is not supported for databases of type \''.config('database.default').'\'');
       break;
@@ -52,6 +56,10 @@ abstract class BaseModel extends Model
 
       case 'mysql':
         return $query->orderBy(DB::raw('RAND()'));
+      break;
+
+      case 'sqlite':
+        return $query->orderBy(DB::raw('RANDOM()'));
       break;
 
       default:

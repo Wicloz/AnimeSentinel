@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Jobs\Job;
+use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -10,9 +10,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Show;
 use App\AnimeSentinel\ConnectionManager;
 
-class AnimeFindVideos extends Job implements ShouldQueue
+class AnimeFindVideos implements ShouldQueue
 {
-  use InteractsWithQueue;
+  use InteractsWithQueue, Queueable, SerializesModels;
 
   /**
    * Create a new job instance.

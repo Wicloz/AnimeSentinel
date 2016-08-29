@@ -23,11 +23,11 @@ class ConnectionManager
     // Remove any inferior queued jobs
     \App\Job::deleteLowerThan('AnimeFindVideos', $jobShowId);
     // If this is queued as a job, remove it from the queue
-    \App\Job::where(array_merge($job_dbdata, [['reserved', '=', 0]]))->delete();
+    \App\Job::where(array_merge($job_dbdata, [['reserved_at', '=', null]]))->delete();
     // Hovever, if that job is in progress, wait for it to complete instead of running this function,
     // but only if this function isn't started from the job
-    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
-      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
+      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
         sleep(1);
       }
       return;
@@ -82,11 +82,11 @@ class ConnectionManager
     // Remove any inferior queued jobs
     \App\Job::deleteLowerThan('AnimeReprocessEpisode', $jobShowId);
     // If this is queued as a job, remove it from the queue
-    \App\Job::where(array_merge($job_dbdata, [['reserved', '=', 0]]))->delete();
+    \App\Job::where(array_merge($job_dbdata, [['reserved_at', '=', null]]))->delete();
     // Hovever, if that job is in progress, wait for it to complete instead of running this function,
     // but only if this function isn't started from the job
-    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
-      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
+      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
         sleep(1);
       }
       return;
@@ -149,11 +149,11 @@ class ConnectionManager
       ['job_data', '=', json_encode(['streamer_id' => $streamer->id])],
     ];
     // If this is queued as a job, remove it from the queue
-    \App\Job::where(array_merge($job_dbdata, [['reserved', '=', 0]]))->delete();
+    \App\Job::where(array_merge($job_dbdata, [['reserved_at', '=', null]]))->delete();
     // Hovever, if that job is in progress, wait for it to complete instead of running this function,
     // but only if this function isn't started from the job
-    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
-      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
+      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
         sleep(1);
       }
       return;

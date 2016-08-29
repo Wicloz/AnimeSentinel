@@ -34,9 +34,7 @@
 
   <!-- Scripts -->
   <script>
-      window.Laravel = <?php echo json_encode([
-          'csrfToken' => csrf_token(),
-      ]); ?>
+    window.Laravel = {!! json_encode(['csrfToken' => csrf_token()]) !!};
   </script>
 
   <!-- YieldHead -->
@@ -83,6 +81,13 @@
   <!-- Scripts -->
   <script src="{{ fullUrl('/') }}/js/jquery.min.js"></script>
   <script src="{{ fullUrl('/') }}/js/bootstrap.min.js"></script>
+  <script>
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+  </script>
   <!-- YieldFoot -->
   @yield('foot')
 </body>

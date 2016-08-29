@@ -21,11 +21,11 @@ class ShowManager
     // Remove any inferior queued jobs
     \App\Job::deleteLowerThan('ShowAdd', $title);
     // If this is queued as a job, remove it from the queue
-    \App\Job::where(array_merge($job_dbdata, [['reserved', '=', 0]]))->delete();
+    \App\Job::where(array_merge($job_dbdata, [['reserved_at', '=', null]]))->delete();
     // Hovever, if that job is in progress, wait for it to complete instead of running this function,
     // but only if this function isn't started from the job
-    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
-      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
+      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
         sleep(1);
       }
       return Show::withTitle($title)->first();
@@ -81,11 +81,11 @@ class ShowManager
     // Remove any inferior queued jobs
     \App\Job::deleteLowerThan('ShowAdd', $mal_id);
     // If this is queued as a job, remove it from the queue
-    \App\Job::where(array_merge($job_dbdata, [['reserved', '=', 0]]))->delete();
+    \App\Job::where(array_merge($job_dbdata, [['reserved_at', '=', null]]))->delete();
     // Hovever, if that job is in progress, wait for it to complete instead of running this function,
     // but only if this function isn't started from the job
-    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
-      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
+      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
         sleep(1);
       }
       return Show::where('mal_id', $mal_id)->first();
@@ -137,11 +137,11 @@ class ShowManager
     // Remove any inferior queued jobs
     \App\Job::deleteLowerThan('ShowUpdate', $jobShowId);
     // If this is queued as a job, remove it from the queue
-    \App\Job::where(array_merge($job_dbdata, [['reserved', '=', 0]]))->delete();
+    \App\Job::where(array_merge($job_dbdata, [['reserved_at', '=', null]]))->delete();
     // Hovever, if that job is in progress, wait for it to complete instead of running this function,
     // but only if this function isn't started from the job
-    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
-      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved', '=', 1]]))->get()) > 0) {
+    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
+      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
         sleep(1);
       }
       return;

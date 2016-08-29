@@ -90,7 +90,7 @@ function queueJob($job, $queue = 'default') {
       ['job_task', '=', $job_data['job_task']],
       ['show_id', '=', $job_data['show_id']],
       ['job_data', '=', json_encode($job_data['job_data'])],
-      ['reserved', '=', 0],
+      ['reserved_at', '=', null],
     ])->get();
     if (count($duplicates) > 0) {
       foreach ($duplicates as $duplicate) {
@@ -165,7 +165,11 @@ function fullUrl($path, $production = false) {
   if (str_ends_with($appUrl, '/')) {
     $appUrl = str_replace_last('/', '', $appUrl);
   }
-  return $appUrl.'/'.$path;
+  if (!empty($path)) {
+    return $appUrl.'/'.$path;
+  } else {
+    return $appUrl;
+  }
 }
 
 function slugify($text) {

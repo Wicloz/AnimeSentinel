@@ -75,7 +75,7 @@ class Job extends BaseModel
    */
   public static function higherThan($job_task, $show_id, $unReserved = true) {
     if ($unReserved) {
-      return Self::where('show_id', $show_id)->where('reserved', 0)
+      return Self::where('show_id', $show_id)->whereNull('reserved_at')
                  ->whereIn('job_task', array_get_parents(config('queue.jobhierarchy'), $job_task))
                  ->get();
     } else {
@@ -89,7 +89,7 @@ class Job extends BaseModel
    * Returns all 'lower' jobs than the requested task, operating on the same show title.
    */
   public static function lowerThan($job_task, $show_id, $unReserved = true) {
-    return Self::where('show_id', $show_id)->where('reserved', 0)
+    return Self::where('show_id', $show_id)->whereNull('reserved_at')
                ->whereIn('job_task', array_get_childs(config('queue.jobhierarchy'), $job_task))->get();
   }
 
@@ -105,7 +105,7 @@ class Job extends BaseModel
     // Determine the 'highest' queue of all jobs that will be removed
     $queues = Self::whereIn('job_task', $lower_tasks)
                   ->where('show_id', $show_id)
-                  ->where('reserved', 0)
+                  ->whereNull('reserved_at')
                   ->get()->pluck('queue');
     $highestQueue = collect(config('queue.queuehierarchy'))->collapse()->last();
     if (count($queues) > 0) {
@@ -119,7 +119,7 @@ class Job extends BaseModel
     // Remove all applicable jobs
     Self::whereIn('job_task', $lower_tasks)
         ->where('show_id', $show_id)
-        ->where('reserved', 0)
+        ->whereNull('reserved_at')
         ->delete();
 
     return $highestQueue;
