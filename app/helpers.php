@@ -219,7 +219,7 @@ function str_fuzz($string) {
   return str_replace(' & ', '&', str_replace(' to ', '&', str_replace(' and ', '&', mb_strtolower(trim($string)))));
 }
 
-function str_slugify($string, $delim = '-', $preg = '/[^a-zA-Z0-9α-ωΑ-Ω\\-\\_]/u') {
+function str_to_url($string, $delim = '-', $preg = '/[^a-zA-Z0-9α-ωΑ-Ω\\-\\_]/u') {
   $string = mb_strtolower(trim($string));
   $replace = [
     '\'' => '',
