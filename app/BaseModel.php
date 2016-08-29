@@ -38,10 +38,6 @@ abstract class BaseModel extends Model
         return $query->groupBy($columns)->distinct();
       break;
 
-      case 'sqlite':
-        return $query->groupBy($columns)->distinct();
-      break;
-
       default:
         dd('\'distinctOn\' is not supported for databases of type \''.config('database.default').'\'');
       break;
