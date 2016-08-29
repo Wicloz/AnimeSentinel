@@ -10,6 +10,9 @@
   <meta name="author" content="Wilco de Boer | Wicloz">
   <title>AnimeSentinel - @yield('title', 'DEFINE')</title>
 
+  <!-- CSRF Token -->
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
   <!-- Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" integrity="sha384-XdYbMnZ/QjLh6iI4ogqCTaIjrFk87ip+ekIjefZch0Y+PvJ8CDYtEs1ipDmPorQ+" crossorigin="anonymous">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700">
@@ -29,7 +32,12 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
 
-  <!-- JavaScripts -->
+  <!-- Scripts -->
+  <script>
+      window.Laravel = <?php echo json_encode([
+          'csrfToken' => csrf_token(),
+      ]); ?>
+  </script>
 
   <!-- YieldHead -->
   @yield('head')
@@ -70,11 +78,11 @@
     </div>
   </div>
 
-  <!-- JavaScripts -->
-  <script src="{{ fullUrl('/') }}/js/jquery.min.js"></script>
-  <script src="{{ fullUrl('/') }}/js/bootstrap.min.js"></script>
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
   <script src="{{ fullUrl('/') }}/js/ie10-viewport-bug-workaround.js"></script>
+  <!-- Scripts -->
+  <script src="{{ fullUrl('/') }}/js/jquery.min.js"></script>
+  <script src="{{ fullUrl('/') }}/js/bootstrap.min.js"></script>
   <!-- YieldFoot -->
   @yield('foot')
 </body>

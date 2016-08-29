@@ -8,32 +8,30 @@ use Illuminate\Queue\Events\JobFailed;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-      Queue::failing(function (JobFailed $event) {
-        \Mail::send('emails.report_bug', ['description' => 'Job Failed', 'vars' => [
-          'Job' => json_encode($event->job),
-          'Data' => json_encode($event->data),
-        ]], function ($m) {
-          $m->subject('AnimeSentinel Job Fail Report');
-          $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Reports');
-          $m->to('animesentinel@wilcodeboer.me');
-        });
+  /**
+   * Bootstrap any application services.
+   *
+   * @return void
+   */
+  public function boot() {
+    Queue::failing(function (JobFailed $event) {
+      \Mail::send('emails.report_bug', ['description' => 'Job Failed', 'vars' => [
+        'Job' => json_encode($event->job),
+        'Data' => json_encode($event->data),
+      ]], function ($m) {
+        $m->subject('AnimeSentinel Job Fail Report');
+        $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Reports');
+        $m->to('animesentinel@wilcodeboer.me');
       });
-    }
+    });
+  }
 
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
+  /**
+   * Register any application services.
+   *
+   * @return void
+   */
+  public function register() {
 
-    }
+  }
 }

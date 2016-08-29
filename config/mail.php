@@ -55,7 +55,10 @@ return [
     |
     */
 
-    'from' => ['address' => 'animesentinel@wilcodeboer.me', 'name' => 'Animesentinel Support'],
+    'from' => [
+        'address' => 'animesentinel@wilcodeboer.me',
+        'name' => 'AnimeSentinel',
+    ],
 
     /*
     |--------------------------------------------------------------------------

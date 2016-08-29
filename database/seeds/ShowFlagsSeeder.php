@@ -10,8 +10,7 @@ class ShowFlagsSeeder extends Seeder
    *
    * @return void
    */
-  public function run()
-  {
+  public function run() {
     DB::table('show_flags')->delete();
 
     $gates2 = ShowFlag::findOrNew(31637);

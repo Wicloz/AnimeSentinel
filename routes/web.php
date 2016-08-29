@@ -1,25 +1,23 @@
 <?php
 
-//php artisan queue:listen --queue=periodic_high,periodic_low,high,default,low --timeout=0 --tries=1
-
 /*
 |--------------------------------------------------------------------------
-| Application Routes
+| Web Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
+| This file is where you may define all of the routes that are handled
+| by your application. Just tell Laravel the URIs it should respond
+| to using a Closure or controller method. Build something great!
 |
 */
 
-Route::auth();
+Auth::routes();
 
 // Welcome Page
 Route::get('/', 'AnimeController@home');
 
 // Information Pages
-Route::get('/about', 'PagesController@about'); //TODO
+Route::get('/about', 'PagesController@about');
 Route::get('/news', 'PagesController@news'); //TODO
 
 // Streamers Pages
