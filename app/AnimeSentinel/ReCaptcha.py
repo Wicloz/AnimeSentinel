@@ -52,6 +52,7 @@ def solve_images(driver):
   # ****************** click on submit buttion ******************
   wait_between(0.3, 0.7)
   driver.find_element_by_id("recaptcha-verify-button").click()
+  wait_between(0.3, 0.7)
 
 if __name__ == "__main__":
   print 'Solving reCAPTCHA to unlock page ...'
@@ -90,17 +91,16 @@ if __name__ == "__main__":
   for i in range(1, 100):
     print('{0}-th loop'.format(i))
 
-    # ********** to the second frame to solve pictures *************
-    driver.switch_to.window(mainWin)
-    driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[3])
-    solve_images(driver)
-
     # ******** check if checkbox is checked at the 1st frame ***********
-    wait_between(0.3, 0.7)
     driver.switch_to.window(mainWin)
     driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[1])
     if check_exists_by_xpath('//span[@aria-checked="true"]'):
       break
+
+    # ********** to the second frame to solve pictures *************
+    driver.switch_to.window(mainWin)
+    driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[3])
+    solve_images(driver)
 
   # ************ submit the results ******************
   driver.switch_to.window(mainWin)
