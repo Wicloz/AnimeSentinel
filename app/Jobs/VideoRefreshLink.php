@@ -10,11 +10,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Video;
 use App\AnimeSentinel\VideoManager;
 
-class VideoSetMetadata implements ShouldQueue
+class VideoRefreshLink implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
 
-  protected $video;
+  protected $video_id;
 
   /**
    * Create a new job instance.
@@ -25,7 +25,7 @@ class VideoSetMetadata implements ShouldQueue
     $this->video_id = $video->id;
     // Set special database data
     $this->db_data = [
-      'job_task' => 'VideoSetMetadata',
+      'job_task' => 'VideoRefreshLink',
       'show_id' => $video->show->mal_id !== null ? $video->show->mal_id : $video->show->title,
       'job_data' => $video->id,
     ];
@@ -39,7 +39,7 @@ class VideoSetMetadata implements ShouldQueue
   public function handle() {
     $video = Video::find($this->video_id);
     if (isset($video)) {
-      VideoManager::setMetaDataFor($video, true);
+      VideoManager::refreshVideoLinkFor($video, true);
     }
   }
 }

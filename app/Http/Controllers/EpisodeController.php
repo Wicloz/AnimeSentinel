@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Show;
 use App\Video;
+use App\AnimeSentinel\VideoManager;
 
 class EpisodeController extends Controller
 {
@@ -28,10 +29,10 @@ class EpisodeController extends Controller
     }
 
     $bestMirror1 = $episode->best_mirror;
-    $bestMirror1->refreshVideoLink();
+    VideoManager::refreshVideoLinkFor($bestMirror1);
     $bestMirror2 = $episode->best_mirror;
     while ($bestMirror1->id !== $bestMirror2->id) {
-      $bestMirror2->refreshVideoLink();
+      VideoManager::refreshVideoLinkFor($bestMirror2);
       $bestMirror1 = $bestMirror2;
       $bestMirror2 = $episode->best_mirror;
     }
@@ -61,7 +62,7 @@ class EpisodeController extends Controller
     if (!isset($video)) {
       abort(404);
     }
-    $video->refreshVideoLink();
+    VideoManager::refreshVideoLinkFor($video);
 
     $mirrors = $show->videos()
                     ->episode($translation_type, $episode_num)
@@ -103,7 +104,7 @@ class EpisodeController extends Controller
       $video->hits++;
       $video->save();
     }
-    $video->refreshVideoLink();
+    VideoManager::refreshVideoLinkFor($video);
     // TODO: improve this
     return redirect($video->link_video);
   }

@@ -12,24 +12,8 @@ class ShowManager
    * Will also add any currently existing episodes.
    */
   public static function addShowWithTitle($title, $queue = 'default', $fromJob = false, $allowNonMal = true) {
-    // Set job values
-    $job_dbdata = [
-      ['job_task', '=', 'ShowAdd'],
-      ['show_id', '=', $title],
-      ['job_data', '=', json_encode(null)],
-    ];
-    // Remove any inferior queued jobs
-    \App\Job::deleteLowerThan('ShowAdd', $title);
-    // If this is queued as a job, remove it from the queue
-    \App\Job::where(array_merge($job_dbdata, [['reserved_at', '=', null]]))->delete();
-    // Hovever, if that job is in progress, wait for it to complete instead of running this function,
-    // but only if this function isn't started from the job
-    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
-      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
-        sleep(1);
-      }
-      return Show::withTitle($title)->first();
-    }
+    // Handle job related tasks
+    if (!handleJobFunction('ShowAdd', $title, null, $fromJob)) return;
 
     // Confirm this show isn't already in our databse
     $dbshow = Show::withTitle($title)->first();
@@ -72,24 +56,8 @@ class ShowManager
    * Will also add any currently existing episodes.
    */
   public static function addShowWithMalId($mal_id, $queue = 'default', $fromJob = false) {
-    // Set job values
-    $job_dbdata = [
-      ['job_task', '=', 'ShowAdd'],
-      ['show_id', '=', $mal_id],
-      ['job_data', '=', json_encode(null)],
-    ];
-    // Remove any inferior queued jobs
-    \App\Job::deleteLowerThan('ShowAdd', $mal_id);
-    // If this is queued as a job, remove it from the queue
-    \App\Job::where(array_merge($job_dbdata, [['reserved_at', '=', null]]))->delete();
-    // Hovever, if that job is in progress, wait for it to complete instead of running this function,
-    // but only if this function isn't started from the job
-    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
-      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
-        sleep(1);
-      }
-      return Show::where('mal_id', $mal_id)->first();
-    }
+    // Handle job related tasks
+    if (!handleJobFunction('ShowAdd', $mal_id, null, $fromJob)) return;
 
     // Confirm this show isn't already in our databse
     $dbshow = Show::where('mal_id', $mal_id)->first();
@@ -127,25 +95,9 @@ class ShowManager
    */
   public static function updateShowCache($show_id, $episodes = false, $queue = 'default', $fromJob = false) {
     $show = Show::find($show_id);
-    // Set job values
+    // Handle job related tasks
     $jobShowId = $show->mal_id !== null ? $show->mal_id : $show->title;
-    $job_dbdata = [
-      ['job_task', '=', 'ShowUpdate'],
-      ['show_id', '=', $jobShowId],
-      ['job_data', '=', json_encode(null)],
-    ];
-    // Remove any inferior queued jobs
-    \App\Job::deleteLowerThan('ShowUpdate', $jobShowId);
-    // If this is queued as a job, remove it from the queue
-    \App\Job::where(array_merge($job_dbdata, [['reserved_at', '=', null]]))->delete();
-    // Hovever, if that job is in progress, wait for it to complete instead of running this function,
-    // but only if this function isn't started from the job
-    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
-      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
-        sleep(1);
-      }
-      return;
-    }
+    if (!handleJobFunction('ShowUpdate', $jobShowId, null, $fromJob)) return;
 
     // If the mal id is not known yet, try to find it first
     if (!isset($show->mal_id)) {
@@ -158,7 +110,7 @@ class ShowManager
           $episodes = true;
         } else {
           $show->delete();
-          return false;
+          return $otherShow;
         }
       }
     }

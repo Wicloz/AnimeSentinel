@@ -15,9 +15,10 @@ class VideoManager
     foreach ($videos as $video) {
       $video->save();
       if (playerSupport($video->link_video)) {
-        queueJob(new \App\Jobs\VideoSetMetadata($video), $queue);
+        queueJob(new \App\Jobs\VideoRefreshLink($video), $queue);
       } else {
-        Self::setMetaDataFor($video);
+        $video->setVideoMetaData();
+        $video->save();
       }
     }
   }
@@ -33,30 +34,14 @@ class VideoManager
   }
 
   /**
-   * Sets the metadata for the requested video.
+   * Refreshes the video link and sets the metadata for the requested video.
    */
-  public static function setMetaDataFor($video, $fromJob = false) {
-    // Set job values
+  public static function refreshVideoLinkFor($video, $fromJob = false) {
+    // Handle job related tasks
     $jobShowId = $video->show->mal_id !== null ? $video->show->mal_id : $video->show->title;
-    $job_dbdata = [
-      ['job_task', '=', 'VideoSetMetadata'],
-      ['show_id', '=', $jobShowId],
-      ['job_data', '=', json_encode($video->id)],
-    ];
-    // Remove any inferior queued jobs
-    \App\Job::deleteLowerThan('VideoSetMetadata', $jobShowId);
-    // If this is queued as a job, remove it from the queue
-    \App\Job::where(array_merge($job_dbdata, [['reserved_at', '=', null]]))->delete();
-    // Hovever, if that job is in progress, wait for it to complete instead of running this function,
-    // but only if this function isn't started from the job
-    if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
-      while (count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
-        sleep(1);
-      }
-      return;
-    }
+    if (!handleJobFunction('VideoRefreshLink', $jobShowId, $video->id, $fromJob)) return;
 
-    $video->setVideoMetaData();
+    $video->refreshVideoLink();
     $video->save();
   }
 }

@@ -40,6 +40,8 @@ class Video extends BaseModel
 
   /**
    * Finds and saves the metadata for this video.
+   *
+   * @return boolean
    */
   public function setVideoMetaData($tries = 1) {
     if (playerSupport($this->link_video)) {
@@ -276,20 +278,17 @@ class Video extends BaseModel
 
   /**
   * Refresh the link_video for this video when it is needed.
-  *
-  * @return string
   */
   public function refreshVideoLink() {
     if (playerSupport($this->link_video)) {
       $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_format "'. $this->link_video .'"'));
       if (json_encode($data) === '{}') {
         $this->link_video = VideoManager::findVideoLink($this);
-        VideoManager::setMetaDataFor($this);
+        $this->setVideoMetaData();
       }
       elseif ($this->encoding === 'broken' || $this->encoding === 'embed' || $this->encoding === null) {
-        VideoManager::setMetaDataFor($this);
+        $this->setVideoMetaData();
       }
     }
-    return $this->link_video;
   }
 }
