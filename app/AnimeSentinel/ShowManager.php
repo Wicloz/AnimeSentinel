@@ -13,7 +13,7 @@ class ShowManager
    */
   public static function addShowWithTitle($title, $queue = 'default', $fromJob = false, $allowNonMal = true) {
     // Handle job related tasks
-    if (!handleJobFunction('ShowAdd', $title, null, $fromJob)) return;
+    if (!handleJobFunction('ShowAdd', $title, null, $fromJob)) return Show::withTitle($title)->first();
 
     // Confirm this show isn't already in our databse
     $dbshow = Show::withTitle($title)->first();
@@ -57,7 +57,7 @@ class ShowManager
    */
   public static function addShowWithMalId($mal_id, $queue = 'default', $fromJob = false) {
     // Handle job related tasks
-    if (!handleJobFunction('ShowAdd', $mal_id, null, $fromJob)) return;
+    if (!handleJobFunction('ShowAdd', $mal_id, null, $fromJob)) return Show::where('mal_id', $mal_id)->first();
 
     // Confirm this show isn't already in our databse
     $dbshow = Show::where('mal_id', $mal_id)->first();
@@ -97,7 +97,7 @@ class ShowManager
     $show = Show::find($show_id);
     // Handle job related tasks
     $jobShowId = $show->mal_id !== null ? $show->mal_id : $show->title;
-    if (!handleJobFunction('ShowUpdate', $jobShowId, null, $fromJob)) return;
+    if (!handleJobFunction('ShowUpdate', $jobShowId, null, $fromJob)) return Show::find($show_id);
 
     // If the mal id is not known yet, try to find it first
     if (!isset($show->mal_id)) {
