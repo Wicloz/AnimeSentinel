@@ -88,8 +88,8 @@ if __name__ == "__main__":
   wait_between(1.0, 2.0)
 
   # ************ start solving pictures ******************
-  for i in range(1, 100):
-    print('{0}-th loop'.format(i))
+  for i in range(0, 33):
+    print('{0}-th loop'.format(i + 1))
 
     # ******** check if checkbox is checked at the 1st frame ***********
     driver.switch_to.window(mainWin)
