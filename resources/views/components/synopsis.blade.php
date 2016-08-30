@@ -103,7 +103,7 @@
                     Latest Subbed: No episodes available
                   @endif
                 @else
-                  <a href="{{ fullUrl('/anime/'.$syn_show->id.'/sub/episode-'.$syn_show->latest_sub->episode_num) }}">
+                  <a href="{{ $syn_show->latest_sub->episode_url }}">
                     Latest Subbed: Epsiode {{ $syn_show->latest_sub->episode_num }}; Uploaded on {{ $syn_show->latest_sub->uploadtime->format('M j, Y (l)') }}
                   </a>
                 @endif
@@ -116,7 +116,7 @@
                     Latest Dubbed: No episodes available
                   @endif
                 @else
-                  <a href="{{ fullUrl('/anime/'.$syn_show->id.'/dub/episode-'.$syn_show->latest_dub->episode_num) }}">
+                  <a href="{{ $syn_show->latest_dub->episode_url }}">
                     Latest Dubbed: Epsiode {{ $syn_show->latest_dub->episode_num }}; Uploaded on {{ $syn_show->latest_dub->uploadtime->format('M j, Y (l)') }}
                   </a>
                 @endif
