@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Queue;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Queue\Events\JobFailed;
 
 class AppServiceProvider extends ServiceProvider
@@ -16,9 +16,8 @@ class AppServiceProvider extends ServiceProvider
   public function boot() {
     Queue::failing(function (JobFailed $event) {
       \Mail::send('emails.report_bug', ['description' => 'Job Failed', 'vars' => [
-        'JobId' => json_encode($event->job->id()),
         'Data' => json_encode($event->job->payload()),
-        'Exception' => json_encode($event->exception),
+        'Exception' => $event->exception,
       ]], function ($m) {
         $m->subject('AnimeSentinel Job Fail Report');
         $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Reports');

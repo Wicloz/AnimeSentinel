@@ -5,6 +5,6 @@ Report from AnimeSentinel ({{ config('app.env') }}):<br>
 </p>
 <ul>
   @foreach($vars as $key => $value)
-    <li>{{ $key }}: {{ $value }}</li>
+    <li>{{ $key }}: {!! nl2br($value) !!}</li>
   @endforeach
 </ul>
