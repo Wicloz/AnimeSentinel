@@ -11,7 +11,7 @@ class ShowManager
    * Adds the show with the requested title to the database.
    * Will also add any currently existing episodes.
    */
-  public static function addShowWithTitle($title, $queue = 'default', $fromJob = false, $allowNonMal = true) {
+  public static function addShowWithTitle($title, $queue = 'default', $allowNonMal = true, $fromJob = false) {
     // Handle job related tasks
     if (!handleJobFunction('ShowAdd', $title, null, $fromJob)) return Show::withTitle($title)->first();
 

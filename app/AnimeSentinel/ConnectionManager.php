@@ -153,7 +153,7 @@ class ConnectionManager
           // Add the show if it does not exist
           if ($show === null) {
             if ($streamer->id === 'kisscartoon') {
-              $show = ShowManager::addShowWithTitle($item['title'], 'periodic_high', false, false);
+              $show = ShowManager::addShowWithTitle($item['title'], 'periodic_high', false);
             } else {
               $show = ShowManager::addShowWithTitle($item['title'], 'periodic_high');
             }
