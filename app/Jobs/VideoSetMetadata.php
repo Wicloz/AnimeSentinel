@@ -14,6 +14,8 @@ class VideoSetMetadata implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
 
+  protected $video;
+
   /**
    * Create a new job instance.
    *

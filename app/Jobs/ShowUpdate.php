@@ -14,6 +14,9 @@ class ShowUpdate implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
 
+  protected $show_id;
+  protected $episodes;
+
   /**
    * Create a new job instance.
    *

@@ -14,13 +14,15 @@ class StreamerFindVideos implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
 
+  protected $streamer;
+
   /**
    * Create a new job instance.
    *
    * @return void
    */
   public function __construct(Streamer $streamer) {
-    $this->streamer_id = $streamer->id;
+    $this->streamer = $streamer;
     // Set special database data
     $this->db_data = [
       'job_task' => 'StreamerFindVideos',
@@ -35,6 +37,6 @@ class StreamerFindVideos implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ConnectionManager::findVideosForStreamer(Streamer::find($this->streamer_id));
+    ConnectionManager::findVideosForStreamer($this->streamer);
   }
 }

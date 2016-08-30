@@ -13,6 +13,9 @@ class ShowAdd implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
 
+  protected $mal_id;
+  protected $title;
+
   /**
    * Create a new job instance.
    *
@@ -37,7 +40,7 @@ class ShowAdd implements ShouldQueue
   public function handle() {
     if (isset($this->$title)) {
       ShowManager::addShowWithTitle($this->title, 'default', true);
-    } else {
+    } elseif (isset($this->mal_id)) {
       ShowManager::addShowWithMalId($this->mal_id, 'default', true);
     }
   }

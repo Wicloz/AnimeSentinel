@@ -51,7 +51,8 @@ class Downloaders
   public static function downloadCloudFlare($url, $cookieid = 'cloudflare') {
     if (file_exists(__DIR__.'/../../storage/app/cookies/'.$cookieid)) {
       $cf_data = json_decode(file_get_contents(__DIR__.'/../../storage/app/cookies/'.$cookieid));
-    } else {
+    }
+    if (empty($cf_data)) {
       Self::requestCloudFlareData($url, $cookieid);
       return Self::downloadCloudFlare($url, $cookieid);
     }

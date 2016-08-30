@@ -14,13 +14,15 @@ class AnimeFindVideos implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
 
+  protected $show;
+
   /**
    * Create a new job instance.
    *
    * @return void
    */
   public function __construct(Show $show) {
-    $this->show_id = $show->id;
+    $this->show = $show;
     // Set special database data
     $this->db_data = [
       'job_task' => 'AnimeFindVideos',
@@ -35,6 +37,6 @@ class AnimeFindVideos implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ConnectionManager::findVideosForShow(Show::find($this->show_id), true);
+    ConnectionManager::findVideosForShow($this->show, true);
   }
 }

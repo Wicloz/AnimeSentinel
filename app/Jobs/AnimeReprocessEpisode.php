@@ -14,13 +14,18 @@ class AnimeReprocessEpisode implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
 
+  protected $show;
+  protected $translation_types;
+  protected $episode_num;
+  protected $streamer_id;
+
   /**
    * Create a new job instance.
    *
    * @return void
    */
   public function __construct(Show $show, $translation_types, $episode_num, $streamer_id = null) {
-    $this->show_id = $show->id;
+    $this->show = $show;
     $this->translation_types = $translation_types;
     $this->episode_num = $episode_num;
     $this->streamer_id = $streamer_id;
@@ -42,6 +47,6 @@ class AnimeReprocessEpisode implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ConnectionManager::reprocessEpsiode(Show::find($this->show_id), $this->translation_types, $this->episode_num, $this->streamer_id, true);
+    ConnectionManager::reprocessEpsiode($this->show, $this->translation_types, $this->episode_num, $this->streamer_id, true);
   }
 }
