@@ -78,6 +78,10 @@ class Downloaders
       Self::requestCloudFlareData($url, $cookieid);
       return Self::downloadCloudFlare($url, $cookieid);
     }
+    if (str_contains(preg_replace('/\s+/', '', $response), '<title>AreYouHuman</title>')) {
+      exec('python '. __DIR__ .'/ReCaptcha.py "'. $url .'" "'. $cf_data->agent .'"');
+      return Self::downloadCloudFlare($url, $cookieid);
+    }
 
     return $response;
   }

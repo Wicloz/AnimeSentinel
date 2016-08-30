@@ -98,7 +98,7 @@
         </tr>
         <tr>
           <td>Solve kissanime's noCaptcha challenges.</td>
-          <td>✘</td>
+          <td>WIP</td>
         </tr>
         <tr>
           <td>Implement the download helper with retries and failures.</td>
