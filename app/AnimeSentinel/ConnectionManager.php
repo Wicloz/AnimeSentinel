@@ -176,7 +176,7 @@ class ConnectionManager
             if (!in_array($show->id, $addedShows)) {
               if (!isset($item['translation_type'])) {
                 if ($show->videos()->episode('sub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null ||
-                    $show->videos()->episode('sub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null)
+                    $show->videos()->episode('dub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null)
                 {
                   queueJob(new \App\Jobs\AnimeReprocessEpisode($show, ['sub', 'dub'], (int) $item['episode_num'], $streamer->id), 'periodic_high');
                 }
