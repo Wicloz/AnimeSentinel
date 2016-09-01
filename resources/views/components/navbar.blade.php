@@ -36,6 +36,10 @@
               {{ Auth::user()->name }} <span class="caret"></span>
             </a>
             <ul class="dropdown-menu" role="menu">
+              <li {{ request()->is('dashboard') ? 'class=active' : '' }}><a href="{{ fullUrl('/dashboard') }}">Your Anime Overview</a></li>
+              <li {{ request()->is('user/settings') ? 'class=active' : '' }}><a href="{{ fullUrl('/user/settings') }}">General Settings</a></li>
+              <li {{ request()->is('user/notifications/mail') ? 'class=active' : '' }}><a href="{{ fullUrl('/user/notifications/mail') }}">Mail Notification Settings</a></li>
+              <li {{ request()->is('user/settings/css') ? 'class=active' : '' }}><a href="{{ fullUrl('/user/settings/css') }}">Customize CSS</a></li>
               <li>
                 <a href="{{ url('/logout') }}"
                   onclick="event.preventDefault();

@@ -42,4 +42,8 @@ Route::get('/anime/{show}/{title}/{translation_type}/episode-{episode_num}', 'Ep
 Route::get('/anime/{show}/{title}/{translation_type}/episode-{episode_num}/{streamer}/{mirror}', 'EpisodeController@episode');
 Route::get('/stream/{video}/video', 'EpisodeController@static');
 
-// Profile Pages (TODO)
+// Profile Pages
+Route::get('/dashboard', 'UserController@overview'); //TODO
+Route::get('/user/settings', 'UserSettingsController@general'); //TODO
+Route::get('/user/settings/css', 'CssController@userSettings'); //TODO
+Route::get('/user/notifications/mail', 'UserSettingsController@nots_mail'); //TODO

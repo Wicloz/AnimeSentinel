@@ -174,8 +174,22 @@ function str_ends_with($haystack, $needle) {
   return $needle === '' || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== false);
 }
 
-function str_fuzz($string) {
-  return str_replace(' & ', '&', str_replace(' to ', '&', str_replace(' and ', '&', mb_strtolower(trim($string)))));
+function str_fuzz($string, $removeColon = true) {
+  $replace = [
+    ' and ' => '&',
+    ' to ' => '&',
+    ' & ' => '&',
+  ];
+
+  $string = mb_strtolower(trim($string));
+  foreach ($replace as $from => $to) {
+    $string = str_replace($from, $to, $string);
+  }
+  if ($removeColon) {
+    $string = str_replace(': ', ' ', $string);
+  }
+
+  return $string;
 }
 
 function str_to_url($string, $delim = '-', $preg = '/[^a-zA-Z0-9α-ωΑ-Ω\\-\\_]/u') {

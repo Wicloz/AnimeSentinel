@@ -15,9 +15,20 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->unique();
+
+            $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('password');
+
+            $table->string('mal_user')->default('');
+            $table->string('mal_pass')->default('');
+
+            $table->boolean('nots_mail_state')->default(true);
+            $table->text('nots_mail_settings_general')->nullable();
+            $table->text('nots_mail_settings_specific')->nullable();
+
+            $table->boolean('auto_watching')->default(true);
+
             $table->rememberToken();
             $table->timestamps();
         });
