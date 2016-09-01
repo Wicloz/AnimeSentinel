@@ -36,10 +36,9 @@ class VideoManager
   /**
    * Refreshes the video link and sets the metadata for the requested video.
    */
-  public static function refreshVideoLinkFor($video, $fromJob = false) {
+  public static function refreshVideoLinkFor($video, $job) {
     // Handle job related tasks
-    $jobShowId = $video->show->mal_id !== null ? $video->show->mal_id : $video->show->title;
-    if (!handleJobFunction('VideoRefreshLink', $jobShowId, $video->id, $fromJob)) return;
+    if (!preHandleJob($job->db_data)) return;
 
     $video->refreshVideoLink();
     $video->save();

@@ -12,6 +12,7 @@ use App\AnimeSentinel\ConnectionManager;
 class FindRecentVideos implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
+  public $db_data;
 
   /**
    * Create a new job instance.

@@ -13,6 +13,7 @@ use App\AnimeSentinel\ConnectionManager;
 class StreamerFindVideos implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
+  public $db_data;
 
   protected $streamer;
 
@@ -37,6 +38,6 @@ class StreamerFindVideos implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ConnectionManager::findVideosForStreamer($this->streamer, true);
+    ConnectionManager::findVideosForStreamer($this->streamer, $this);
   }
 }

@@ -12,10 +12,9 @@ class ConnectionManager
    * Removes all existing episodes and videos for that show.
    * This is used when a new show is added or some shows videos are broken and need to be refreshed.
    */
-  public static function findVideosForShow($show, $fromJob = false) {
+  public static function findVideosForShow($show, $job) {
     // Handle job related tasks
-    $jobShowId = $show->mal_id !== null ? $show->mal_id : $show->title;
-    if (!handleJobFunction('AnimeFindVideos', $jobShowId, null, $fromJob)) return;
+    if (!preHandleJob($job->db_data)) return;
 
     // Mark show as not initialised
     $show->videos_initialised = false;
@@ -43,7 +42,7 @@ class ConnectionManager
     // Mail an anomaly report if no videos were found
     if (count($videos) == 0) {
       mailAnomaly($show, 'Could not find any videos when searching for all videos.', [
-        'Run From a Job' => $fromJob ? 'Yes' : 'No',
+        'Connection' => $job->db_data['connection'],
       ]);
     }
   }
@@ -51,14 +50,9 @@ class ConnectionManager
   /**
    * Removes and adds all videos for the requested show and episode.
    */
-  public static function reprocessEpsiode($show, $translation_types, $episode_num, $streamer_id = null, $fromJob = false) {
+  public static function reprocessEpsiode($show, $translation_types, $episode_num, $streamer_id = null, $job) {
     // Handle job related tasks
-    $jobShowId = $show->mal_id !== null ? $show->mal_id : $show->title;
-    if (!handleJobFunction('AnimeReprocessEpisode', $jobShowId, [
-      'translation_types' => $translation_types,
-      'episode_num' => $episode_num,
-      'streamer_id' => $streamer_id,
-    ], $fromJob)) return;
+    if (!preHandleJob($job->db_data)) return;
 
     // Mark show as not initialised
     $show->videos_initialised = false;
@@ -100,7 +94,7 @@ class ConnectionManager
         'Translation Types' => json_encode($translation_types),
         'Epsiode Number' => $episode_num,
         'Streaming Site' => isset($streamer_id) ? $streamer_id : 'NA',
-        'Run From a Job' => $fromJob ? 'Yes' : 'No',
+        'Connection' => $job->db_data['connection'],
       ]);
     }
   }
@@ -109,9 +103,9 @@ class ConnectionManager
    * Finds all video's for all existing shows on a specific streaming site.
    * This is used when a new streaming site is added.
    */
-  public static function findVideosForStreamer($streamer, $fromJob = false) {
+  public static function findVideosForStreamer($streamer, $job) {
     // Handle job related tasks
-    if (!handleJobFunction('StreamerFindVideos', null, ['streamer_id' => $streamer->id], $fromJob)) return;
+    if (!preHandleJob($job->db_data)) return;
 
     // Process all shows data in chuncks of 100
     Show::orderBy('id')->chunk(100, function ($shows) use ($streamer) {
@@ -167,7 +161,7 @@ class ConnectionManager
             if ($show->mal_id === null) {
               $show = ShowManager::updateShowCache($show->id, false, 'periodic_high');
               if ($show->mal_id !== null) {
-                queueJob(new \App\Jobs\AnimeFindVideos($show), $queue);
+                queueJob(new \App\Jobs\AnimeFindVideos($show), 'periodic_high');
                 $addedShows[] = $show->id;
               }
             }

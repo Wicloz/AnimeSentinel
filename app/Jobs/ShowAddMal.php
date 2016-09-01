@@ -9,25 +9,27 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 use App\AnimeSentinel\ShowManager;
 
-class ShowAdd implements ShouldQueue
+class ShowAddMal implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
+  public $db_data;
 
   protected $mal_id;
-  protected $title;
+  protected $queue;
 
   /**
    * Create a new job instance.
    *
    * @return void
    */
-  public function __construct($mal_id = null, $title = null) {
+  public function __construct($mal_id, $queue = 'default') {
     $this->mal_id = $mal_id;
-    $this->title = $title;
+    $this->allowNonMal = $allowNonMal;
+    $this->queue = $queue;
     // Set special database data
     $this->db_data = [
       'job_task' => 'ShowAdd',
-      'show_id' => $title !== null ? $title : $mal_id,
+      'show_id' => $mal_id,
       'job_data' => null,
     ];
   }
@@ -38,10 +40,6 @@ class ShowAdd implements ShouldQueue
    * @return void
    */
   public function handle() {
-    if (isset($this->$title)) {
-      ShowManager::addShowWithTitle($this->title, 'default', true, true);
-    } elseif (isset($this->mal_id)) {
-      ShowManager::addShowWithMalId($this->mal_id, 'default', true);
-    }
+    ShowManager::addShowWithMalId($this->mal_id, $this->queue, $this);
   }
 }

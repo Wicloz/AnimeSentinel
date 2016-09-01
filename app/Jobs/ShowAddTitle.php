@@ -7,27 +7,30 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-use App\Show;
-use App\AnimeSentinel\ConnectionManager;
+use App\AnimeSentinel\ShowManager;
 
-class AnimeFindVideos implements ShouldQueue
+class ShowAddTitle implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
   public $db_data;
 
-  protected $show;
+  protected $title;
+  protected $allowNonMal;
+  protected $queue;
 
   /**
    * Create a new job instance.
    *
    * @return void
    */
-  public function __construct(Show $show) {
-    $this->show = $show;
+  public function __construct($title, $allowNonMal = true, $queue = 'default') {
+    $this->title = $title;
+    $this->allowNonMal = $allowNonMal;
+    $this->queue = $queue;
     // Set special database data
     $this->db_data = [
-      'job_task' => 'AnimeFindVideos',
-      'show_id' => $show->mal_id !== null ? $show->mal_id : $show->title,
+      'job_task' => 'ShowAdd',
+      'show_id' => $title,
       'job_data' => null,
     ];
   }
@@ -38,6 +41,6 @@ class AnimeFindVideos implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ConnectionManager::findVideosForShow($this->show, $this);
+    ShowManager::addShowWithTitle($this->title, $this->allowNonMal, $this->queue, $this);
   }
 }
