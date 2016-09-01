@@ -293,18 +293,18 @@
       <tbody>
         <tr>
           <td>Improve the login and register pages.</td>
-          <td>✘</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Create the users general options page.</td>
           <td>✘</td>
         </tr>
         <tr>
-          <td>Create the users notifications options page.</td>
+          <td>Create the users mail notifications options page.</td>
           <td>✘</td>
         </tr>
         <tr>
-          <td>Create the users overview page.</td>
+          <td>Create the users anime overview page.</td>
           <td>✘</td>
         </tr>
         <tr>

@@ -18,6 +18,7 @@ Route::get('/', 'AnimeController@home');
 
 // Information Pages
 Route::get('/about', 'PagesController@about');
+Route::get('/about/mal', 'PagesController@about_mal'); //TODO
 Route::get('/news', 'PagesController@news'); //TODO
 
 // Streamers Pages
