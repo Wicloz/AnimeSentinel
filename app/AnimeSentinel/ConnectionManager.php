@@ -43,7 +43,7 @@ class ConnectionManager
     // Mail an anomaly report if no videos were found
     if (count($videos) == 0) {
       mailAnomaly($show, 'Could not find any videos when searching for all videos.', [
-        'Run From a Job' => $fromJob ? 'Yes' : 'No',
+        'Ran From a Job' => $fromJob ? 'Yes' : 'No',
       ]);
     }
   }
@@ -100,7 +100,7 @@ class ConnectionManager
         'Translation Types' => json_encode($translation_types),
         'Epsiode Number' => $episode_num,
         'Streaming Site' => isset($streamer_id) ? $streamer_id : 'NA',
-        'Run From a Job' => $fromJob ? 'Yes' : 'No',
+        'Ran From a Job' => $fromJob ? 'Yes' : 'No',
       ]);
     }
   }
@@ -153,9 +153,9 @@ class ConnectionManager
           // Add the show if it does not exist
           if ($show === null) {
             if ($streamer->id === 'kisscartoon') {
-              $show = ShowManager::addShowWithTitle($item['title'], 'periodic_high', false);
+              $show = ShowManager::addShowWithTitle($item['title'], false, 'periodic_high');
             } else {
-              $show = ShowManager::addShowWithTitle($item['title'], 'periodic_high');
+              $show = ShowManager::addShowWithTitle($item['title'], true, 'periodic_high');
             }
             if ($show !== null) {
               $addedShows[] = $show->id;

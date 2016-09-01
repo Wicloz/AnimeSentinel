@@ -11,7 +11,7 @@ class ShowManager
    * Adds the show with the requested title to the database.
    * Will also add any currently existing episodes.
    */
-  public static function addShowWithTitle($title, $queue = 'default', $allowNonMal = true, $fromJob = false) {
+  public static function addShowWithTitle($title, $allowNonMal, $queue = 'default', $fromJob = false) {
     // Handle job related tasks
     if (!handleJobFunction('ShowAdd', $title, null, $fromJob)) return Show::withTitle($title)->first();
 
@@ -42,7 +42,7 @@ class ShowManager
       $show = Self::finalizeShowAdding($show, $queue);
       // Mail an anomaly report
       mailAnomaly($show, 'Could not find show on MAL.', [
-        'Run From a Job' => $fromJob ? 'Yes' : 'No',
+        'Ran From a Job' => $fromJob ? 'Yes' : 'No',
       ]);
       // Return the show
       return $show;
