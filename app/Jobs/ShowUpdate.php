@@ -16,15 +16,17 @@ class ShowUpdate implements ShouldQueue
 
   protected $show_id;
   protected $episodes;
+  protected $targetQueue;
 
   /**
    * Create a new job instance.
    *
    * @return void
    */
-  public function __construct($show_id, $episodes = false) {
+  public function __construct($show_id, $episodes = false, $targetQueue = 'default') {
     $this->show_id = $show_id;
     $this->episodes = $episodes;
+    $this->targetQueue = $targetQueue;
     // Set special database data
     $show = Show::find($show_id);
     $mode = $episodes ? 'true' : 'false';
@@ -41,6 +43,6 @@ class ShowUpdate implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ShowManager::updateShowCache($this->show_id, $this->episodes, 'default', true);
+    ShowManager::updateShowCache($this->show_id, $this->episodes, $this->targetQueue, true);
   }
 }
