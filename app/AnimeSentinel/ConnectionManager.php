@@ -13,6 +13,9 @@ class ConnectionManager
    * This is used when a new show is added or some shows videos are broken and need to be refreshed.
    */
   public static function findVideosForShow($show, $job) {
+    // Handle job related tasks
+    if (!preHandleJob($job->db_data)) return;
+
     // Mark show as not initialised
     $show->videos_initialised = false;
     $show->save();
@@ -48,6 +51,9 @@ class ConnectionManager
    * Removes and adds all videos for the requested show and episode.
    */
   public static function reprocessEpsiode($show, $translation_types, $episode_num, $streamer_id = null, $job) {
+    // Handle job related tasks
+    if (!preHandleJob($job->db_data)) return;
+
     // Mark show as not initialised
     $show->videos_initialised = false;
     $show->save();
@@ -98,6 +104,9 @@ class ConnectionManager
    * This is used when a new streaming site is added.
    */
   public static function findVideosForStreamer($streamer, $job) {
+    // Handle job related tasks
+    if (!preHandleJob($job->db_data)) return;
+
     // Process all shows data in chuncks of 100
     Show::orderBy('id')->chunk(100, function ($shows) use ($streamer) {
       foreach ($shows as $show) {
@@ -138,11 +147,10 @@ class ConnectionManager
           // Add the show if it does not exist
           if ($show === null) {
             if ($streamer->id === 'kisscartoon') {
-              runJob(new \App\Jobs\ShowAddTitle($item['title'], false, 'periodic_high'));
+              $show = ShowManager::addShowWithTitle($item['title'], 'periodic_high', false);
             } else {
-              runJob(new \App\Jobs\ShowAddTitle($item['title'], true, 'periodic_high'));
+              $show = ShowManager::addShowWithTitle($item['title'], 'periodic_high');
             }
-            $show = Show::withTitle($item['title'])->first();
             if ($show !== null) {
               $addedShows[] = $show->id;
             }
@@ -151,8 +159,7 @@ class ConnectionManager
           else {
             // Try to update the show cache if it does not have a mal id set
             if ($show->mal_id === null) {
-              runJob(new \App\Jobs\ShowUpdate($show->id));
-              $show = Show::withTitle($item['title'])->first();
+              $show = ShowManager::updateShowCache($show->id, false, 'periodic_high');
               if ($show->mal_id !== null) {
                 queueJob(new \App\Jobs\AnimeFindVideos($show), 'periodic_high');
                 $addedShows[] = $show->id;

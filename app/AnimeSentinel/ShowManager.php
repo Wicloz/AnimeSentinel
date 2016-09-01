@@ -11,7 +11,10 @@ class ShowManager
    * Adds the show with the requested title to the database.
    * Will also add any currently existing episodes.
    */
-  public static function addShowWithTitle($title, $allowNonMal, $queue = 'default', $job) {
+  public static function addShowWithTitle($title, $allowNonMal = true, $queue = 'default', $job) {
+    // Handle job related tasks
+    if (!preHandleJob($job->db_data)) return Show::withTitle($title)->first();
+
     // Confirm this show isn't already in our databse
     $dbshow = Show::withTitle($title)->first();
     if (!empty($dbshow)) {
@@ -53,6 +56,9 @@ class ShowManager
    * Will also add any currently existing episodes.
    */
   public static function addShowWithMalId($mal_id, $queue = 'default', $job) {
+    // Handle job related tasks
+    if (!preHandleJob($job->db_data)) return Show::where('mal_id', $mal_id)->first();
+
     // Confirm this show isn't already in our databse
     $dbshow = Show::where('mal_id', $mal_id)->first();
     if (!empty($dbshow)) {
@@ -88,6 +94,9 @@ class ShowManager
    * If episodes is set to true, also updates episode information.
    */
   public static function updateShowCache($show, $episodes = false, $queue = 'default', $job) {
+    // Handle job related tasks
+    if (!preHandleJob($job->db_data)) return Show::find($show_id);
+
     // If the mal id is not known yet, try to find it first
     if (!isset($show->mal_id)) {
       $mal_id = MyAnimeList::getMalIdForTitle($show->title);

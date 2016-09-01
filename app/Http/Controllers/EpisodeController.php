@@ -29,10 +29,10 @@ class EpisodeController extends Controller
     }
 
     $bestMirror1 = $episode->best_mirror;
-    runJob(new \App\Jobs\VideoRefreshLink($bestMirror1));
+    VideoManager::refreshVideoLinkFor($bestMirror1);
     $bestMirror2 = $episode->best_mirror;
     while ($bestMirror1->id !== $bestMirror2->id) {
-      runJob(new \App\Jobs\VideoRefreshLink($bestMirror2));
+      VideoManager::refreshVideoLinkFor($bestMirror2);
       $bestMirror1 = $bestMirror2;
       $bestMirror2 = $episode->best_mirror;
     }
@@ -62,7 +62,7 @@ class EpisodeController extends Controller
     if (!isset($video)) {
       abort(404);
     }
-    runJob(new \App\Jobs\VideoRefreshLink($video));
+    VideoManager::refreshVideoLinkFor($video);
 
     $mirrors = $show->videos()
                     ->episode($translation_type, $episode_num)
@@ -104,7 +104,7 @@ class EpisodeController extends Controller
       $video->hits++;
       $video->save();
     }
-    runJob(new \App\Jobs\VideoRefreshLink($video));
+    VideoManager::refreshVideoLinkFor($video);
     // TODO: improve this
     return redirect($video->link_video);
   }
