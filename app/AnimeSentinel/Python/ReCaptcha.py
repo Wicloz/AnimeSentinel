@@ -30,7 +30,7 @@ def solve_images(driver):
     EC.presence_of_element_located((By.ID ,"rc-imageselect-target"))
   )
   dim = dimention(driver)
-  rand3 = randint(0, 1)
+  rand4 = randint(0, 1)
 
   # ****************** click on tiles ******************
   tile1 = WebDriverWait(driver, 10).until(
@@ -43,11 +43,16 @@ def solve_images(driver):
   )
   tile2.click()
 
-  if (rand3):
-    tile3 = WebDriverWait(driver, 10).until(
+  tile3 = WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.XPATH, '//div[@id="rc-imageselect-target"]/table/tbody/tr[{0}]/td[{1}]'.format(randint(1, dim), randint(1, dim))))
+  )
+  tile3.click()
+
+  if (rand4):
+    tile4 = WebDriverWait(driver, 10).until(
       EC.element_to_be_clickable((By.XPATH, '//div[@id="rc-imageselect-target"]/table/tbody/tr[{0}]/td[{1}]'.format(randint(1, dim), randint(1, dim))))
     )
-    tile3.click()
+    tile4.click()
 
   # ****************** click on submit buttion ******************
   wait_between(0.3, 0.7)
