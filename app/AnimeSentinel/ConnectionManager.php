@@ -12,7 +12,10 @@ class ConnectionManager
    * Removes all existing episodes and videos for that show.
    * This is used when a new show is added or some shows videos are broken and need to be refreshed.
    */
-  public static function findVideosForShow($show, $job) {
+  public static function findVideosForShow($show) {
+    // Handle job related tasks
+    if (!preHandleJob($job->db_data)) return;
+
     // Mark show as not initialised
     $show->videos_initialised = false;
     $show->save();
@@ -47,7 +50,10 @@ class ConnectionManager
   /**
    * Removes and adds all videos for the requested show and episode.
    */
-  public static function reprocessEpsiode($show, $translation_types, $episode_num, $streamer_id = null, $job) {
+  public static function reprocessEpsiode($show, $translation_types, $episode_num, $streamer_id = null) {
+    // Handle job related tasks
+    if (!preHandleJob($job->db_data)) return;
+
     // Mark show as not initialised
     $show->videos_initialised = false;
     $show->save();
@@ -97,7 +103,10 @@ class ConnectionManager
    * Finds all video's for all existing shows on a specific streaming site.
    * This is used when a new streaming site is added.
    */
-  public static function findVideosForStreamer($streamer, $job) {
+  public static function findVideosForStreamer($streamer) {
+    // Handle job related tasks
+    if (!preHandleJob($job->db_data)) return;
+
     // Process all shows data in chuncks of 100
     Show::orderBy('id')->chunk(100, function ($shows) use ($streamer) {
       foreach ($shows as $show) {
@@ -154,7 +163,6 @@ class ConnectionManager
               runJob(new \App\Jobs\ShowUpdate($show->id));
               $show = Show::withTitle($item['title'])->first();
               if ($show->mal_id !== null) {
-                queueJob(new \App\Jobs\AnimeFindVideos($show), 'periodic_high');
                 $addedShows[] = $show->id;
               }
             }
