@@ -9,17 +9,17 @@ class Downloaders
    *
    * @return string
    */
-  public static function downloadPage($url) {
+  public static function downloadPage($url, $tries = 0) {
     $url = preg_replace_callback('/([^a-zA-Z0-9\\=\\:\\+\\&\\?\\-\\_\\/\\\\])/u', function($matches) {
       return urlencode($matches[1]);
     }, $url);
 
     if (str_contains($url, 'kissanime.to')) {
-      $response = Self::downloadCloudFlare($url, 'kissanime');
+      $response = Self::downloadCloudFlare($url, 'kissanime', $tries);
     } elseif (str_contains($url, 'kisscartoon.me')) {
-      $response = Self::downloadCloudFlare($url, 'kisscartoon');
+      $response = Self::downloadCloudFlare($url, 'kisscartoon', $tries);
     } elseif (str_contains($url, 'gogoanime.io')) {
-      $response = Self::downloadCloudFlare($url, 'gogoanime');
+      $response = Self::downloadCloudFlare($url, 'gogoanime', $tries);
     }
 
     else {
@@ -39,7 +39,7 @@ class Downloaders
    *
    * @return string
    */
-  public static function downloadJavaScript($url) {
+  private static function downloadJavaScript($url) {
     return ""; //TODO
   }
 
@@ -48,13 +48,13 @@ class Downloaders
    *
    * @return string
    */
-  public static function downloadCloudFlare($url, $cookieid = 'cloudflare') {
+  private static function downloadCloudFlare($url, $cookieid = 'cloudflare', $tries = 0) {
     if (file_exists(__DIR__.'/../../storage/app/cookies/'.$cookieid)) {
       $cf_data = json_decode(file_get_contents(__DIR__.'/../../storage/app/cookies/'.$cookieid));
     }
     if (empty($cf_data)) {
       Self::requestCloudFlareData($url, $cookieid);
-      return Self::downloadCloudFlare($url, $cookieid);
+      return Self::downloadPage($url, $tries + 1);
     }
 
     if ($cookieid === 'kissanime') {
@@ -76,11 +76,21 @@ class Downloaders
 
     if (str_contains($response, '<title>Please wait 5 seconds...</title>')) {
       Self::requestCloudFlareData($url, $cookieid);
-      return Self::downloadCloudFlare($url, $cookieid);
+      return Self::downloadPage($url, $tries + 1);
+    }
+
+    if ($tries === 0 && str_contains($response, 'https://www.google.com/recaptcha/api.js')) {
+      \Mail::send('emails.report_general', ['description' => 'ReCaptcha Detected', 'vars' => [
+        'Url' => $url,
+      ]], function ($m) {
+        $m->subject('AnimeSentinel Detected ReCaptcha');
+        $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Reports');
+        $m->to('animesentinel@wilcodeboer.me');
+      });
     }
     if (str_contains(preg_replace('/\s+/', '', $response), '<title>AreYouHuman</title>')) {
       exec('python '. __DIR__ .'/ReCaptcha.py "'. $url .'" "'. $cf_data->agent .'"');
-      return Self::downloadCloudFlare($url, $cookieid);
+      return Self::downloadPage($url, $tries + 1);
     }
 
     return $response;
