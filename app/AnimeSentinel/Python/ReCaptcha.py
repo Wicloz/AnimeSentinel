@@ -58,24 +58,29 @@ if __name__ == "__main__":
   print 'Solving reCAPTCHA to unlock page ...'
   start = time()
   url = sys.argv[1]
+  frame1loc = sys.argv[2]
+  frame2loc = sys.argv[3]
+  submit_id = sys.argv[4]
 
   # ************* setup webdriver **************
   # dcap = dict(DesiredCapabilities.PHANTOMJS)
   # dcap["phantomjs.page.settings.userAgent"] = (sys.argv[2])
   # driver = webdriver.PhantomJS(desired_capabilities = dcap)
   profile = webdriver.FirefoxProfile()
-  profile.set_preference("general.useragent.override", sys.argv[2])
+  profile.set_preference("general.useragent.override", sys.argv[5])
   driver = webdriver.Firefox(profile)
 
   # ************* load target page **************
   driver.get(url)
   mainWin = driver.current_window_handle
 
-  # move the driver to the first iFrame
+  # wait for the page to finish loading
   Submit = WebDriverWait(driver, 10).until(
-    EC.presence_of_element_located((By.ID, "btnSubmit"))
+    EC.presence_of_element_located((By.ID, submit_id))
   )
-  driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[1])
+
+  # move the driver to the first iFrame
+  driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[frame1loc])
 
   # ************* locate CheckBox **************
   CheckBox = WebDriverWait(driver, 10).until(
@@ -96,16 +101,16 @@ if __name__ == "__main__":
 
     # ******** check if checkbox is checked at the 1st frame ***********
     driver.switch_to.window(mainWin)
-    driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[1])
+    driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[frame1loc])
     if check_exists_by_xpath('//span[@aria-checked="true"]'):
       break
 
     # ********** to the second frame to solve pictures *************
     driver.switch_to.window(mainWin)
-    driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[3])
+    driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[frame2loc])
     solve_images(driver)
 
   # ************ submit the results ******************
   driver.switch_to.window(mainWin)
-  driver.find_element_by_id("btnSubmit").click()
+  driver.find_element_by_id(submit_id).click()
   print 'Submitting ...'

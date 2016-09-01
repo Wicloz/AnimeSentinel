@@ -93,7 +93,7 @@ class Downloaders
       });
     }
     if (str_contains(preg_replace('/\s+/', '', $response), '<title>AreYouHuman</title>')) {
-      exec('xvfb-run python '. __DIR__ .'/Python/ReCaptcha.py "'. $url .'" "'. $cf_data->agent .'"');
+      exec('xvfb-run python '. __DIR__ .'/Python/ReCaptcha.py "'. $url .'" "1" "3" "btnSubmit" "'. $cf_data->agent .'"');
       return Self::downloadPage($url, $tries + 1);
     }
 
