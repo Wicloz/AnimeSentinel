@@ -10,5 +10,20 @@ Features will include:
 
 UPDATE: The site should be live here, but with questionable stablity: https://anime.wilcodeboer.me/
 
-I really need an actual server:
+Currently I'm not hosting on any potato, but a potato with the weight, size, loudness and temperature of a jet engine. So I really need an actual server:
 https://sharex.wilcodeboer.me/?id=nFxQ1CXvBayp61S
+
+Guide for development servers (WIP):
+- Required software:
+-- python >= 2.5
+-- pip (to install cfscrape and selenium)
+-- a recent version of nodejs, node legacy and npm
+-- firefox
+-- xvfb
+- Included in Homestead:
+-- composer
+-- a webserver
+-- a database
+-- openssl
+-- php7.0, php7.0-curl, php7.0-mbstring
+-- php database extension
