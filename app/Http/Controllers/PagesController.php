@@ -16,6 +16,15 @@ class PagesController extends Controller
   }
 
   /**
+   * Show the page with MAL infromation.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function about_mal() {
+    return view('information.mal');
+  }
+
+  /**
    * Show the news page.
    *
    * @return \Illuminate\Http\Response
