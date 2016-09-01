@@ -24,6 +24,11 @@ class AppServiceProvider extends ServiceProvider
         $m->to('animesentinel@wilcodeboer.me');
       });
     });
+
+    Queue::before(function (JobProcessing $event) {
+      preHandleJob($job->db_data);
+      throw new Exception('Job has already finished on another connection.');
+    });
   }
 
   /**

@@ -159,8 +159,8 @@ class Show extends BaseModel
       if (isset($show)) {
         return $show;
       } else {
-        $show = ShowManager::addShowWithTitle($title, 'default', false);
-        return $show;
+        runJob(new \App\Jobs\ShowAddTitle($title, false));
+        return Show::withTitle($title)->first();
       }
     }
 
@@ -272,7 +272,7 @@ class Show extends BaseModel
   public function handleCaching() {
     // TODO: smarter cache time
     if ($this->cache_updated_at->diffInHours(Carbon::now()) >= rand(168, 336)) {
-      ShowManager::updateShowCache($this->id);
+      runJob(new \App\Jobs\ShowUpdate($show->id));
     }
   }
 

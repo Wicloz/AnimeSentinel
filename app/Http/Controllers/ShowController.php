@@ -44,7 +44,8 @@ class ShowController extends Controller
       'mal_id' => ['required']
     ]);
 
-    $show = ShowManager::addShowWithMalId($request->mal_id);
+    runJob(new \App\Jobs\ShowAddMal($request->mal_id));
+    $show = Show::where('mal_id', $request->mal_id)->first();
 
     if ($request->gotodetails) {
       return redirect($show->details_url);

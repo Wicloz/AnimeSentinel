@@ -23,7 +23,7 @@ class ShowAddTitle implements ShouldQueue
    *
    * @return void
    */
-  public function __construct($title, $allowNonMal = true, $queue = 'default') {
+  public function __construct($title, $allowNonMal, $queue = 'default') {
     $this->title = $title;
     $this->allowNonMal = $allowNonMal;
     $this->queue = $queue;
