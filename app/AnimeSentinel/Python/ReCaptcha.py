@@ -1,4 +1,4 @@
-import sys, re, csv
+import sys, re
 from time import sleep, time
 from random import uniform, randint
 from selenium import webdriver
@@ -60,9 +60,12 @@ if __name__ == "__main__":
   url = sys.argv[1]
 
   # ************* setup webdriver **************
-  dcap = dict(DesiredCapabilities.PHANTOMJS)
-  dcap["phantomjs.page.settings.userAgent"] = (sys.argv[2])
-  driver = webdriver.PhantomJS(desired_capabilities = dcap)
+  # dcap = dict(DesiredCapabilities.PHANTOMJS)
+  # dcap["phantomjs.page.settings.userAgent"] = (sys.argv[2])
+  # driver = webdriver.PhantomJS(desired_capabilities = dcap)
+  profile = webdriver.FirefoxProfile()
+  profile.set_preference("general.useragent.override", sys.argv[2])
+  driver = webdriver.Firefox(profile)
 
   # ************* load target page **************
   driver.get(url)
@@ -104,8 +107,5 @@ if __name__ == "__main__":
 
   # ************ submit the results ******************
   driver.switch_to.window(mainWin)
-  Submit = WebDriverWait(driver, 10).until(
-    EC.presence_of_element_located((By.ID, "btnSubmit"))
-  )
-  Submit.click()
+  driver.find_element_by_id("btnSubmit").click()
   print 'Submitting ...'

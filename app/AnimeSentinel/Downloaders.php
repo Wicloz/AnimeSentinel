@@ -22,6 +22,10 @@ class Downloaders
       $response = Self::downloadCloudFlare($url, 'gogoanime', $tries);
     }
 
+    elseif (str_contains($url, 'htvanime.com')) {
+      $response = Self::downloadJavaScript($url, $tries);
+    }
+
     else {
       $curl = curl_init();
       curl_setopt($curl, CURLOPT_URL, $url);
@@ -39,8 +43,8 @@ class Downloaders
    *
    * @return string
    */
-  private static function downloadJavaScript($url) {
-    return ""; //TODO
+  private static function downloadJavaScript($url, $tries) {
+    return exec('xvfb-run python '. __DIR__ .'/Python/GetExpanded.py "'. $url .'"');
   }
 
   /**
@@ -89,7 +93,7 @@ class Downloaders
       });
     }
     if (str_contains(preg_replace('/\s+/', '', $response), '<title>AreYouHuman</title>')) {
-      exec('python '. __DIR__ .'/ReCaptcha.py "'. $url .'" "'. $cf_data->agent .'"');
+      exec('xvfb-run python '. __DIR__ .'/Python/ReCaptcha.py "'. $url .'" "'. $cf_data->agent .'"');
       return Self::downloadPage($url, $tries + 1);
     }
 
@@ -97,7 +101,7 @@ class Downloaders
   }
 
   private static function requestCloudFlareData($url, $cookieid = 'cloudflare') {
-    $cookies = exec('python '. __DIR__ .'/CloudFlare.py "'. $url .'"');
+    $cookies = exec('python '. __DIR__ .'/Python/CloudFlare.py "'. $url .'"');
     if (!file_exists(__DIR__.'/../../storage/app/cookies')) {
       mkdir(__DIR__.'/../../storage/app/cookies');
     }
