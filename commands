@@ -1,5 +1,5 @@
 // Process the queue in the background
-php artisan queue:work --queue=periodic_high,periodic_low,high,default,low --timeout=0 --tries=1
+(sudo --user=www-data --group=www-data) php artisan queue:work --queue=periodic_high,periodic_low,high,default,low --timeout=0 --tries=1
 
 // Compile CSS and JS during development
 nodejs ./node_modules/gulp/bin/gulp.js watch
