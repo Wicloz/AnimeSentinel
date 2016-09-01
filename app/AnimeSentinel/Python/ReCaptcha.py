@@ -58,8 +58,8 @@ if __name__ == "__main__":
   print 'Solving reCAPTCHA to unlock page ...'
   start = time()
   url = sys.argv[1]
-  frame1loc = sys.argv[2]
-  frame2loc = sys.argv[3]
+  frame1loc = int(sys.argv[2])
+  frame2loc = int(sys.argv[3])
   submit_id = sys.argv[4]
 
   # ************* setup webdriver **************
