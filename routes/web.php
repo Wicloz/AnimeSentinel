@@ -47,4 +47,4 @@ Route::get('/stream/{video}/video', 'EpisodeController@static');
 Route::get('/dashboard', 'UserController@overview'); //TODO
 Route::get('/user/settings', 'UserSettingsController@general'); //TODO
 Route::get('/user/settings/css', 'CssController@userSettings'); //TODO
-Route::get('/user/notifications/mail', 'UserSettingsController@nots_mail'); //TODO
+Route::get('/user/notifications/mail', 'UserSettingsController@notifications_mail'); //TODO
