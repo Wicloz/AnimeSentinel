@@ -1,13 +1,9 @@
 <?php
 
-function runJob($job) {
-  queueJob($job, 'default', 'sync');
-}
-
-function queueJob($job, $queue = 'default', $connection = 'database') {
+function queueJob($job, $queue = 'default') {
   // Prepare job data
-  $job->db_data['connection'] = $connection;
   $job_data = $job->db_data;
+  unset($job->db_data);
 
   if ($job_data['show_id'] !== null) {
     // Check whether a higher job is queued
@@ -41,33 +37,29 @@ function queueJob($job, $queue = 'default', $connection = 'database') {
   }
 
   // Add this job to the queue
-  if ($connection === 'database')  {
-    $job_id = dispatch($job->onQueue($queue));
-    $job = \App\Job::find($job_id);
-    $job->job_task = $job_data['job_task'];
-    $job->show_id = $job_data['show_id'];
-    $job->job_data = $job_data['job_data'];
-    $job->save();
-  } else {
-    dispatch($job->onConnection($connection));
-  }
+  $job_id = dispatch($job->onQueue($queue));
+  $job = \App\Job::find($job_id);
+  $job->job_task = $job_data['job_task'];
+  $job->show_id = $job_data['show_id'];
+  $job->job_data = $job_data['job_data'];
+  $job->save();
 }
 
-function preHandleJob($job_data) {
-  // Set job query data
-  $job_queryData = [
-    ['job_task', '=', $job_data['job_task']],
-    ['show_id', '=', $job_data['show_id']],
-    ['job_data', '=', json_encode($job_data['job_data'])],
+function handleJobFunction($job_task, $show_id, $job_data, $fromJob) {
+  // Set job values
+  $job_dbdata = [
+    ['job_task', '=', $job_task],
+    ['show_id', '=', $show_id],
+    ['job_data', '=', json_encode($job_data)],
   ];
   // Remove any inferior queued jobs
-  \App\Job::deleteLowerThan($job_data['job_task'], $job_data['show_id']);
+  \App\Job::deleteLowerThan($job_task, $show_id);
   // If this is queued as a job, remove it from the queue
-  \App\Job::where(array_merge($job_queryData, [['reserved_at', '=', null]]))->delete();
+  \App\Job::where(array_merge($job_dbdata, [['reserved_at', '=', null]]))->delete();
   // Hovever, if that job is in progress, wait for it to complete instead of running this function,
-  // but only if this function isn't started from the job in progress
-  if ($job_data['connection'] === 'sync' && count(\App\Job::where(array_merge($job_queryData, [['reserved_at', '!=', null]]))->get()) > 0) {
-    while (count(\App\Job::where(array_merge($job_queryData, [['reserved_at', '!=', null]]))->get()) > 0) {
+  // but only if this function isn't started from the job
+  if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
+    while (count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
       sleep(1);
     }
     return false;

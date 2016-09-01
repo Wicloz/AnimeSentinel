@@ -13,25 +13,20 @@ use App\Show;
 class ShowUpdate implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
-  public $db_data;
 
-  protected $show;
+  protected $show_id;
   protected $episodes;
-  protected $queue;
 
   /**
    * Create a new job instance.
    *
    * @return void
    */
-  public function __construct($show_id, $episodes = false, $queue = 'default') {
-    // Get the show
-    $show = Show::find($show_id);
-
-    $this->show = $show;
+  public function __construct($show_id, $episodes = false) {
+    $this->show_id = $show_id;
     $this->episodes = $episodes;
-    $this->queue = $queue;
     // Set special database data
+    $show = Show::find($show_id);
     $mode = $episodes ? 'true' : 'false';
     $this->db_data = [
       'job_task' => 'ShowUpdate('.$mode.')',
@@ -46,6 +41,6 @@ class ShowUpdate implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ShowManager::updateShowCache($this->show, $this->episodes, $this->queue, $this);
+    ShowManager::updateShowCache($this->show_id, $this->episodes, 'default', true);
   }
 }

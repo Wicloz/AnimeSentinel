@@ -13,7 +13,6 @@ use App\AnimeSentinel\VideoManager;
 class VideoRefreshLink implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
-  public $db_data;
 
   protected $video_id;
 
@@ -28,7 +27,7 @@ class VideoRefreshLink implements ShouldQueue
     $this->db_data = [
       'job_task' => 'VideoRefreshLink',
       'show_id' => $video->show->mal_id !== null ? $video->show->mal_id : $video->show->title,
-      'job_data' => ['video_id' => $video->id],
+      'job_data' => $video->id,
     ];
   }
 
@@ -40,7 +39,7 @@ class VideoRefreshLink implements ShouldQueue
   public function handle() {
     $video = Video::find($this->video_id);
     if (isset($video)) {
-      VideoManager::refreshVideoLinkFor($video, $this);
+      VideoManager::refreshVideoLinkFor($video, true);
     }
   }
 }

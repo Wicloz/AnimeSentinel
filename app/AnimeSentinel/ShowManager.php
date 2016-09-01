@@ -11,9 +11,9 @@ class ShowManager
    * Adds the show with the requested title to the database.
    * Will also add any currently existing episodes.
    */
-  public static function addShowWithTitle($title, $allowNonMal = true, $queue = 'default', $job) {
+  public static function addShowWithTitle($title, $queue = 'default', $allowNonMal = true, $fromJob = false) {
     // Handle job related tasks
-    if (!preHandleJob($job->db_data)) return Show::withTitle($title)->first();
+    if (!handleJobFunction('ShowAdd', $title, null, $fromJob)) return Show::withTitle($title)->first();
 
     // Confirm this show isn't already in our databse
     $dbshow = Show::withTitle($title)->first();
@@ -42,7 +42,7 @@ class ShowManager
       $show = Self::finalizeShowAdding($show, $queue);
       // Mail an anomaly report
       mailAnomaly($show, 'Could not find show on MAL.', [
-        'Connection' => $job->db_data['connection'],
+        'Run From a Job' => $fromJob ? 'Yes' : 'No',
       ]);
       // Return the show
       return $show;
@@ -55,9 +55,9 @@ class ShowManager
    * Adds the show with the requested MAL id to the database.
    * Will also add any currently existing episodes.
    */
-  public static function addShowWithMalId($mal_id, $queue = 'default', $job) {
+  public static function addShowWithMalId($mal_id, $queue = 'default', $fromJob = false) {
     // Handle job related tasks
-    if (!preHandleJob($job->db_data)) return Show::where('mal_id', $mal_id)->first();
+    if (!handleJobFunction('ShowAdd', $mal_id, null, $fromJob)) return Show::where('mal_id', $mal_id)->first();
 
     // Confirm this show isn't already in our databse
     $dbshow = Show::where('mal_id', $mal_id)->first();
@@ -93,9 +93,11 @@ class ShowManager
    * Updates the cached database information for the requested show.
    * If episodes is set to true, also updates episode information.
    */
-  public static function updateShowCache($show, $episodes = false, $queue = 'default', $job) {
+  public static function updateShowCache($show_id, $episodes = false, $queue = 'default', $fromJob = false) {
+    $show = Show::find($show_id);
     // Handle job related tasks
-    if (!preHandleJob($job->db_data)) return Show::find($show_id);
+    $jobShowId = $show->mal_id !== null ? $show->mal_id : $show->title;
+    if (!handleJobFunction('ShowUpdate', $jobShowId, null, $fromJob)) return Show::find($show_id);
 
     // If the mal id is not known yet, try to find it first
     if (!isset($show->mal_id)) {
