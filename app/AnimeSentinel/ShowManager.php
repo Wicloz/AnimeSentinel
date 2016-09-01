@@ -104,14 +104,13 @@ class ShowManager
       $mal_id = MyAnimeList::getMalIdForTitle($show->title);
       if (isset($mal_id)) {
         $otherShow = Show::where('mal_id', $mal_id)->first();
-        if (empty($otherShow)) {
-          $show->update(MyAnimeList::getAnimeData($mal_id));
-          Self::updateThumbnail($show);
-          $episodes = true;
-        } else {
+        if (!empty($otherShow)) {
           $show->delete();
-          return $otherShow;
+          $show = $otherShow;
         }
+        $show->update(MyAnimeList::getAnimeData($mal_id));
+        Self::updateThumbnail($show);
+        $episodes = true;
       }
     }
 
