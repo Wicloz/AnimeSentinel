@@ -12,12 +12,17 @@
           <option value="" {{ request('source') !== 'mal' && request('source') !== 'as' ? 'selected' : '' }}>Both</option>
         </select>
       </div>
-      <div class="form-group group-search">
+      <div class="form-group group-search {{ $errors->has('q') ? 'has-error' : '' }}">
         <label for="search-query">Search Query:</label>
         <div class="input-group">
           <div class="input-group-addon loop">&#128269;</div>
           <input type="text" class="form-control" id="search-query" name="q" value="{{ request('q') }}" placeholder="Search ..." autofocus>
         </div>
+        @if ($errors->has('q'))
+          <span class="help-block">
+            <strong>{{ $errors->first('q') }}</strong>
+          </span>
+        @endif
       </div>
       <button type="submit" class="btn btn-primary pull-right">Search</button>
     </form>
