@@ -48,6 +48,6 @@ class AnimeReprocessEpisode implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ConnectionManager::reprocessEpsiode($this->show, $this->translation_types, $this->episode_num, $this->streamer_id);
+    ConnectionManager::reprocessEpsiode($this->show, $this->translation_types, $this->episode_num, $this->streamer_id, $this);
   }
 }

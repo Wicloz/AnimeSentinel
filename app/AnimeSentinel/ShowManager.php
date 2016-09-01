@@ -11,10 +11,7 @@ class ShowManager
    * Adds the show with the requested title to the database.
    * Will also add any currently existing episodes.
    */
-  public static function addShowWithTitle($title, $allowNonMal, $queue = 'default') {
-    // Handle job related tasks
-    if (!preHandleJob($job->db_data)) return Show::withTitle($title)->first();
-
+  public static function addShowWithTitle($title, $allowNonMal, $queue = 'default', $job) {
     // Confirm this show isn't already in our databse
     $dbshow = Show::withTitle($title)->first();
     if (!empty($dbshow)) {
@@ -30,7 +27,7 @@ class ShowManager
 
     if (isset($mal_id)) {
       // Create and return a new show with the proper data
-      return Self::addShowWithMalId($mal_id, $queue);
+      return Self::addShowWithMalId($mal_id, $queue, $fromJob);
     } elseif($allowNonMal) {
       // Create a mostly empty show because we don't have MAL data
       $show = Show::create([
@@ -42,7 +39,7 @@ class ShowManager
       $show = Self::finalizeShowAdding($show, $queue);
       // Mail an anomaly report
       mailAnomaly($show, 'Could not find show on MAL.', [
-        // 'Connection' => $job->db_data['connection'],
+        'Connection' => $job->db_data['connection'],
       ]);
       // Return the show
       return $show;
@@ -55,10 +52,7 @@ class ShowManager
    * Adds the show with the requested MAL id to the database.
    * Will also add any currently existing episodes.
    */
-  public static function addShowWithMalId($mal_id, $queue = 'default') {
-    // Handle job related tasks
-    if (!preHandleJob($job->db_data)) return Show::where('mal_id', $mal_id)->first();
-
+  public static function addShowWithMalId($mal_id, $queue = 'default', $job) {
     // Confirm this show isn't already in our databse
     $dbshow = Show::where('mal_id', $mal_id)->first();
     if (!empty($dbshow)) {
@@ -93,22 +87,20 @@ class ShowManager
    * Updates the cached database information for the requested show.
    * If episodes is set to true, also updates episode information.
    */
-  public static function updateShowCache($show, $episodes = false, $queue = 'default') {
-    // Handle job related tasks
-    if (!preHandleJob($job->db_data)) return Show::find($show_id); 
-
+  public static function updateShowCache($show, $episodes = false, $queue = 'default', $job) {
     // If the mal id is not known yet, try to find it first
     if (!isset($show->mal_id)) {
       $mal_id = MyAnimeList::getMalIdForTitle($show->title);
       if (isset($mal_id)) {
         $otherShow = Show::where('mal_id', $mal_id)->first();
-        if (!empty($otherShow)) {
+        if (empty($otherShow)) {
+          $show->update(MyAnimeList::getAnimeData($mal_id));
+          Self::updateThumbnail($show);
+          $episodes = true;
+        } else {
           $show->delete();
-          $show = $otherShow;
+          return $otherShow;
         }
-        $show->update(MyAnimeList::getAnimeData($mal_id));
-        Self::updateThumbnail($show);
-        $episodes = true;
       }
     }
 

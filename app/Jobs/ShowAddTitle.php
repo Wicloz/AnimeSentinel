@@ -16,17 +16,17 @@ class ShowAddTitle implements ShouldQueue
 
   protected $title;
   protected $allowNonMal;
-  protected $targetQueue;
+  protected $queue;
 
   /**
    * Create a new job instance.
    *
    * @return void
    */
-  public function __construct($title, $allowNonMal, $targetQueue = 'default') {
+  public function __construct($title, $allowNonMal, $queue = 'default') {
     $this->title = $title;
     $this->allowNonMal = $allowNonMal;
-    $this->targetQueue = $targetQueue;
+    $this->queue = $queue;
     // Set special database data
     $this->db_data = [
       'job_task' => 'ShowAdd',
@@ -41,6 +41,6 @@ class ShowAddTitle implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ShowManager::addShowWithTitle($this->title, $this->allowNonMal, $this->targetQueue);
+    ShowManager::addShowWithTitle($this->title, $this->allowNonMal, $this->queue, $this);
   }
 }

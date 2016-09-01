@@ -40,7 +40,7 @@ class VideoRefreshLink implements ShouldQueue
   public function handle() {
     $video = Video::find($this->video_id);
     if (isset($video)) {
-      VideoManager::refreshVideoLinkFor($video);
+      VideoManager::refreshVideoLinkFor($video, $this);
     }
   }
 }

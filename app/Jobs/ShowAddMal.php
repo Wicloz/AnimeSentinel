@@ -15,16 +15,17 @@ class ShowAddMal implements ShouldQueue
   public $db_data;
 
   protected $mal_id;
-  protected $targetQueue;
+  protected $queue;
 
   /**
    * Create a new job instance.
    *
    * @return void
    */
-  public function __construct($mal_id, $targetQueue = 'default') {
+  public function __construct($mal_id, $queue = 'default') {
     $this->mal_id = $mal_id;
-    $this->targetQueue = $targetQueue;
+    $this->allowNonMal = $allowNonMal;
+    $this->queue = $queue;
     // Set special database data
     $this->db_data = [
       'job_task' => 'ShowAdd',
@@ -39,6 +40,6 @@ class ShowAddMal implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ShowManager::addShowWithMalId($this->mal_id, $this->targetQueue);
+    ShowManager::addShowWithMalId($this->mal_id, $this->queue, $this);
   }
 }
