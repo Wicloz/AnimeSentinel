@@ -297,7 +297,7 @@
         </tr>
         <tr>
           <td>Create the users general options page.</td>
-          <td>✘</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Create the users mail notifications options page.</td>

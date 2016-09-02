@@ -68,9 +68,12 @@ class UpdateSettingsController extends Controller
    */
   public function password(Request $request) {
     $this->validate($request, [
-      'current_password' => ['required'],
+      'current_password' => ['required', 'password'],
       'new_password' => ['required', 'min:8', 'confirmed'],
     ]);
+
+    Auth::user()->password = bcrypt($request->new_password);
+    Auth::user()->save();
 
     return back();
   }

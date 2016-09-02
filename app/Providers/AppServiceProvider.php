@@ -4,7 +4,10 @@ namespace App\Providers;
 
 use Queue;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
         $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Reports');
         $m->to('animesentinel@wilcodeboer.me');
       });
+    });
+
+    Validator::extend('password', function ($attribute, $value, $parameters, $validator) {
+      return Hash::check($value, Auth::user()->password);
     });
   }
 

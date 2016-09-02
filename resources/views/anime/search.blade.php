@@ -16,7 +16,7 @@
         <label for="search-query">Search Query:</label>
         <div class="input-group">
           <div class="input-group-addon loop">&#128269;</div>
-          <input type="text" class="form-control" id="search-query" name="q" value="{{ request('q') }}" placeholder="Search ..." autofocus>
+          <input type="text" class="form-control" id="search-query" name="q" value="{{ request('q') }}" placeholder="Search ..." maxlength="255" autofocus>
         </div>
         @if ($errors->has('q'))
           <span class="help-block">

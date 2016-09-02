@@ -45,12 +45,12 @@ Route::get('/stream/{video}/video', 'EpisodeController@static');
 
 // Profile Pages
 Route::get('/dashboard', 'UserController@overview'); //TODO
-Route::get('/user/settings', 'UserSettingsController@general'); //TODO
+Route::get('/user/settings', 'UserSettingsController@general');
 Route::get('/user/notifications/mail', 'UserSettingsController@notifications_mail'); //TODO
 
 // Profile Modifications
-Route::post('/user/settings/general', 'Auth\UpdateSettingsController@general'); //TODO
-Route::post('/user/settings/password', 'Auth\UpdateSettingsController@password'); //TODO
+Route::post('/user/settings/general', 'Auth\UpdateSettingsController@general');
+Route::post('/user/settings/password', 'Auth\UpdateSettingsController@password');
 Route::post('/user/notifications/mail', 'Auth\UpdateSettingsController@notifications_mail'); //TODO
 
 // CSS Routes
