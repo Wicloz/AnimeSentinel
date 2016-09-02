@@ -74,21 +74,21 @@
 
       <div class="form-group">
         <div class="col-md-6 col-md-offset-4">
-          @if(empty(Auth::user()->mal_user))
+          @if(!Auth::user()->mal_should_read)
             <div class="alert alert-warning">
               MAL Interaction Disabled
             </div>
-          @elseif(!Auth::user()->malCanRead())
+          @elseif(!Auth::user()->mal_can_read)
             <div class="alert alert-error">
               MAL Username Invalid
             </div>
-          @elseif(empty(Auth::user()->mal_pass))
+          @elseif(!Auth::user()->mal_should_write)
             <div class="alert alert-warning">
               MAL Interaction Read Only
             </div>
-          @elseif(!Auth::user()->malCanWrite())
+          @elseif(!Auth::user()->mal_can_write)
             <div class="alert alert-error">
-              MAL Credentials Invalid
+              MAL Password Invalid
             </div>
           @else
             <div class="alert alert-success">

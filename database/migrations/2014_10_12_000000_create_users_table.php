@@ -23,7 +23,6 @@ class CreateUsersTable extends Migration
             $table->string('mal_user')->default('');
             $table->string('mal_pass')->default('');
             $table->string('mal_status', 512)->default('{}');
-            $table->dateTime('mal_last_checked')->nullable()->default(null);
 
             $table->boolean('nots_mail_state')->default(true);
             $table->text('nots_mail_settings_general')->nullable();

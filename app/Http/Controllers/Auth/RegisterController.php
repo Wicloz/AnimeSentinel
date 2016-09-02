@@ -62,7 +62,7 @@ class RegisterController extends Controller
    * @return User
    */
   protected function create(array $data) {
-    return User::create([
+    $user = User::create([
       'username' => $data['username'],
       'email' => $data['email'],
       'password' => bcrypt($data['password']),
@@ -77,5 +77,7 @@ class RegisterController extends Controller
       ],
       'nots_mail_settings_specific' => [],
     ]);
+    $user->checkMalCredentials();
+    return $user;
   }
 }
