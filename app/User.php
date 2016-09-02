@@ -18,7 +18,7 @@ class User extends Authenticatable
    * @var array
    */
   protected $fillable = [
-    'username', 'email', 'password', 'mal_user', 'mal_pass', 'nots_mail_state', 'nots_mail_settings_general', 'nots_mail_settings_specific', 'auto_watching',
+    'username', 'email', 'password', 'mal_user', 'mal_pass', 'mal_status', 'mal_last_checked', 'nots_mail_state', 'nots_mail_settings_general', 'nots_mail_settings_specific', 'auto_watching',
   ];
 
   /**
@@ -29,7 +29,15 @@ class User extends Authenticatable
   protected $casts = [
     'nots_mail_settings_general' => 'array',
     'nots_mail_settings_specific' => 'array',
+    'mal_status' => 'array',
   ];
+
+  /**
+   * The attributes that should be mutated to dates.
+   *
+   * @var array
+   */
+  protected $dates = ['mal_last_checked', 'created_at', 'updated_at'];
 
   /**
    * The attributes that should be hidden for arrays.
@@ -67,20 +75,34 @@ class User extends Authenticatable
   }
 
   /**
-   * Ckeck the validility of the users MAL credentials.
+   * Check the validility of the users MAL credentials.
    *
    * @return boolean
    */
   public function malCanWrite() {
-    return $this->postToMal('https://myanimelist.net/api/account/verify_credentials.xml') !== 'Invalid credentials';
+    if (true) {
+      $this->mal_status = [
+        'canRead' => $this->malCanRead(),
+        'canWrite' => $this->postToMal('https://myanimelist.net/api/account/verify_credentials.xml') !== 'Invalid credentials',
+      ];
+      $this->save();
+    }
+    return $this->mal_status['canWrite'];
   }
 
   /**
-   * Ckeck the validility of the users MAL username.
+   * Check the validility of the users MAL username.
    *
    * @return boolean
    */
   public function malCanRead() {
-    return !str_contains(Downloaders::downloadPage('https://myanimelist.net/animelist/'.$this->mal_user), 'Invalid Username Supplied');
+    if (true) {
+      $this->mal_status = [
+        'canRead' => !str_contains(Downloaders::downloadPage('https://myanimelist.net/animelist/'.$this->mal_user), 'Invalid Username Supplied'),
+        'canWrite' => $this->malCanWrite(),
+      ];
+      $this->save();
+    }
+    return $this->mal_status['canRead'];
   }
 }
