@@ -17,7 +17,7 @@
       <div class="form-group {{ $errors->has('username') ? 'has-error' : '' }}">
         <label for="username" class="col-md-4 control-label">Username</label>
         <div class="col-md-6">
-          <input id="username" type="text" class="form-control" name="username" value="{{ old('username') }}" autofocus>
+          <input id="username" type="text" class="form-control" name="username" value="{{ old('username') }}" maxlength="255" autofocus>
           @if ($errors->has('username'))
             <span class="help-block">
               <strong>{{ $errors->first('username') }}</strong>
@@ -29,7 +29,7 @@
       <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
         <label for="email" class="col-md-4 control-label">E-Mail Address</label>
         <div class="col-md-6">
-          <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}">
+          <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" maxlength="255">
           @if ($errors->has('email'))
             <span class="help-block">
               <strong>{{ $errors->first('email') }}</strong>
@@ -72,7 +72,7 @@
       <div class="form-group {{ $errors->has('mal_user') ? 'has-error' : '' }}">
         <label for="mal_user" class="col-md-4 control-label">MAL Username</label>
         <div class="col-md-6">
-          <input id="mal_user" type="text" class="form-control" name="mal_user" value="{{ old('mal_user') }}">
+          <input id="mal_user" type="text" class="form-control" name="mal_user" value="{{ old('mal_user') }}" maxlength="255">
           @if ($errors->has('mal_user'))
             <span class="help-block">
               <strong>{{ $errors->first('mal_user') }}</strong>
@@ -84,7 +84,7 @@
       <div class="form-group {{ $errors->has('mal_pass') ? 'has-error' : '' }}">
         <label for="mal_pass" class="col-md-4 control-label">MAL Password</label>
         <div class="col-md-6">
-          <input id="mal_pass" type="password" class="form-control" name="mal_pass" value="{{ old('mal_pass') }}">
+          <input id="mal_pass" type="password" class="form-control" name="mal_pass" value="{{ old('mal_pass') }}" maxlength="255">
           @if ($errors->has('mal_pass'))
             <span class="help-block">
               <strong>{{ $errors->first('mal_pass') }}</strong>

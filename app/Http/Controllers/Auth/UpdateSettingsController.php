@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateSettingsController extends Controller
 {
@@ -22,7 +24,41 @@ class UpdateSettingsController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function general(Request $request) {
+    $this->validate($request, [
+      'username' => ['max:255'],
+      'email' => ['email', 'max:255'],
+      'mal_user' => ['max:255'],
+      'mal_pass' => ['max:255'],
+    ]);
+    if ($request->username !== Auth::user()->username) {
+      $this->validate($request, [
+        'username' => ['unique:users'],
+      ]);
+    }
+    if ($request->email !== Auth::user()->email) {
+      $this->validate($request, [
+        'email' => ['unique:users'],
+      ]);
+    }
 
+    $texts = ['username', 'email', 'mal_user', 'mal_pass'];
+    $checkboxes = ['nots_mail_state', 'auto_watching'];
+
+    foreach ($texts as $attribute) {
+      if (isset($request->$attribute) && $request->$attribute !== '') {
+        Auth::user()->$attribute = $request->$attribute;
+      }
+    }
+    foreach ($checkboxes as $attribute) {
+      if (!empty($request->$attribute)) {
+        Auth::user()->$attribute = true;
+      } else {
+        Auth::user()->$attribute = false;
+      }
+    }
+    Auth::user()->save();
+
+    return back();
   }
 
   /**
@@ -31,7 +67,12 @@ class UpdateSettingsController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function password(Request $request) {
+    $this->validate($request, [
+      'current_password' => ['required'],
+      'new_password' => ['required', 'min:8', 'confirmed'],
+    ]);
 
+    return back();
   }
 
   /**
@@ -40,6 +81,6 @@ class UpdateSettingsController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function notifications_mail(Request $request) {
-
+    return back();
   }
 }

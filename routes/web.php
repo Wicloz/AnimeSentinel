@@ -49,9 +49,9 @@ Route::get('/user/settings', 'UserSettingsController@general'); //TODO
 Route::get('/user/notifications/mail', 'UserSettingsController@notifications_mail'); //TODO
 
 // Profile Modifications
-Route::post('/user/settings/general', 'UpdateSettingsController@general'); //TODO
-Route::post('/user/settings/password', 'UpdateSettingsController@password'); //TODO
-Route::post('/user/notifications/mail', 'UpdateSettingsController@notifications_mail'); //TODO
+Route::post('/user/settings/general', 'Auth\UpdateSettingsController@general'); //TODO
+Route::post('/user/settings/password', 'Auth\UpdateSettingsController@password'); //TODO
+Route::post('/user/notifications/mail', 'Auth\UpdateSettingsController@notifications_mail'); //TODO
 
 // CSS Routes
 Route::get('/user/settings/css', 'CssController@showUserSettings'); //TODO
