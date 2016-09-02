@@ -64,7 +64,7 @@
 
       <div class="form-group">
         <div class="col-md-6 col-md-offset-4">
-          <h2 style="display:inline-block;">MAL Account Data:</h2>
+          <h2 style="display:inline-block;">MAL Credentials:</h2>
           <a href="{{ fullUrl('/about/mal') }}">(read more)</a>
         </div>
       </div>

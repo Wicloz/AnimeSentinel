@@ -67,8 +67,34 @@
 
       <div class="form-group">
         <div class="col-md-6 col-md-offset-4">
-          <h2 style="display:inline-block;">MAL Account Data:</h2>
+          <h2 style="display:inline-block;">MAL Credentials:</h2>
           <a href="{{ fullUrl('/about/mal') }}">(read more)</a>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-md-6 col-md-offset-4">
+          @if(empty(Auth::user()->mal_user))
+            <div class="alert alert-warning">
+              MAL Interaction Disabled
+            </div>
+          @elseif(!Auth::user()->malCanRead())
+            <div class="alert alert-error">
+              MAL Username Invalid
+            </div>
+          @elseif(empty(Auth::user()->mal_pass))
+            <div class="alert alert-warning">
+              MAL Interaction Read Only
+            </div>
+          @elseif(!Auth::user()->malCanWrite())
+            <div class="alert alert-error">
+              MAL Credentials Invalid
+            </div>
+          @else
+            <div class="alert alert-success">
+              MAL Credentials Valid
+            </div>
+          @endif
         </div>
       </div>
 
