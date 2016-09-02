@@ -157,7 +157,14 @@ class Show extends BaseModel
     }
 
     if (!empty($title)) {
-      $title = str_replace('‑', ' ', str_replace('⧸', '/', $title));
+      $replace = [
+        '⧸' => '/',
+        '⧹' => '\\',
+      ];
+      foreach ($replace as $from => $to) {
+        $title = str_replace($from, $to, $title);
+      }
+      $title = str_replace('‑', ' ', $title);
       $show = Show::withTitle($title)->first();
       if (isset($show)) {
         return $show;

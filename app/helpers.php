@@ -127,8 +127,18 @@ function fullUrl($path, $production = false) {
   }
 }
 
-function slugify($text) {
-  return str_replace(' ', '‑', str_replace('/', '⧸', mb_strtolower($text)));
+function slugify($string) {
+  $string = mb_strtolower($string);
+
+  $replace = [
+    '/' => '⧸',
+    '\\' => '⧹',
+  ];
+  foreach ($replace as $from => $to) {
+    $string = str_replace($from, $to, $string);
+  }
+
+  return str_replace(' ', '‑', $string);
 }
 
 // String Helpers //
