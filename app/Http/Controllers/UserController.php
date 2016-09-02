@@ -8,11 +8,11 @@ use App\Http\Requests;
 class UserController extends Controller
 {
   /**
-   * Show the page containing an overview of the users anime list.
+   * Show the page containing an overview of the user's anime list.
    *
    * @return \Illuminate\Http\Response
    */
   public function overview() {
-    return view('information.about');
+    return view('users.overview');
   }
 }
