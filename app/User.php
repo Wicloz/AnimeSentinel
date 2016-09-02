@@ -67,9 +67,29 @@ class User extends Authenticatable
    *
    * @return Illuminate\Database\Eloquent\Collection
    */
-  public function getMalList() {
+  public function getMalList($status = null) {
     // Download the page
-    $page = Downloaders::downloadPage('https://myanimelist.net/animelist/'.$this->mal_user);
+    switch ($status) {
+      case 'watching':
+        $get = '?status=1';
+      break;
+      case 'completed':
+        $get = '?status=2';
+      break;
+      case 'onhold':
+        $get = '?status=3';
+      break;
+      case 'dropped':
+        $get = '?status=4';
+      break;
+      case 'ptw':
+        $get = '?status=5';
+      break;
+      default:
+        $get = '';
+      break;
+    }
+    $page = Downloaders::downloadPage('https://myanimelist.net/animelist/'.$this->mal_user.$get);
     // Check whether the page is valid, return false if it isn't
     if (str_contains($page, 'Invalid Username Supplied') || str_contains($page, 'Access to this list has been restricted by the owner') || str_contains($page, '404 Not Found - MyAnimeList.net')) {
       $this->checkMalCredentials(false, null);
