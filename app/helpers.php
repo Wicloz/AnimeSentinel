@@ -128,7 +128,7 @@ function fullUrl($path, $production = false) {
 }
 
 function slugify($text) {
-  return str_replace(' ', '‑', mb_strtolower($text));
+  return str_replace(' ', '‑', str_replace('/', '⧸', mb_strtolower($text)));
 }
 
 // String Helpers //
