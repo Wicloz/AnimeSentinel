@@ -9,6 +9,8 @@ use App\AnimeSentinel\Helpers;
 use App\AnimeSentinel\Downloaders;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use App\Show;
+use Illuminate\Database\Eloquent\Collection;
 
 class User extends Authenticatable
 {
@@ -63,16 +65,54 @@ class User extends Authenticatable
   /**
    * Download and parse this user's MAL list.
    *
-   * @return array
+   * @return Illuminate\Database\Eloquent\Collection
    */
   public function getMalList() {
+    // Download the page
     $page = Downloaders::downloadPage('https://myanimelist.net/animelist/'.$this->mal_user);
+    // Check whether the page is valid, return false if it isn't
     if (str_contains($page, 'Invalid Username Supplied') || str_contains($page, 'Access to this list has been restricted by the owner') || str_contains($page, '404 Not Found - MyAnimeList.net')) {
       $this->checkMalCredentials(false, null);
       return false;
     }
 
-    return [];
+    // Grab and decode anime list
+    $results = collect(json_decode(str_get_between($page, '<table class="list-table" data-items="', '">')));
+    // Get all related shows from our database
+    $shows = Show::whereIn('mal_id', $results->pluck('anime_id'))->get();
+
+    // Convert the results to more convenient objects
+    $animes = new Collection();
+    foreach ($results as $result) {
+      $anime = new \stdClass();
+
+      switch ($result->status) {
+        case '1':
+          $anime->status = 'watching';
+        break;
+        case '2':
+          $anime->status = 'completed';
+        break;
+        case '3':
+          $anime->status = 'onhold';
+        break;
+        case '4':
+          $anime->status = 'dropped';
+        break;
+        case '5':
+          $anime->status = 'ptw';
+        break;
+      }
+
+      $anime->show = $shows->where('mal_id', $result->anime_id)->first();
+
+      $anime->mal_id = $result->anime_id;
+      $anime->title = $result->anime_title;
+      $anime->eps_watched = $result->num_watched_episodes;
+      $animes[] = $anime;
+    }
+
+    return $animes;
   }
 
   /**
