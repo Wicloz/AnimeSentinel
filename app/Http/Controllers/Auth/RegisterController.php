@@ -67,13 +67,14 @@ class RegisterController extends Controller
       'password' => bcrypt($data['password']),
       'mal_user' => $data['mal_user'],
       'mal_pass' => $data['mal_pass'],
-      'nots_mail_settings_specific' => [
+      'nots_mail_settings_general' => [
         'watching' => true,
         'completed' => false,
         'onhold' => false,
         'dropped' => false,
         'ptw' => true,
       ],
+      'nots_mail_settings_specific' => [],
     ]);
   }
 }

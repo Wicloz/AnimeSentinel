@@ -8,6 +8,15 @@ use App\Http\Requests;
 class UserSettingsController extends Controller
 {
   /**
+   * Create a new controller instance.
+   *
+   * @return void
+   */
+  public function __construct() {
+    $this->middleware('auth');
+  }
+
+  /**
    * Show a settings page for the user's general data.
    *
    * @return \Illuminate\Http\Response
@@ -17,7 +26,7 @@ class UserSettingsController extends Controller
   }
 
   /**
-   * Show a settings page for the mail notification settings.
+   * Show a settings page for the user's mail notification settings.
    *
    * @return \Illuminate\Http\Response
    */
