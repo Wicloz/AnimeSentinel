@@ -75,7 +75,13 @@ class RegisterController extends Controller
         'dropped' => false,
         'ptw' => true,
       ],
-      'nots_mail_settings_specific' => [],
+      'nots_mail_settings_specific' => [
+        'watching' => [],
+        'completed' => [],
+        'onhold' => [],
+        'dropped' => [],
+        'ptw' => [],
+      ],
     ]);
     $user->checkMalCredentials();
     return $user;

@@ -79,11 +79,41 @@ class UpdateSettingsController extends Controller
   }
 
   /**
-   * Update the user's mail notification settings.
+   * Update the general user's mail notification settings.
    *
    * @return \Illuminate\Http\Response
    */
-  public function notifications_mail(Request $request) {
+  public function notifications_mail_general(Request $request) {
+    Auth::user()->nots_mail_settings_general = [
+      'watching' => !empty($request->notifications_watching),
+      'completed' => !empty($request->notifications_completed),
+      'onhold' => !empty($request->notifications_onhold),
+      'dropped' => !empty($request->notifications_dropped),
+      'ptw' => !empty($request->notifications_ptw),
+    ];
+    Auth::user()->save();
+
+    return back();
+  }
+
+  /**
+   * Update the specific user's mail notification settings.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function notifications_mail_specific(Request $request) {
+    $settings = [];
+    foreach ($request->all() as $key => $value) {
+      if (str_starts_with($key, 'state_') && $value !== '') {
+        $settings[(int) str_replace('state_', '', $key)] = (bool) $value;
+      }
+    }
+
+    $temp = Auth::user()->nots_mail_settings_specific;
+    $temp[$request->status] = $settings;
+    Auth::user()->nots_mail_settings_specific = $temp;
+    Auth::user()->save();
+
     return back();
   }
 }

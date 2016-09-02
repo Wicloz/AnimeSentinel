@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
+use Illuminate\Support\Facades\Auth;
 
 class UserSettingsController extends Controller
 {
@@ -30,7 +31,14 @@ class UserSettingsController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function notifications_mail() {
-    return view('users.settings.notifications.mail');
+  public function notifications_mail(Request $request) {
+    $mallist = null;
+    if (!empty($request->status)) {
+      $mallist = Auth::user()->getMalList($request->status);
+    }
+    return view('users.settings.notifications.mail', [
+      'mallist' => $mallist,
+      'loadedStatus' => $request->status,
+    ]);
   }
 }

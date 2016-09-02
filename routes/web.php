@@ -46,12 +46,13 @@ Route::get('/stream/{video}/video', 'EpisodeController@static');
 // Profile Pages
 Route::get('/dashboard', 'UserController@overview'); //TODO
 Route::get('/user/settings', 'UserSettingsController@general');
-Route::get('/user/notifications/mail', 'UserSettingsController@notifications_mail'); //TODO
+Route::get('/user/notifications/mail', 'UserSettingsController@notifications_mail');
 
 // Profile Modifications
 Route::post('/user/settings/general', 'Auth\UpdateSettingsController@general');
 Route::post('/user/settings/password', 'Auth\UpdateSettingsController@password');
-Route::post('/user/notifications/mail', 'Auth\UpdateSettingsController@notifications_mail'); //TODO
+Route::post('/user/notifications/mail/general', 'Auth\UpdateSettingsController@notifications_mail_general');
+Route::post('/user/notifications/mail/specific', 'Auth\UpdateSettingsController@notifications_mail_specific');
 
 // CSS Routes
 Route::get('/user/settings/css', 'CssController@showUserSettings'); //TODO
