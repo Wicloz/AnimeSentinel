@@ -35,6 +35,18 @@ class Downloaders
       curl_close($curl);
     }
 
+    if ($tries > 0) {
+      \Mail::send('emails.report_general', ['description' => 'Downloaded Page After Retries', 'vars' => [
+        'Url' => $url,
+        'Tries' => $tries,
+        'Page' => $response,
+      ]], function ($m) {
+        $m->subject('AnimeSentinel Download Retried');
+        $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Reports');
+        $m->to('animesentinel@wilcodeboer.me');
+      });
+    }
+
     return $response;
   }
 
