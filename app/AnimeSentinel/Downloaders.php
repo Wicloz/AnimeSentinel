@@ -10,7 +10,7 @@ class Downloaders
    * @return string
    */
   public static function downloadPage($url, $tries = 0) {
-    $url = preg_replace_callback('/([^a-zA-Z0-9\\=\\:\\+\\&\\?\\-\\_\\/\\\\])/u', function($matches) {
+    $url = preg_replace_callback('/([^a-zA-Z0-9\\%\\=\\:\\+\\&\\?\\-\\_\\/\\\\])/u', function($matches) {
       return urlencode($matches[1]);
     }, $url);
 
@@ -35,14 +35,13 @@ class Downloaders
       curl_close($curl);
     }
 
-    if ($response === 'The service is unavailable.') {
+    if ($response === 'The service is unavailable.' || str_contains($response, '500 - Internal server error.')) {
       $response = Self::downloadPage($url, $tries + 1);
     }
 
-    if ($tries > 0) {
+    if ($tries === 1) {
       \Mail::send('emails.report_general', ['description' => 'Downloaded Page After Retries', 'vars' => [
         'Url' => $url,
-        'Tries' => $tries,
         'Page' => $response,
       ]], function ($m) {
         $m->subject('AnimeSentinel Download Retried');
