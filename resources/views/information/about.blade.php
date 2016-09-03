@@ -301,7 +301,7 @@
         </tr>
         <tr>
           <td>Create the users mail notifications options page.</td>
-          <td>✘</td>
+          <td>WIP</td>
         </tr>
         <tr>
           <td>Create the users anime overview page.</td>
@@ -313,7 +313,7 @@
         </tr>
         <tr>
           <td>Allow users to link their MAL account securely.</td>
-          <td>✘</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Notify users (based on their settings) when a new episode is available.</td>
