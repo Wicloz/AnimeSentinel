@@ -14,4 +14,19 @@
 
 .episode-list {
   margin-bottom: 10px;
+
+  @media (min-width: 768px) {
+    .streamer-pull-right {
+      float: right;
+    }
+  }
+
+  .status-pull-right {
+    float: right;
+  }
+  @media (min-width: 768px) {
+    .status-pull-right {
+      float: none;
+    }
+  }
 }
