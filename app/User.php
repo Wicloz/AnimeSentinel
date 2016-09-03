@@ -22,7 +22,7 @@ class User extends Authenticatable
    * @var array
    */
   protected $fillable = [
-    'username', 'email', 'password', 'mal_user', 'mal_pass', 'mal_status', 'mal_status_updated', 'nots_mail_state', 'nots_mail_settings_general', 'nots_mail_settings_specific', 'auto_watching',
+    'username', 'email', 'password', 'mal_user', 'mal_pass', 'mal_canread', 'mal_canwrite', 'mal_list', 'nots_mail_state', 'nots_mail_settings_general', 'nots_mail_settings_specific', 'auto_watching',
   ];
 
   /**
@@ -31,17 +31,10 @@ class User extends Authenticatable
    * @var array
    */
   protected $casts = [
+    'mal_list' => 'array',
     'nots_mail_settings_general' => 'array',
     'nots_mail_settings_specific' => 'array',
-    'mal_status' => 'array',
   ];
-
-  /**
-   * The attributes that should be mutated to dates.
-   *
-   * @var array
-   */
-  protected $dates = ['mal_status_updated', 'created_at', 'updated_at'];
 
   /**
    * The attributes that should be hidden for arrays.
@@ -63,37 +56,63 @@ class User extends Authenticatable
   }
 
   /**
+   * Return the user's cached MAL list.
+   *
+   * @return Illuminate\Database\Eloquent\Collection
+   */
+  public function getMalListAttribute($value) {
+    $value = collect(json_decode($value));
+    $shows = Show::whereIn('mal_id', $value->pluck('mal_id'))->get();
+
+    foreach ($value as $index => $anime) {
+      $value[$index]->show = $shows->where('mal_id', $anime->mal_id)->first();
+    }
+
+    return $value;
+  }
+  /**
+   * Properly store a MAL list for caching.
+   */
+  public function setMalListAttribute($value) {
+    foreach ($value as $index => $anime) {
+      unset($value[$index]->show);
+    }
+    $this->attributes['mal_list'] = json_encode($value);
+  }
+
+  /**
+   * Update this user's cached MAL list and credential status.
+   */
+  public function updateCache() {
+    $results = $this->getMalList(true);
+    if ($results === false) {
+      $this->mal_list = new Collection();
+    } else {
+      $this->mal_list = $results;
+    }
+    $this->save();
+  }
+
+  /**
    * Download and parse this user's MAL list.
    *
    * @return Illuminate\Database\Eloquent\Collection
    */
-  public function getMalList($status = null) {
+  public function getMalList($checkCredentials = false) {
     // Download the page
-    switch ($status) {
-      case 'watching':
-        $get = '?status=1';
-      break;
-      case 'completed':
-        $get = '?status=2';
-      break;
-      case 'onhold':
-        $get = '?status=3';
-      break;
-      case 'dropped':
-        $get = '?status=4';
-      break;
-      case 'ptw':
-        $get = '?status=5';
-      break;
-      default:
-        $get = '';
-      break;
-    }
-    $page = Downloaders::downloadPage('https://myanimelist.net/animelist/'.$this->mal_user.$get);
+    $page = Downloaders::downloadPage('https://myanimelist.net/animelist/'.$this->mal_user);
     // Check whether the page is valid, return false if it isn't
     if (str_contains($page, 'Invalid Username Supplied') || str_contains($page, 'Access to this list has been restricted by the owner') || str_contains($page, '404 Not Found - MyAnimeList.net')) {
-      $this->checkMalCredentials(false, null);
+      $this->mal_canread = false;
+      $this->save();
       return false;
+    } else {
+      $this->mal_canread = true;
+      $this->save();
+    }
+    // If it is requested, check write permissions
+    if ($checkCredentials) {
+      $this->postToMal('validate', 0);
     }
 
     // Grab and decode anime list
@@ -155,80 +174,14 @@ class User extends Authenticatable
     $response = curl_exec($curl);
     curl_close($curl);
 
-    if ($task !== 'validate' && $response === 'Invalid credentials') {
-      $this->checkMalCredentials(null, false);
+    if ($response === 'Invalid credentials') {
+      $this->mal_canwrite = false;
+      $this->save();
       return false;
+    } else {
+      $this->mal_canwrite = true;
+      $this->save();
+      return $response;
     }
-
-    return $response;
-  }
-
-  /**
-   * Determine whether we should be able to modify this user's MAL list.
-   *
-   * @return boolean
-   */
-  public function getMalShouldReadAttribute() {
-    return !empty($this->mal_user);
-  }
-
-  /**
-   * Determine whether we should be able to read this user's MAL list.
-   *
-   * @return boolean
-   */
-  public function getMalShouldWriteAttribute() {
-    return !empty($this->mal_user) && !empty($this->mal_pass);
-  }
-
-  /**
-   * Check whether the current MAL credentials are valid.
-   */
-  public function checkMalCredentials($canRead = null, $canWrite = null) {
-    if ($canRead === null) {
-      $animeListPage = Downloaders::downloadPage('https://myanimelist.net/animelist/'.$this->mal_user);
-      $canRead = !str_contains($animeListPage, 'Invalid Username Supplied') && !str_contains($animeListPage, 'Access to this list has been restricted by the owner') && !str_contains($animeListPage, '404 Not Found - MyAnimeList.net');
-    }
-    if ($canWrite === null) {
-      $canWrite = $this->postToMal('validate', 0) !== 'Invalid credentials';
-    }
-
-    $this->mal_status = [
-      'canRead' => $canRead,
-      'canWrite' => $canWrite,
-      'credentials' => Hash::make($this->mal_user.'-'.$this->mal_pass),
-      'updated_at' => Carbon::now()->timestamp,
-    ];
-    $this->save();
-  }
-
-  /**
-   * Get whether we can read this user's MAL list.
-   * Only to be used for user notifications etc.
-   *
-   * @return boolean
-   */
-  public function getMalCanReadAttribute() {
-    if (Carbon::createFromFormat('U', $this->mal_status['updated_at'])->diffInHours(Carbon::now()) >= rand(120, 168) ||
-        !Hash::check($this->mal_user.'-'.$this->mal_pass, $this->mal_status['credentials']))
-    {
-      $this->checkMalCredentials();
-    }
-    return $this->mal_status['canRead'];
-  }
-
-  /**
-   * Get whether we can modify this user's MAL list.
-   * Only to be used for user notifications etc.
-   *
-   * @return boolean
-   */
-  public function getMalCanWriteAttribute() {
-    if (Carbon::createFromFormat('U', $this->mal_status['updated_at'])->diffInHours(Carbon::now()) >= rand(120, 168) ||
-        !Hash::check($this->mal_user.'-'.$this->mal_pass, $this->mal_status['credentials']))
-    {
-      $this->checkMalCredentials();
-    }
-    return $this->mal_status['canWrite'];
   }
 }

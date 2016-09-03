@@ -41,6 +41,9 @@ class UpdateSettingsController extends Controller
       ]);
     }
 
+    $mustUpdateMalCache = (isset($request->mal_user) && $request->mal_user !== '' && $request->mal_user !== Auth::user()->mal_user) ||
+    (isset($request->mal_pass) && $request->mal_pass !== '' && $request->mal_pass !== Auth::user()->mal_pass) ? true : false;
+
     $texts = ['username', 'email', 'mal_user', 'mal_pass'];
     $checkboxes = ['nots_mail_state', 'auto_watching'];
 
@@ -57,6 +60,10 @@ class UpdateSettingsController extends Controller
       }
     }
     Auth::user()->save();
+
+    if ($mustUpdateMalCache) {
+      Auth::user()->updateCache();
+    }
 
     return back();
   }

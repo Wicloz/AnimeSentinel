@@ -83,7 +83,7 @@ class RegisterController extends Controller
         'ptw' => [],
       ],
     ]);
-    $user->checkMalCredentials();
+    $user->updateCache();
     return $user;
   }
 }
