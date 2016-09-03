@@ -2,29 +2,10 @@
 @section('title', 'Notification Settings - Mail')
 
 @section('content-center')
-  <div class="content-header">Mail Notification Settings per Status</div>
-  @if(empty(Auth::user()->mal_user))
-    <div class="alert alert-warning">
-      MAL Interaction Disabled
-    </div>
-  @elseif(!Auth::user()->mal_canread)
-    <div class="alert alert-error">
-      MAL Username Invalid
-    </div>
-  @elseif(empty(Auth::user()->mal_pass))
-    <div class="alert alert-warning">
-      MAL Interaction Read Only
-    </div>
-  @elseif(!Auth::user()->mal_canwrite)
-    <div class="alert alert-error">
-      MAL Password Invalid
-    </div>
-  @else
-    <div class="alert alert-success">
-      MAL Credentials Valid
-    </div>
-  @endif
+  <div class="content-header">MAL Credential Status</div>
+  @include('components.malcredstatus')
 
+  <div class="content-header">Mail Notification Settings per Status</div>
   <!--TODO: fancy CSS-->
   <div class="content-generic">
     <form class="form-horizontal" role="form" method="POST" action="{{ fullUrl('/user/notifications/mail/general') }}">

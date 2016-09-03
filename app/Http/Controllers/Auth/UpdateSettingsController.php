@@ -27,8 +27,6 @@ class UpdateSettingsController extends Controller
     $this->validate($request, [
       'username' => ['max:255'],
       'email' => ['email', 'max:255'],
-      'mal_user' => ['max:255'],
-      'mal_pass' => ['max:255'],
     ]);
     if ($request->username !== Auth::user()->username) {
       $this->validate($request, [
@@ -41,10 +39,7 @@ class UpdateSettingsController extends Controller
       ]);
     }
 
-    $mustUpdateMalCache = (isset($request->mal_user) && $request->mal_user !== '' && $request->mal_user !== Auth::user()->mal_user) ||
-    (isset($request->mal_pass) && $request->mal_pass !== '' && $request->mal_pass !== Auth::user()->mal_pass) ? true : false;
-
-    $texts = ['username', 'email', 'mal_user', 'mal_pass'];
+    $texts = ['username', 'email'];
     $checkboxes = ['nots_mail_state', 'auto_watching'];
 
     foreach ($texts as $attribute) {
@@ -61,7 +56,32 @@ class UpdateSettingsController extends Controller
     }
     Auth::user()->save();
 
-    if ($mustUpdateMalCache) {
+    return back();
+  }
+
+  /**
+   * Update the user's mal credentials and update the mal cache.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function mal(Request $request) {
+    $this->validate($request, [
+      'mal_user' => ['max:255'],
+      'mal_pass' => ['max:255'],
+    ]);
+
+    $mustUpdateMalCache = (isset($request->mal_user) && $request->mal_user !== '' && $request->mal_user !== Auth::user()->mal_user) ||
+    (isset($request->mal_pass) && $request->mal_pass !== '' && $request->mal_pass !== Auth::user()->mal_pass) ? true : false;
+
+    $texts = ['mal_user', 'mal_pass'];
+    foreach ($texts as $attribute) {
+      if (isset($request->$attribute) && $request->$attribute !== '') {
+        Auth::user()->$attribute = $request->$attribute;
+      }
+    }
+    Auth::user()->save();
+
+    if ($mustUpdateMalCache || $request->update_mal_cache) {
       Auth::user()->updateCache();
     }
 

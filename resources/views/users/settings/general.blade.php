@@ -11,7 +11,7 @@
         <div class="col-md-6 col-md-offset-4">
           <h2 style="display:inline-block;">Account Data:</h2>
         </div>
-      </div>
+      </div> 
 
       <div class="form-group {{ $errors->has('username') ? 'has-error' : '' }}">
         <label for="username" class="col-md-4 control-label">Username</label>
@@ -67,34 +67,24 @@
 
       <div class="form-group">
         <div class="col-md-6 col-md-offset-4">
-          <h2 style="display:inline-block;">MAL Credentials:</h2>
-          <a href="{{ fullUrl('/about/mal') }}">(read more)</a>
+          <button type="submit" class="btn btn-primary">
+            Update
+          </button>
         </div>
       </div>
 
+    </form>
+    <div class="content-close"></div>
+  </div>
+
+  <div class="content-header">Change MAL Credentials - <a href="{{ fullUrl('/about/mal') }}">(read more)</a></div>
+  <div class="content-generic">
+    <form class="form-horizontal" role="form" method="POST" action="{{ fullUrl('/user/settings/mal') }}">
+      {{ csrf_field() }}
+
       <div class="form-group">
         <div class="col-md-6 col-md-offset-4">
-          @if(empty(Auth::user()->mal_user))
-            <div class="alert alert-warning">
-              MAL Interaction Disabled
-            </div>
-          @elseif(!Auth::user()->mal_canread)
-            <div class="alert alert-error">
-              MAL Username Invalid
-            </div>
-          @elseif(empty(Auth::user()->mal_pass))
-            <div class="alert alert-warning">
-              MAL Interaction Read Only
-            </div>
-          @elseif(!Auth::user()->mal_canwrite)
-            <div class="alert alert-error">
-              MAL Password Invalid
-            </div>
-          @else
-            <div class="alert alert-success">
-              MAL Credentials Valid
-            </div>
-          @endif
+          @include('components.malcredstatus')
         </div>
       </div>
 

@@ -50,6 +50,7 @@ Route::get('/user/notifications/mail', 'UserSettingsController@notifications_mai
 
 // Profile Modifications
 Route::post('/user/settings/general', 'Auth\UpdateSettingsController@general');
+Route::post('/user/settings/mal', 'Auth\UpdateSettingsController@mal');
 Route::post('/user/settings/password', 'Auth\UpdateSettingsController@password');
 Route::post('/user/notifications/mail/general', 'Auth\UpdateSettingsController@notifications_mail_general');
 Route::post('/user/notifications/mail/specific', 'Auth\UpdateSettingsController@notifications_mail_specific');
