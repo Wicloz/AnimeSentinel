@@ -102,13 +102,13 @@
   </div>
 
   <!--TODO: fancy CSS-->
-  @if(!empty($mallist))
+  @if(!empty($mal_list))
     <div class="content-generic">
       <form class="form-horizontal" role="form" method="POST" action="{{ fullUrl('/user/notifications/mail/specific') }}">
         {{ csrf_field() }}
         <input type="hidden" name="status" value="{{ $loadedStatus }}">
 
-        @foreach($mallist as $show)
+        @foreach($mal_list as $show)
           <div class="form-group">
             <div class="col-md-6 col-md-offset-4">
               <h3>{{ $show->title }}</h3>

@@ -297,7 +297,7 @@
         </tr>
         <tr>
           <td>Create the users general options page.</td>
-          <td>✔</td>
+          <td>WIP</td>
         </tr>
         <tr>
           <td>Create the users mail notifications options page.</td>
@@ -325,7 +325,7 @@
         </tr>
         <tr>
           <td>Add 'watched' marks next to episodes on anime detail pages.</td>
-          <td>✘</td>
+          <td>✔</td>
         </tr>
       </tbody>
     </table>

@@ -37,7 +37,7 @@ class UserSettingsController extends Controller
       $mal_list = Auth::user()->mal_list->where('status', $request->status);
     }
     return view('users.settings.notifications.mail', [
-      'mallist' => $mal_list,
+      'mal_list' => $mal_list,
       'loadedStatus' => $request->status,
     ]);
   }

@@ -28,10 +28,19 @@
         @foreach($show->episodes('sub')->load('show') as $episode)
           <li class="list-group-item">
             <div class="row">
-              <div class="col-xs-6">
-                <a href="{{ $episode->episode_url }}">Episode {{ $episode->episode_num }}</a>
+              <div class="col-sm-4">
+                <div class="row">
+                  <div class="col-xs-6">
+                    <a href="{{ $episode->episode_url }}">Episode {{ $episode->episode_num }}</a>
+                  </div>
+                  <div class="col-xs-6">
+                    @if(isset($mal_show))
+                      {{ $episode->episode_num <= $mal_show->eps_watched ? '✔ Watched' : '' }}
+                    @endif
+                  </div>
+                </div>
               </div>
-              <div class="col-xs-6">
+              <div class="col-sm-8">
                 <ul class="pull-right">
                   @foreach($episode->streamers as $streamer)
                     <li><a href="{{ $streamer->details_url }}">{{ $streamer->name }}</a></li>
