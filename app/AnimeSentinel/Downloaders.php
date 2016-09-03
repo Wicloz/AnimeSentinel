@@ -35,6 +35,10 @@ class Downloaders
       curl_close($curl);
     }
 
+    if ($response === 'The service is unavailable.') {
+      $response = Self::downloadPage($url, $tries + 1);
+    }
+
     if ($tries > 0) {
       \Mail::send('emails.report_general', ['description' => 'Downloaded Page After Retries', 'vars' => [
         'Url' => $url,
