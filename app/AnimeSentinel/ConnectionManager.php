@@ -173,9 +173,10 @@ class ConnectionManager
           // Otherwise, if this show is not new, and the epsiode does not exist, queue the finding of all videos for the data
           if (!in_array($show->id, $addedShows)) {
             if (!isset($item['translation_type'])) {
-              if ($show->videos()->episode('sub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null ||
-                  $show->videos()->episode('dub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null)
-              {
+              if (
+                $show->videos()->episode('sub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null ||
+                $show->videos()->episode('dub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null
+              ) {
                 queueJob(new \App\Jobs\AnimeReprocessEpisode($show, ['sub', 'dub'], (int) $item['episode_num'], $streamer->id), 'periodic_high');
               }
             }

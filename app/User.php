@@ -189,6 +189,41 @@ class User extends Authenticatable
    * Update the MAL caches and send notifications.
    */
   public function periodicTasks() {
+    // Update the MAL cache
+    // $this->updateCache();
+
+    // Send mail notifications
+    if ($this->nots_mail_state) {
+      // For all shows on the user's mal list
+      foreach ($this->mal_list as $mal_show) {
+        // If the user want to recieve notifications for this show
+        // and we have the show
+        // and there is a newer episode available
+        // and we did not already send a mail
+        if (
+          (
+            ($this->nots_mail_settings_general[$mal_show->status] && (!array_key_exists($mal_show->mal_id, $this->nots_mail_settings_specific[$mal_show->status]) || $this->nots_mail_settings_specific[$mal_show->status][$mal_show->mal_id])) ||
+            (!$this->nots_mail_settings_general[$mal_show->status] && array_key_exists($mal_show->mal_id, $this->nots_mail_settings_specific[$mal_show->status]) && $this->nots_mail_settings_specific[$mal_show->status][$mal_show->mal_id])
+          ) &&
+          isset($mal_show->show) &&
+          (
+            (isset($mal_show->show->latest_sub) && $mal_show->eps_watched < $mal_show->show->latest_sub->episode_num) ||
+            (isset($mal_show->show->latest_dub) && $mal_show->eps_watched < $mal_show->show->latest_dub->episode_num)
+          )
+        ) {
+          // Send a notification mail (TODO)
+          \Mail::send('emails.report_general', ['description' => 'New Episode Available', 'vars' => [
+            'Show Title' => $mal_show->show->title,
+            'Latest Sub' => $mal_show->show->latest_sub->episode_num,
+            'Latest Dub' => $mal_show->show->latest_dub->episode_num,
+          ]], function ($m) {
+            $m->subject('New episode of anime \''.$mal_show->show->title.'\' available');
+            $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Notifications');
+            $m->to('animesentinel@wilcodeboer.me');
+          });
+        }
+      }
+    }
 
   }
 }

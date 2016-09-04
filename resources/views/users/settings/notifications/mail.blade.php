@@ -108,10 +108,10 @@
         {{ csrf_field() }}
         <input type="hidden" name="status" value="{{ $loadedStatus }}">
 
-        @foreach($mal_list as $show)
+        @foreach($mal_list as $mal_show)
           <div class="form-group">
             <div class="col-md-6 col-md-offset-4">
-              <h3>{{ $show->title }}</h3>
+              <h3>{{ $mal_show->title }}</h3>
             </div>
           </div>
 
@@ -119,19 +119,19 @@
             <div class="col-md-6 col-md-offset-4">
               <div class="radio">
                 <label>
-                  <input type="radio" name="state_{{ $show->mal_id }}" value="" {{ !array_key_exists($show->mal_id, Auth::user()->nots_mail_settings_specific[$loadedStatus]) ? 'checked' : '' }}>
+                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="" {{ !array_key_exists($mal_show->mal_id, Auth::user()->nots_mail_settings_specific[$loadedStatus]) ? 'checked' : '' }}>
                   Use default settings
                 </label>
               </div>
               <div class="radio">
                 <label>
-                  <input type="radio" name="state_{{ $show->mal_id }}" value="1" {{ array_key_exists($show->mal_id, Auth::user()->nots_mail_settings_specific[$loadedStatus]) && Auth::user()->nots_mail_settings_specific[$loadedStatus][$show->mal_id] ? 'checked' : '' }}>
+                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="1" {{ array_key_exists($mal_show->mal_id, Auth::user()->nots_mail_settings_specific[$loadedStatus]) && Auth::user()->nots_mail_settings_specific[$loadedStatus][$mal_show->mal_id] ? 'checked' : '' }}>
                   Always send notifications
                 </label>
               </div>
               <div class="radio">
                 <label>
-                  <input type="radio" name="state_{{ $show->mal_id }}" value="0" {{ array_key_exists($show->mal_id, Auth::user()->nots_mail_settings_specific[$loadedStatus]) && !Auth::user()->nots_mail_settings_specific[$loadedStatus][$show->mal_id] ? 'checked' : '' }}>
+                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="0" {{ array_key_exists($mal_show->mal_id, Auth::user()->nots_mail_settings_specific[$loadedStatus]) && !Auth::user()->nots_mail_settings_specific[$loadedStatus][$mal_show->mal_id] ? 'checked' : '' }}>
                   Never send notifications
                 </label>
               </div>

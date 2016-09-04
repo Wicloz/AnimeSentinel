@@ -1,6 +1,5 @@
 <?php
 
-//queueJob((new \App\Jobs\AnimeFindVideos(\App\Show::first()))->onConnection('sync'));
 
 /*
 |--------------------------------------------------------------------------
