@@ -27,7 +27,7 @@ class VideoRefreshLink implements ShouldQueue
     $this->db_data = [
       'job_task' => 'VideoRefreshLink',
       'show_id' => $video->show->mal_id !== null ? $video->show->mal_id : $video->show->title,
-      'job_data' => $video->id,
+      'job_data' => ['video_id' => $video->id],
     ];
   }
 

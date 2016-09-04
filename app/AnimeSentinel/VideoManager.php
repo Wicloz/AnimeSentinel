@@ -39,7 +39,7 @@ class VideoManager
   public static function refreshVideoLinkFor($video, $fromJob = false) {
     // Handle job related tasks
     $jobShowId = $video->show->mal_id !== null ? $video->show->mal_id : $video->show->title;
-    if (!handleJobFunction('VideoRefreshLink', $jobShowId, $video->id, $fromJob)) return;
+    if (!handleJobFunction('VideoRefreshLink', $jobShowId, ['video_id' => $video->id], $fromJob)) return;
 
     $video->refreshVideoLink();
     $video->save();
