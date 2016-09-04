@@ -32,6 +32,7 @@ class CreateJobsTable extends Migration
         });
 
         queueJob(new \App\Jobs\FindRecentVideos, 'periodic_low');
+        queueJob(new \App\Jobs\UserPeriodicTasks, 'periodic_low');
     }
 
     /**

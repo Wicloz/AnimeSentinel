@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
         $m->to('animesentinel@wilcodeboer.me');
       });
 
-      if (!str_ends_with($event->job->payload()['data']['commandName'], 'FindRecentVideos') && !str_ends_with($event->job->payload()['data']['commandName'], 'HandleUserNotifications')) {
+      if (!str_ends_with($event->job->payload()['data']['commandName'], 'FindRecentVideos') && !str_ends_with($event->job->payload()['data']['commandName'], 'UserPeriodicTasks')) {
         $job = unserialize($event->job->payload()['data']['command']);
         queueJob($job, $job->queue);
       }

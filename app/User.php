@@ -184,4 +184,11 @@ class User extends Authenticatable
       return $response;
     }
   }
+
+  /**
+   * Update the MAL caches and send notifications.
+   */
+  public function periodicTasks() {
+
+  }
 }
