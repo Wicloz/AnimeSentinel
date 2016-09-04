@@ -75,6 +75,7 @@ class RegisterController extends Controller
         'dropped' => false,
         'ptw' => true,
       ],
+      'nots_mail_settings_specific' => collect([]),
     ]);
     $user->updateCache();
     return $user;
