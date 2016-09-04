@@ -102,7 +102,7 @@
         </tr>
         <tr>
           <td>Implement the download helper with retries and failures.</td>
-          <td>✘</td>
+          <td>WIP</td>
         </tr>
         <tr>
           <td>Send reports when an 'anomaly' is detected.</td>

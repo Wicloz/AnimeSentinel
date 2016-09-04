@@ -14,6 +14,10 @@ class Downloaders
       return urlencode($matches[1]);
     }, $url);
 
+    if ($tries > 9) {
+      throw new Exception('Downloading of the page at '.$url.' failed after 10 tries.');
+    }
+
     if (str_contains($url, 'kissanime.to')) {
       $response = Self::downloadCloudFlare($url, 'kissanime', $tries);
     } elseif (str_contains($url, 'kisscartoon.me')) {
@@ -35,7 +39,7 @@ class Downloaders
       curl_close($curl);
     }
 
-    if ($response === 'The service is unavailable.' || str_contains($response, '500 - Internal server error.')) {
+    if (empty($response) || $response === 'The service is unavailable.' || str_contains($response, '500 - Internal server error.')) {
       $response = Self::downloadPage($url, $tries + 1);
     }
 
