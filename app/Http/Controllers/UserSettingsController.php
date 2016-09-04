@@ -32,12 +32,8 @@ class UserSettingsController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function notifications_mail(Request $request) {
-    $mal_list = null;
-    if (!empty($request->status)) {
-      $mal_list = Auth::user()->mal_list->where('status', $request->status);
-    }
     return view('users.settings.notifications.mail', [
-      'mal_list' => $mal_list,
+      'mal_list' => !empty($request->status) ? Auth::user()->mal_list->where('status', $request->status) : null,
       'loadedStatus' => $request->status,
     ]);
   }

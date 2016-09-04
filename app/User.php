@@ -56,7 +56,7 @@ class User extends Authenticatable
   }
 
   /**
-   * Return the user's cached MAL list.
+   * Return the user's cached MAL list, with shows.
    *
    * @return Illuminate\Database\Eloquent\Collection
    */
@@ -70,6 +70,17 @@ class User extends Authenticatable
 
     return $value;
   }
+
+  /**
+   * Return the user's cached MAL list, without shows.
+   *
+   * @return Illuminate\Database\Eloquent\Collection
+   */
+  public function getMalListMinAttribute($value) {
+    $value = collect(json_decode($value));
+    return $value;
+  }
+
   /**
    * Properly store a MAL list for caching.
    */
@@ -81,13 +92,28 @@ class User extends Authenticatable
   }
 
   /**
+   * Return the specific mail notification settings list with missing values replaced by null.
+   *
+   * @return array
+   */
+  public function getNotsMailSettingsSpecificAttribute($value) {
+    foreach ($this->mal_list_min as $mal_show) {
+      if (!array_key_exists($mal_show->mal_id, $value)) {
+        $value[$mal_show->mal_id] = null;
+      }
+    }
+  }
+
+  /**
    * Return the item from the mal list with the requested MAL id
    * Only use when you only need a single item
    *
    * @return stdClass
    */
   public function mal_show($mal_id) {
-    return $this->mal_list->where('mal_id', $mal_id)->first();
+    $mal_show = $this->mal_list_min->where('mal_id', $mal_id)->first();
+    $mal_show->show = Show::where('mal_id', $mal_show->mal_id)->get();
+    return $mal_show;
   }
 
   /**

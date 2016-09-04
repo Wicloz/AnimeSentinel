@@ -119,19 +119,19 @@
             <div class="col-md-6 col-md-offset-4">
               <div class="radio">
                 <label>
-                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="" {{ !array_key_exists($mal_show->mal_id, Auth::user()->nots_mail_settings_specific[$loadedStatus]) ? 'checked' : '' }}>
+                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="null" {{ Auth::user()->nots_mail_settings_specific[$mal_show->mal_id] === null ? 'checked' : '' }}>
                   Use default settings
                 </label>
               </div>
               <div class="radio">
                 <label>
-                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="1" {{ array_key_exists($mal_show->mal_id, Auth::user()->nots_mail_settings_specific[$loadedStatus]) && Auth::user()->nots_mail_settings_specific[$loadedStatus][$mal_show->mal_id] ? 'checked' : '' }}>
+                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="true" {{ Auth::user()->nots_mail_settings_specific[$mal_show->mal_id] === true ? 'checked' : '' }}>
                   Always send notifications
                 </label>
               </div>
               <div class="radio">
                 <label>
-                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="0" {{ array_key_exists($mal_show->mal_id, Auth::user()->nots_mail_settings_specific[$loadedStatus]) && !Auth::user()->nots_mail_settings_specific[$loadedStatus][$mal_show->mal_id] ? 'checked' : '' }}>
+                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="false" {{ Auth::user()->nots_mail_settings_specific[$mal_show->mal_id] === false ? 'checked' : '' }}>
                   Never send notifications
                 </label>
               </div>
