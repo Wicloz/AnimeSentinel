@@ -76,8 +76,8 @@ class User extends Authenticatable
    *
    * @return Illuminate\Database\Eloquent\Collection
    */
-  public function getMalListMinAttribute($value) {
-    $value = collect(json_decode($value));
+  public function getMalListMinAttribute() {
+    $value = collect(json_decode($this->attributes['mal_list']));
     return $value;
   }
 
