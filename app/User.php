@@ -97,6 +97,7 @@ class User extends Authenticatable
    * @return array
    */
   public function getNotsMailSettingsSpecificAttribute($value) {
+    $value = (array) json_decode($value);
     foreach ($this->mal_list_min as $mal_show) {
       if (!array_key_exists($mal_show->mal_id, $value)) {
         $value[$mal_show->mal_id] = null;

@@ -32,11 +32,11 @@ class Show extends BaseModel
    */
   public function getAltsAttribute($value) {
     $this->handleCaching();
-    return json_decode($value);
+    return (array) json_decode($value);
   }
   public function getGenresAttribute($value) {
     $this->handleCaching();
-    return json_decode($value);
+    return (array) json_decode($value);
   }
 
   /**
