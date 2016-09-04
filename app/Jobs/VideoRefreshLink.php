@@ -13,6 +13,7 @@ use App\AnimeSentinel\VideoManager;
 class VideoRefreshLink implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
+  public $db_data;
 
   protected $video_id;
 

@@ -13,6 +13,7 @@ use App\AnimeSentinel\ConnectionManager;
 class AnimeFindVideos implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
+  public $db_data;
 
   protected $show;
 

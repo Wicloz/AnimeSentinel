@@ -13,6 +13,7 @@ use App\Show;
 class ShowUpdate implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
+  public $db_data;
 
   protected $show_id;
   protected $episodes;

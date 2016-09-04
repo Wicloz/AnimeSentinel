@@ -12,6 +12,7 @@ use App\AnimeSentinel\ShowManager;
 class ShowAdd implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
+  public $db_data;
 
   protected $mal_id;
   protected $title;

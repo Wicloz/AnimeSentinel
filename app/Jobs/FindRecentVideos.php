@@ -7,11 +7,13 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+use Carbon\Carbon;
 use App\AnimeSentinel\ConnectionManager;
 
 class FindRecentVideos implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
+  public $db_data;
 
   /**
    * Create a new job instance.
@@ -34,7 +36,7 @@ class FindRecentVideos implements ShouldQueue
    */
   public function handle() {
     ConnectionManager::findRecentEpisodes();
-    queueJob((new FindRecentVideos)->delay(Carbon::now()->addMinutes(8)), 'periodic_low');
+    queueJob((new FindRecentVideos)->delay(Carbon::now()->addMinutes(10)), 'periodic_low');
   }
 
   /**
@@ -43,6 +45,6 @@ class FindRecentVideos implements ShouldQueue
    * @return void
    */
   public function failed() {
-    queueJob((new FindRecentVideos)->delay(Carbon::now()->addMinutes(8)), 'periodic_low');
+    queueJob((new FindRecentVideos)->delay(Carbon::now()->addMinutes(10)), 'periodic_low');
   }
 }

@@ -13,6 +13,7 @@ use App\AnimeSentinel\ConnectionManager;
 class AnimeReprocessEpisode implements ShouldQueue
 {
   use InteractsWithQueue, Queueable, SerializesModels;
+  public $db_data;
 
   protected $show;
   protected $translation_types;

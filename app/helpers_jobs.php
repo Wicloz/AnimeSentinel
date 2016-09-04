@@ -3,7 +3,6 @@
 function queueJob($job, $queue = 'default') {
   // Prepare job data
   $job_data = $job->db_data;
-  unset($job->db_data);
 
   if ($job_data['show_id'] !== null) {
     // Check whether a higher job is queued
