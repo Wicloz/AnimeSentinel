@@ -129,15 +129,21 @@ class UpdateSettingsController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function notifications_mail_specific(Request $request) {
-    $settings = [];
+    $temp = Auth::user()->nots_mail_settings_specific;
+
     foreach ($request->all() as $key => $value) {
-      if (str_starts_with($key, 'state_') && $value !== '') {
-        $settings[(int) str_replace('state_', '', $key)] = (bool) $value;
+      if (str_starts_with($key, 'state_')) {
+        $key = (int) str_replace('state_', '', $key);
+        $value = json_decode($value);
+
+        if ($value === null) {
+          unset($temp[$key]);
+        } else {
+          $temp[$key] = $value;
+        }
       }
     }
 
-    $temp = Auth::user()->nots_mail_settings_specific;
-    $temp[$request->status] = $settings;
     Auth::user()->nots_mail_settings_specific = $temp;
     Auth::user()->save();
 

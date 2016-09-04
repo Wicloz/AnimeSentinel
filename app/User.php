@@ -31,9 +31,9 @@ class User extends Authenticatable
    * @var array
    */
   protected $casts = [
-    'mal_list' => 'array',
-    'nots_mail_settings_general' => 'array',
-    'nots_mail_settings_specific' => 'array',
+    'mal_list' => 'collection',
+    'nots_mail_settings_general' => 'collection',
+    'nots_mail_settings_specific' => 'collection',
   ];
 
   /**
@@ -92,16 +92,15 @@ class User extends Authenticatable
   }
 
   /**
-   * Return the specific mail notification settings list with missing values replaced by null.
+   * Return the combined mail notification setting for a specific mal show.
    *
-   * @return array
+   * @return boolean
    */
-  public function getNotsMailSettingsSpecificAttribute($value) {
-    $value = (array) json_decode($value);
-    foreach ($this->mal_list_min as $mal_show) {
-      if (!array_key_exists($mal_show->mal_id, $value)) {
-        $value[$mal_show->mal_id] = null;
-      }
+  public function nots_mail_state_for($mal_show) {
+    if ($this->nots_mail_settings_specific->get($mal_show->mal_id) === true || ($this->nots_mail_settings_specific->get($mal_show->mal_id) === null && $this->nots_mail_settings_general[$mal_show->status])) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -113,7 +112,9 @@ class User extends Authenticatable
    */
   public function mal_show($mal_id) {
     $mal_show = $this->mal_list_min->where('mal_id', $mal_id)->first();
-    $mal_show->show = Show::where('mal_id', $mal_show->mal_id)->get();
+    if (isset($mal_show)) {
+      $mal_show->show = Show::where('mal_id', $mal_show->mal_id)->get();
+    }
     return $mal_show;
   }
 
@@ -236,13 +237,9 @@ class User extends Authenticatable
         // If the user want to recieve notifications for this show
         // and we have the show
         // and there is a newer episode available
-        // and we did not already send a mail
+        // and we did not already send a mail (TODO)
         if (
-          (
-            ($this->nots_mail_settings_general[$mal_show->status] && (!array_key_exists($mal_show->mal_id, $this->nots_mail_settings_specific[$mal_show->status]) || $this->nots_mail_settings_specific[$mal_show->status][$mal_show->mal_id])) ||
-            (!$this->nots_mail_settings_general[$mal_show->status] && array_key_exists($mal_show->mal_id, $this->nots_mail_settings_specific[$mal_show->status]) && $this->nots_mail_settings_specific[$mal_show->status][$mal_show->mal_id])
-          ) &&
-          isset($mal_show->show) &&
+          $this->nots_mail_state_for($mal_show) && isset($mal_show->show) &&
           (
             (isset($mal_show->show->latest_sub) && $mal_show->eps_watched < $mal_show->show->latest_sub->episode_num) ||
             (isset($mal_show->show->latest_dub) && $mal_show->eps_watched < $mal_show->show->latest_dub->episode_num)
@@ -251,9 +248,9 @@ class User extends Authenticatable
           // Send a notification mail (TODO)
           \Mail::send('emails.report_general', ['description' => 'New Episode Available', 'vars' => [
             'Show Title' => $mal_show->show->title,
-            'Latest Sub' => $mal_show->show->latest_sub->episode_num,
-            'Latest Dub' => $mal_show->show->latest_dub->episode_num,
-          ]], function ($m) {
+            'Latest Sub' => isset($mal_show->show->latest_sub) ? $mal_show->show->latest_sub->episode_num : 'NA',
+            'Latest Dub' => isset($mal_show->show->latest_dub) ? $mal_show->show->latest_dub->episode_num : 'NA',
+          ]], function ($m) use ($mal_show) {
             $m->subject('New episode of anime \''.$mal_show->show->title.'\' available');
             $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Notifications');
             $m->to('animesentinel@wilcodeboer.me');
@@ -261,6 +258,5 @@ class User extends Authenticatable
         }
       }
     }
-
   }
 }
