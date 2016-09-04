@@ -81,6 +81,16 @@ class User extends Authenticatable
   }
 
   /**
+   * Return the item from the mal list with the requested MAL id
+   * Only use when you only need a single item
+   *
+   * @return stdClass
+   */
+  public function mal_show($mal_id) {
+    return $this->mal_list->where('mal_id', $mal_id)->first();
+  }
+
+  /**
    * Update this user's cached MAL list and credential status.
    */
   public function updateCache() {

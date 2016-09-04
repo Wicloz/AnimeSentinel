@@ -27,7 +27,7 @@ class ShowController extends Controller
         }
         return view('anime.details', [
           'show' => $show,
-          'mal_show' => Auth::check() ? Auth::user()->mal_list->where('mal_id', $show->mal_id)->first() : null,
+          'mal_show' => Auth::check() ? Auth::user()->mal_show($show->mal_id) : null,
         ]);
       }
       else {
