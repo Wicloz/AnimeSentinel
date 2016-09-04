@@ -39,7 +39,7 @@ class MalcacheSearch extends BaseModel
    * @var array
    */
   protected $casts = [
-    'results' => 'array',
+    'results' => 'collection',
   ];
 
   /**
