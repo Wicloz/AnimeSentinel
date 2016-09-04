@@ -62,7 +62,7 @@ return [
     |
     */
 
-    'url_production' => env('APP_URL_PRODUCTION', 'http://localhost'),
+    'url_production' => 'https://anime.wilcodeboer.me',
 
     /*
     |--------------------------------------------------------------------------
