@@ -59,7 +59,7 @@
         <div class="col-md-6 col-md-offset-4">
           <div class="checkbox">
             <label>
-              <input type="checkbox" name="notifications_ptw" {{ Auth::user()->nots_mail_settings_general['ptw'] ? 'checked' : '' }}>
+              <input type="checkbox" name="notifications_plantowatch" {{ Auth::user()->nots_mail_settings_general['plantowatch'] ? 'checked' : '' }}>
               Recieve notifications for 'Plan to Watch' anime by default.
             </label>
           </div>
@@ -95,7 +95,7 @@
         <a href="{{ fullUrl('/user/notifications/mail').'?status=dropped' }}" class="align-center"><h2>Dropped</h2></a>
       </div>
       <div class="col-md-2">
-        <a href="{{ fullUrl('/user/notifications/mail').'?status=ptw' }}" class="align-center"><h2>Plan to Watch</h2></a>
+        <a href="{{ fullUrl('/user/notifications/mail').'?status=plantowatch' }}" class="align-center"><h2>Plan to Watch</h2></a>
       </div>
     </div>
     <div class="content-close"></div>

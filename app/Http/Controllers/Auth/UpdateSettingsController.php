@@ -116,7 +116,7 @@ class UpdateSettingsController extends Controller
       'completed' => !empty($request->notifications_completed),
       'onhold' => !empty($request->notifications_onhold),
       'dropped' => !empty($request->notifications_dropped),
-      'ptw' => !empty($request->notifications_ptw),
+      'plantowatch' => !empty($request->notifications_plantowatch),
     ];
     Auth::user()->save();
 

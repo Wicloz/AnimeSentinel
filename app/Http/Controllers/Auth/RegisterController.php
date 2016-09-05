@@ -73,7 +73,7 @@ class RegisterController extends Controller
         'completed' => false,
         'onhold' => false,
         'dropped' => false,
-        'ptw' => true,
+        'plantowatch' => true,
       ],
       'nots_mail_settings_specific' => collect([]),
     ]);

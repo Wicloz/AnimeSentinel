@@ -153,39 +153,28 @@ class User extends Authenticatable
       $this->postToMal('validate', 0);
     }
 
-    // Grab and decode anime list
-    $results = collect(json_decode(str_get_between($page, '<table class="list-table" data-items="', '">')));
+    // Srape page for anime list
+    $results = collect(Helpers::scrape_page(str_get_between($page, '<table class="list-table"', '</table>'), '</td>', [
+      'status' => [true, '<td class="data status ', '">'],
+      'mal_id' => [false, '<a href="/anime/', '/'],
+      'title' => [false, 'class="link sort">', '</a>'],
+      'eps_watched' => [false, '<a href="javascript: void(0);" class="link edit-disabled">', '</a>'],
+    ]));
+
     // Get all related shows from our database
-    $shows = Show::whereIn('mal_id', $results->pluck('anime_id'))->get();
+    $shows = Show::whereIn('mal_id', $results->pluck('mal_id'))->get();
 
     // Convert the results to more convenient objects
     $animes = new Collection();
     foreach ($results as $result) {
       $anime = new \stdClass();
 
-      switch ($result->status) {
-        case '1':
-          $anime->status = 'watching';
-        break;
-        case '2':
-          $anime->status = 'completed';
-        break;
-        case '3':
-          $anime->status = 'onhold';
-        break;
-        case '4':
-          $anime->status = 'dropped';
-        break;
-        case '5':
-          $anime->status = 'ptw';
-        break;
-      }
+      $anime->mal_id = $result['mal_id'];
+      $anime->title = $result['title'];
+      $anime->status = $result['status'];
+      $anime->eps_watched = $result['eps_watched'];
 
-      $anime->show = $shows->where('mal_id', $result->anime_id)->first();
-
-      $anime->mal_id = $result->anime_id;
-      $anime->title = $result->anime_title;
-      $anime->eps_watched = $result->num_watched_episodes;
+      $anime->show = $shows->where('mal_id', $result['mal_id'])->first();
       $animes[] = $anime;
     }
 
@@ -228,7 +217,7 @@ class User extends Authenticatable
    */
   public function periodicTasks() {
     // Update the MAL cache
-    // $this->updateCache();
+    $this->updateCache();
 
     // Send mail notifications
     if ($this->nots_mail_state) {
@@ -252,8 +241,8 @@ class User extends Authenticatable
             'Latest Dub' => isset($mal_show->show->latest_dub) ? $mal_show->show->latest_dub->episode_num : 'NA',
           ]], function ($m) use ($mal_show) {
             $m->subject('New episode of anime \''.$mal_show->show->title.'\' available');
-            $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Notifications');
-            $m->to('animesentinel@wilcodeboer.me');
+            $m->from('notifications.animesentinel@wilcodeboer.me', 'AnimeSentinel Notifications');
+            $m->to($this->email);
           });
         }
       }
