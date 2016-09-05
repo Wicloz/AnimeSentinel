@@ -30,6 +30,10 @@ class Downloaders
       $response = Self::downloadJavaScript($url, $tries);
     }
 
+    elseif (str_contains($url, 'myanimelist.net/animelist/')) {
+      $response = Self::downloadScrolled($url, $tries);
+    }
+
     else {
       $curl = curl_init();
       curl_setopt($curl, CURLOPT_URL, $url);
@@ -58,12 +62,21 @@ class Downloaders
   }
 
   /**
-   * Returns a webpage after executing JavaScript
+   * Returns a webpage after executing JavaScript.
    *
    * @return string
    */
   private static function downloadJavaScript($url, $tries) {
-    return exec('xvfb-run python '. __DIR__ .'/Python/GetExpanded.py "'. $url .'"');
+    return shell_exec('xvfb-run python "'. __DIR__ .'/Python/GetExpanded.py" "'. $url .'"');
+  }
+
+  /**
+   * Returns a webpage after scrolling to the bottom.
+   *
+   * @return string
+   */
+  private static function downloadScrolled($url, $tries) {
+    return shell_exec('xvfb-run python "'. __DIR__ .'/Python/GetScrolled.py" "'. $url .'"');
   }
 
   /**
@@ -112,7 +125,7 @@ class Downloaders
       });
     }
     if (str_contains(preg_replace('/\s+/', '', $response), '<title>AreYouHuman</title>')) {
-      exec('xvfb-run python '. __DIR__ .'/Python/ReCaptcha.py "'. $url .'" "1" "3" "btnSubmit" "'. $cf_data->agent .'"');
+      exec('xvfb-run python "'. __DIR__ .'/Python/ReCaptcha.py" "'. $url .'" "1" "3" "btnSubmit" "'. $cf_data->agent .'"');
       return Self::downloadPage($url, $tries + 1);
     }
 
@@ -120,7 +133,7 @@ class Downloaders
   }
 
   private static function requestCloudFlareData($url, $cookieid = 'cloudflare') {
-    $cookies = exec('python '. __DIR__ .'/Python/CloudFlare.py "'. $url .'"');
+    $cookies = exec('python "'. __DIR__ .'/Python/CloudFlare.py" "'. $url .'"');
     if (!file_exists(__DIR__.'/../../storage/app/cookies')) {
       mkdir(__DIR__.'/../../storage/app/cookies');
     }

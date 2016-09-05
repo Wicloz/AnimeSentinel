@@ -119,3 +119,4 @@ if __name__ == "__main__":
   driver.switch_to.window(mainWin)
   driver.find_element_by_id(submit_id).click()
   print 'Submitting ...'
+  driver.quit()
