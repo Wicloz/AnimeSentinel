@@ -11,7 +11,7 @@
         <div class="col-md-6 col-md-offset-4">
           <h2 style="display:inline-block;">Account Data:</h2>
         </div>
-      </div> 
+      </div>
 
       <div class="form-group {{ $errors->has('username') ? 'has-error' : '' }}">
         <label for="username" class="col-md-4 control-label">Username</label>
@@ -77,7 +77,7 @@
     <div class="content-close"></div>
   </div>
 
-  <div class="content-header">Change MAL Credentials - <a href="{{ fullUrl('/about/mal') }}">(read more)</a></div>
+  <div class="content-header">Change MAL Credentials &ndash; <a href="{{ fullUrl('/about/mal') }}">(read more)</a></div>
   <div class="content-generic">
     <form class="form-horizontal" role="form" method="POST" action="{{ fullUrl('/user/settings/mal') }}">
       {{ csrf_field() }}
