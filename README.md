@@ -1,4 +1,4 @@
-# Anime-Sentinel
+# AnimeSentinel
 This project will (eventually) aim to create THE streaming site, by streaming videos available on a lot of other streaming sites.
 It will also focus on delivering notifications when new episodes come out so you'll never miss them again.
 
