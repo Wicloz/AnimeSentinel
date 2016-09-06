@@ -15,7 +15,7 @@ class Downloaders
     }, $url);
 
     if ($tries > 9) {
-      throw new Exception('Downloading of the page at '.$url.' failed after 10 tries.');
+      throw new \Exception('Downloading of the page at '.$url.' failed after 10 tries.');
     }
 
     if (str_contains($url, 'kissanime.to')) {
