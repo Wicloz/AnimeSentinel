@@ -67,7 +67,7 @@ class Downloaders
    * @return string
    */
   private static function downloadJavaScript($url, $tries) {
-    return shell_exec('xvfb-run python "'. __DIR__ .'/Python/GetExpanded.py" "'. $url .'" 2> /dev/null');
+    return shell_exec('python "'. __DIR__ .'/Python/GetExpanded.py" "'. $url .'" 2> /dev/null');
   }
 
   /**
@@ -76,7 +76,7 @@ class Downloaders
    * @return string
    */
   private static function downloadScrolled($url, $tries) {
-    return shell_exec('xvfb-run python "'. __DIR__ .'/Python/GetScrolled.py" "'. $url .'" 2> /dev/null');
+    return shell_exec('python "'. __DIR__ .'/Python/GetScrolled.py" "'. $url .'" 2> /dev/null');
   }
 
   /**

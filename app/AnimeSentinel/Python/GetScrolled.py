@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
 if __name__ == "__main__":
-  driver = webdriver.Firefox()
+  driver = webdriver.PhantomJS()
   driver.get(sys.argv[1])
 
   while True:
