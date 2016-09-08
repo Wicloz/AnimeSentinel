@@ -20,8 +20,6 @@ class Downloaders
 
     if (str_contains($url, 'kissanime.to')) {
       $response = Self::downloadCloudFlare($url, 'kissanime', $tries);
-    } elseif (str_contains($url, 'kisscartoon.me')) {
-      $response = Self::downloadCloudFlare($url, 'kisscartoon', $tries);
     } elseif (str_contains($url, 'gogoanime.io')) {
       $response = Self::downloadCloudFlare($url, 'gogoanime', $tries);
     }
@@ -95,8 +93,6 @@ class Downloaders
 
     if ($cookieid === 'kissanime') {
       $cf_data->cookies .= '; password='.config('animesentinel.kissanime_password_cookie').'; username='.config('animesentinel.kissanime_username_cookie');
-    } elseif ($cookieid === 'kisscartoon') {
-      $cf_data->cookies .= '; password='.config('animesentinel.kisscartoon_password_cookie').'; username='.config('animesentinel.kisscartoon_username_cookie');
     }
 
     $curl = curl_init();

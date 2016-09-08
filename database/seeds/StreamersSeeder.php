@@ -22,11 +22,5 @@ class StreamersSeeder extends Seeder
     $s2->name = 'KissAnime';
     $s2->link_home = 'http://kissanime.to';
     $s2->save();
-
-    //$s3 = Streamer::findOrNew('kisscartoon');
-    //$s3->id = 'kisscartoon';
-    //$s3->name = 'KissCartoon';
-    //$s3->link_home = 'http://kisscartoon.me';
-    //$s3->save();
   }
 }
