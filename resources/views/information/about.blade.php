@@ -102,15 +102,15 @@
         </tr>
         <tr>
           <td>Implement the download helper with retries and failures.</td>
-          <td>WIP</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Send reports when an 'anomaly' is detected.</td>
-          <td>WIP</td>
+          <td>Fix Mailserver</td>
         </tr>
         <tr>
           <td>Send reports for certain bugs and failures.</td>
-          <td>WIP</td>
+          <td>Fix Mailserver</td>
         </tr>
         <tr>
           <td>Review classnames and filenames for the Jobs and AnimeSentinel stuff.</td>
@@ -233,7 +233,7 @@
           <td>WIP</td>
         </tr>
         <tr>
-          <td>Use a smarter caching expiration time.</td>
+          <td>Use a smarter show cache expiration time.</td>
           <td>✘</td>
         </tr>
         <tr>
