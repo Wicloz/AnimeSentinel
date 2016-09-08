@@ -136,7 +136,7 @@ class User extends Authenticatable
    *
    * @return Illuminate\Database\Eloquent\Collection
    */
-  public function getMalList($checkCredentials = false) {
+  private function getMalList($checkCredentials = false) {
     // Download the page
     $page = Downloaders::downloadPage('https://myanimelist.net/animelist/'.$this->mal_user);
     // Check whether the page is valid, return false if it isn't
@@ -154,31 +154,32 @@ class User extends Authenticatable
     }
 
     // Srape page for anime list
-    $results = collect(Helpers::scrape_page(str_get_between($page, '<table class="list-table"', '</table>'), '</td>', [
+    $results = collect(Helpers::scrape_page(str_get_between($page, '</tbody>', '</table>'), '</td>', [
       'status' => [true, '<td class="data status ', '">'],
-      'mal_id' => [false, '<a href="/anime/', '/'],
-      'title' => [false, 'class="link sort">', '</a>'],
-      'eps_watched' => [false, '<a href="javascript: void(0);" class="link edit-disabled">', '</a>'],
+      'partialUrl' => [false, '<a class="link sort" href="', '</a>'],
+      'progress' => [false, '<div class="progress', '</div>'],
     ]));
 
-    // Get all related shows from our database
-    $shows = Show::whereIn('mal_id', $results->pluck('mal_id'))->get();
-
     // Convert the results to more convenient objects
-    $animes = new Collection();
+    $mal_shows = new Collection();
     foreach ($results as $result) {
-      $anime = new \stdClass();
+      $mal_show = new \stdClass();
+      $mal_show->status = $result['status'];
 
-      $anime->mal_id = $result['mal_id'];
-      $anime->title = $result['title'];
-      $anime->status = $result['status'];
-      $anime->eps_watched = $result['eps_watched'];
+      $mal_show->mal_id = str_get_between($result['partialUrl'], '/anime/', '/');
+      $mal_show->title = str_get_between($result['partialUrl'], '">');
 
-      $anime->show = $shows->where('mal_id', $result['mal_id'])->first();
-      $animes[] = $anime;
+      $eps_watched = str_get_between($result['progress'], '<a href="javascript: void(0);" class="link edit-disabled">', '</a>');
+      if ($eps_watched !== false) {
+        $mal_show->eps_watched = $eps_watched;
+      } else {
+        $mal_show->eps_watched = str_get_between($result['progress'], '<span>', '</span>', true);
+      }
+
+      $mal_shows[] = $mal_show;
     }
 
-    return $animes;
+    return $mal_shows;
   }
 
   /**
