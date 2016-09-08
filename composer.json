@@ -45,12 +45,14 @@
         "post-install-cmd": [
             "pip install cfscrape --upgrade",
             "pip install selenium --upgrade",
+            "npm install -g phantomjs",
             "Illuminate\\Foundation\\ComposerScripts::postInstall",
             "php artisan optimize"
         ],
         "post-update-cmd": [
             "pip install cfscrape --upgrade",
             "pip install selenium --upgrade",
+            "npm install -g phantomjs",
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "php artisan optimize"
         ]
