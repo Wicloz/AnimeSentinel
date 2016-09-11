@@ -35,7 +35,7 @@ class UserPeriodicTasks implements ShouldQueue
    * @return void
    */
   public function handle() {
-    Show::orderBy('id')->chunk(32, function ($users) {
+    User::orderBy('id')->chunk(32, function ($users) {
       foreach ($users as $user) {
         $user->periodicTasks();
       }
