@@ -15,13 +15,13 @@ https://sharex.wilcodeboer.me/?id=nFxQ1CXvBayp61S
 
 Guide for development servers (WIP):
 - Required software:
--- python >= 2.5
--- pip (to install cfscrape and selenium)
--- a recent version of nodejs, node legacy and npm
 -- firefox
 -- xvfb
 - Included in Homestead:
 -- composer
+-- python >= 2.5
+-- pip (to install cfscrape and selenium)
+-- a recent version of nodejs and npm
 -- a webserver
 -- a database
 -- openssl
