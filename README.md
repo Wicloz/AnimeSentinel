@@ -17,6 +17,7 @@ Guide for development servers (WIP):
 - Required software:
 -- firefox
 -- xvfb
+-- ffmpeg
 - Included in Homestead:
 -- composer
 -- python >= 2.5
@@ -25,5 +26,5 @@ Guide for development servers (WIP):
 -- a webserver
 -- a database
 -- openssl
--- php7.0, php7.0-curl, php7.0-mbstring
+-- php7.0, php7.0-curl, other php extensions
 -- php database extension
