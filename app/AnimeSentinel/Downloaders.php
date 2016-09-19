@@ -65,7 +65,7 @@ class Downloaders
    * @return string
    */
   private static function downloadJavaScript($url, $tries) {
-    return shell_exec('python "'. __DIR__ .'/Python/GetExpanded.py" "'. $url .'" 2> /dev/null');
+    return shell_exec('python "'.app_path('AnimeSentinel/Python/GetExpanded.py').'" "'. $url .'" 2> /dev/null');
   }
 
   /**
@@ -74,7 +74,7 @@ class Downloaders
    * @return string
    */
   private static function downloadScrolled($url, $tries) {
-    return shell_exec('python "'. __DIR__ .'/Python/GetScrolled.py" "'. $url .'" 2> /dev/null');
+    return shell_exec('python "'.app_path('AnimeSentinel/Python/GetScrolled.py').'" "'. $url .'" 2> /dev/null');
   }
 
   /**
@@ -83,8 +83,8 @@ class Downloaders
    * @return string
    */
   private static function downloadCloudFlare($url, $cookieid = 'cloudflare', $tries = 0) {
-    if (file_exists(__DIR__.'/../../storage/app/cookies/'.$cookieid)) {
-      $cf_data = json_decode(file_get_contents(__DIR__.'/../../storage/app/cookies/'.$cookieid));
+    if (file_exists(storage_path('app/cookies/'.$cookieid))) {
+      $cf_data = json_decode(file_get_contents(storage_path('app/cookies/'.$cookieid)));
     }
     if (empty($cf_data)) {
       Self::requestCloudFlareData($url, $cookieid);
@@ -121,7 +121,7 @@ class Downloaders
       });
     }
     if (str_contains(preg_replace('/\s+/', '', $response), '<title>AreYouHuman</title>')) {
-      exec('xvfb-run python "'. __DIR__ .'/Python/ReCaptcha.py" "'. $url .'" "1" "3" "btnSubmit" "'. $cf_data->agent .'" 2> /dev/null');
+      exec('xvfb-run python "'.app_path('AnimeSentinel/Python/ReCaptcha.py').'" "'. $url .'" "1" "3" "btnSubmit" "'. $cf_data->agent .'" 2> /dev/null');
       return Self::downloadPage($url, $tries + 1);
     }
 
@@ -129,10 +129,10 @@ class Downloaders
   }
 
   private static function requestCloudFlareData($url, $cookieid = 'cloudflare') {
-    $cookies = exec('python "'. __DIR__ .'/Python/CloudFlare.py" "'. $url .'" 2> /dev/null');
-    if (!file_exists(__DIR__.'/../../storage/app/cookies')) {
-      mkdir(__DIR__.'/../../storage/app/cookies');
+    $cookies = exec('python "'.app_path('AnimeSentinel/Python/CloudFlare.py').'" "'. $url .'" 2> /dev/null');
+    if (!file_exists(storage_path('app/cookies/'))) {
+      mkdir(storage_path('app/cookies/'));
     }
-    file_put_contents(__DIR__.'/../../storage/app/cookies/'.$cookieid, $cookies);
+    file_put_contents(storage_path('app/cookies/'.$cookieid), $cookies);
   }
 }
