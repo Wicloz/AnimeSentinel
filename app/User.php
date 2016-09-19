@@ -97,7 +97,7 @@ class User extends Authenticatable
    * @return boolean
    */
   public function nots_mail_state_for($mal_show) {
-    return $this->nots_mail_settings_specific[$mal_show->mal_id] === true || ($this->nots_mail_settings_specific-[$mal_show->mal_id] === null && $this->nots_mail_settings_general[$mal_show->status]);
+    return $this->nots_mail_settings_specific->get($mal_show->mal_id) === true || ($this->nots_mail_settings_specific->get($mal_show->mal_id) === null && $this->nots_mail_settings_general->get($mal_show->status) === true);
   }
 
   /**
