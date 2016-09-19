@@ -120,17 +120,22 @@ class animeshow
    * @return array
    */
    public static function guard() {
-     // Download the 'recently aired' page
-     $page = Downloaders::downloadPage('http://animeshow.tv/');
+    // Download the 'recently aired' page
+    $page = Downloaders::downloadPage('http://animeshow.tv/');
 
-     // Scrape the 'recently aired' page
-     $data = Helpers::scrape_page(str_get_between($page, '<h1>LATEST ANIME EPISODES</h1>', '<div id="new_anime">'), 'ago</div>', [
-       'title' => [true, '<div class="latest_episode_title">', '</div>'],
-       'episode_num' => [false, 'Episode ', '</div>'],
-     ]);
+    // Scrape the 'recently aired' page
+    $data = Helpers::scrape_page(str_get_between($page, '<h1>LATEST ANIME EPISODES</h1>', '<div id="new_anime">'), 'ago</div>', [
+      'title' => [true, '<div class="latest_episode_title">', '</div>'],
+      'episode_num' => [false, 'Episode ', '</div>'],
+    ]);
 
-     return $data;
-     // Contains: title, episode_num, (translation_type)
+    // Mark all found shows as subs
+    foreach ($data as $index => $item) {
+      $data[$index]['translation_type'] = 'sub';
+    }
+
+    return $data;
+    // Contains: title, episode_num, (translation_type)
    }
 
   /**
