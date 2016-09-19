@@ -65,7 +65,7 @@ class Downloaders
    * @return string
    */
   private static function downloadJavaScript($url, $tries) {
-    return shell_exec('python "'.app_path('AnimeSentinel/Python/GetExpanded.py').'" "'. $url .'" 2> /dev/null');
+    return shell_exec('python "'. app_path('AnimeSentinel/Python/GetExpanded.py') .'" "'. $url .'" 2> /dev/null');
   }
 
   /**
@@ -74,7 +74,7 @@ class Downloaders
    * @return string
    */
   private static function downloadScrolled($url, $tries) {
-    return shell_exec('python "'.app_path('AnimeSentinel/Python/GetScrolled.py').'" "'. $url .'" 2> /dev/null');
+    return shell_exec('python "'. app_path('AnimeSentinel/Python/GetScrolled.py') .'" "'. $url .'" 2> /dev/null');
   }
 
   /**
@@ -121,7 +121,7 @@ class Downloaders
       });
     }
     if (str_contains(preg_replace('/\s+/', '', $response), '<title>AreYouHuman</title>')) {
-      exec('xvfb-run python "'.app_path('AnimeSentinel/Python/ReCaptcha.py').'" "'. $url .'" "1" "3" "btnSubmit" "'. $cf_data->agent .'" 2> /dev/null');
+      exec('xvfb-run python "'. app_path('AnimeSentinel/Python/ReCaptcha.py') .'" "'. $url .'" "1" "3" "btnSubmit" "'. $cf_data->agent .'" 2> /dev/null');
       return Self::downloadPage($url, $tries + 1);
     }
 
@@ -129,7 +129,7 @@ class Downloaders
   }
 
   private static function requestCloudFlareData($url, $cookieid = 'cloudflare') {
-    $cookies = exec('python "'.app_path('AnimeSentinel/Python/CloudFlare.py').'" "'. $url .'" 2> /dev/null');
+    $cookies = exec('python "'. app_path('AnimeSentinel/Python/CloudFlare.py') .'" "'. $url .'" 2> /dev/null');
     if (!file_exists(storage_path('app/cookies/'))) {
       mkdir(storage_path('app/cookies/'));
     }
