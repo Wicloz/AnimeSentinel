@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
 if __name__ == "__main__":
-  driver = webdriver.PhantomJS()
+  driver = webdriver.PhantomJS(service_log_path='/tmp/ghostdriver.log')
   driver.get(sys.argv[1])
 
   while True:
