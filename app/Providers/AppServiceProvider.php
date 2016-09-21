@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
     putenv('PYTHONIOENCODING=UTF-8');
 
     Queue::failing(function (JobFailed $event) {
-      \Mail::send('emails.report_general', ['description' => 'Job Failed', 'vars' => [
+      \Mail::send('emails.reports.general', ['description' => 'Job Failed', 'vars' => [
         'Data' => json_encode($event->job->payload()),
         'Exception' => $event->exception,
       ]], function ($m) {

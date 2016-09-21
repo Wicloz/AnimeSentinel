@@ -46,7 +46,7 @@ class Downloaders
     }
 
     if ($tries === 1) {
-      \Mail::send('emails.report_general', ['description' => 'Downloaded Page After Retries', 'vars' => [
+      \Mail::send('emails.reports.general', ['description' => 'Downloaded Page After Retries', 'vars' => [
         'Url' => $url,
         'Page' => $response,
       ]], function ($m) {
@@ -112,7 +112,7 @@ class Downloaders
     }
 
     if ($tries === 0 && str_contains($response, 'https://www.google.com/recaptcha/api.js')) {
-      \Mail::send('emails.report_general', ['description' => 'ReCaptcha Detected', 'vars' => [
+      \Mail::send('emails.reports.general', ['description' => 'ReCaptcha Detected', 'vars' => [
         'Url' => $url,
       ]], function ($m) {
         $m->subject('AnimeSentinel Detected ReCaptcha');
