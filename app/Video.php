@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\AnimeSentinel\VideoManager;
+use App\AnimeSentinel\Actions\VideoManager;
 use Carbon\Carbon;
 
 class Video extends BaseModel
@@ -36,48 +36,6 @@ class Video extends BaseModel
       $this->mirror = $max_mirror + 1;
     }
     parent::save($options);
-  }
-
-  /**
-   * Finds and saves the metadata for this video.
-   *
-   * @return boolean
-   */
-  public function setVideoMetaData($tries = 1) {
-    if (playerSupport($this->link_video)) {
-      $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_streams -show_format "'. $this->link_video .'"'));
-
-      if (!isset($data->streams) || !isset($data->format)) {
-        if ($tries >= 9) {
-          $this->encoding = 'broken';
-          return false;
-        } else {
-          return $this->setVideoMetaData($tries + 1);
-        }
-      }
-
-      foreach ($data->streams as $stream) {
-        if ($stream->codec_type === 'video') {
-          $this->resolution = $stream->width.'x'.$stream->height;
-          if (isset($stream->tags->creation_time)) {
-            $time = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
-            $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
-          }
-          break;
-        }
-      }
-      $this->duration = $data->format->duration;
-      $this->encoding = 'video/'.explode(',', $data->format->format_name)[0];
-      if (isset($data->format->tags->creation_time)) {
-        $time = Carbon::createFromFormat('Y-m-d H:i:s', $data->format->tags->creation_time);
-        $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
-      }
-    }
-
-    else {
-      $this->encoding = 'embed';
-    }
-    return true;
   }
 
   /**
@@ -290,5 +248,47 @@ class Video extends BaseModel
         $this->setVideoMetaData();
       }
     }
+  }
+
+  /**
+   * Finds and saves the metadata for this video.
+   *
+   * @return boolean
+   */
+  public function setVideoMetaData($tries = 1) {
+    if (playerSupport($this->link_video)) {
+      $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_streams -show_format "'. $this->link_video .'"'));
+
+      if (!isset($data->streams) || !isset($data->format)) {
+        if ($tries >= 9) {
+          $this->encoding = 'broken';
+          return false;
+        } else {
+          return $this->setVideoMetaData($tries + 1);
+        }
+      }
+
+      foreach ($data->streams as $stream) {
+        if ($stream->codec_type === 'video') {
+          $this->resolution = $stream->width.'x'.$stream->height;
+          if (isset($stream->tags->creation_time)) {
+            $time = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
+            $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
+          }
+          break;
+        }
+      }
+      $this->duration = $data->format->duration;
+      $this->encoding = 'video/'.explode(',', $data->format->format_name)[0];
+      if (isset($data->format->tags->creation_time)) {
+        $time = Carbon::createFromFormat('Y-m-d H:i:s', $data->format->tags->creation_time);
+        $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
+      }
+    }
+
+    else {
+      $this->encoding = 'embed';
+    }
+    return true;
   }
 }

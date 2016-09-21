@@ -1,6 +1,6 @@
 <?php
 
-namespace App\AnimeSentinel;
+namespace App\AnimeSentinel\Actions;
 
 use App\Streamer;
 use App\Video;

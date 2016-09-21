@@ -7,7 +7,7 @@ use App\Http\Requests;
 
 use App\Show;
 use App\Video;
-use App\AnimeSentinel\VideoManager;
+use App\AnimeSentinel\Actions\VideoManager;
 
 class EpisodeController extends Controller
 {

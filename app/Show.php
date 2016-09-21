@@ -4,7 +4,7 @@ namespace App;
 
 use App\Scopes\CacheShowScope;
 use Carbon\Carbon;
-use App\AnimeSentinel\ShowManager;
+use App\AnimeSentinel\Actions\ShowManager;
 
 class Show extends BaseModel
 {

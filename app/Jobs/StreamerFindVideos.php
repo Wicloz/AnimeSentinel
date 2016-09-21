@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use App\Streamer;
-use App\AnimeSentinel\ConnectionManager;
+use App\AnimeSentinel\Actions\FindVideos;
 
 class StreamerFindVideos implements ShouldQueue
 {

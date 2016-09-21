@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use Carbon\Carbon;
-use App\AnimeSentinel\ConnectionManager;
+use App\AnimeSentinel\Actions\PeriodicTasks;
 
 class FindRecentVideos implements ShouldQueue
 {

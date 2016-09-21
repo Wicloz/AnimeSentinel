@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use App\Show;
-use App\AnimeSentinel\ConnectionManager;
+use App\AnimeSentinel\Actions\FindVideos;
 
 class AnimeReprocessEpisode implements ShouldQueue
 {

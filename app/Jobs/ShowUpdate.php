@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-use App\AnimeSentinel\ShowManager;
+use App\AnimeSentinel\Actions\ShowManager;
 use App\Show;
 
 class ShowUpdate implements ShouldQueue

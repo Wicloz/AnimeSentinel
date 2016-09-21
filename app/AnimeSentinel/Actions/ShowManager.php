@@ -1,9 +1,10 @@
 <?php
 
-namespace App\AnimeSentinel;
+namespace App\AnimeSentinel\Actions;
 
 use App\Show;
 use Carbon\Carbon;
+use App\AnimeSentinel\MyAnimeList;
 
 class ShowManager
 {
@@ -139,7 +140,7 @@ class ShowManager
   private static function updateThumbnail($show) {
     if (!empty($show->thumbnail_id)) {
       $remote = 'https://myanimelist.cdn-dena.com/images/anime/'.str_replace('-', '/', $show->thumbnail_id);
-      $local = __DIR__.'/../../public/media/thumbnails/'.$show->thumbnail_id;
+      $local = public_path('media/thumbnails/'.$show->thumbnail_id);
       copy($remote, $local);
     }
   }

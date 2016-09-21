@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 
 use App\Show;
-use App\AnimeSentinel\ShowManager;
+use App\AnimeSentinel\Actions\ShowManager;
 use Illuminate\Support\Facades\Auth;
 
 class ShowController extends Controller

@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use App\Video;
-use App\AnimeSentinel\VideoManager;
+use App\AnimeSentinel\Actions\VideoManager;
 
 class VideoRefreshLink implements ShouldQueue
 {
