@@ -85,6 +85,7 @@ class RegisterController extends Controller
       ],
       'nots_mail_settings_ttype_specific' => collect([]),
       'nots_mail_notified' => collect([]),
+      'auto_watching_changed' => collect([]),
     ]);
     $user->updateCache();
     return $user;

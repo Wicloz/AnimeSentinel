@@ -22,7 +22,7 @@ class User extends Authenticatable
    * @var array
    */
   protected $fillable = [
-    'username', 'email', 'password', 'mal_user', 'mal_pass', 'mal_canread', 'mal_canwrite', 'mal_list', 'nots_mail_state', 'nots_mail_settings_state_general', 'nots_mail_settings_state_specific', 'nots_mail_settings_ttype_general', 'nots_mail_settings_ttype_specific', 'nots_mail_notified', 'auto_watching',
+    'username', 'email', 'password', 'mal_user', 'mal_pass', 'mal_canread', 'mal_canwrite', 'mal_list', 'nots_mail_state', 'nots_mail_settings_state_general', 'nots_mail_settings_state_specific', 'nots_mail_settings_ttype_general', 'nots_mail_settings_ttype_specific', 'nots_mail_notified', 'auto_watching', 'auto_watching_changed',
   ];
 
   /**
@@ -37,6 +37,7 @@ class User extends Authenticatable
     'nots_mail_settings_ttype_general' => 'collection',
     'nots_mail_settings_ttype_specific' => 'collection',
     'nots_mail_notified' => 'collection',
+    'auto_watching_changed' => 'collection',
   ];
 
   /**
@@ -252,11 +253,20 @@ class User extends Authenticatable
     if ($this->auto_watching && $this->mal_canwrite) {
       // For all shows on the user's mal list
       foreach ($this->mal_list as $mal_show) {
-        // If the current state is 'plan to watch' and we have the show and any episode is availabe
+        // If the current state is 'plan to watch' and we have the show
+        // and the show is currently airing for the desired tranlation type
+        // and the show state has not been changed before
         if (
           $mal_show->status === 'plantowatch' && isset($mal_show->show) &&
-          (isset($mal_show->show->latest_sub) || isset($mal_show->show->latest_dub))
+          (
+            (isset($mal_show->show->latest_sub) && $this->nots_mail_wants_ttype($mal_show, 'sub') &&
+            (!isset($mal_show->show->episode_amount) || $mal_show->show->latest_sub->episode_num < $mal_show->show->episode_amount)) ||
+            (isset($mal_show->show->latest_dub) && $this->nots_mail_wants_ttype($mal_show, 'dub') &&
+            (!isset($mal_show->show->episode_amount) || $mal_show->show->latest_dub->episode_num < $mal_show->show->episode_amount))
+          ) &&
+          $this->auto_watching_changed->get($mal_show->mal_id) !== true
         ) {
+          $this->auto_watching_changed[$mal_show->mal_id] = true;
           $this->postToMal('update', $mal_show->mal_id, ['status' => 1]);
         }
       }

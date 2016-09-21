@@ -34,6 +34,7 @@ class CreateUsersTable extends Migration
             $table->text('nots_mail_notified')->nullable();
 
             $table->boolean('auto_watching')->default(true);
+            $table->text('auto_watching_changed')->nullable();
 
             $table->rememberToken();
             $table->timestamps();
