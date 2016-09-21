@@ -15,7 +15,7 @@
         <div class="col-md-6 col-md-offset-4">
           <div class="checkbox">
             <label>
-              <input type="checkbox" name="notifications_watching" {{ Auth::user()->nots_mail_settings_general['watching'] ? 'checked' : '' }}>
+              <input type="checkbox" name="notifications_watching" {{ Auth::user()->nots_mail_settings_state_general['watching'] ? 'checked' : '' }}>
               Recieve notifications for 'Currently Watching' anime by default.
             </label>
           </div>
@@ -26,7 +26,7 @@
         <div class="col-md-6 col-md-offset-4">
           <div class="checkbox">
             <label>
-              <input type="checkbox" name="notifications_completed" {{ Auth::user()->nots_mail_settings_general['completed'] ? 'checked' : '' }}>
+              <input type="checkbox" name="notifications_completed" {{ Auth::user()->nots_mail_settings_state_general['completed'] ? 'checked' : '' }}>
               Recieve notifications for 'Completed' anime by default.
             </label>
           </div>
@@ -37,7 +37,7 @@
         <div class="col-md-6 col-md-offset-4">
           <div class="checkbox">
             <label>
-              <input type="checkbox" name="notifications_onhold" {{ Auth::user()->nots_mail_settings_general['onhold'] ? 'checked' : '' }}>
+              <input type="checkbox" name="notifications_onhold" {{ Auth::user()->nots_mail_settings_state_general['onhold'] ? 'checked' : '' }}>
               Recieve notifications for 'On Hold' anime by default.
             </label>
           </div>
@@ -48,7 +48,7 @@
         <div class="col-md-6 col-md-offset-4">
           <div class="checkbox">
             <label>
-              <input type="checkbox" name="notifications_dropped" {{ Auth::user()->nots_mail_settings_general['dropped'] ? 'checked' : '' }}>
+              <input type="checkbox" name="notifications_dropped" {{ Auth::user()->nots_mail_settings_state_general['dropped'] ? 'checked' : '' }}>
               Recieve notifications for 'Dropped' anime by default.
             </label>
           </div>
@@ -59,7 +59,7 @@
         <div class="col-md-6 col-md-offset-4">
           <div class="checkbox">
             <label>
-              <input type="checkbox" name="notifications_plantowatch" {{ Auth::user()->nots_mail_settings_general['plantowatch'] ? 'checked' : '' }}>
+              <input type="checkbox" name="notifications_plantowatch" {{ Auth::user()->nots_mail_settings_state_general['plantowatch'] ? 'checked' : '' }}>
               Recieve notifications for 'Plan to Watch' anime by default.
             </label>
           </div>
@@ -119,19 +119,19 @@
             <div class="col-md-6 col-md-offset-4">
               <div class="radio">
                 <label>
-                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="null" {{ Auth::user()->nots_mail_settings_specific->get($mal_show->mal_id) === null ? 'checked' : '' }}>
+                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="null" {{ Auth::user()->nots_mail_settings_state_specific->get($mal_show->mal_id) === null ? 'checked' : '' }}>
                   Use default settings
                 </label>
               </div>
               <div class="radio">
                 <label>
-                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="true" {{ Auth::user()->nots_mail_settings_specific->get($mal_show->mal_id) === true ? 'checked' : '' }}>
+                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="true" {{ Auth::user()->nots_mail_settings_state_specific->get($mal_show->mal_id) === true ? 'checked' : '' }}>
                   Always send notifications
                 </label>
               </div>
               <div class="radio">
                 <label>
-                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="false" {{ Auth::user()->nots_mail_settings_specific->get($mal_show->mal_id) === false ? 'checked' : '' }}>
+                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="false" {{ Auth::user()->nots_mail_settings_state_specific->get($mal_show->mal_id) === false ? 'checked' : '' }}>
                   Never send notifications
                 </label>
               </div>

@@ -22,7 +22,7 @@ class User extends Authenticatable
    * @var array
    */
   protected $fillable = [
-    'username', 'email', 'password', 'mal_user', 'mal_pass', 'mal_canread', 'mal_canwrite', 'mal_list', 'nots_mail_state', 'nots_mail_settings_general', 'nots_mail_settings_specific', 'nots_mail_notified', 'auto_watching',
+    'username', 'email', 'password', 'mal_user', 'mal_pass', 'mal_canread', 'mal_canwrite', 'mal_list', 'nots_mail_state', 'nots_mail_settings_state_general', 'nots_mail_settings_state_specific', 'nots_mail_settings_ttype_general', 'nots_mail_settings_ttype_specific', 'nots_mail_notified', 'auto_watching',
   ];
 
   /**
@@ -32,8 +32,10 @@ class User extends Authenticatable
    */
   protected $casts = [
     'mal_list' => 'collection',
-    'nots_mail_settings_general' => 'collection',
-    'nots_mail_settings_specific' => 'collection',
+    'nots_mail_settings_state_general' => 'collection',
+    'nots_mail_settings_state_specific' => 'collection',
+    'nots_mail_settings_ttype_general' => 'collection',
+    'nots_mail_settings_ttype_specific' => 'collection',
     'nots_mail_notified' => 'collection',
   ];
 
@@ -98,7 +100,20 @@ class User extends Authenticatable
    * @return boolean
    */
   public function nots_mail_state_for($mal_show) {
-    return $this->nots_mail_settings_specific->get($mal_show->mal_id) === true || ($this->nots_mail_settings_specific->get($mal_show->mal_id) === null && $this->nots_mail_settings_general->get($mal_show->status) === true);
+    return $this->nots_mail_settings_state_specific->get($mal_show->mal_id) === true ||
+    ($this->nots_mail_settings_state_specific->get($mal_show->mal_id) === null && $this->nots_mail_settings_state_general->get($mal_show->status) === true);
+  }
+
+  /**
+   * Return whether the user wants to recieve mail notifications for the requested translation type for the requested show.
+   *
+   * @return boolean
+   */
+  public function nots_mail_wants_ttype($mal_show, $ttype) {
+    return $this->nots_mail_settings_ttype_specific->get($mal_show->mal_id) === 'both' || $this->nots_mail_settings_ttype_specific->get($mal_show->mal_id) === $ttype ||
+    ($this->nots_mail_settings_ttype_specific->get($mal_show->mal_id) === null && (
+      $this->nots_mail_settings_ttype_general->get($mal_show->status) === 'both' || $this->nots_mail_settings_ttype_general->get($mal_show->status) === $ttype
+    ));
   }
 
   /**
@@ -223,9 +238,10 @@ class User extends Authenticatable
       foreach ($this->mal_list as $mal_show) {
         // If the user want to recieve notifications for this show and we have the show
         if ($this->nots_mail_state_for($mal_show) && isset($mal_show->show)) {
-          // If there is a newer sub available and we did not already send a mail for this episode
+          // If the user wants subbed notifications for this show and there is a newer sub available and we did not already send a mail for this episode
           if (
             isset($mal_show->show->latest_sub) &&
+            $this->nots_mail_wants_ttype($mal_show, 'sub') &&
             $mal_show->eps_watched < $mal_show->show->latest_sub->episode_num &&
             ($this->nots_mail_notified->get($mal_show->mal_id.'_sub') === null ||
             $this->nots_mail_notified->get($mal_show->mal_id.'_sub') < $mal_show->show->latest_sub->episode_num)
@@ -242,9 +258,10 @@ class User extends Authenticatable
               $m->to($this->email);
             });
           }
-          // If there is a newer dub available and we did not already send a mail for this episode
+          // If the user wants dubbed notifications for this show and there is a newer dub available and we did not already send a mail for this episode
           if (
             isset($mal_show->show->latest_dub) &&
+            $this->nots_mail_wants_ttype($mal_show, 'dub') &&
             $mal_show->eps_watched < $mal_show->show->latest_dub->episode_num &&
             ($this->nots_mail_notified->get($mal_show->mal_id.'_dub') === null ||
             $this->nots_mail_notified->get($mal_show->mal_id.'_dub') < $mal_show->show->latest_dub->episode_num)

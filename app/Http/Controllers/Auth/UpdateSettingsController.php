@@ -113,7 +113,7 @@ class UpdateSettingsController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function notifications_mail_general(Request $request) {
-    Auth::user()->nots_mail_settings_general = [
+    Auth::user()->nots_mail_settings_state_general = [
       'watching' => !empty($request->notifications_watching),
       'completed' => !empty($request->notifications_completed),
       'onhold' => !empty($request->notifications_onhold),
@@ -131,7 +131,7 @@ class UpdateSettingsController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function notifications_mail_specific(Request $request) {
-    $temp = Auth::user()->nots_mail_settings_specific;
+    $temp = Auth::user()->nots_mail_settings_state_specific;
 
     foreach ($request->all() as $key => $value) {
       if (str_starts_with($key, 'state_')) {
@@ -146,7 +146,7 @@ class UpdateSettingsController extends Controller
       }
     }
 
-    Auth::user()->nots_mail_settings_specific = $temp;
+    Auth::user()->nots_mail_settings_state_specific = $temp;
     Auth::user()->save();
 
     return back();

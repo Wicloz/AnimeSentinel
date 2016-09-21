@@ -27,8 +27,10 @@ class CreateUsersTable extends Migration
             $table->text('mal_list')->nullable();
 
             $table->boolean('nots_mail_state')->default(true);
-            $table->text('nots_mail_settings_general')->nullable();
-            $table->text('nots_mail_settings_specific')->nullable();
+            $table->text('nots_mail_settings_state_general')->nullable();
+            $table->text('nots_mail_settings_state_specific')->nullable();
+            $table->text('nots_mail_settings_ttype_general')->nullable();
+            $table->text('nots_mail_settings_ttype_specific')->nullable();
             $table->text('nots_mail_notified')->nullable();
 
             $table->boolean('auto_watching')->default(true);
