@@ -294,7 +294,8 @@ class User extends Authenticatable
           ) &&
           $this->auto_watching_changed->get($mal_show->mal_id) !== true
         ) {
-          $this->auto_watching_changed[$mal_show->mal_id] = true;
+          $this->auto_watching_changed = $this->auto_watching_changed->put($mal_show->mal_id, true);
+          $this->save();
           $this->changeShowState($mal_show, 'watching');
         }
       }
@@ -315,7 +316,8 @@ class User extends Authenticatable
             $this->nots_mail_notified->get($mal_show->mal_id.'_sub') < $mal_show->show->latest_sub->episode_num)
           ) {
             // Add this episode to the notified list
-            $this->nots_mail_notified[$mal_show->mal_id.'_sub'] = $mal_show->show->latest_sub->episode_num;
+            $this->nots_mail_notified = $this->nots_mail_notified->put($mal_show->mal_id.'_sub', $mal_show->show->latest_sub->episode_num);
+            $this->save();
             // Send a notification mail (TODO)
             \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
               'Show Title' => $mal_show->show->title,
@@ -335,7 +337,8 @@ class User extends Authenticatable
             $this->nots_mail_notified->get($mal_show->mal_id.'_dub') < $mal_show->show->latest_dub->episode_num)
           ) {
             // Add this episode to the notified list
-            $this->nots_mail_notified[$mal_show->mal_id.'_dub'] = $mal_show->show->latest_dub->episode_num;
+            $this->nots_mail_notified = $this->nots_mail_notified->put($mal_show->mal_id.'_dub', $mal_show->show->latest_dub->episode_num);
+            $this->save();
             // Send a notification mail (TODO)
             \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
               'Show Title' => $mal_show->show->title,
