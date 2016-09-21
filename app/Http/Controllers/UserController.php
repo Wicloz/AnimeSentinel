@@ -24,4 +24,25 @@ class UserController extends Controller
   public function overview() {
     return view('users.overview');
   }
+
+  /**
+   * Show a settings page for the user's general data.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function settings_general() {
+    return view('users.settings.general');
+  }
+
+  /**
+   * Show a settings page for the user's mail notification settings.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function settings_nots_mail(Request $request) {
+    return view('users.settings.notifications.mail', [
+      'mal_list' => !empty($request->status) ? Auth::user()->mal_list->where('status', $request->status) : null,
+      'loadedStatus' => $request->status,
+    ]);
+  }
 }

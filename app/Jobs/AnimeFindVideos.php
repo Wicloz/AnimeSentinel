@@ -38,6 +38,6 @@ class AnimeFindVideos implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ConnectionManager::findVideosForShow($this->show, true);
+    FindVideos::findVideosForShow($this->show, true);
   }
 }

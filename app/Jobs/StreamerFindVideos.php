@@ -38,6 +38,6 @@ class StreamerFindVideos implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ConnectionManager::findVideosForStreamer($this->streamer, true);
+    FindVideos::findVideosForStreamer($this->streamer, true);
   }
 }

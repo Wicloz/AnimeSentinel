@@ -45,8 +45,8 @@ Route::get('/stream/{video}/video', 'EpisodeController@static');
 
 // Profile Pages
 Route::get('/dashboard', 'UserController@overview'); //TODO
-Route::get('/user/settings', 'UserSettingsController@general');
-Route::get('/user/notifications/mail', 'UserSettingsController@notifications_mail');
+Route::get('/user/settings', 'UserController@settings_general');
+Route::get('/user/notifications/mail', 'UserController@settings_nots_mail');
 
 // Profile Modifications
 Route::post('/user/settings/general', 'Auth\UpdateSettingsController@general');

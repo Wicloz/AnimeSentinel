@@ -35,7 +35,7 @@ class FindRecentVideos implements ShouldQueue
    * @return void
    */
   public function handle() {
-    ConnectionManager::findRecentEpisodes();
+    FindVideos::findRecentEpisodes();
     queueJob((new FindRecentVideos)->delay(Carbon::now()->addMinutes(10)), 'periodic_low');
   }
 
