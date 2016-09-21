@@ -3,7 +3,7 @@
 function mailAnomaly($show, $description, $vars = []) {
   \Mail::send('emails.reports.show', ['show' => $show, 'description' => $description, 'vars' => $vars], function ($m) {
     $m->subject('AnimeSentinel Anomaly Report');
-    $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Reports');
+    $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
     $m->to('animesentinel@wilcodeboer.me');
   });
 }

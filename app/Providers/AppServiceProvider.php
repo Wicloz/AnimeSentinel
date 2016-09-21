@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
         'Exception' => $event->exception,
       ]], function ($m) {
         $m->subject('AnimeSentinel Job Fail Report');
-        $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Reports');
+        $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
         $m->to('animesentinel@wilcodeboer.me');
       });
 

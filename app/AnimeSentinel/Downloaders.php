@@ -45,17 +45,6 @@ class Downloaders
       $response = Self::downloadPage($url, $tries + 1);
     }
 
-    if ($tries === 1) {
-      \Mail::send('emails.reports.general', ['description' => 'Downloaded Page After Retries', 'vars' => [
-        'Url' => $url,
-        'Page' => $response,
-      ]], function ($m) {
-        $m->subject('AnimeSentinel Download Retried');
-        $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Reports');
-        $m->to('animesentinel@wilcodeboer.me');
-      });
-    }
-
     return $response;
   }
 
@@ -116,7 +105,7 @@ class Downloaders
         'Url' => $url,
       ]], function ($m) {
         $m->subject('AnimeSentinel Detected ReCaptcha');
-        $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Reports');
+        $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
         $m->to('animesentinel@wilcodeboer.me');
       });
     }

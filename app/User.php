@@ -324,7 +324,7 @@ class User extends Authenticatable
               'Latest Sub' => $mal_show->show->latest_sub->episode_num,
             ]], function ($m) use ($mal_show) {
               $m->subject('New episode of anime \''.$mal_show->show->title.'\' (Sub) available');
-              $m->from('notifications.animesentinel@wilcodeboer.me', 'AnimeSentinel Notifications');
+              $m->from('notifications@animesentinel.tv', 'AnimeSentinel Notifications');
               $m->to($this->email);
             });
           }
@@ -345,7 +345,7 @@ class User extends Authenticatable
               'Latest Dub' => $mal_show->show->latest_dub->episode_num,
             ]], function ($m) use ($mal_show) {
               $m->subject('New episode of anime \''.$mal_show->show->title.'\' (Dub) available');
-              $m->from('notifications.animesentinel@wilcodeboer.me', 'AnimeSentinel Notifications');
+              $m->from('notifications@animesentinel.tv', 'AnimeSentinel Notifications');
               $m->to($this->email);
             });
           }
