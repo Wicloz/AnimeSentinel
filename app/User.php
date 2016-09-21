@@ -22,7 +22,7 @@ class User extends Authenticatable
    * @var array
    */
   protected $fillable = [
-    'username', 'email', 'password', 'mal_user', 'mal_pass', 'mal_canread', 'mal_canwrite', 'mal_list', 'nots_mail_state', 'nots_mail_settings_general', 'nots_mail_settings_specific', 'auto_watching',
+    'username', 'email', 'password', 'mal_user', 'mal_pass', 'mal_canread', 'mal_canwrite', 'mal_list', 'nots_mail_state', 'nots_mail_settings_general', 'nots_mail_settings_specific', 'nots_mail_notified', 'auto_watching',
   ];
 
   /**
@@ -34,6 +34,7 @@ class User extends Authenticatable
     'mal_list' => 'collection',
     'nots_mail_settings_general' => 'collection',
     'nots_mail_settings_specific' => 'collection',
+    'nots_mail_notified' => 'collection',
   ];
 
   /**
@@ -220,27 +221,46 @@ class User extends Authenticatable
     if ($this->nots_mail_state) {
       // For all shows on the user's mal list
       foreach ($this->mal_list as $mal_show) {
-        // If the user want to recieve notifications for this show
-        // and we have the show
-        // and there is a newer episode available
-        // and we did not already send a mail (TODO)
-        if (
-          $this->nots_mail_state_for($mal_show) && isset($mal_show->show) &&
-          (
-            (isset($mal_show->show->latest_sub) && $mal_show->eps_watched < $mal_show->show->latest_sub->episode_num) ||
-            (isset($mal_show->show->latest_dub) && $mal_show->eps_watched < $mal_show->show->latest_dub->episode_num)
-          )
-        ) {
-          // Send a notification mail (TODO)
-          \Mail::send('emails.report_general', ['description' => 'New Episode Available', 'vars' => [
-            'Show Title' => $mal_show->show->title,
-            'Latest Sub' => isset($mal_show->show->latest_sub) ? $mal_show->show->latest_sub->episode_num : 'NA',
-            'Latest Dub' => isset($mal_show->show->latest_dub) ? $mal_show->show->latest_dub->episode_num : 'NA',
-          ]], function ($m) use ($mal_show) {
-            $m->subject('New episode of anime \''.$mal_show->show->title.'\' available');
-            $m->from('notifications.animesentinel@wilcodeboer.me', 'AnimeSentinel Notifications');
-            $m->to($this->email);
-          });
+        // If the user want to recieve notifications for this show and we have the show
+        if ($this->nots_mail_state_for($mal_show) && isset($mal_show->show)) {
+          // If there is a newer sub available and we did not already send a mail for this episode
+          if (
+            isset($mal_show->show->latest_sub) &&
+            $mal_show->eps_watched < $mal_show->show->latest_sub->episode_num &&
+            ($this->nots_mail_notified->get($mal_show->mal_id.'_sub') === null ||
+            $this->nots_mail_notified->get($mal_show->mal_id.'_sub') < $mal_show->show->latest_sub->episode_num)
+          ) {
+            // Add this episode to the notified list
+            $this->nots_mail_notified[$mal_show->mal_id.'_sub'] = $mal_show->show->latest_sub->episode_num;
+            // Send a notification mail (TODO)
+            \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
+              'Show Title' => $mal_show->show->title,
+              'Latest Sub' => $mal_show->show->latest_sub->episode_num,
+            ]], function ($m) use ($mal_show) {
+              $m->subject('New episode of anime \''.$mal_show->show->title.'\' (Sub) available');
+              $m->from('notifications.animesentinel@wilcodeboer.me', 'AnimeSentinel Notifications');
+              $m->to($this->email);
+            });
+          }
+          // If there is a newer dub available and we did not already send a mail for this episode
+          if (
+            isset($mal_show->show->latest_dub) &&
+            $mal_show->eps_watched < $mal_show->show->latest_dub->episode_num &&
+            ($this->nots_mail_notified->get($mal_show->mal_id.'_dub') === null ||
+            $this->nots_mail_notified->get($mal_show->mal_id.'_dub') < $mal_show->show->latest_dub->episode_num)
+          ) {
+            // Add this episode to the notified list
+            $this->nots_mail_notified[$mal_show->mal_id.'_dub'] = $mal_show->show->latest_dub->episode_num;
+            // Send a notification mail (TODO)
+            \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
+              'Show Title' => $mal_show->show->title,
+              'Latest Dub' => $mal_show->show->latest_dub->episode_num,
+            ]], function ($m) use ($mal_show) {
+              $m->subject('New episode of anime \''.$mal_show->show->title.'\' (Dub) available');
+              $m->from('notifications.animesentinel@wilcodeboer.me', 'AnimeSentinel Notifications');
+              $m->to($this->email);
+            });
+          }
         }
       }
     }

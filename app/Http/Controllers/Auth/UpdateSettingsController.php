@@ -70,8 +70,10 @@ class UpdateSettingsController extends Controller
       'mal_pass' => ['max:255'],
     ]);
 
-    $mustUpdateMalCache = (isset($request->mal_user) && $request->mal_user !== '' && $request->mal_user !== Auth::user()->mal_user) ||
-    (isset($request->mal_pass) && $request->mal_pass !== '' && $request->mal_pass !== Auth::user()->mal_pass) ? true : false;
+    $mustUpdateMalCache =
+      (isset($request->mal_user) && $request->mal_user !== '' && $request->mal_user !== Auth::user()->mal_user) ||
+      (isset($request->mal_pass) && $request->mal_pass !== '' && $request->mal_pass !== Auth::user()->mal_pass)
+    ;
 
     $texts = ['mal_user', 'mal_pass'];
     foreach ($texts as $attribute) {

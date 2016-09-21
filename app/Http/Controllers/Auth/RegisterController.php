@@ -76,6 +76,7 @@ class RegisterController extends Controller
         'plantowatch' => true,
       ],
       'nots_mail_settings_specific' => collect([]),
+      'nots_mail_notified' => collect([]),
     ]);
     $user->updateCache();
     return $user;
