@@ -200,7 +200,7 @@ class User extends Authenticatable
    *
    * @return string
    */
-  public function postToMal($task, $id, $data = []) {
+  private function postToMal($task, $id, $data = []) {
     if ($task === 'validate') {
       $url = 'https://myanimelist.net/api/account/verify_credentials.xml';
     } else {
@@ -243,6 +243,34 @@ class User extends Authenticatable
   }
 
   /**
+   * Change the state of the requested show for this user.
+   */
+  public function changeShowState($mal_show, $status) {
+    $this->postToMal('update', $mal_show->mal_id, ['status' => $status]);
+    $this->mal_list = $this->mal_list_min->each(function ($item, $key) use ($mal_show, $status) {
+      if ($item->mal_id === $mal_show->mal_id) {
+        $item->status = $status;
+        return false;
+      }
+    });
+    $this->save();
+  }
+
+  /**
+   * Change the amount of watched episodes for the requested show for this user.
+   */
+  public function changeShowEpsWatched($mal_show, $eps_watched) {
+    $this->postToMal('update', $mal_show->mal_id, ['episode' => $eps_watched]);
+    $this->mal_list = $this->mal_list_min->each(function ($item, $key) use ($mal_show, $eps_watched) {
+      if ($item->mal_id === $mal_show->mal_id) {
+        $item->eps_watched = $eps_watched;
+        return false;
+      }
+    });
+    $this->save();
+  }
+
+  /**
    * Update the MAL caches and send notifications.
    */
   public function periodicTasks() {
@@ -267,7 +295,7 @@ class User extends Authenticatable
           $this->auto_watching_changed->get($mal_show->mal_id) !== true
         ) {
           $this->auto_watching_changed[$mal_show->mal_id] = true;
-          $this->postToMal('update', $mal_show->mal_id, ['status' => 1]);
+          $this->changeShowState($mal_show, 'watching');
         }
       }
     }
