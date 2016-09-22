@@ -37,23 +37,4 @@ class ShowController extends Controller
 
     abort(404);
   }
-
-  /**
-   * Attempt to add the requested show to the database.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function insert(Request $request) {
-    $this->validate($request, [
-      'mal_id' => ['required']
-    ]);
-
-    $show = ShowManager::addShowWithMalId($request->mal_id);
-
-    if ($request->gotodetails) {
-      return redirect($show->details_url);
-    } else {
-      return back();
-    }
-  }
 }
