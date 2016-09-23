@@ -68,23 +68,6 @@ class RegisterController extends Controller
       'password' => bcrypt($data['password']),
       'mal_user' => $data['mal_user'],
       'mal_pass' => $data['mal_pass'],
-      'nots_mail_settings_state_general' => [
-        'watching' => true,
-        'completed' => false,
-        'onhold' => false,
-        'dropped' => false,
-        'plantowatch' => true,
-      ],
-      'nots_mail_settings_state_specific' => collect([]),
-      'nots_mail_settings_ttype_general' => [
-        'watching' => 'both',
-        'completed' => 'both',
-        'onhold' => 'both',
-        'dropped' => 'both',
-        'plantowatch' => 'both',
-      ],
-      'nots_mail_settings_ttype_specific' => collect([]),
-      'nots_mail_notified' => collect([]),
       'auto_watching_changed' => collect([]),
     ]);
     $user->updateCache();

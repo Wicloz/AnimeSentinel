@@ -22,7 +22,7 @@ class User extends Authenticatable
    * @var array
    */
   protected $fillable = [
-    'username', 'email', 'password', 'mal_user', 'mal_pass', 'mal_canread', 'mal_canwrite', 'mal_list', 'nots_mail_state', 'nots_mail_settings_state_general', 'nots_mail_settings_state_specific', 'nots_mail_settings_ttype_general', 'nots_mail_settings_ttype_specific', 'nots_mail_notified', 'auto_watching', 'auto_watching_changed',
+    'username', 'email', 'password', 'mal_user', 'mal_pass', 'mal_canread', 'mal_canwrite', 'mal_list', 'nots_mail_state', 'nots_mail_settings_state_general', 'nots_mail_settings_state_specific', 'nots_mail_settings_ttype_general', 'nots_mail_settings_ttype_specific', 'nots_mail_notified', 'auto_watching_state', 'auto_watching_changed',
   ];
 
   /**
@@ -278,7 +278,7 @@ class User extends Authenticatable
     $this->updateCache();
 
     // Mark plan to watch shows as watching
-    if ($this->auto_watching && $this->mal_canwrite) {
+    if ($this->auto_watching_state && $this->mal_canwrite) {
       // For all shows on the user's mal list
       foreach ($this->mal_list as $mal_show) {
         // If the current state is 'plan to watch' and we have the show

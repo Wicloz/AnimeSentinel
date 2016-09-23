@@ -51,6 +51,6 @@ class CreateVideosTable extends Migration
      */
     public function down()
     {
-        Schema::drop('videos');
+        Schema::dropIfExists('videos');
     }
 }

@@ -40,7 +40,7 @@ class UpdateSettingsController extends Controller
     }
 
     $texts = ['username', 'email'];
-    $checkboxes = ['nots_mail_state', 'auto_watching'];
+    $checkboxes = ['nots_mail_state', 'auto_watching_state'];
 
     foreach ($texts as $attribute) {
       if (isset($request->$attribute) && $request->$attribute !== '') {

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateShowFlagsTable extends Migration
+class CreateMaluserFieldsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,16 @@ class CreateShowFlagsTable extends Migration
      */
     public function up()
     {
-        Schema::create('show_flags', function (Blueprint $table) {
+        Schema::create('maluser_fields', function (Blueprint $table) {
             $table->integer('mal_id')->unsigned();
-            $table->string('alt_rules', 4096)->default('{}');
-            $table->boolean('check_youtube')->default(false);
+            $table->integer('user_id')->unsigned();
+
+            $table->text('mal_show')->nullable();
+
+            $table->string('nots_mail_setting')->nullable()->default(null);
+            $table->string('nots_mail_notified', 10240)->default('[]');
+
             $table->timestamps();
-            $table->primary('mal_id');
         });
     }
 
@@ -29,6 +33,6 @@ class CreateShowFlagsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('show_flags');
+        Schema::dropIfExists('maluser_fields');
     }
 }

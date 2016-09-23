@@ -29,6 +29,6 @@ class CreateMalcacheSearchTable extends Migration
      */
     public function down()
     {
-        Schema::drop('malcache_search');
+        Schema::dropIfExists('malcache_search');
     }
 }

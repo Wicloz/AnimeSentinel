@@ -46,6 +46,6 @@ class CreateShowsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('shows');
+        Schema::dropIfExists('shows');
     }
 }

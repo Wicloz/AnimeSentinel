@@ -58,7 +58,7 @@
         <div class="col-md-6 col-md-offset-4">
           <div class="checkbox">
             <label>
-              <input type="checkbox" name="auto_watching" {{ Auth::user()->auto_watching ? 'checked' : '' }}>
+              <input type="checkbox" name="auto_watching_state" {{ Auth::user()->auto_watching_state ? 'checked' : '' }}>
               Automatically mark 'Plan to Watch' anime as 'Currently Watching'
             </label>
           </div>

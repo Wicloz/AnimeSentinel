@@ -24,16 +24,11 @@ class CreateUsersTable extends Migration
             $table->string('mal_pass')->default('');
             $table->boolean('mal_canread')->default(false);
             $table->boolean('mal_canwrite')->default(false);
-            $table->text('mal_list')->nullable();
 
             $table->boolean('nots_mail_state')->default(true);
-            $table->text('nots_mail_settings_state_general')->nullable();
-            $table->text('nots_mail_settings_state_specific')->nullable();
-            $table->text('nots_mail_settings_ttype_general')->nullable();
-            $table->text('nots_mail_settings_ttype_specific')->nullable();
-            $table->text('nots_mail_notified')->nullable();
+            $table->string('nots_mail_settings', 512)->default('{"watching":"both","completed":"none","onhold":"none","dropped":"none","plantowatch":"both"}');
 
-            $table->boolean('auto_watching')->default(true);
+            $table->boolean('auto_watching_state')->default(true);
             $table->text('auto_watching_changed')->nullable();
 
             $table->rememberToken();
@@ -48,6 +43,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('users');
+        Schema::dropIfExists('users');
     }
 }

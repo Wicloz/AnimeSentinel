@@ -29,6 +29,6 @@ class CreateStreamersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('streamers');
+        Schema::dropIfExists('streamers');
     }
 }
