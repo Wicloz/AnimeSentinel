@@ -307,47 +307,47 @@ class User extends Authenticatable
       foreach ($this->mal_list as $mal_show) {
         // If the user want to recieve notifications for this show and we have the show
         if ($this->nots_mail_state_for($mal_show) && isset($mal_show->show)) {
-          // If the user wants subbed notifications for this show and there is a newer sub available and we did not already send a mail for this episode
-          if (
-            isset($mal_show->show->latest_sub) &&
-            $this->nots_mail_wants_ttype($mal_show, 'sub') &&
-            $mal_show->eps_watched < $mal_show->show->latest_sub->episode_num &&
-            ($this->nots_mail_notified->get($mal_show->mal_id.'_sub') === null ||
-            $this->nots_mail_notified->get($mal_show->mal_id.'_sub') < $mal_show->show->latest_sub->episode_num)
-          ) {
-            // Add this episode to the notified list
-            $this->nots_mail_notified = $this->nots_mail_notified->put($mal_show->mal_id.'_sub', $mal_show->show->latest_sub->episode_num);
-            $this->save();
-            // Send a notification mail (TODO)
-            \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
-              'Show Title' => $mal_show->show->title,
-              'Latest Sub' => $mal_show->show->latest_sub->episode_num,
-            ]], function ($m) use ($mal_show) {
-              $m->subject('New episode of anime \''.$mal_show->show->title.'\' (Sub) available');
-              $m->from('notifications@animesentinel.tv', 'AnimeSentinel Notifications');
-              $m->to($this->email);
-            });
+          // If the user wants subbed notifications for this show and we have at least one episode
+          if ($this->nots_mail_wants_ttype($mal_show, 'sub') && isset($mal_show->show->latest_sub)) {
+            $episodeNums_now = $mal_show->show->episodes('sub')->pluck('episode_num');
+            $episodeNums_sent = $this->nots_mail_notified->get($mal_show->mal_id.'_sub');
+            $episodeNums_diff = $episodeNums_now->diff($episodeNums_sent);
+            // If there are episodes for which the notification email has not been sent
+            if (count($episodeNums_diff) > 0) {
+              // Update the notified list
+              $this->nots_mail_notified = $this->nots_mail_notified->put($mal_show->mal_id.'_sub', $episodeNums_now);
+              $this->save();
+              // Send a notification mail (TODO)
+              \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
+                'Show Title' => $mal_show->show->title,
+                'Latest Sub' => $mal_show->show->videos()->episode('sub', $episodeNums_diff->max())->first()->episode_num,
+              ]], function ($m) use ($mal_show) {
+                $m->subject('New episode of anime \''.$mal_show->show->title.'\' (Sub) available');
+                $m->from('notifications@animesentinel.tv', 'AnimeSentinel Notifications');
+                $m->to($this->email);
+              });
+            }
           }
-          // If the user wants dubbed notifications for this show and there is a newer dub available and we did not already send a mail for this episode
-          if (
-            isset($mal_show->show->latest_dub) &&
-            $this->nots_mail_wants_ttype($mal_show, 'dub') &&
-            $mal_show->eps_watched < $mal_show->show->latest_dub->episode_num &&
-            ($this->nots_mail_notified->get($mal_show->mal_id.'_dub') === null ||
-            $this->nots_mail_notified->get($mal_show->mal_id.'_dub') < $mal_show->show->latest_dub->episode_num)
-          ) {
-            // Add this episode to the notified list
-            $this->nots_mail_notified = $this->nots_mail_notified->put($mal_show->mal_id.'_dub', $mal_show->show->latest_dub->episode_num);
-            $this->save();
-            // Send a notification mail (TODO)
-            \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
-              'Show Title' => $mal_show->show->title,
-              'Latest Dub' => $mal_show->show->latest_dub->episode_num,
-            ]], function ($m) use ($mal_show) {
-              $m->subject('New episode of anime \''.$mal_show->show->title.'\' (Dub) available');
-              $m->from('notifications@animesentinel.tv', 'AnimeSentinel Notifications');
-              $m->to($this->email);
-            });
+          // If the user wants dubbed notifications for this show and we have at least one episode
+          if ($this->nots_mail_wants_ttype($mal_show, 'dub') && isset($mal_show->show->latest_dub)) {
+            $episodeNums_now = $mal_show->show->episodes('dub')->pluck('episode_num');
+            $episodeNums_sent = $this->nots_mail_notified->get($mal_show->mal_id.'_dub');
+            $episodeNums_diff = $episodeNums_now->diff($episodeNums_sent);
+            // If there are episodes for which the notification email has not been sent
+            if (count($episodeNums_diff) > 0) {
+              // Update the notified list
+              $this->nots_mail_notified = $this->nots_mail_notified->put($mal_show->mal_id.'_dub', $episodeNums_now);
+              $this->save();
+              // Send a notification mail (TODO)
+              \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
+                'Show Title' => $mal_show->show->title,
+                'Latest Dub' => $mal_show->show->videos()->episode('dub', $episodeNums_diff->max())->first()->episode_num,
+              ]], function ($m) use ($mal_show) {
+                $m->subject('New episode of anime \''.$mal_show->show->title.'\' (Dub) available');
+                $m->from('notifications@animesentinel.tv', 'AnimeSentinel Notifications');
+                $m->to($this->email);
+              });
+            }
           }
         }
       }
