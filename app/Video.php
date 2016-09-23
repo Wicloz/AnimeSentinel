@@ -27,6 +27,7 @@ class Video extends BaseModel
    * Overwrite the save method to properly handle the compound key.
    */
   public function save(array $options = []) {
+    // TODO: make this start at 0
     if (empty($this->mirror)) {
       $max_mirror = Self::where('streamer_id', $this->streamer_id)
                         ->where('show_id', $this->show_id)
@@ -83,9 +84,7 @@ class Video extends BaseModel
   }
 
   /**
-  * Get all streamers that stream this episode.
-  *
-  * @return array
+  * Get all streamers that stream this episode.// TODO: fix when episodes don't differ by a simple 1
   */
   public function getStreamersAttribute() {
     $show = $this;
@@ -214,6 +213,7 @@ class Video extends BaseModel
   * @return string
   */
   public function getPreEpisodeUrlAttribute() {
+    // TODO: fix when episodes don't differ by a simple 1
     $episode = Self::where('show_id', $this->show_id)->episode($this->translation_type, $this->episode_num - 1)->first();
     if (!empty($episode)) {
       $episode = $episode->episode_url;
@@ -227,6 +227,7 @@ class Video extends BaseModel
   * @return string
   */
   public function getNextEpisodeUrlAttribute() {
+    // TODO: fix when episodes don't differ by a simple 1
     $episode = Self::where('show_id', $this->show_id)->episode($this->translation_type, $this->episode_num + 1)->first();
     if (!empty($episode)) {
       $episode = $episode->episode_url;
