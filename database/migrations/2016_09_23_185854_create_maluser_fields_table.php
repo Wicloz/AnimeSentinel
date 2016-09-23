@@ -20,9 +20,12 @@ class CreateMaluserFieldsTable extends Migration
             $table->text('mal_show')->nullable();
 
             $table->string('nots_mail_setting')->nullable()->default(null);
-            $table->string('nots_mail_notified', 10240)->default('[]');
+            $table->text('nots_mail_notified')->nullable();
 
             $table->timestamps();
+
+            $table->index(['mal_id', 'user_id']);
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

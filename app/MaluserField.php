@@ -13,7 +13,7 @@ class MaluserField extends BaseModel
    * @var array
    */
   protected $fillable = [
-
+    'mal_id', 'mal_show', 'nots_mail_setting', 'nots_mail_notified',
   ];
 
   /**
@@ -22,6 +22,7 @@ class MaluserField extends BaseModel
    * @var array
    */
   protected $casts = [
-
+    'mal_show' => 'collection',
+    'nots_mail_notified' => 'collection',
   ];
 }
