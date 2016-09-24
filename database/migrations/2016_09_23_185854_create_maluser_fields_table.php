@@ -22,7 +22,8 @@ class CreateMaluserFieldsTable extends Migration
             $table->boolean('auto_watching_changed')->default(false);
 
             $table->string('nots_mail_setting')->nullable()->default(null);
-            $table->text('nots_mail_notified')->nullable();
+            $table->text('nots_mail_notified_sub')->nullable();
+            $table->text('nots_mail_notified_dub')->nullable();
 
             $table->timestamps();
 

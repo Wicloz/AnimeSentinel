@@ -206,10 +206,8 @@ class User extends Authenticatable
         // and the show is currently airing for the desired tranlation type
         if (
           isset($mal_field->show) && !$mal_field->auto_watching_changed &&
-          ((isset($mal_field->show->latest_sub) && $mal_field->notsMailWantsForType('sub') &&
-          (!isset($mal_field->show->episode_amount) || $mal_field->show->latest_sub->episode_num < $mal_field->show->episode_amount)) ||
-          (isset($mal_field->show->latest_dub) && $mal_field->notsMailWantsForType('dub') &&
-          (!isset($mal_field->show->episode_amount) || $mal_field->show->latest_dub->episode_num < $mal_field->show->episode_amount)))
+          ($mal_field->notsMailWantsForType('sub') && $mal_field->show->isAiring('sub')) ||
+          ($mal_field->notsMailWantsForType('dub') && $mal_field->show->isAiring('dub'))
         ) {
           $mal_field->auto_watching_changed = true;
           $mal_field->save();
@@ -225,11 +223,11 @@ class User extends Authenticatable
         // If the user wants subbed notifications for this show and we have at least one episode
         if ($mal_field->notsMailWantsForType('sub') && isset($mal_field->show->latest_sub)) {
           $episodeNums_now = $mal_field->show->episodes('sub')->pluck('episode_num');
-          $episodeNums_diff = $episodeNums_now->diff($mal_field->nots_mail_notified);
+          $episodeNums_diff = $episodeNums_now->diff($mal_field->nots_mail_notified_sub);
           // If there are episodes for which the notification email has not been sent
           if (count($episodeNums_diff) > 0) {
             // Update the notified list
-            $mal_field->nots_mail_notified = $episodeNums_now;
+            $mal_field->nots_mail_notified_sub = $episodeNums_now;
             $mal_field->save();
             // If the newest episode is higher than the amount of episodes watched
             if ($episodeNums_diff->max() > $mal_field->mal_show->eps_watched) {
@@ -248,11 +246,11 @@ class User extends Authenticatable
         // If the user wants dubbed notifications for this show and we have at least one episode
         if ($mal_field->notsMailWantsForType('dub') && isset($mal_field->show->latest_dub)) {
           $episodeNums_now = $mal_field->show->episodes('dub')->pluck('episode_num');
-          $episodeNums_diff = $episodeNums_now->diff($mal_field->nots_mail_notified);
+          $episodeNums_diff = $episodeNums_now->diff($mal_field->nots_mail_notified_dub);
           // If there are episodes for which the notification email has not been sent
           if (count($episodeNums_diff) > 0) {
             // Update the notified list
-            $mal_field->nots_mail_notified = $episodeNums_now;
+            $mal_field->nots_mail_notified_dub = $episodeNums_now;
             $mal_field->save();
             // If the newest episode is higher than the amount of episodes watched
             if ($episodeNums_diff->max() > $mal_field->mal_show->eps_watched) {

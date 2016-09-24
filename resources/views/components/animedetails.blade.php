@@ -53,7 +53,7 @@
     <strong>Status:</strong>
     @if(!isset($details->latest_sub->episode_num))
       Upcoming
-    @elseif(!isset($details->episode_amount) || $details->latest_sub->episode_num < $details->episode_amount)
+    @elseif($details->isAiring('sub'))
       Currently Airing
     @else
       Completed

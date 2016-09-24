@@ -47,7 +47,7 @@
               @else
                 @if(!isset($syn_show->latest_sub->episode_num))
                   Upcoming
-                @elseif(!isset($syn_show->episode_amount) || $syn_show->latest_sub->episode_num < $syn_show->episode_amount)
+                @elseif($syn_show->isAiring('sub'))
                   Currently Airing
                 @else
                   Completed

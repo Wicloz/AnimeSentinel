@@ -178,6 +178,16 @@ class Show extends BaseModel
   }
 
   /**
+  * Get whether the show is currently airing for the requested translation type.
+  *
+  * @return boolean
+  */
+  public function isAiring($translation_type) {
+    $latest = 'latest_'.$translation_type;
+    return !isset($this->episode_amount) || ($this->$latest !== null && $this->$latest->episode_num < $this->episode_amount);
+  }
+
+  /**
   * Get the latest subbed episode number for this show.
   *
   * @return integer
