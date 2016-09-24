@@ -126,12 +126,24 @@ class animeshow
     // Scrape the 'recently aired' page
     $data = Helpers::scrape_page(str_get_between($page, '<h1>LATEST ANIME EPISODES</h1>', '<div id="new_anime">'), 'ago</div>', [
       'title' => [true, '<div class="latest_episode_title">', '</div>'],
-      'episode_num' => [false, 'Episode ', '</div>'],
+      'episode_num' => [false, 'latest_episode_episode">', '</div>'],
     ]);
 
-    // Mark all found shows as subs
+    // Complete found episode data
     foreach ($data as $index => $item) {
       $data[$index]['translation_type'] = 'sub';
+      $remove = [
+        'Episode',
+        'Movie',
+        'Special',
+        'ONA',
+        'OVA',
+      ];
+      foreach ($remove as $rem) {
+        if (str_starts_with($item['episode_num'], $rem)) {
+          $data[$index]['episode_num'] = trim(str_replace_first($rem, '', $item['episode_num']));
+        }
+      }
     }
 
     return $data;
