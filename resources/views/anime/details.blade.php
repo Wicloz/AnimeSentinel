@@ -34,9 +34,9 @@
                     <a href="{{ $episode->episode_url }}">Episode {{ $episode->episode_num }}</a>
                   </div>
                   <div class="col-xs-6">
-                    @if(isset($mal_show))
+                    @if(isset($mal_field))
                       <span class="status-pull-right">
-                        {{ $episode->episode_num <= $mal_show->eps_watched ? '✔ Watched' : '' }}
+                        {{ $episode->episode_num <= $mal_field->mal_show->eps_watched ? '✔ Watched' : '' }}
                       </span>
                     @endif
                   </div>
@@ -83,9 +83,9 @@
                     <a href="{{ $episode->episode_url }}">Episode {{ $episode->episode_num }}</a>
                   </div>
                   <div class="col-xs-6">
-                    @if(isset($mal_show))
+                    @if(isset($mal_field))
                       <span class="status-pull-right">
-                        {{ $episode->episode_num <= $mal_show->eps_watched ? '✔ Watched' : '' }}
+                        {{ $episode->episode_num <= $mal_field->mal_show->eps_watched ? '✔ Watched' : '' }}
                       </span>
                     @endif
                   </div>
