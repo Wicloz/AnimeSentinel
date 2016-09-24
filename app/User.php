@@ -224,15 +224,18 @@ class User extends Authenticatable
             // Update the notified list
             $mal_field->nots_mail_notified = $episodeNums_now;
             $mal_field->save();
-            // Send a notification mail (TODO)
-            \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
-              'Show Title' => $mal_field->show->title,
-              'Latest Sub' => $mal_field->show->videos()->episode('sub', $episodeNums_diff->max())->first()->episode_num,
-            ]], function ($m) use ($mal_field) {
-              $m->subject('New episode of anime \''.$mal_field->show->title.'\' (Sub) available');
-              $m->from('notifications@animesentinel.tv', 'AnimeSentinel Notifications');
-              $m->to($this->email);
-            });
+            // If the newest episode is higher than the amount of episodes watched
+            if ($episodeNums_diff->max() > $mal_field->mal_show->eps_watched) {
+              // Send a notification mail (TODO)
+              \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
+                'Show Title' => $mal_field->show->title,
+                'Latest Sub' => $mal_field->show->videos()->episode('sub', $episodeNums_diff->max())->first()->episode_num,
+              ]], function ($m) use ($mal_field) {
+                $m->subject('New episode of anime \''.$mal_field->show->title.'\' (Sub) available');
+                $m->from('notifications@animesentinel.tv', 'AnimeSentinel Notifications');
+                $m->to($this->email);
+              });
+            }
           }
         }
         // If the user wants dubbed notifications for this show and we have at least one episode
@@ -244,15 +247,18 @@ class User extends Authenticatable
             // Update the notified list
             $mal_field->nots_mail_notified = $episodeNums_now;
             $mal_field->save();
-            // Send a notification mail (TODO)
-            \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
-              'Show Title' => $mal_field->show->title,
-              'Latest Dub' => $mal_field->show->videos()->episode('dub', $episodeNums_diff->max())->first()->episode_num,
-            ]], function ($m) use ($mal_field) {
-              $m->subject('New episode of anime \''.$mal_field->show->title.'\' (Dub) available');
-              $m->from('notifications@animesentinel.tv', 'AnimeSentinel Notifications');
-              $m->to($this->email);
-            });
+            // If the newest episode is higher than the amount of episodes watched
+            if ($episodeNums_diff->max() > $mal_field->mal_show->eps_watched) {
+              // Send a notification mail (TODO)
+              \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
+                'Show Title' => $mal_field->show->title,
+                'Latest Dub' => $mal_field->show->videos()->episode('dub', $episodeNums_diff->max())->first()->episode_num,
+              ]], function ($m) use ($mal_field) {
+                $m->subject('New episode of anime \''.$mal_field->show->title.'\' (Dub) available');
+                $m->from('notifications@animesentinel.tv', 'AnimeSentinel Notifications');
+                $m->to($this->email);
+              });
+            }
           }
         }
       }
