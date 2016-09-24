@@ -317,10 +317,10 @@
         </tr>
         <tr>
           <td>Notify users (based on their settings) when a new episode is available.</td>
-          <td>WIP</td>
+          <td>WIP - Improve mail layout</td>
         </tr>
         <tr>
-          <td>Change shows from 'plan to watch' to 'watching' on users MAL accounts when an epsiode gets added.</td>
+          <td>Change shows to 'watching' on users MAL accounts when an epsiode gets added.</td>
           <td>✔</td>
         </tr>
         <tr>
