@@ -22,7 +22,7 @@ class User extends Authenticatable
    * @var array
    */
   protected $fillable = [
-    'username', 'email', 'password', 'mal_user', 'mal_pass', 'mal_canread', 'mal_canwrite', 'nots_mail_state', 'nots_mail_settings', 'auto_watching_state', 'auto_watching_changed',
+    'username', 'email', 'password', 'mal_user', 'mal_pass', 'mal_canread', 'mal_canwrite', 'nots_mail_state', 'nots_mail_settings', 'auto_watching_state',
   ];
 
   /**
@@ -32,7 +32,6 @@ class User extends Authenticatable
    */
   protected $casts = [
     'nots_mail_settings' => 'collection',
-    'auto_watching_changed' => 'collection',
   ];
 
   /**
@@ -45,6 +44,15 @@ class User extends Authenticatable
   ];
 
   /**
+  * Get all mal fields for this user.
+  *
+  * @return \Illuminate\Database\Eloquent\Relations\Relation
+  */
+  public function malFields() {
+    return $this->hasMany(MaluserField::class);
+  }
+
+  /**
    * Handle encryption of the users MAL password.
    */
   public function getMalPassAttribute($value) {
@@ -55,96 +63,11 @@ class User extends Authenticatable
   }
 
   /**
-   * Return the user's cached MAL list, with shows.
-   *
-   * @return Illuminate\Database\Eloquent\Collection
-   */
-  public function getMalListAttribute($value) {
-    $value = collect(json_decode($value));
-    $shows = Show::whereIn('mal_id', $value->pluck('mal_id'))->get();
-
-    foreach ($value as $index => $anime) {
-      $value[$index]->show = $shows->where('mal_id', $anime->mal_id)->first();
-    }
-
-    return $value;
-  }
-
-  /**
-   * Return the user's cached MAL list, without shows.
-   *
-   * @return Illuminate\Database\Eloquent\Collection
-   */
-  public function getMalListMinAttribute() {
-    $value = collect(json_decode($this->attributes['mal_list']));
-    return $value;
-  }
-
-  /**
-   * Properly store a MAL list for caching.
-   */
-  public function setMalListAttribute($value) {
-    foreach ($value as $index => $anime) {
-      unset($value[$index]->show);
-    }
-    $this->attributes['mal_list'] = json_encode($value);
-  }
-
-  /**
-   * Return the combined mail notification setting for a specific mal show.
-   *
-   * @return boolean
-   */
-  public function nots_mail_state_for($mal_show) {
-    return $this->nots_mail_settings_state_specific->get($mal_show->mal_id) === true ||
-    ($this->nots_mail_settings_state_specific->get($mal_show->mal_id) === null && $this->nots_mail_settings_state_general->get($mal_show->status) === true);
-  }
-
-  /**
-   * Return whether the user wants to recieve mail notifications for the requested translation type for the requested show.
-   *
-   * @return boolean
-   */
-  public function nots_mail_wants_ttype($mal_show, $ttype) {
-    return $this->nots_mail_settings_ttype_specific->get($mal_show->mal_id) === 'both' || $this->nots_mail_settings_ttype_specific->get($mal_show->mal_id) === $ttype ||
-    ($this->nots_mail_settings_ttype_specific->get($mal_show->mal_id) === null && (
-      $this->nots_mail_settings_ttype_general->get($mal_show->status) === 'both' || $this->nots_mail_settings_ttype_general->get($mal_show->status) === $ttype
-    ));
-  }
-
-  /**
-   * Return the item from the mal list with the requested MAL id
-   * Only use when you only need a single item
-   *
-   * @return stdClass
-   */
-  public function mal_show($mal_id) {
-    $mal_show = $this->mal_list_min->where('mal_id', $mal_id)->first();
-    if (isset($mal_show)) {
-      $mal_show->show = Show::where('mal_id', $mal_show->mal_id)->get();
-    }
-    return $mal_show;
-  }
-
-  /**
    * Update this user's cached MAL list and credential status.
-   */
-  public function updateCache() {
-    $results = $this->getMalList(true);
-    if ($results === false) {
-      $this->mal_list = new Collection();
-    } else {
-      $this->mal_list = $results;
-    }
-    $this->save();
-  }
-
-  /**
-   * Download and parse this user's MAL list.
    *
-   * @return Illuminate\Database\Eloquent\Collection
+   * @return boolean
    */
-  private function getMalList($checkCredentials = false) {
+  public function updateMalCache() {
     // Download the page
     $page = Downloaders::downloadPage('https://myanimelist.net/animelist/'.$this->mal_user);
     // Check whether the page is valid, return false if it isn't
@@ -156,10 +79,8 @@ class User extends Authenticatable
       $this->mal_canread = true;
       $this->save();
     }
-    // If it is requested, check write permissions
-    if ($checkCredentials) {
-      $this->postToMal('validate', 0);
-    }
+    // Check write permissions
+    $this->postToMal('validate', 0);
 
     // Srape page for anime list
     $results = collect(Helpers::scrape_page(str_get_between($page, '</tbody>', '</table>'), '</td>', [
@@ -168,8 +89,7 @@ class User extends Authenticatable
       'progress' => [false, '<div class="progress', '</div>'],
     ]));
 
-    // Convert the results to more convenient objects
-    $mal_shows = new Collection();
+    // Convert the results to more convenient objects and save them
     foreach ($results as $result) {
       $mal_show = new \stdClass();
       $mal_show->status = $result['status'];
@@ -183,11 +103,14 @@ class User extends Authenticatable
       } else {
         $mal_show->eps_watched = str_get_between($result['progress'], '<span>', '</span>', true);
       }
+      if ($mal_show->eps_watched === '-') {
+        $mal_show->eps_watched = 0;
+      }
 
-      $mal_shows[] = $mal_show;
+      $mal_field = $this->malFields()->firstOrNew(['mal_id' => $mal_show->mal_id]);
+      $mal_field->mal_show = $mal_show;
+      $mal_field->save();
     }
-
-    return $mal_shows;
   }
 
   /**
@@ -240,29 +163,25 @@ class User extends Authenticatable
   /**
    * Change the state of the requested show for this user.
    */
-  public function changeShowState($mal_show, $status) {
-    $this->postToMal('update', $mal_show->mal_id, ['status' => $status]);
-    $this->mal_list = $this->mal_list_min->each(function ($item, $key) use ($mal_show, $status) {
-      if ($item->mal_id === $mal_show->mal_id) {
-        $item->status = $status;
-        return false;
-      }
-    });
-    $this->save();
+  public function changeShowState($mal_id, $status) {
+    $this->postToMal('update', $mal_id, ['status' => $status]);
+    $mal_field = $this->malFields()->where('mal_id', $mal_id)->first();
+    $temp = $mal_field->mal_show;
+    $temp->status = $status;
+    $mal_field->mal_show = $temp;
+    $mal_field->save();
   }
 
   /**
    * Change the amount of watched episodes for the requested show for this user.
    */
-  public function changeShowEpsWatched($mal_show, $eps_watched) {
-    $this->postToMal('update', $mal_show->mal_id, ['episode' => $eps_watched]);
-    $this->mal_list = $this->mal_list_min->each(function ($item, $key) use ($mal_show, $eps_watched) {
-      if ($item->mal_id === $mal_show->mal_id) {
-        $item->eps_watched = $eps_watched;
-        return false;
-      }
-    });
-    $this->save();
+  public function changeShowEpsWatched($mal_id, $eps_watched) {
+    $this->postToMal('update', $mal_id, ['episode' => $eps_watched]);
+    $mal_field = $this->malFields()->where('mal_id', $mal_id)->first();
+    $temp = $mal_field->mal_show;
+    $temp->eps_watched = $eps_watched;
+    $mal_field->mal_show = $temp;
+    $mal_field->save();
   }
 
   /**
@@ -270,28 +189,24 @@ class User extends Authenticatable
    */
   public function periodicTasks() {
     // Update the MAL cache
-    $this->updateCache();
+    // $this->updateMalCache();
 
     // Mark plan to watch shows as watching
     if ($this->auto_watching_state && $this->mal_canwrite) {
       // For all shows on the user's mal list
-      foreach ($this->mal_list as $mal_show) {
-        // If the current state is 'plan to watch' and we have the show
+      foreach ($this->malFields->load('show', 'user') as $mal_field) {
+        // If we have the show and the show state has not been changed before
         // and the show is currently airing for the desired tranlation type
-        // and the show state has not been changed before
         if (
-          $mal_show->status === 'plantowatch' && isset($mal_show->show) &&
-          (
-            (isset($mal_show->show->latest_sub) && $this->nots_mail_wants_ttype($mal_show, 'sub') &&
-            (!isset($mal_show->show->episode_amount) || $mal_show->show->latest_sub->episode_num < $mal_show->show->episode_amount)) ||
-            (isset($mal_show->show->latest_dub) && $this->nots_mail_wants_ttype($mal_show, 'dub') &&
-            (!isset($mal_show->show->episode_amount) || $mal_show->show->latest_dub->episode_num < $mal_show->show->episode_amount))
-          ) &&
-          $this->auto_watching_changed->get($mal_show->mal_id) !== true
+          isset($mal_field->show) && !$mal_field->auto_watching_changed &&
+          ((isset($mal_field->show->latest_sub) && $mal_field->notsMailWantsForType('sub') &&
+          (!isset($mal_field->show->episode_amount) || $mal_field->show->latest_sub->episode_num < $mal_field->show->episode_amount)) ||
+          (isset($mal_field->show->latest_dub) && $mal_field->notsMailWantsForType('dub') &&
+          (!isset($mal_field->show->episode_amount) || $mal_field->show->latest_dub->episode_num < $mal_field->show->episode_amount)))
         ) {
-          $this->auto_watching_changed = $this->auto_watching_changed->put($mal_show->mal_id, true);
-          $this->save();
-          $this->changeShowState($mal_show, 'watching');
+          $mal_field->auto_watching_changed = true;
+          $mal_field->save();
+          $this->changeShowState($mal_field->mal_show->mal_id, 'watching');
         }
       }
     }
@@ -299,50 +214,45 @@ class User extends Authenticatable
     // Send mail notifications
     if ($this->nots_mail_state) {
       // For all shows on the user's mal list
-      foreach ($this->mal_list as $mal_show) {
-        // If the user want to recieve notifications for this show and we have the show
-        if ($this->nots_mail_state_for($mal_show) && isset($mal_show->show)) {
-          // If the user wants subbed notifications for this show and we have at least one episode
-          if ($this->nots_mail_wants_ttype($mal_show, 'sub') && isset($mal_show->show->latest_sub)) {
-            $episodeNums_now = $mal_show->show->episodes('sub')->pluck('episode_num');
-            $episodeNums_sent = $this->nots_mail_notified->get($mal_show->mal_id.'_sub');
-            $episodeNums_diff = $episodeNums_now->diff($episodeNums_sent);
-            // If there are episodes for which the notification email has not been sent
-            if (count($episodeNums_diff) > 0) {
-              // Update the notified list
-              $this->nots_mail_notified = $this->nots_mail_notified->put($mal_show->mal_id.'_sub', $episodeNums_now);
-              $this->save();
-              // Send a notification mail (TODO)
-              \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
-                'Show Title' => $mal_show->show->title,
-                'Latest Sub' => $mal_show->show->videos()->episode('sub', $episodeNums_diff->max())->first()->episode_num,
-              ]], function ($m) use ($mal_show) {
-                $m->subject('New episode of anime \''.$mal_show->show->title.'\' (Sub) available');
-                $m->from('notifications@animesentinel.tv', 'AnimeSentinel Notifications');
-                $m->to($this->email);
-              });
-            }
+      foreach ($this->malFields->load('show', 'user') as $mal_field) {
+        // If the user wants subbed notifications for this show and we have at least one episode
+        if ($mal_field->notsMailWantsForType('sub') && isset($mal_field->show->latest_sub)) {
+          $episodeNums_now = $mal_field->show->episodes('sub')->pluck('episode_num');
+          $episodeNums_diff = $episodeNums_now->diff($mal_field->nots_mail_notified);
+          // If there are episodes for which the notification email has not been sent
+          if (count($episodeNums_diff) > 0) {
+            // Update the notified list
+            $mal_field->nots_mail_notified = $episodeNums_now;
+            $mal_field->save();
+            // Send a notification mail (TODO)
+            \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
+              'Show Title' => $mal_field->show->title,
+              'Latest Sub' => $mal_field->show->videos()->episode('sub', $episodeNums_diff->max())->first()->episode_num,
+            ]], function ($m) use ($mal_field) {
+              $m->subject('New episode of anime \''.$mal_field->show->title.'\' (Sub) available');
+              $m->from('notifications@animesentinel.tv', 'AnimeSentinel Notifications');
+              $m->to($this->email);
+            });
           }
-          // If the user wants dubbed notifications for this show and we have at least one episode
-          if ($this->nots_mail_wants_ttype($mal_show, 'dub') && isset($mal_show->show->latest_dub)) {
-            $episodeNums_now = $mal_show->show->episodes('dub')->pluck('episode_num');
-            $episodeNums_sent = $this->nots_mail_notified->get($mal_show->mal_id.'_dub');
-            $episodeNums_diff = $episodeNums_now->diff($episodeNums_sent);
-            // If there are episodes for which the notification email has not been sent
-            if (count($episodeNums_diff) > 0) {
-              // Update the notified list
-              $this->nots_mail_notified = $this->nots_mail_notified->put($mal_show->mal_id.'_dub', $episodeNums_now);
-              $this->save();
-              // Send a notification mail (TODO)
-              \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
-                'Show Title' => $mal_show->show->title,
-                'Latest Dub' => $mal_show->show->videos()->episode('dub', $episodeNums_diff->max())->first()->episode_num,
-              ]], function ($m) use ($mal_show) {
-                $m->subject('New episode of anime \''.$mal_show->show->title.'\' (Dub) available');
-                $m->from('notifications@animesentinel.tv', 'AnimeSentinel Notifications');
-                $m->to($this->email);
-              });
-            }
+        }
+        // If the user wants dubbed notifications for this show and we have at least one episode
+        if ($mal_field->notsMailWantsForType('dub') && isset($mal_field->show->latest_dub)) {
+          $episodeNums_now = $mal_field->show->episodes('dub')->pluck('episode_num');
+          $episodeNums_diff = $episodeNums_now->diff($mal_field->nots_mail_notified);
+          // If there are episodes for which the notification email has not been sent
+          if (count($episodeNums_diff) > 0) {
+            // Update the notified list
+            $mal_field->nots_mail_notified = $episodeNums_now;
+            $mal_field->save();
+            // Send a notification mail (TODO)
+            \Mail::send('emails.reports.general', ['description' => 'New Episode Available', 'vars' => [
+              'Show Title' => $mal_field->show->title,
+              'Latest Dub' => $mal_field->show->videos()->episode('dub', $episodeNums_diff->max())->first()->episode_num,
+            ]], function ($m) use ($mal_field) {
+              $m->subject('New episode of anime \''.$mal_field->show->title.'\' (Dub) available');
+              $m->from('notifications@animesentinel.tv', 'AnimeSentinel Notifications');
+              $m->to($this->email);
+            });
           }
         }
       }

@@ -301,7 +301,7 @@
         </tr>
         <tr>
           <td>Create the users mail notifications options page.</td>
-          <td>WIP</td>
+          <td>WIP - Create a proper layout</td>
         </tr>
         <tr>
           <td>Create the users anime overview page.</td>
@@ -321,7 +321,7 @@
         </tr>
         <tr>
           <td>Change shows from 'plan to watch' to 'watching' on users MAL accounts when an epsiode gets added.</td>
-          <td>✘</td>
+          <td>✔</td>
         </tr>
         <tr>
           <td>Add 'watched' marks next to episodes on anime detail pages.</td>

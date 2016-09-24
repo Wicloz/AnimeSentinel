@@ -59,7 +59,7 @@
           <div class="checkbox">
             <label>
               <input type="checkbox" name="auto_watching_state" {{ Auth::user()->auto_watching_state ? 'checked' : '' }}>
-              Automatically mark 'Plan to Watch' anime as 'Currently Watching'
+              Automatically mark anime that you want to recieve notifications for as 'Currently Watching' when they starts airing.
             </label>
           </div>
         </div>

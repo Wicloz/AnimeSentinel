@@ -13,10 +13,34 @@
 
       <div class="form-group">
         <div class="col-md-6 col-md-offset-4">
-          <div class="checkbox">
+          <h3>Default setting for 'Currently Watching' anime:</h3>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-md-6 col-md-offset-4">
+          <div class="radio">
             <label>
-              <input type="checkbox" name="notifications_watching" {{ Auth::user()->nots_mail_settings_state_general['watching'] ? 'checked' : '' }}>
-              Recieve notifications for 'Currently Watching' anime by default.
+              <input type="radio" name="setting_watching" value="both" {{ Auth::user()->nots_mail_settings['watching'] === 'both' ? 'checked' : '' }}>
+              Always send notifications
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="setting_watching" value="none" {{ Auth::user()->nots_mail_settings['watching'] === 'none' ? 'checked' : '' }}>
+              Never send notifications
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="setting_watching" value="sub" {{ Auth::user()->nots_mail_settings['watching'] === 'sub' ? 'checked' : '' }}>
+              Only send notifications for Subs
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="setting_watching" value="dub" {{ Auth::user()->nots_mail_settings['watching'] === 'dub' ? 'checked' : '' }}>
+              Only send notifications for Dubs
             </label>
           </div>
         </div>
@@ -24,10 +48,34 @@
 
       <div class="form-group">
         <div class="col-md-6 col-md-offset-4">
-          <div class="checkbox">
+          <h3>Default setting for 'Completed' anime:</h3>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-md-6 col-md-offset-4">
+          <div class="radio">
             <label>
-              <input type="checkbox" name="notifications_completed" {{ Auth::user()->nots_mail_settings_state_general['completed'] ? 'checked' : '' }}>
-              Recieve notifications for 'Completed' anime by default.
+              <input type="radio" name="setting_completed" value="both" {{ Auth::user()->nots_mail_settings['completed'] === 'both' ? 'checked' : '' }}>
+              Always send notifications
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="setting_completed" value="none" {{ Auth::user()->nots_mail_settings['completed'] === 'none' ? 'checked' : '' }}>
+              Never send notifications
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="setting_completed" value="sub" {{ Auth::user()->nots_mail_settings['completed'] === 'sub' ? 'checked' : '' }}>
+              Only send notifications for Subs
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="setting_completed" value="dub" {{ Auth::user()->nots_mail_settings['completed'] === 'dub' ? 'checked' : '' }}>
+              Only send notifications for Dubs
             </label>
           </div>
         </div>
@@ -35,10 +83,34 @@
 
       <div class="form-group">
         <div class="col-md-6 col-md-offset-4">
-          <div class="checkbox">
+          <h3>Default setting for 'On Hold' anime:</h3>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-md-6 col-md-offset-4">
+          <div class="radio">
             <label>
-              <input type="checkbox" name="notifications_onhold" {{ Auth::user()->nots_mail_settings_state_general['onhold'] ? 'checked' : '' }}>
-              Recieve notifications for 'On Hold' anime by default.
+              <input type="radio" name="setting_onhold" value="both" {{ Auth::user()->nots_mail_settings['onhold'] === 'both' ? 'checked' : '' }}>
+              Always send notifications
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="setting_onhold" value="none" {{ Auth::user()->nots_mail_settings['onhold'] === 'none' ? 'checked' : '' }}>
+              Never send notifications
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="setting_onhold" value="sub" {{ Auth::user()->nots_mail_settings['onhold'] === 'sub' ? 'checked' : '' }}>
+              Only send notifications for Subs
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="setting_onhold" value="dub" {{ Auth::user()->nots_mail_settings['onhold'] === 'dub' ? 'checked' : '' }}>
+              Only send notifications for Dubs
             </label>
           </div>
         </div>
@@ -46,10 +118,34 @@
 
       <div class="form-group">
         <div class="col-md-6 col-md-offset-4">
-          <div class="checkbox">
+          <h3>Default setting for 'Dropped' anime:</h3>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-md-6 col-md-offset-4">
+          <div class="radio">
             <label>
-              <input type="checkbox" name="notifications_dropped" {{ Auth::user()->nots_mail_settings_state_general['dropped'] ? 'checked' : '' }}>
-              Recieve notifications for 'Dropped' anime by default.
+              <input type="radio" name="setting_dropped" value="both" {{ Auth::user()->nots_mail_settings['dropped'] === 'both' ? 'checked' : '' }}>
+              Always send notifications
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="setting_dropped" value="none" {{ Auth::user()->nots_mail_settings['dropped'] === 'none' ? 'checked' : '' }}>
+              Never send notifications
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="setting_dropped" value="sub" {{ Auth::user()->nots_mail_settings['dropped'] === 'sub' ? 'checked' : '' }}>
+              Only send notifications for Subs
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="setting_dropped" value="dub" {{ Auth::user()->nots_mail_settings['dropped'] === 'dub' ? 'checked' : '' }}>
+              Only send notifications for Dubs
             </label>
           </div>
         </div>
@@ -57,10 +153,34 @@
 
       <div class="form-group">
         <div class="col-md-6 col-md-offset-4">
-          <div class="checkbox">
+          <h3>Default setting for 'Plan to Watch' anime:</h3>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-md-6 col-md-offset-4">
+          <div class="radio">
             <label>
-              <input type="checkbox" name="notifications_plantowatch" {{ Auth::user()->nots_mail_settings_state_general['plantowatch'] ? 'checked' : '' }}>
-              Recieve notifications for 'Plan to Watch' anime by default.
+              <input type="radio" name="setting_plantowatch" value="both" {{ Auth::user()->nots_mail_settings['plantowatch'] === 'both' ? 'checked' : '' }}>
+              Always send notifications
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="setting_plantowatch" value="none" {{ Auth::user()->nots_mail_settings['plantowatch'] === 'none' ? 'checked' : '' }}>
+              Never send notifications
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="setting_plantowatch" value="sub" {{ Auth::user()->nots_mail_settings['plantowatch'] === 'sub' ? 'checked' : '' }}>
+              Only send notifications for Subs
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="setting_plantowatch" value="dub" {{ Auth::user()->nots_mail_settings['plantowatch'] === 'dub' ? 'checked' : '' }}>
+              Only send notifications for Dubs
             </label>
           </div>
         </div>
@@ -119,20 +239,32 @@
             <div class="col-md-6 col-md-offset-4">
               <div class="radio">
                 <label>
-                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="null" {{ Auth::user()->nots_mail_settings_state_specific->get($mal_show->mal_id) === null ? 'checked' : '' }}>
+                  <input type="radio" name="setting_{{ $mal_show->mal_id }}" value="null" {{ Auth::user()->malFields()->where('mal_id', $mal_show->mal_id)->first()->nots_mail_setting === null ? 'checked' : '' }}>
                   Use default settings
                 </label>
               </div>
               <div class="radio">
                 <label>
-                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="true" {{ Auth::user()->nots_mail_settings_state_specific->get($mal_show->mal_id) === true ? 'checked' : '' }}>
+                  <input type="radio" name="setting_{{ $mal_show->mal_id }}" value="both" {{ Auth::user()->malFields()->where('mal_id', $mal_show->mal_id)->first()->nots_mail_setting === 'both' ? 'checked' : '' }}>
                   Always send notifications
                 </label>
               </div>
               <div class="radio">
                 <label>
-                  <input type="radio" name="state_{{ $mal_show->mal_id }}" value="false" {{ Auth::user()->nots_mail_settings_state_specific->get($mal_show->mal_id) === false ? 'checked' : '' }}>
+                  <input type="radio" name="setting_{{ $mal_show->mal_id }}" value="none" {{ Auth::user()->malFields()->where('mal_id', $mal_show->mal_id)->first()->nots_mail_setting === 'none' ? 'checked' : '' }}>
                   Never send notifications
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="setting_{{ $mal_show->mal_id }}" value="sub" {{ Auth::user()->malFields()->where('mal_id', $mal_show->mal_id)->first()->nots_mail_setting === 'sub' ? 'checked' : '' }}>
+                  Only send notifications for Subs
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="setting_{{ $mal_show->mal_id }}" value="dub" {{ Auth::user()->malFields()->where('mal_id', $mal_show->mal_id)->first()->nots_mail_setting === 'dub' ? 'checked' : '' }}>
+                  Only send notifications for Dubs
                 </label>
               </div>
             </div>

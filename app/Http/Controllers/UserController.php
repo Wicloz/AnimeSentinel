@@ -42,7 +42,7 @@ class UserController extends Controller
    */
   public function settings_nots_mail(Request $request) {
     return view('users.settings.notifications.mail', [
-      'mal_list' => !empty($request->status) ? Auth::user()->mal_list->where('status', $request->status) : null,
+      'mal_list' => !empty($request->status) ? Auth::user()->malFields()->pluck('mal_show')->where('status', $request->status) : null,
       'loadedStatus' => $request->status,
     ]);
   }

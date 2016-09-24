@@ -25,11 +25,10 @@ class CreateUsersTable extends Migration
             $table->boolean('mal_canread')->default(false);
             $table->boolean('mal_canwrite')->default(false);
 
+            $table->boolean('auto_watching_state')->default(true);
+
             $table->boolean('nots_mail_state')->default(true);
             $table->string('nots_mail_settings', 512)->default('{"watching":"both","completed":"none","onhold":"none","dropped":"none","plantowatch":"both"}');
-
-            $table->boolean('auto_watching_state')->default(true);
-            $table->text('auto_watching_changed')->nullable();
 
             $table->rememberToken();
             $table->timestamps();

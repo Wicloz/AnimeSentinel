@@ -84,7 +84,7 @@ class UpdateSettingsController extends Controller
     Auth::user()->save();
 
     if ($mustUpdateMalCache || $request->update_mal_cache) {
-      Auth::user()->updateCache();
+      Auth::user()->updateMalCache();
     }
 
     return back();
@@ -113,12 +113,12 @@ class UpdateSettingsController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function notifications_mail_general(Request $request) {
-    Auth::user()->nots_mail_settings_state_general = [
-      'watching' => !empty($request->notifications_watching),
-      'completed' => !empty($request->notifications_completed),
-      'onhold' => !empty($request->notifications_onhold),
-      'dropped' => !empty($request->notifications_dropped),
-      'plantowatch' => !empty($request->notifications_plantowatch),
+    Auth::user()->nots_mail_settings = [
+      'watching' => $request->setting_watching,
+      'completed' => $request->setting_completed,
+      'onhold' => $request->setting_onhold,
+      'dropped' => $request->setting_dropped,
+      'plantowatch' => $request->setting_plantowatch,
     ];
     Auth::user()->save();
 
@@ -131,23 +131,16 @@ class UpdateSettingsController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function notifications_mail_specific(Request $request) {
-    $temp = Auth::user()->nots_mail_settings_state_specific;
-
     foreach ($request->all() as $key => $value) {
-      if (str_starts_with($key, 'state_')) {
-        $key = (int) str_replace('state_', '', $key);
-        $value = json_decode($value);
-
-        if ($value === null) {
-          unset($temp[$key]);
+      if (str_starts_with($key, 'setting_')) {
+        $key = (int) str_replace('setting_', '', $key);
+        if ($value === 'null') {
+          Auth::user()->malFields()->where('mal_id', $key)->update(['nots_mail_setting' => null]);
         } else {
-          $temp[$key] = $value;
+          Auth::user()->malFields()->where('mal_id', $key)->update(['nots_mail_setting' => $value]);
         }
       }
     }
-
-    Auth::user()->nots_mail_settings_state_specific = $temp;
-    Auth::user()->save();
 
     return back();
   }

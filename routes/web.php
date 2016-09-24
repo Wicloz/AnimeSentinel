@@ -1,6 +1,6 @@
 <?php
 
-// \App\User::first()->periodicTasks();
+\App\User::first()->periodicTasks();
 
 /*
 |--------------------------------------------------------------------------

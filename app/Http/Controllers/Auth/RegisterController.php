@@ -68,9 +68,8 @@ class RegisterController extends Controller
       'password' => bcrypt($data['password']),
       'mal_user' => $data['mal_user'],
       'mal_pass' => $data['mal_pass'],
-      'auto_watching_changed' => collect([]),
     ]);
-    $user->updateCache();
+    $user->updateMalCache();
     return $user;
   }
 }
