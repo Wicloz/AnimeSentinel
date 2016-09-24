@@ -121,17 +121,12 @@ class User extends Authenticatable
       queueJob(new \App\Jobs\ShowAdd($mal_id));
     }
 
-    // If this is the first time the cache was updated, mark all shows that finished airing as notified
+    // If this is the first time the cache was updated, mark all current episodes as notified
     if ($cacheEmpty) {
       foreach ($this->malFields->load('show') as $mal_field) {
-        if ($mal_field->show->finishedAiring('sub')) {
-          $mal_field->nots_mail_notified_sub = $mal_field->show->episodes('sub')->pluck('episode_num');
-          $mal_field->save();
-        }
-        if ($mal_field->show->finishedAiring('dub')) {
-          $mal_field->nots_mail_notified_dub = $mal_field->show->episodes('dub')->pluck('episode_num');
-          $mal_field->save();
-        }
+        $mal_field->nots_mail_notified_sub = $mal_field->show->episodes('sub')->pluck('episode_num');
+        $mal_field->nots_mail_notified_dub = $mal_field->show->episodes('dub')->pluck('episode_num');
+        $mal_field->save();
       }
     }
   }
