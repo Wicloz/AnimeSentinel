@@ -81,8 +81,6 @@ class User extends Authenticatable
     }
     // Check write permissions
     $this->postToMal('validate', 0);
-    // Check whether the cache is empty
-    $cacheEmpty = $this->malFields()->count() === 0;
 
     // Srape page for anime list
     $results = collect(Helpers::scrape_page(str_get_between($page, '</tbody>', '</table>'), '</td>', [
@@ -119,15 +117,6 @@ class User extends Authenticatable
     $malNeed = $this->malFields->pluck('mal_show')->pluck('mal_id');
     foreach ($malNeed->diff(Show::whereIn('mal_id', $malNeed)->pluck('mal_id')) as $mal_id) {
       queueJob(new \App\Jobs\ShowAdd($mal_id));
-    }
-
-    // If this is the first time the cache was updated, mark all current episodes as notified
-    if ($cacheEmpty) {
-      foreach ($this->malFields->load('show') as $mal_field) {
-        $mal_field->nots_mail_notified_sub = $mal_field->show->episodes('sub')->pluck('episode_num');
-        $mal_field->nots_mail_notified_dub = $mal_field->show->episodes('dub')->pluck('episode_num');
-        $mal_field->save();
-      }
     }
   }
 
@@ -182,24 +171,28 @@ class User extends Authenticatable
    * Change the state of the requested show for this user.
    */
   public function changeShowState($mal_id, $status) {
-    $this->postToMal('update', $mal_id, ['status' => $status]);
     $mal_field = $this->malFields()->where('mal_id', $mal_id)->first();
-    $temp = $mal_field->mal_show;
-    $temp->status = $status;
-    $mal_field->mal_show = $temp;
-    $mal_field->save();
+    if ($mal_field->mal_show->status != $status) {
+      $this->postToMal('update', $mal_id, ['status' => $status]);
+      $temp = $mal_field->mal_show;
+      $temp->status = $status;
+      $mal_field->mal_show = $temp;
+      $mal_field->save();
+    }
   }
 
   /**
    * Change the amount of watched episodes for the requested show for this user.
    */
   public function changeShowEpsWatched($mal_id, $eps_watched) {
-    $this->postToMal('update', $mal_id, ['episode' => $eps_watched]);
     $mal_field = $this->malFields()->where('mal_id', $mal_id)->first();
-    $temp = $mal_field->mal_show;
-    $temp->eps_watched = $eps_watched;
-    $mal_field->mal_show = $temp;
-    $mal_field->save();
+    if ($mal_field->mal_show->eps_watched != $eps_watched) {
+      $this->postToMal('update', $mal_id, ['episode' => $eps_watched]);
+      $temp = $mal_field->mal_show;
+      $temp->eps_watched = $eps_watched;
+      $mal_field->mal_show = $temp;
+      $mal_field->save();
+    }
   }
 
   /**
@@ -234,6 +227,11 @@ class User extends Authenticatable
         // If the user wants subbed notifications for this show and we have at least one episode
         if ($mal_field->notsMailWantsForType('sub') && isset($mal_field->show->latest_sub)) {
           $episodeNums_now = $mal_field->show->episodes('sub')->pluck('episode_num');
+          // Mark all episodes as notified if this is the first check
+          if ($mal_field->nots_mail_notified_sub === null) {
+            $mal_field->nots_mail_notified_sub = $episodeNums_now;
+            $mal_field->save();
+          }
           $episodeNums_diff = $episodeNums_now->diff($mal_field->nots_mail_notified_sub);
           // If there are episodes for which the notification email has not been sent
           if (count($episodeNums_diff) > 0) {
@@ -257,6 +255,11 @@ class User extends Authenticatable
         // If the user wants dubbed notifications for this show and we have at least one episode
         if ($mal_field->notsMailWantsForType('dub') && isset($mal_field->show->latest_dub)) {
           $episodeNums_now = $mal_field->show->episodes('dub')->pluck('episode_num');
+          // Mark all episodes as notified if this is the first check
+          if ($mal_field->nots_mail_notified_dub === null) {
+            $mal_field->nots_mail_notified_dub = $episodeNums_now;
+            $mal_field->save();
+          }
           $episodeNums_diff = $episodeNums_now->diff($mal_field->nots_mail_notified_dub);
           // If there are episodes for which the notification email has not been sent
           if (count($episodeNums_diff) > 0) {
