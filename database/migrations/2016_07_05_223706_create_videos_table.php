@@ -29,6 +29,7 @@ class CreateVideosTable extends Migration
             $table->string('notes')->default('');                          // video
             $table->bigInteger('hits')->default(0);                        // video
             $table->string('link_video', 2048)->default('');               // video
+            $table->string('mirror_id')->nullable()->default(null);        // video
 
             $table->dateTime('uploadtime')->nullable()->default(null);     // video
             $table->string('resolution')->nullable()->default(null);       // video
@@ -39,6 +40,7 @@ class CreateVideosTable extends Migration
 
             $table->unique(['show_id', 'translation_type', 'episode_num', 'streamer_id', 'mirror'], 'videos_video_identifier');
             $table->index(['show_id', 'translation_type', 'episode_num'], 'videos_episode_identifier');
+            $table->unique(['link_stream', 'mirror_id']);
             $table->foreign('show_id')->references('id')->on('shows')->onDelete('cascade');
             $table->foreign('streamer_id')->references('id')->on('streamers')->onDelete('cascade');
         });

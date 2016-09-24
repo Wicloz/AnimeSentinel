@@ -13,7 +13,7 @@ class Video extends BaseModel
    * @var array
    */
   protected $fillable = [
-    'streamer_id', 'show_id', 'translation_type', 'episode_num', 'uploadtime', 'link_stream', 'link_episode', 'notes', 'hits', 'link_video', 'resolution',
+    'show_id', 'translation_type', 'episode_num', 'streamer_id', 'link_episode', 'link_stream', 'notes', 'link_video', 'mirror_id', 'uploadtime', 'resolution',
   ];
 
   /**
@@ -27,7 +27,6 @@ class Video extends BaseModel
    * Overwrite the save method to properly handle the compound key.
    */
   public function save(array $options = []) {
-    // TODO: make this start at 0
     if (empty($this->mirror)) {
       $max_mirror = Self::where('streamer_id', $this->streamer_id)
                         ->where('show_id', $this->show_id)
