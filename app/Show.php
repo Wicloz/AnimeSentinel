@@ -184,7 +184,7 @@ class Show extends BaseModel
   */
   public function isAiring($translation_type) {
     $latest = 'latest_'.$translation_type;
-    return !isset($this->episode_amount) || ($this->$latest !== null && $this->$latest->episode_num < $this->episode_amount);
+    return !isset($this->episode_amount) || $this->$latest !== null || $this->$latest->episode_num < $this->episode_amount;
   }
 
   /**

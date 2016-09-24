@@ -81,6 +81,8 @@ class User extends Authenticatable
     }
     // Check write permissions
     $this->postToMal('validate', 0);
+    // Check whether the cache is empty
+    $cacheEmpty = $this->malFields()->count() === 0;
 
     // Srape page for anime list
     $results = collect(Helpers::scrape_page(str_get_between($page, '</tbody>', '</table>'), '</td>', [
@@ -117,6 +119,20 @@ class User extends Authenticatable
     $malNeed = $this->malFields->pluck('mal_show')->pluck('mal_id');
     foreach ($malNeed->diff(Show::whereIn('mal_id', $malNeed)->pluck('mal_id')) as $mal_id) {
       queueJob(new \App\Jobs\ShowAdd($mal_id));
+    }
+
+    // If this is the first time the cache was updated, mark all shows that finished airing as notified
+    if ($cacheEmpty) {
+      foreach ($this->malFields->load('show') as $mal_field) {
+        if (!$mal_field->show->isAiring('sub')) {
+          $mal_field->nots_mail_notified_sub = $mal_field->show->episodes('sub')->pluck('episode_num');
+          $mal_field->save();
+        }
+        if (!$mal_field->show->isAiring('dub')) {
+          $mal_field->nots_mail_notified_dub = $mal_field->show->episodes('dub')->pluck('episode_num');
+          $mal_field->save();
+        }
+      }
     }
   }
 
@@ -197,6 +213,7 @@ class User extends Authenticatable
   public function periodicTasks() {
     // Update the MAL cache
     $this->updateMalCache();
+    dd();
 
     // Mark plan to watch shows as watching
     if ($this->auto_watching_state && $this->mal_canwrite) {
