@@ -14,7 +14,6 @@ class CreateMaluserFieldsTable extends Migration
     public function up()
     {
         Schema::create('maluser_fields', function (Blueprint $table) {
-            $table->increments('id');
             $table->integer('mal_id')->unsigned();
             $table->integer('user_id')->unsigned();
 
@@ -27,7 +26,7 @@ class CreateMaluserFieldsTable extends Migration
 
             $table->timestamps();
 
-            $table->unique(['mal_id', 'user_id']);
+            $table->primary(['mal_id', 'user_id']);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

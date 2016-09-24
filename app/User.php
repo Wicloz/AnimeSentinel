@@ -189,7 +189,7 @@ class User extends Authenticatable
    */
   public function periodicTasks() {
     // Update the MAL cache
-    // $this->updateMalCache();
+    $this->updateMalCache();
 
     // Mark plan to watch shows as watching
     if ($this->auto_watching_state && $this->mal_canwrite) {

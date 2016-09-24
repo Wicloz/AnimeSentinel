@@ -4,6 +4,10 @@ namespace App;
 
 class MaluserField extends BaseModel
 {
+  use Traits\HasCompositePrimaryKey;
+  public $primaryKey = ['user_id', 'mal_id'];
+  public $incrementing = false;
+
   /**
    * The attributes that are mass assignable.
    *
