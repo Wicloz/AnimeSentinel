@@ -43,7 +43,7 @@ class ShowAdd implements ShouldQueue
    * @return void
    */
   public function handle() {
-    if (isset($this->$title)) {
+    if (isset($this->title)) {
       ShowManager::addShowWithTitle($this->title, $this->allowNonMal, $this->targetQueue, true);
     } elseif (isset($this->mal_id)) {
       ShowManager::addShowWithMalId($this->mal_id, $this->targetQueue, true);
