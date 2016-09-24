@@ -124,11 +124,11 @@ class User extends Authenticatable
     // If this is the first time the cache was updated, mark all shows that finished airing as notified
     if ($cacheEmpty) {
       foreach ($this->malFields->load('show') as $mal_field) {
-        if (!$mal_field->show->isAiring('sub')) {
+        if ($mal_field->show->finishedAiring('sub')) {
           $mal_field->nots_mail_notified_sub = $mal_field->show->episodes('sub')->pluck('episode_num');
           $mal_field->save();
         }
-        if (!$mal_field->show->isAiring('dub')) {
+        if ($mal_field->show->finishedAiring('dub')) {
           $mal_field->nots_mail_notified_dub = $mal_field->show->episodes('dub')->pluck('episode_num');
           $mal_field->save();
         }
@@ -213,7 +213,6 @@ class User extends Authenticatable
   public function periodicTasks() {
     // Update the MAL cache
     $this->updateMalCache();
-    dd();
 
     // Mark plan to watch shows as watching
     if ($this->auto_watching_state && $this->mal_canwrite) {
