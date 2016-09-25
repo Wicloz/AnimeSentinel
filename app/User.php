@@ -112,12 +112,6 @@ class User extends Authenticatable
       $mal_field->mal_show = $mal_show;
       $mal_field->save();
     }
-
-    // Queue the adding of all shows on the user's mal list we don't have yet
-    $malNeed = $this->malFields->pluck('mal_show')->pluck('mal_id');
-    foreach ($malNeed->diff(Show::whereIn('mal_id', $malNeed)->pluck('mal_id')) as $mal_id) {
-      queueJob(new \App\Jobs\ShowAdd($mal_id));
-    }
   }
 
   /**
