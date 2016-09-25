@@ -13,7 +13,7 @@ abstract class BaseModel extends Model
 
   // TODO: make more secure against SQL injection
   // NOTE: must not be followed by ->where() or ->select()
-  public function scopeDistinctOn($query, $columns) {
+  public function scopeDistinctOn($query, $columns, $orderBy = null, $orderDir = 'asc') {
     if (!is_array($columns)) {
       $columns = [$columns];
     }
@@ -26,11 +26,12 @@ abstract class BaseModel extends Model
         }
 
         $query->select(DB::raw(
-          '* FROM (SELECT DISTINCT ON ('.implode(', ', $columns).') * '
+          '* FROM (SELECT DISTINCT ON ('.implode(', ', $columns).') *'
         ));
 
+        $sort = isset($orderBy) ? ', '.$orderBy.' '.$orderDir : '';
         $query->where(DB::raw(
-          '1=1 ORDER BY '.implode(', ', $columns).') d where 1'
+          '1=1 ORDER BY '.implode(', ', $columns).$sort.') d where 1'
         ), '=', '1');
       break;
 
