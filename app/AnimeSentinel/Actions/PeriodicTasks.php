@@ -19,7 +19,7 @@ class PeriodicTasks
     // For all streamers, request required data
     foreach ($streamers as $streamer) {
       $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
-      $data = $class::guard();
+      $data = $class::findRecentlyAired();
 
       foreach (array_reverse($data) as $item) {
         // Get the show related to this data

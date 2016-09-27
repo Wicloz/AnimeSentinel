@@ -60,7 +60,7 @@ class kissanime extends BaseConnector
             $page = Downloaders::downloadPage(Static::$page_main.$result['linkPart']);
             $streamPages[] = [
               'translation_type' => $result['translation_type'],
-              'linkPart' => Static::$page_main.$result['linkPart'],
+              'link_stream' => Static::$page_main.$result['linkPart'],
               'page' => $page,
             ];
             $addedLinks[] = $result['linkPart'];
@@ -111,6 +111,22 @@ class kissanime extends BaseConnector
     return $mirror;
   }
 
+  protected static function scrapeRecentlyAired($page) {
+    return Helpers::scrape_page(str_get_between($page, '<div class="items">', '<div class="clear">'), '</a>', [
+      'link_stream' => [true, 'href="', '"'],
+      'title' => [false, '<br />', '<br />'],
+      'episode_num' => [false, '<span class=\'textDark\'>', '</span>'],
+    ]);
+  }
+
+  protected static function completeRecentData($element) {
+    $element['translation_type'] = str_contains($element['title'], '(Dub)') ? 'dub' : 'sub';
+    $element['title'] = trim(str_replace('(Dub)', '', str_replace('(Sub)', '', $element['title'])));
+    Static::extractEpisodeData($element['episode_num']);
+    $element['link_stream'] = Static::$page_main.'/'.$element['link_stream'];
+    return $element;
+  }
+
   /**
   * Extract the notes and episode number from the episode string.
   *
@@ -127,7 +143,7 @@ class kissanime extends BaseConnector
     }
 
     else {
-      if (!str_starts_with($text, '_Special ') && !str_starts_with($text, '_Specail ')) {
+      if (!str_starts_with($text, '_Special ') && !str_starts_with($text, '_Specail ') && !str_starts_with($text, '_OVA ')) {
         // Strip '_' and type names from the start of the text, followed by trimming
         $remove = [
           '_',

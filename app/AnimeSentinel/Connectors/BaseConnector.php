@@ -60,6 +60,24 @@ class BaseConnector
   }
 
   /**
+  * Scrape this streamer's recently aired page.
+  *
+  * @return array
+  */
+  protected static function scrapeRecentlyAired($page) {
+    return [];
+  }
+
+  /**
+  * Complete data for an element from the recently aired page.
+  *
+  * @return array
+  */
+  protected static function completeRecentData($element) {
+    return $element;
+  }
+
+  /**
   * Find and save all videos for the requested show,
   * and optionally the requested translation types and/or episode number.
   *
@@ -117,7 +135,7 @@ class BaseConnector
   *
   * @return array (episode_num, link_episode) (translation_type, notes, uploadtime)
   */
-  public static function findEpisodes($page) {
+  public static function findEpisodes($page, $noDecrement = false) {
     // Scrape the page for episode data
     $episodes = Static::scrapeStreamPage($page);
 
@@ -134,7 +152,7 @@ class BaseConnector
     }
 
     // If this streamer uses decrements, find it and apply to all episodes
-    if (Static::$useDecrements) {
+    if (Static::$useDecrements && !$noDecrement) {
       $decrement = Static::findDecrement($episodes);
       foreach ($episodes as $index => $episode) {
         $episodes[$index]['episode_num'] -= $decrement;
@@ -195,7 +213,27 @@ class BaseConnector
   * @return array (title, episode_num) (translation_type)
   */
   public static function findRecentlyAired() {
-    return [];
+    // Download the recently aired page
+    $page = Downloaders::downloadPage(Static::$page_recent);
+    // Scrape the recently aired page
+    $data = Static::scrapeRecentlyAired($page);
+    // Complete found data
+    foreach ($data as $index => $element) {
+      $data[$index] = Static::completeRecentData($element);
+      $data[$index]['episode_num'] = (int) $data[$index]['episode_num'];
+    }
+
+    // If this streamer uses decrements, find and apply them
+    if (Static::$useDecrements) {
+      foreach ($data as $index => $element) {
+        $page = Downloaders::downloadPage($element['link_stream']);
+        $episodes = Static::findEpisodes($page, true);
+        $decrement = Static::findDecrement($episodes);
+        $data[$index]['episode_num'] -= $decrement;
+      }
+    }
+
+    return $data;
   }
 }
 
