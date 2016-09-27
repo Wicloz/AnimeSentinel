@@ -174,6 +174,18 @@ class Video extends BaseModel
   }
 
   /**
+  * Return whether the video link is supported by the HTML5 player.
+  *
+  * @return boolean
+  */
+  public function getPlayerSupportAttribute() {
+    if (str_ends_with($this->link_video, '.mp4') || str_contains($this->link_video, 'redirector.googlevideo.com') || str_contains($this->link_video, '2.bp.blogspot.com')) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
   * Return the 'best' out of all mirrors for this episode.
   *
   * @return string
@@ -183,7 +195,7 @@ class Video extends BaseModel
     $bestMirror = null;
 
     foreach ($mirrors as $mirror) {
-      if (playerSupport($mirror->link_video) && $mirror->encoding !== 'broken' && ($bestMirror === null || $mirror->video_surface > $bestMirror->video_surface)) {
+      if ($mirror->player_support && $mirror->encoding !== 'broken' && ($bestMirror === null || $mirror->video_surface > $bestMirror->video_surface)) {
         $bestMirror = $mirror;
       }
     }
@@ -238,7 +250,7 @@ class Video extends BaseModel
   * Refresh the link_video for this video when it is needed.
   */
   public function refreshVideoLink() {
-    if (playerSupport($this->link_video)) {
+    if ($this->player_support) {
       $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_format "'. $this->link_video .'"'));
       if (json_encode($data) === '{}') {
         $this->link_video = VideoManager::findVideoLink($this);
@@ -256,7 +268,7 @@ class Video extends BaseModel
    * @return boolean
    */
   public function setVideoMetaData($tries = 1) {
-    if (playerSupport($this->link_video)) {
+    if ($this->player_support) {
       $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_streams -show_format "'. $this->link_video .'"'));
 
       if (!isset($data->streams) || !isset($data->format)) {

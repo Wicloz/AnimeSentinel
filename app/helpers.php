@@ -51,13 +51,6 @@ function visitPage($id) {
   return true;
 }
 
-function playerSupport($filename) {
-  if (str_ends_with($filename, '.mp4') || str_contains($filename, 'redirector.googlevideo.com') || str_contains($filename, '2.bp.blogspot.com')) {
-    return true;
-  }
-  return false;
-}
-
 function badNotes($notes) {
   $notes = strtolower($notes);
   if (str_contains($notes, 'lq') || str_contains($notes, 'broken')) {

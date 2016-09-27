@@ -26,7 +26,7 @@
   <div class="content-generic">
     <div class="streamplayer">
       <div style="padding-top:{{ $video->video_aspect * 100 }}%;"></div>
-      @if(playerSupport($video->link_video))
+      @if($video->player_support)
         <video class="streamplayer-video" controls>
           <source src="{{ $video->link_video }}" type="{{ $video->encoding }}">
           <source src="{{ $video->link_video }}" type="video/mp4">
@@ -55,7 +55,7 @@
                     <div class="row">
                       <div class="col-xs-8">
                         <p><strong>Original Streamer:</strong> {{ $mirror->streamer->name }}</p>
-                        @if(playerSupport($mirror->link_video))
+                        @if($mirror->player_support)
                           <p class="episode-info-good"><strong>HTML5 Player:</strong> Yes</p>
                         @else
                           <p class="episode-info-bad"><strong>HTML5 Player:</strong> No</p>

@@ -14,7 +14,7 @@ class VideoManager
   public static function saveVideos($videos, $queue = 'low') {
     foreach ($videos as $video) {
       $video->save();
-      if (playerSupport($video->link_video)) {
+      if ($video->player_support) {
         queueJob(new \App\Jobs\VideoRefreshLink($video), $queue);
       } else {
         $video->setVideoMetaData();
