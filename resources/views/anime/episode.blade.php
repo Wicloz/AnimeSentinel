@@ -5,7 +5,7 @@
   <a href="{{ $show->details_url }}">
     <img class="img-thumbnail details-thumbnail" src="{{ fullUrl('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
   </a>
-  @include('components.animedetails', ['details' => $show, 'link' => true])
+  @include('components.anime.details', ['details' => $show, 'link' => true])
   @if(isset($show->mal_url))
     <div class="content-header hide-md">
       <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
@@ -99,5 +99,5 @@
       <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
     </div>
   @endif
-  @include('components.malwidget_sidebar', ['mal_url' => $show->mal_url])
+  @include('components.mal.widgets.sidebar', ['mal_url' => $show->mal_url])
 @endsection

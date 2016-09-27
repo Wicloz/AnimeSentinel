@@ -3,7 +3,7 @@
 
 @section('content-center')
   <div class="content-header">MAL Credential Status</div>
-  @include('components.malcredstatus')
+  @include('components.mal.credstatus')
 
   <div class="content-header">Mail Notification Settings per Status</div>
   <!--TODO: fancy CSS-->

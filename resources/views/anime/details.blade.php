@@ -3,7 +3,7 @@
 
 @section('content-left')
   <img class="img-thumbnail details-thumbnail" src="{{ fullUrl('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
-  @include('components.animedetails', ['details' => $show])
+  @include('components.anime.details', ['details' => $show])
   @if(isset($show->mal_url))
     <div class="content-header">
       <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
@@ -18,7 +18,7 @@
     <div class="content-close"></div>
   </div>
 
-  @include('components.malwidget_banner', ['mal_url' => $show->mal_url])
+  @include('components.mal.widgets.banner', ['mal_url' => $show->mal_url])
 
   <div class="content-header">Episodes</div>
   <div class="content-generic">
