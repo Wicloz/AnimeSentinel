@@ -254,7 +254,11 @@ class Video extends BaseModel
       $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_format "'. $this->link_video .'"'));
       if (json_encode($data) === '{}') {
         $this->link_video = VideoManager::findVideoLink($this);
-        $this->setVideoMetaData();
+        if (empty($this->link_video)) {
+          $this->encoding = 'broken';
+        } else {
+          $this->setVideoMetaData();
+        }
       }
       elseif ($this->encoding === 'broken' || $this->encoding === 'embed' || $this->encoding === null) {
         $this->setVideoMetaData();

@@ -49,11 +49,11 @@ class PeriodicTasks
                 $show->videos()->episode('sub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null ||
                 $show->videos()->episode('dub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null
               ) {
-                queueJob(new \App\Jobs\AnimeReprocessEpisode($show, ['sub', 'dub'], (int) $item['episode_num'], $streamer->id), 'periodic_high');
+                queueJob(new \App\Jobs\AnimeReprocessEpisode($show, ['sub', 'dub'], $item['episode_num'], $streamer->id), 'periodic_high');
               }
             }
             elseif ($show->videos()->episode($item['translation_type'], $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null) {
-              queueJob(new \App\Jobs\AnimeReprocessEpisode($show, [$item['translation_type']], (int) $item['episode_num'], $streamer->id), 'periodic_high');
+              queueJob(new \App\Jobs\AnimeReprocessEpisode($show, [$item['translation_type']], $item['episode_num'], $streamer->id), 'periodic_high');
             }
           }
         }

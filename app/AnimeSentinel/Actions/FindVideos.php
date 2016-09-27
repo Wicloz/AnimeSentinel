@@ -20,22 +20,18 @@ class FindVideos
     // Mark show as not initialised
     $show->videos_initialised = false;
     $show->save();
+    // Remove all existing videos for this show
+    $show->videos()->delete();
+
     // Grab all streamers data
     $streamers = Streamer::all();
 
-    // For all streamers, request videos for this show
-    $videos = [];
+    // Find and save videos for each streamer
     foreach ($streamers as $streamer) {
-      if ($streamer->id !== 'youtube' || (!empty($show->show_flags) && $show->show_flags->check_youtube)) {
-        $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
-        $videos = array_merge($videos, $class::seek($show));
-      }
+      $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
+      $class::findVideosForShow($show);
     }
 
-    // Remove all existing videos for this show
-    $show->videos()->delete();
-    // Save the new videos
-    VideoManager::saveVideos($videos);
     // Mark show as initialised
     $show->videos_initialised = true;
     $show->save();
@@ -63,23 +59,6 @@ class FindVideos
     // Mark show as not initialised
     $show->videos_initialised = false;
     $show->save();
-    // Grab all streamers data
-    $streamers = Streamer::all();
-
-    // For all applicable streamers, request videos for this episode
-    $videosRaw = []; $videos = [];
-    foreach ($streamers as $streamer) {
-      if (($streamer_id === null || $streamer_id === $streamer->id) && ($streamer->id !== 'youtube' || (!empty($show->show_flags) && $show->show_flags->check_youtube))) {
-        $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
-        $videosRaw = array_merge($videosRaw, $class::seek($show, $episode_num));
-      }
-    }
-    foreach ($videosRaw as $video) {
-      if (in_array($video->translation_type, $translation_types)) {
-        $videos[] = $video;
-      }
-    }
-
     // Remove all existing videos for this episode
     foreach ($translation_types as $translation_type) {
       if ($streamer_id === null) {
@@ -88,8 +67,20 @@ class FindVideos
         $show->videos()->episode($translation_type, $episode_num)->where('streamer_id', $streamer_id)->delete();
       }
     }
-    // Save the new videos
-    VideoManager::saveVideos($videos);
+
+    // Grab all streamers data
+    if ($streamer_id === null) {
+      $streamers = Streamer::all();
+    } else {
+      $streamers = collect(Streamer::find($streamer_id));
+    }
+
+    // Find and save videos for each streamer
+    foreach ($streamers as $streamer) {
+      $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
+      $class::findVideosForShow($show, $translation_types, $episode_num);
+    }
+
     // Mark show as initialised
     $show->videos_initialised = true;
     $show->save();
@@ -113,17 +104,16 @@ class FindVideos
     // Handle job related tasks
     if (!handleJobFunction('StreamerFindVideos', null, ['streamer_id' => $streamer->id], $fromJob)) return;
 
-    // Process all shows data in chuncks of 100
+    $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
+
+    // Process all shows in chunks of 8
     Show::orderBy('id')->chunk(8, function ($shows) use ($streamer) {
       foreach ($shows as $show) {
         // Mark show as not initialised
         $show->videos_initialised = false;
         $show->save();
-        // Find videos for the show
-        $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
-        $videos = $class::seek($show);
-        // Save the videos
-        VideoManager::saveVideos($videos);
+        // Find and save videos for the show
+        $class::findVideosForShow($show);
         // Mark show as initialised
         $show->videos_initialised = true;
         $show->save();

@@ -1,5 +1,7 @@
 <?php
 
+\App\AnimeSentinel\Actions\FindVideos::findVideosForShow(\App\Show::withTitle('Mob Psycho 100')->first());
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes

@@ -2,169 +2,127 @@
 
 namespace App\AnimeSentinel\Connectors;
 
-use App\Video;
 use App\AnimeSentinel\Helpers;
 use App\AnimeSentinel\Downloaders;
 use Carbon\Carbon;
 
-class kissanime
+class kissanime extends BaseConnector
 {
-  /**
-   * Finds all video's for the requested show.
-   * Returns data as an array of models.
-   *
-   * @return array
-   */
-  public static function seek($show, $req_episode_num = null) {
-    $videos = [];
-    $processedLinks = [];
+  protected static $useDecrements = true;
+  protected static $page_main = 'http://kissanime.to';
+  protected static $page_recent = 'http://kissanime.to';
+  protected static $ide_invalidPage = '<meta name="description" content="Watch anime online in high quality. Free download high quality anime. Various formats from 240p to 720p HD (or even 1080p). HTML5 available for mobile devices" />';
 
-    // Try all alts to get a valid episode page
+  public static function findStreamPages($show) {
+    $streamPages = []; $addedLinks = [];
+
     foreach ($show->alts as $alt) {
       // Download search results page
-      $page = Downloaders::downloadPage('http://kissanime.to/Search/Anime?keyword='.str_replace(' ', '+', $alt));
+      $page = Downloaders::downloadPage(Static::$page_main.'/Search/Anime?keyword='.str_replace(' ', '+', $alt));
 
       // First check whether we already have an episode page
       if (str_contains($page, '<meta name="description" content="Watch online and download ')) {
-        $link_stream = str_get_between($page, '<a Class="bigChar" href="', '">');
-        if (!in_array($link_stream, $processedLinks)) {
-          // Search for videos
-          $videos = array_merge($videos, Self::seekEpisodes($page, $show, $alt, [
-            'link_stream' => 'http://kissanime.to'.$link_stream,
-            'translation_type' => (str_contains(str_get_between($page, '<title>', '</title>'), '(Dub)') ? 'dub' : 'sub'),
-          ], $req_episode_num));
-          $processedLinks[] = $link_stream;
-          continue;
+        // Grab the partial link
+        $linkPart = str_get_between($page, '<a Class="bigChar" href="', '">');
+        // Add a stream page if it hasn't been done before
+        if (!in_array($linkPart, $addedLinks)) {
+          $streamPages[] = [
+            'translation_type' => str_contains(str_get_between($page, '<title>', '</title>'), '(Dub)') ? 'dub' : 'sub',
+            'link_stream' => Static::$page_main.$linkPart,
+            'page' => $page,
+          ];
+          $addedLinks[] = $linkPart;
         }
       }
 
-      // Otherwise, scrape and process search results
-      $results = Helpers::scrape_page(str_get_between($page, '<tr style="height: 10px">', '</table>'), '</tr>', [
-        'link_stream' => [true, '<a class="bigChar" href="', '">'],
-        'title' => [false, '<a class="bigChar" href="{{link_stream}}">', '<'],
-      ]);
-      foreach ($results as $result) {
-        // Determine translation type and clean up title
-        $result['translation_type'] = 'sub';
-        $result['title'] = trim(str_replace('(Sub)', '', $result['title']));
-        if (str_contains($result['title'], '(Dub)')) {
-          $result['translation_type'] = 'dub';
-        }
-        $result['title'] = trim(str_replace('(Dub)', '', $result['title']));
+      else {
+        // Otherwise, scrape and process search results
+        $results = Helpers::scrape_page(str_get_between($page, '<tr style="height: 10px">', '</table>'), '</tr>', [
+          'linkPart' => [true, '<a class="bigChar" href="', '">'],
+          'title' => [false, '<a class="bigChar" href="{{linkPart}}">', '<'],
+        ]);
+        foreach ($results as $result) {
+          // Determine translation type and clean up title
+          $result['translation_type'] = str_contains($result['title'], '(Dub)') ? 'dub' : 'sub';
+          $result['title'] = trim(str_replace('(Dub)', '', str_replace('(Sub)', '', $result['title'])));
 
-        $matches = false;
-        foreach ($show->alts as $alt2) {
-          if (match_fuzzy($alt2, $result['title'])) {
-            $matches = true;
-            $alt = $alt2;
-            break;
+          // Determine whether the title matches one of the alts
+          $matches = false;
+          foreach ($show->alts as $alt2) {
+            if (match_fuzzy($alt2, $result['title'])) {
+              $matches = true;
+              break;
+            }
           }
-        }
-        if ($matches && !in_array($result['link_stream'], $processedLinks)) {
-          // Search for videos
-          $page = Downloaders::downloadPage('http://kissanime.to'.$result['link_stream']);
-          $videos = array_merge($videos, Self::seekEpisodes($page, $show, $alt, [
-            'link_stream' => 'http://kissanime.to'.$result['link_stream'],
-            'translation_type' => $result['translation_type'],
-          ], $req_episode_num));
-          $processedLinks[] = $result['link_stream'];
+
+          // Add a stream page if it hasn't been done before
+          if ($matches && !in_array($result['linkPart'], $addedLinks)) {
+            $page = Downloaders::downloadPage(Static::$page_main.$result['linkPart']);
+            $streamPages[] = [
+              'translation_type' => $result['translation_type'],
+              'linkPart' => Static::$page_main.$result['linkPart'],
+              'page' => $page,
+            ];
+            $addedLinks[] = $result['linkPart'];
+          }
         }
       }
     }
 
-    return $videos;
-    // Stream specific:   'show_id', 'streamer_id', 'translation_type', 'link_stream'
-    // Episode specific:  'episode_num', 'link_episode', ('notes')
-    // Video specific:    'uploadtime', 'link_video', 'resolution'
+    return $streamPages;
   }
 
-  private static function seekEpisodes($page, $show, $alt, $data, $req_episode_num) {
-    $videos = [];
-
-    // Set some general data
-    $data_stream = array_merge($data, [
-      'show_id' => $show->id,
-      'streamer_id' => 'kissanime',
-    ]);
-    $alt = trim(str_get_between($page, '<div class="barTitle">', 'information'));
-
-    // Scrape the page for episode data
+  protected static function scrapeStreamPage($page) {
     $episodes = Helpers::scrape_page(str_get_between($page, '<tr style="height: 10px">', '</table>'), '</td>', [
-      'episode_num' => [true, 'in high quality">', '</a>'],
+      'episode_num' => [true, 'online in high quality">', '</a>'],
       'link_episode' => [false, 'href="', '"'],
       'uploadtime' => [false, '<td>', ''],
     ]);
+
+    $title = trim(str_get_between($page, '<div class="barTitle">', 'information'));
     foreach ($episodes as $index => $episode) {
-      $episodes[$index]['episode_num'] = trim(str_replace($alt, '', $episode['episode_num']));
+      $episodes[$index]['episode_num'] = trim(str_replace($title, '', $episode['episode_num']));
     }
 
-    // Find the decrement
-    $decrement = Self::findDecrement($episodes);
-
-    // Get mirror data for each episode
-    foreach (array_reverse($episodes) as $episode) {
-      // Complete episode data
-      $episode = Self::seekCompleteEpisode($episode, $decrement);
-      if (empty($episode)) {
-        continue;
-      }
-
-      elseif ($req_episode_num === null || $req_episode_num === (int) $episode['episode_num']) {
-        // Get all mirrors data
-        $mirrors = Self::seekMirrors($episode['link_episode']);
-        // Loop through mirror list
-        foreach ($mirrors as $mirror) {
-          // Complete mirror data
-          $mirror = Self::seekCompleteMirror($mirror);
-          // Create and add final video
-          $videos[] = new Video(array_merge($data_stream, $episode, $mirror));
-        }
-      }
-    }
-
-    return $videos;
+    return $episodes;
   }
 
-  private static function seekMirrors($link_episode) {
-    // Get episode page
-    $page = Downloaders::downloadPage($link_episode);
-    if (!str_contains($page, '<meta name="description" content="Watch anime online in high quality. Free download high quality anime. Various formats from 240p to 720p HD (or even 1080p). HTML5 available for mobile devices" />')) {
-      // Scrape the page for mirror data
-      $mirrors = Helpers::scrape_page(str_get_between($page, 'id="divDownload">', '</div>'), '</a>', [
-        'link_video' => [true, 'href="', '"'],
-        'resolution' => [false, '>', '.'],
-      ]);
-      return $mirrors;
-    }
-    return [];
-  }
-
-  private static function seekCompleteEpisode($episode, $decrement) {
-    // Complete episode data
-    $episode['notes'] = '';
-    $episode['episode_num'] = Self::convertEpisodeToNumber($episode['episode_num'], $episode['notes']);
-
+  protected static function completeEpisodeData($episode) {
+    $episode['notes'] = Static::extractEpisodeData($episode['episode_num']);
     if ($episode['episode_num'] === false) {
-      return false;
+      return null;
     }
 
-    $episode['episode_num'] -= $decrement;
     $episode['notes'] = trim(str_replace('[', '(', str_replace(']', ')', $episode['notes'])));
-    $episode['link_episode'] = 'http://kissanime.to'.$episode['link_episode'];
+    $episode['link_episode'] = Static::$page_main.$episode['link_episode'];
     $episode['uploadtime'] = Carbon::createFromFormat('n/j/Y', trim($episode['uploadtime']));
     return $episode;
   }
 
-  private static function seekCompleteMirror($mirror) {
-    // Complete mirror data
+  protected static function scrapeEpisodePage($page, $link_episode) {
+    return Helpers::scrape_page(str_get_between($page, 'id="divDownload">', '</div>'), '</a>', [
+      'link_video' => [true, 'href="', '"'],
+      'resolution' => [false, '>', '.'],
+    ]);
+  }
+
+  protected static function completeMirrorData($mirror) {
+    $mirror['mirror_id'] = $mirror['resolution'];
     return $mirror;
   }
 
-  private static function convertEpisodeToNumber($text, & $notes = '') {
+  /**
+  * Extract the notes and episode number from the episode string.
+  *
+  * @return string
+  */
+  private static function extractEpisodeData(& $episode_num) {
+    $text = $episode_num;
     $text = trim(str_replace('(Sub)', '', str_replace('(Dub)', '', $text)));
 
     // Discard ops, eds and previews
     if (str_starts_with($text, '_OP') || str_starts_with($text, '_ED') || str_starts_with($text, '_Preview')) {
+      $episode_num = false;
       return false;
     }
 
@@ -204,90 +162,7 @@ class kissanime
         $notes = trim($text);
       }
 
-      return $episode_num;
+      return $notes;
     }
-  }
-
-  private static function findDecrement($episodes) {
-    // Find the lowest episode number
-    foreach ($episodes as $episode) {
-      $episode = Self::seekCompleteEpisode($episode, 0);
-      if (!empty($episode) && (!isset($lowest_ep) || $episode['episode_num'] < $lowest_ep)) {
-        $lowest_ep = $episode['episode_num'];
-      }
-    }
-    if (!isset($lowest_ep) || $lowest_ep <= 0) {
-      return 0;
-    }
-    return $lowest_ep - 1;
-  }
-
-  /**
-   * Finds all episode data + title from the recently aired page.
-   * Returns this data as an array of associative arrays.
-   * This data is later used to find the episode video's.
-   *
-   * @return array
-   */
-  public static function guard() {
-    // Download the 'recently aired' page
-    $page = Downloaders::downloadPage('http://kissanime.to');
-
-    // Scrape the 'recently aired' page
-    $dataRaw = Helpers::scrape_page(str_get_between($page, '<div class="items">', '<div class="clear">'), '</a>', [
-      'link_stream' => [true, 'href="', '"'],
-      'title' => [false, '<br />', '<br />'],
-      'episode_num' => [false, '<span class=\'textDark\'>', '</span>'],
-    ]);
-
-    // Complete and return data
-    $data = [];
-    foreach ($dataRaw as $item) {
-      // Determine translation type and clean up title
-      $item['translation_type'] = 'sub';
-      $item['title'] = trim(str_replace('(Sub)', '', $item['title']));
-      if (str_contains($item['title'], '(Dub)')) {
-        $item['translation_type'] = 'dub';
-      }
-      $item['title'] = trim(str_replace('(Dub)', '', $item['title']));
-
-      // Determine the decrement
-      $page = Downloaders::downloadPage('http://kissanime.to/'.$item['link_stream']);
-      $alt = trim(str_get_between($page, '<div class="barTitle">', 'information'));
-      // Scrape the page for episode data
-      $episodes = Helpers::scrape_page(str_get_between($page, '<tr style="height: 10px">', '</table>'), '</td>', [
-        'episode_num' => [true, 'in high quality">', '</a>'],
-        'link_episode' => [false, 'href="', '"'],
-        'uploadtime' => [false, '<td>', ''],
-      ]);
-      foreach ($episodes as $index => $episode) {
-        $episodes[$index]['episode_num'] = trim(str_replace($alt, '', $episode['episode_num']));
-      }
-      $decrement = Self::findDecrement($episodes);
-      // Determine actual episode number
-      $item['episode_num'] = Self::convertEpisodeToNumber($item['episode_num']) - $decrement;
-
-      if (!empty($item)) {
-        $data[] = $item;
-      }
-    }
-
-    return $data;
-    // Contains: title, episode_num, (translation_type)
-  }
-
-  /**
-   * Finds the stream link for the requested video.
-   *
-   * @return string
-   */
-  public static function findVideoLink($video) {
-    // Get all mirrors data
-    $mirrors = Self::seekMirrors($video->link_episode);
-    // Complete mirror data and return video link
-    $mirror = Self::seekCompleteMirror($mirrors[$video->mirror - 1]);
-    return $mirror['link_video'];
-
-    return $video->link_video;
   }
 }
