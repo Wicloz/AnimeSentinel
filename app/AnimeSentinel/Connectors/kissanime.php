@@ -174,7 +174,7 @@ class kissanime extends BaseConnector
 
       else {
         // Handle numbered specials
-        $episode_num = -1;
+        $episode_num = -99;
         $notes = trim($text);
       }
 
