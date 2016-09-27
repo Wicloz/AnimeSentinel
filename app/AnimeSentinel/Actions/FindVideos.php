@@ -27,9 +27,10 @@ class FindVideos
     $streamers = Streamer::all();
 
     // Find and save videos for each streamer
+    $videosFound = 0;
     foreach ($streamers as $streamer) {
       $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
-      $class::findVideosForShow($show);
+      $videosFound += $class::findVideosForShow($show);
     }
 
     // Mark show as initialised
@@ -37,7 +38,7 @@ class FindVideos
     $show->save();
 
     // Mail an anomaly report if no videos were found
-    if (count($videos) == 0) {
+    if ($videosFound <= 0) {
       mailAnomaly($show, 'Could not find any videos when searching for all videos.', [
         'Ran From a Job' => $fromJob ? 'Yes' : 'No',
       ]);
@@ -76,9 +77,10 @@ class FindVideos
     }
 
     // Find and save videos for each streamer
+    $videosFound = 0;
     foreach ($streamers as $streamer) {
       $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
-      $class::findVideosForShow($show, $translation_types, $episode_num);
+      $videosFound += $class::findVideosForShow($show, $translation_types, $episode_num);
     }
 
     // Mark show as initialised
@@ -86,7 +88,7 @@ class FindVideos
     $show->save();
 
     // Mail an anomaly report if no videos were found
-    if (count($videos) == 0) {
+    if ($videosFound <= 0) {
       mailAnomaly($show, 'Could not find any videos when reprocessing an episode.', [
         'Translation Types' => json_encode($translation_types),
         'Epsiode Number' => $episode_num,

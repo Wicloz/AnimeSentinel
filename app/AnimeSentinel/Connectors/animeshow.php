@@ -25,6 +25,7 @@ class animeshow extends BaseConnector
         ]];
       }
     }
+    return [];
   }
 
   protected static function scrapeStreamPage($page) {

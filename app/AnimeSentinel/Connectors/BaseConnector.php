@@ -62,8 +62,12 @@ class BaseConnector
   /**
   * Find and save all videos for the requested show,
   * and optionally the requested translation types and/or episode number.
+  *
+  * @return integer
   */
   public static function findVideosForShow($show, $req_translation_types = null, $req_episode_num = null) {
+    $amount = 0;
+
     // Find all stream pages
     $streamPages = Static::findStreamPages($show);
     // dd($streamPages);
@@ -98,11 +102,14 @@ class BaseConnector
 
               // Save the video
               VideoManager::saveVideos($video);
+              $amount++;
             }
           }
         }
       }
     }
+
+    return $amount;
   }
 
   /**
