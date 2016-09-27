@@ -8,6 +8,15 @@ function mailAnomaly($show, $description, $vars = []) {
   });
 }
 
+function mailException($description, $exception, $vars = []) {
+  $vars[] = $exception;
+  \Mail::send('emails.reports.general', ['description' => $description, 'vars' => $vars], function ($m) {
+    $m->subject('AnimeSentinel Exception Report');
+    $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
+    $m->to('animesentinel@wilcodeboer.me');
+  });
+}
+
 function flash($content, $level) {
   $message = new stdClass();
   $message->body = $content;

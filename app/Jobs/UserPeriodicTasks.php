@@ -35,9 +35,17 @@ class UserPeriodicTasks implements ShouldQueue
    * @return void
    */
   public function handle() {
-    User::orderBy('id')->chunk(32, function ($users) {
+    User::orderBy('id')->chunk(100, function ($users) {
       foreach ($users as $user) {
-        $user->periodicTasks();
+        try {
+          $user->periodicTasks();
+        } catch (Exception $e) {
+          mailException('Failed to perform periodic tasks for a user', $e, [
+            'Username' => $user->username,
+            'Email' => $user->email,
+            'MAL Username' => $user->mal_user,
+          ]);
+        }
       }
     });
     queueJob((new UserPeriodicTasks)->delay(Carbon::now()->addMinutes(10)), 'periodic_low');
