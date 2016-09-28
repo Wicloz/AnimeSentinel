@@ -179,10 +179,10 @@ class Video extends BaseModel
   * @return boolean
   */
   public function getPlayerSupportAttribute() {
-    if (str_ends_with($this->link_video, '.mp4') || str_contains($this->link_video, 'redirector.googlevideo.com') || str_contains($this->link_video, '2.bp.blogspot.com')) {
-      return true;
+    if (str_ends_with($this->link_video, '.html')) {
+      return false;
     }
-    return false;
+    return true;
   }
 
   /**
@@ -260,11 +260,7 @@ class Video extends BaseModel
       $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_format "'. $this->link_video .'"'));
       if (json_encode($data) === '{}') {
         $this->link_video = VideoManager::findVideoLink($this);
-        if (empty($this->link_video)) {
-          $this->encoding = 'broken';
-        } else {
-          $this->setVideoMetaData();
-        }
+        $this->setVideoMetaData();
       }
       elseif ($this->encoding === 'broken' || $this->encoding === 'embed' || $this->encoding === null) {
         $this->setVideoMetaData();
@@ -278,7 +274,11 @@ class Video extends BaseModel
    * @return boolean
    */
   public function setVideoMetaData($tries = 1) {
-    if ($this->player_support) {
+    if (empty($this->link_video)) {
+      $this->encoding = 'broken';
+    }
+
+    elseif ($this->player_support) {
       $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_streams -show_format "'. $this->link_video .'"'));
 
       if (!isset($data->streams) || !isset($data->format)) {

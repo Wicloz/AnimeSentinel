@@ -52,10 +52,14 @@ class animeshow extends BaseConnector
   }
 
   protected static function completeMirrorData($mirror) {
+    if (!str_ends_with($mirror['link_video'], '/')) {
+      $mirror['link_video'] = $mirror['link_video'] . '/';
+    }
     $mirror['mirror_id'] = $mirror['link_video'];
 
     $page = Downloaders::downloadPage($mirror['link_video']);
     $mirror['link_video'] = str_get_between($page, '<iframe width="100%" height="100%" id="video_embed" scrolling="no" src="', '"');
+
     // Grab source link depending on mirror site
     if (str_contains($mirror['link_video'], 'mp4upload')) {
       $page = Downloaders::downloadPage($mirror['link_video']);
@@ -65,6 +69,7 @@ class animeshow extends BaseConnector
       $page = Downloaders::downloadPage($mirror['link_video']);
       $mirror['link_video'] = str_get_between($page, 'var video_link = \'', '\';');
     }
+
     return $mirror;
   }
 

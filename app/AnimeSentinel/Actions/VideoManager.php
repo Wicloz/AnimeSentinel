@@ -54,7 +54,7 @@ class VideoManager
     if (isset($mirror)) {
       return $mirror['link_video'];
     } else {
-      return '';
+      return $video->link_video;
     }
   }
 
