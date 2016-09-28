@@ -97,25 +97,30 @@ class BaseConnector
         $episodes = Static::findEpisodes($streamPage['page']);
 
         foreach (array_reverse($episodes) as $episode) {
-          // If this is the requested episode
-          if ($req_episode_num === null || $episode['episode_num'] === $req_episode_num) {
+          // If this is the requested episode and it has the correct translation type
+          if (($req_episode_num === null || $episode['episode_num'] === $req_episode_num) &&
+             ($req_translation_types === null || !isset($episode['translation_type']) || $episode['translation_type'] === 'all' || in_array($episode['translation_type'], $req_translation_types))) {
 
             // Find all mirrors
             $mirrors = Static::findMirrors($episode['link_episode']);
 
             foreach ($mirrors as $mirror) {
-              // Create the video
-              $video = new Video(array_merge($mirror, $episode));
-              $video->link_stream = $streamPage['link_stream'];
-              if (!isset($video->translation_type)) {
-                $video->translation_type = $streamPage['translation_type'];
-              }
-              $video->show_id = $show->id;
-              $video->streamer_id = str_get_between(Static::class, '\\', '', true);
+              // If this mirror has the correct translation type
+              if ($req_translation_types === null || !isset($mirror['translation_type']) || $mirror['translation_type'] === 'all' || in_array($mirror['translation_type'], $req_translation_types)) {
 
-              // Save the video
-              VideoManager::saveVideos($video);
-              $amount++;
+                // Create the video
+                $video = new Video(array_merge($mirror, $episode));
+                $video->link_stream = $streamPage['link_stream'];
+                if (!isset($video->translation_type)) {
+                  $video->translation_type = $streamPage['translation_type'];
+                }
+                $video->show_id = $show->id;
+                $video->streamer_id = str_get_between(Static::class, '\\', '', true);
+
+                // Save the video
+                VideoManager::saveVideos($video);
+                $amount++;
+              }
             }
           }
         }
