@@ -4,6 +4,7 @@ namespace App\AnimeSentinel\Actions;
 
 use App\Streamer;
 use App\Show;
+use App\Video;
 
 class FindVideos
 {
@@ -30,7 +31,16 @@ class FindVideos
     $videosFound = 0;
     foreach ($streamers as $streamer) {
       $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
-      $videosFound += $class::findVideosForShow($show);
+      try {
+        $videosFound += $class::findVideosForShow($show);
+      } catch (Exception $e) {
+        queueJob(new \App\Jobs\AnimeReprocessEpisode($show, ['sub', 'dub'], null, $streamer->id));
+        mailException('Failed to find videos for show', $e, [
+          'Show Title' => $show->title,
+          'Show Id' => $show->id,
+          'Ran From a Job' => $fromJob ? 'Yes' : 'No',
+        ]);
+      }
     }
 
     // Mark show as initialised
@@ -48,7 +58,7 @@ class FindVideos
   /**
    * Removes and adds all videos for the requested show and episode.
    */
-  public static function reprocessEpsiode($show, $translation_types, $episode_num, $streamer_id = null, $fromJob = false) {
+  public static function reprocessEpsiode($show, $translation_types, $episode_num = null, $streamer_id = null, $fromJob = false) {
     // Handle job related tasks
     $jobShowId = $show->mal_id !== null ? $show->mal_id : $show->title;
     if (!handleJobFunction('AnimeReprocessEpisode', $jobShowId, [
@@ -61,6 +71,7 @@ class FindVideos
     $show->videos_initialised = false;
     $show->save();
     // Remove all existing videos for this episode
+    Video::where();
     foreach ($translation_types as $translation_type) {
       if ($streamer_id === null) {
         $show->videos()->episode($translation_type, $episode_num)->delete();
@@ -80,7 +91,19 @@ class FindVideos
     $videosFound = 0;
     foreach ($streamers as $streamer) {
       $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
-      $videosFound += $class::findVideosForShow($show, $translation_types, $episode_num);
+      try {
+        $videosFound += $class::findVideosForShow($show, $translation_types, $episode_num);
+      } catch (Exception $e) {
+        queueJob(new \App\Jobs\AnimeReprocessEpisode($show, $translation_types, $episode_num, $streamer->id));
+        mailException('Failed to find videos for show episode', $e, [
+          'Show Title' => $show->title,
+          'Show Id' => $show->id,
+          'Translation Types' => json_encode($translation_types),
+          'Epsiode Number' => isset($episode_num) ? $episode_num : 'NA',
+          'Streaming Site' => isset($streamer_id) ? $streamer_id : 'NA',
+          'Ran From a Job' => $fromJob ? 'Yes' : 'No',
+        ]);
+      }
     }
 
     // Mark show as initialised
@@ -91,7 +114,7 @@ class FindVideos
     if ($videosFound <= 0) {
       mailAnomaly($show, 'Could not find any videos when reprocessing an episode.', [
         'Translation Types' => json_encode($translation_types),
-        'Epsiode Number' => $episode_num,
+        'Epsiode Number' => isset($episode_num) ? $episode_num : 'NA',
         'Streaming Site' => isset($streamer_id) ? $streamer_id : 'NA',
         'Ran From a Job' => $fromJob ? 'Yes' : 'No',
       ]);

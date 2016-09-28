@@ -25,7 +25,7 @@ class AnimeReprocessEpisode implements ShouldQueue
    *
    * @return void
    */
-  public function __construct(Show $show, $translation_types, $episode_num, $streamer_id = null) {
+  public function __construct(Show $show, $translation_types, $episode_num = null, $streamer_id = null) {
     $this->show = $show;
     $this->translation_types = $translation_types;
     $this->episode_num = $episode_num;

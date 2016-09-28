@@ -228,7 +228,7 @@ class BaseConnector
       }
     }
 
-    return $data;
+    return array_reverse($data);
   }
 }
 

@@ -19,9 +19,16 @@ class PeriodicTasks
     // For all streamers, request required data
     foreach ($streamers as $streamer) {
       $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
-      $data = $class::findRecentlyAired();
+      try {
+        $data = $class::findRecentlyAired();
+      } catch (Exception $e) {
+        $data = [];
+        mailException('Failed to find recently aired anime', $e, [
+          'Streamer Id' => $streamer->id,
+        ]);
+      }
 
-      foreach (array_reverse($data) as $item) {
+      foreach ($data as $item) {
         // Get the show related to this data
         $show = Show::withTitle($item['title'])->first();
 
@@ -44,7 +51,7 @@ class PeriodicTasks
 
           // Otherwise, if this show is not new, and the epsiode does not exist, queue the finding of all videos for the data
           if (!in_array($show->id, $addedShows)) {
-            if (!isset($item['translation_type'])) {
+            if ($item['translation_type'] === 'all') {
               if (
                 $show->videos()->episode('sub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null ||
                 $show->videos()->episode('dub', $item['episode_num'])->where('streamer_id', $streamer->id)->first() === null
