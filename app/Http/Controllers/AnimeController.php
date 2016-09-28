@@ -17,11 +17,11 @@ class AnimeController extends Controller
     }
 
     elseif ($source === 'as') {
-      $results = Show::search($query);
+      $results = Show::search($query, true);
     }
 
     else {
-      $results = Show::search($query, false);
+      $results = Show::search($query);
       $resultsMal = MalcacheSearch::search($query);
       $mal_ids = $results->pluck('mal_id')->all();
       foreach ($resultsMal as $resultMal) {
@@ -61,8 +61,8 @@ class AnimeController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function browse(Request $request, $results) {
-    return view('anime.browse', [
+  public function browse(Request $request, $mode, $results) {
+    return view('anime.'.$mode, [
       'results' => $results,
       'display' => 'bigrow',
     ]);
@@ -94,7 +94,7 @@ class AnimeController extends Controller
       ];
     }
 
-    return $this->browse($request, $resultsNested);
+    return $this->browse($request, 'search', $resultsNested);
   }
 
   /**
@@ -104,6 +104,10 @@ class AnimeController extends Controller
    */
   public function recent(Request $request) {
     $resultsNested = [];
+    $getRecent = Video::where('encoding', '!=', 'embed')->orWhere('encoding', null)
+                      ->distinctOn(['show_id', 'translation_type', 'episode_num', 'streamer_id'], 'uploadtime')
+                      ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
+                      ->with('show')->with('streamer');
 
     if (!empty($request->q)) {
       $this->validate($request, [
@@ -114,18 +118,14 @@ class AnimeController extends Controller
       $query = trim(mb_strtolower($request->q));
       $results = Show::search($query);
 
-      $recents = Video::whereIn('show_id', $results->pluck('id'))
-                 ->where('encoding', '!=', 'embed')->orWhere('encoding', null)
-                 ->distinctOn(['show_id', 'translation_type', 'episode_num', 'streamer_id'], 'uploadtime')
-                 ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
-                 ->take(256)->with('show')->with('streamer')->get();
+      if (count($results) > 1) {
+        $getRecent = $getRecent->take(256);
+      }
+      $recents = $getRecent->whereIn('show_id', $results->pluck('id'))->get();
     }
 
     else {
-      $recents = Video::where('encoding', '!=', 'embed')->orWhere('encoding', null)
-                 ->distinctOn(['show_id', 'translation_type', 'episode_num', 'streamer_id'], 'uploadtime')
-                 ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
-                 ->take(256)->with('show')->with('streamer')->get();
+      $recents = $getRecent->take(256)->get();
     }
 
     foreach ($recents as $recent) {
@@ -136,6 +136,6 @@ class AnimeController extends Controller
       ];
     }
 
-    return $this->browse($request, $resultsNested);
+    return $this->browse($request, 'recent', $resultsNested);
   }
 }

@@ -1,5 +1,4 @@
 @extends('layouts.app')
-@section('title', 'Browse Anime')
 
 @section('content-top')
   <div class="container-fluid searchbar-top">
