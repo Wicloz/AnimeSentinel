@@ -98,7 +98,7 @@ class BaseConnector
 
         foreach (array_reverse($episodes) as $episode) {
           // If this is the requested episode and it has the correct translation type
-          if (($req_episode_num === null || $episode['episode_num'] === $req_episode_num) &&
+          if (($req_episode_num === null || $episode['episode_num'] === (double) $req_episode_num) &&
              ($req_translation_types === null || !isset($episode['translation_type']) || $episode['translation_type'] === 'all' || in_array($episode['translation_type'], $req_translation_types))) {
 
             // Find all mirrors
