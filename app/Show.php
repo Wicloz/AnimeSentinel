@@ -103,22 +103,23 @@ class Show extends BaseModel
    */
   public static function search($query, $fill = true) {
     $results = [];
+    $limit = 128;
 
     // first match with full titles
-    $results = Self::orderBy('hits', 'desc')->withTitle($query)->get();
+    $results = Self::orderBy('hits', 'desc')->take($limit)->withTitle($query)->get();
     // match with partial titles
-    $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->withTitle($query, true)->get()->all());
+    $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($query, true)->get()->all());
 
     // match with partial titles, with non-alphanumeric characters ignored
     $thisQuery = str_to_url($query, '%', '/[^a-zA-Z0-9]/u');
     if (strlen(str_replace('%', '', $thisQuery)) >= 1) {
-      $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->withTitle($thisQuery, true)->get()->all());
+      $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($thisQuery, true)->get()->all());
     }
 
     // match with partial titles, with non-alphabetic characters ignored
     $thisQuery = str_to_url($query, '%', '/[^a-zA-Z]/u');
     if (strlen(str_replace('%', '', $thisQuery)) >= 1) {
-      $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->withTitle($thisQuery, true)->get()->all());
+      $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($thisQuery, true)->get()->all());
     }
 
     if ($fill) {
@@ -126,7 +127,7 @@ class Show extends BaseModel
       $thisQuery = str_to_url($query, '%', '/[^a-zA-Z]/u');
       if (strlen(str_replace('%', '', $thisQuery)) >= 1) {
         $thisQuery = '%'.str_to_url($thisQuery, '$1%', '/([a-zA-Z])/u');
-        $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->withTitle($thisQuery)->get()->all());
+        $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($thisQuery)->get()->all());
       }
     }
 
