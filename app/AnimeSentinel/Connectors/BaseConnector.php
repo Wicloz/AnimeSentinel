@@ -210,7 +210,7 @@ class BaseConnector
   /**
   * Find data for all episodes on this streamer's recently aired page.
   *
-  * @return array (title, episode_num) (translation_type)
+  * @return array (title, episode_num, translation_type)
   */
   public static function findRecentlyAired() {
     // Download the recently aired page
