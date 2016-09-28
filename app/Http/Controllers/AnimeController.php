@@ -107,7 +107,7 @@ class AnimeController extends Controller
     $getRecent = Video::where('encoding', '!=', 'embed')->orWhere('encoding', null)
                       ->distinctOn(['show_id', 'translation_type', 'episode_num', 'streamer_id'], 'uploadtime')
                       ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
-                      ->with('show')->with('streamer');
+                      ->take(128)->with('show')->with('streamer');
 
     if (!empty($request->q)) {
       $this->validate($request, [
@@ -118,14 +118,11 @@ class AnimeController extends Controller
       $query = trim(mb_strtolower($request->q));
       $results = Show::search($query);
 
-      if (count($results) > 1) {
-        $getRecent = $getRecent->take(256);
-      }
       $recents = $getRecent->whereIn('show_id', $results->pluck('id'))->get();
     }
 
     else {
-      $recents = $getRecent->take(256)->get();
+      $recents = $getRecent->get();
     }
 
     foreach ($recents as $recent) {
