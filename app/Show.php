@@ -14,7 +14,7 @@ class Show extends BaseModel
    * @var array
    */
   protected $fillable = [
-    'mal_id', 'thumbnail_id', 'title', 'alts', 'description', 'type', 'genres', 'episode_amount', 'episode_duration', 'airing_start', 'airing_end', 'hits',
+    'mal_id', 'thumbnail_id', 'title', 'alts', 'description', 'type', 'genres', 'episode_amount', 'episode_duration', 'airing_start', 'airing_end', 'season', 'hits',
   ];
 
   /**
@@ -101,31 +101,32 @@ class Show extends BaseModel
    *
    * @return array
    */
-  public static function search($query, $limit, $fill = true) {
+  public static function search($query, $fill = true) {
     $results = [];
 
     // first match with full titles
-    $results = Self::orderBy('hits', 'desc')->take($limit)->withTitle($query)->get();
+    $results = Self::orderBy('hits', 'desc')->withTitle($query)->get();
     // match with partial titles
-    $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($query, true)->get()->all());
+    $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->withTitle($query, true)->get()->all());
 
     // match with partial titles, with non-alphanumeric characters ignored
     $thisQuery = str_to_url($query, '%', '/[^a-zA-Z0-9]/u');
-    if (strlen(str_replace('%', '', $thisQuery)) >= 3) {
-      $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($thisQuery, true)->get()->all());
+    if (strlen(str_replace('%', '', $thisQuery)) >= 1) {
+      $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->withTitle($thisQuery, true)->get()->all());
     }
+
     // match with partial titles, with non-alphabetic characters ignored
     $thisQuery = str_to_url($query, '%', '/[^a-zA-Z]/u');
-    if (strlen(str_replace('%', '', $thisQuery)) >= 3) {
-      $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($thisQuery, true)->get()->all());
+    if (strlen(str_replace('%', '', $thisQuery)) >= 1) {
+      $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->withTitle($thisQuery, true)->get()->all());
     }
 
     if ($fill) {
       // match any titles with the same letters in the same order, at any location
       $thisQuery = str_to_url($query, '%', '/[^a-zA-Z]/u');
-      if (strlen(str_replace('%', '', $thisQuery)) >= 3) {
+      if (strlen(str_replace('%', '', $thisQuery)) >= 1) {
         $thisQuery = '%'.str_to_url($thisQuery, '$1%', '/([a-zA-Z])/u');
-        $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($thisQuery)->get()->all());
+        $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->withTitle($thisQuery)->get()->all());
       }
     }
 

@@ -56,9 +56,9 @@ class MyAnimeList
    *
    * @return array
    */
-  public static function search($query, $limit) {
+  public static function search($query) {
     $page = Downloaders::downloadPage('https://myanimelist.net/anime.php?q='.str_replace(' ', '+', $query).'&type=0&score=0&status=0&p=0&r=0&sm=0&sd=0&sy=0&em=0&ed=0&ey=0&c[]=a&c[]=b&c[]=d&c[]=e&gx=1&genre[]=12');
-    $shows = array_slice(Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
+    $shows = Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
       'mal_id' => [true, 'https://myanimelist.net/anime/', '/'],
       'thumbnail_id' => [false, '/images/anime/', '?'],
       'title' => [false, '<strong>', '</strong>'],
@@ -66,28 +66,34 @@ class MyAnimeList
       'type' => [false, 'width="45">', '</td>'],
       'episode_amount' => [false, 'width="40">', '</td>'],
       'airing' => [false, 'width="80">', ''],
-    ]), 0, $limit);
+    ]);
 
     $results = [];
     foreach ($shows as $show) {
       if (trim($show['type']) !== 'Music') {
         $result = new \stdClass();
         $result->mal = true;
+
         $result->mal_id = $show['mal_id'];
+        $result->details_url = 'https://myanimelist.net/anime/'.$show['mal_id'];
         $result->title = $show['title'];
+
         $result->type = strtolower(trim($show['type']));
         if ($result->type === '-') {
           $result->type = null;
         }
+
         $result->episode_amount = trim($show['episode_amount']);
         if ($result->episode_amount === '-') {
           $result->episode_amount = null;
         }
+
         if (str_contains($show['description'], '</a>')) {
           $result->description = str_get_between($show['description'], '', '<a');
         } else {
           $result->description = $show['description'];
         }
+
         $airing = explode('</td>', $show['airing']);
         $result->airing_start = Self::convertSearchAiringToCarbon(trim($airing[0]));
         $result->airing_end = Self::convertSearchAiringToCarbon(trim(str_get_between($airing[1], 'width="80">')));
@@ -97,7 +103,7 @@ class MyAnimeList
         } else {
           $result->thumbnail_url = 'TODO';
         }
-        $result->details_url = 'https://myanimelist.net/anime/'.$show['mal_id'];
+
         $results[] = $result;
       }
     }

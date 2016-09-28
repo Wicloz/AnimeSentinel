@@ -1,0 +1,65 @@
+// main: app.scss
+@import 'vars';
+
+// Bigrow //
+.bigrow-item {
+  background-color: $background_colour-content_main;
+  margin-bottom: 15px;
+  padding: 15px;
+
+  > .row > .col-sm-2 {
+    margin-bottom: 15px;
+  }
+  @media (min-width: 768px) {
+    > .row > .col-sm-2 {
+      margin-bottom: 0px;
+      padding-right: 0px;
+    }
+  }
+
+  .bigrow-thumbnail {
+    width: 100%;
+  }
+
+  .bigrow-title {
+    background-color: $background_colour-content_header;
+    font-size: 24px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+  }
+
+  .bigrow-description {
+    margin-bottom: 10px;
+    padding: 0px 6px;
+    margin-top: -3px;
+    > .toggle {
+      text-align: center;
+      margin-bottom: 5px;
+      margin-top: -5px;
+    }
+  }
+
+  .bigrow-description-top {
+    position: absolute;
+  }
+
+  .bigrow-details {
+    background-color: $background_colour-content_header;
+    padding: 5px 10px 1px;
+    margin-bottom: 10px;
+    p {
+      margin-bottom: 5px;
+    }
+  }
+
+  .bigrow-bottombar {
+    background-color: $background_colour-content_header;
+    padding: 5px 10px;
+    font-size: 16px;
+
+    button {
+      padding: 0px 5px;
+      margin-top: -3px;
+    }
+  }
+}

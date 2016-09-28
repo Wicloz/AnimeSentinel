@@ -17,9 +17,8 @@
 
       <!-- Left Side Of Navbar -->
       <ul class="nav navbar-nav">
-        <li {{ request()->is('anime/recent/*') ? 'class=active' : '' }}><a href="{{ fullUrl('/anime/recent') }}">Recently Uploaded</a></li>
-        <li {{ request()->is('anime/search') ? 'class=active' : '' }}><a href="{{ fullUrl('/anime/search') }}">Search Anime</a></li>
-        <li {{ request()->is('anime') || (request()->is('anime/*') && !request()->is('anime/recent/*') && !request()->is('anime/search')) ? 'class=active' : '' }}><a href="{{ fullUrl('/anime') }}">Browse Anime</a></li>
+        <li {{ request()->is('anime/browse') || (request()->is('anime/*') && !request()->is('anime/recent') && !request()->is('anime/overview')) ? 'class=active' : '' }}><a href="{{ fullUrl('/anime/browse') }}">Search Anime</a></li>
+        <li {{ request()->is('anime/recent') ? 'class=active' : '' }}><a href="{{ fullUrl('/anime/recent') }}">Recently Uploaded</a></li>
         <li {{ request()->is('streamers') || request()->is('streamers/*') ? 'class=active' : '' }}><a href="{{ fullUrl('/streamers') }}">Browse Streaming Sites</a></li>
         <li {{ request()->is('about') ? 'class=active' : '' }}><a href="{{ fullUrl('/about') }}">About</a></li>
         <li {{ request()->is('news') ? 'class=active' : '' }}><a href="{{ fullUrl('/news') }}">News</a></li>
@@ -36,7 +35,7 @@
               {{ Auth::user()->username }} <span class="caret"></span>
             </a>
             <ul class="dropdown-menu" role="menu">
-              <li {{ request()->is('dashboard') ? 'class=active' : '' }}><a href="{{ fullUrl('/dashboard') }}">Your Anime Overview</a></li>
+              <li {{ request()->is('anime/overview') ? 'class=active' : '' }}><a href="{{ fullUrl('/anime/overview') }}">Your Anime Overview</a></li>
               <li {{ request()->is('user/settings') ? 'class=active' : '' }}><a href="{{ fullUrl('/user/settings') }}">General Settings</a></li>
               <li {{ request()->is('user/notifications/mail') ? 'class=active' : '' }}><a href="{{ fullUrl('/user/notifications/mail') }}">Mail Notification Settings</a></li>
               <li {{ request()->is('user/settings/css') ? 'class=active' : '' }}><a href="{{ fullUrl('/user/settings/css') }}">Customize CSS</a></li>

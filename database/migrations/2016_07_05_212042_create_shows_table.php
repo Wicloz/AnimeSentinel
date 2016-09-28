@@ -16,10 +16,13 @@ class CreateShowsTable extends Migration
         Schema::create('shows', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('mal_id')->unsigned()->nullable()->default(null)->unique();
+
             $table->string('thumbnail_id')->nullable()->default(null);
+
             $table->string('title');
             $table->string('alts', 4096)->default('[]');
             $table->text('description')->default('');
+
             $table->enum('type', [
               'tv',
               'ova',
@@ -32,9 +35,12 @@ class CreateShowsTable extends Migration
             $table->integer('episode_duration')->nullable()->default(null);
             $table->date('airing_start')->nullable()->default(null);
             $table->date('airing_end')->nullable()->default(null);
+            $table->string('season')->nullable()->default(null);
+
             $table->bigInteger('hits')->default(0);
             $table->boolean('videos_initialised')->default(false);
             $table->dateTime('cache_updated_at')->nullable()->default(null);
+
             $table->timestamps();
         });
     }

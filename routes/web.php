@@ -27,11 +27,8 @@ Route::get('/streamers', 'StreamersController@list'); //TODO
 Route::get('/streamers/{streamer}', 'StreamersController@details'); //TODO
 
 // Anime Listings
-Route::get('/anime', 'AnimeController@list');
+Route::get('/anime/browse', 'AnimeController@search');
 Route::get('/anime/recent', 'AnimeController@recent');
-Route::get('/anime/recent/list', 'AnimeController@recentList');
-Route::get('/anime/recent/grid', 'AnimeController@recentGrid');
-Route::get('/anime/search', 'AnimeController@search');
 
 // Anime Details
 Route::get('/anime/{show}/{title?}', 'ShowController@details');
@@ -45,7 +42,7 @@ Route::get('/stream/{video}/video', 'EpisodeController@static');
 Route::post('/anime/add', 'PostController@showAdd');
 
 // Profile Pages
-Route::get('/dashboard', 'UserController@overview'); //TODO
+Route::get('/anime/overview', 'UserController@overview'); //TODO
 Route::get('/user/settings', 'UserController@settings_general');
 Route::get('/user/notifications/mail', 'UserController@settings_nots_mail');
 
