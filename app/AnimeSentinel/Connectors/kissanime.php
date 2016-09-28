@@ -168,7 +168,7 @@ class kissanime extends BaseConnector
           $episode_num = 1;
         }
         // Strip numbers from the start of the text and trim, set that as the notes
-        $notes = trim(preg_replace('/^[0-9]+/u', '', $text));
+        $notes = trim(preg_replace('/^[0-9.]+/u', '', $text));
       }
 
       else {

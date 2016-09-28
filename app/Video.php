@@ -224,12 +224,15 @@ class Video extends BaseModel
   * @return string
   */
   public function getPreEpisodeUrlAttribute() {
-    // TODO: fix when episodes don't differ by a simple 1
-    $episode = Self::where('show_id', $this->show_id)->episode($this->translation_type, $this->episode_num - 1)->first();
-    if (!empty($episode)) {
-      $episode = $episode->episode_url;
+    $episodes = Self::where('show_id', $this->show_id)->where('translation_type', $this->translation_type)
+                      ->distinctOn('episode_num')->orderBy('episode_num')->get();
+    $thisKey = $episodes->where('episode_num', $this->episode_num)->keys()->first();
+
+    if (isset($episodes[$thisKey - 1])) {
+      return $episodes[$thisKey - 1]->episode_url;
+    } else {
+      return null;
     }
-    return $episode;
   }
 
   /**
@@ -238,12 +241,15 @@ class Video extends BaseModel
   * @return string
   */
   public function getNextEpisodeUrlAttribute() {
-    // TODO: fix when episodes don't differ by a simple 1
-    $episode = Self::where('show_id', $this->show_id)->episode($this->translation_type, $this->episode_num + 1)->first();
-    if (!empty($episode)) {
-      $episode = $episode->episode_url;
+    $episodes = Self::where('show_id', $this->show_id)->where('translation_type', $this->translation_type)
+                      ->distinctOn('episode_num')->orderBy('episode_num')->get();
+    $thisKey = $episodes->where('episode_num', $this->episode_num)->keys()->first();
+
+    if (isset($episodes[$thisKey + 1])) {
+      return $episodes[$thisKey + 1]->episode_url;
+    } else {
+      return null;
     }
-    return $episode;
   }
 
   /**

@@ -146,7 +146,7 @@ class BaseConnector
       if (empty($episode)) {
         unset($episodes[$index]);
       } else {
-        $episode['episode_num'] = (int) $episode['episode_num'];
+        $episode['episode_num'] = (double) $episode['episode_num'];
         $episodes[$index] = $episode;
       }
     }
@@ -220,7 +220,7 @@ class BaseConnector
     // Complete found data
     foreach ($data as $index => $element) {
       $data[$index] = Static::completeRecentData($element);
-      $data[$index]['episode_num'] = (int) $data[$index]['episode_num'];
+      $data[$index]['episode_num'] = (double) $data[$index]['episode_num'];
     }
 
     // If this streamer uses decrements, find and apply them
