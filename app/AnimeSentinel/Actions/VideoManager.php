@@ -33,8 +33,24 @@ class VideoManager
    */
   public static function findVideoLink($video) {
     $class = '\\App\\AnimeSentinel\\Connectors\\'.$video->streamer_id;
-    $mirrors = collect($class::findMirrors($video->link_episode));
-    $mirror = $mirrors->where('mirror_id', $video->mirror_id)->first();
+
+    try {
+      $mirrors = collect($class::findMirrors($video->link_episode));
+      $mirror = $mirrors->where('mirror_id', $video->mirror_id)->first();
+    } catch (Exception $e) {
+      queueJob(new \App\Jobs\VideoRefreshLink($video), 'low');
+      $mirror = null;
+      mailException('Failed to find a video link', $e, [
+        'Video Id' => $video->id,
+        'Show Title' => $video->show()->title,
+        'Show Id' => $video->show_id,
+        'Translation Type' => $video->translation_type,
+        'Episode Number' => $video->episode_num,
+        'Streamer Id' => $video->streamer_id,
+        'Mirror Number' => $video->mirror,
+      ]);
+    }
+
     if (isset($mirror)) {
       return $mirror['link_video'];
     } else {

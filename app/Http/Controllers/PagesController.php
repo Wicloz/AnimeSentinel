@@ -17,12 +17,21 @@ class PagesController extends Controller
   }
 
   /**
-   * Show the page with MAL infromation.
+   * Show the page with MAL information.
    *
    * @return \Illuminate\Http\Response
    */
   public function about_mal() {
     return view('information.mal');
+  }
+
+  /**
+   * Show the page with information about broken links.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function about_broken() {
+    return view('information.broken');
   }
 
   /**
