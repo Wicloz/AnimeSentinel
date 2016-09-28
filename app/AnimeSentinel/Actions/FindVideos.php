@@ -34,7 +34,7 @@ class FindVideos
       try {
         $videosFound += $class::findVideosForShow($show);
       } catch (Exception $e) {
-        queueJob(new \App\Jobs\AnimeReprocessEpisode($show, ['sub', 'dub'], null, $streamer->id));
+        queueJob(new \App\Jobs\AnimeReprocessEpisodes($show, ['sub', 'dub'], null, $streamer->id));
         mailException('Failed to find videos for show', $e, [
           'Show Title' => $show->title,
           'Show Id' => $show->id,
@@ -58,10 +58,10 @@ class FindVideos
   /**
    * Removes and adds all videos for the requested show and episode.
    */
-  public static function reprocessEpsiode($show, $translation_types, $episode_num = null, $streamer_id = null, $fromJob = false) {
+  public static function reprocessEpsiodes($show, $translation_types = ['sub', 'dub'], $episode_num = null, $streamer_id = null, $fromJob = false) {
     // Handle job related tasks
     $jobShowId = $show->mal_id !== null ? $show->mal_id : $show->title;
-    if (!handleJobFunction('AnimeReprocessEpisode', $jobShowId, [
+    if (!handleJobFunction('AnimeReprocessEpisodes', $jobShowId, [
       'translation_types' => $translation_types,
       'episode_num' => $episode_num,
       'streamer_id' => $streamer_id,
@@ -71,13 +71,12 @@ class FindVideos
     $show->videos_initialised = false;
     $show->save();
     // Remove all existing videos for this episode
-    Video::where();
-    foreach ($translation_types as $translation_type) {
-      if ($streamer_id === null) {
-        $show->videos()->episode($translation_type, $episode_num)->delete();
-      } else {
-        $show->videos()->episode($translation_type, $episode_num)->where('streamer_id', $streamer_id)->delete();
-      }
+    $query = Video::where('show_id', $show->id)->whereIn('translation_type', $translation_types);
+    if ($episode_num !== null) {
+      $query = $query->where('episode_num', $episode_num);
+    }
+    if ($streamer_id !== null) {
+      $query = $query->where('streamer_id', $streamer_id);
     }
 
     // Grab all streamers data
@@ -94,7 +93,7 @@ class FindVideos
       try {
         $videosFound += $class::findVideosForShow($show, $translation_types, $episode_num);
       } catch (Exception $e) {
-        queueJob(new \App\Jobs\AnimeReprocessEpisode($show, $translation_types, $episode_num, $streamer->id));
+        queueJob(new \App\Jobs\AnimeReprocessEpisodes($show, $translation_types, $episode_num, $streamer->id));
         mailException('Failed to find videos for show episode', $e, [
           'Show Title' => $show->title,
           'Show Id' => $show->id,

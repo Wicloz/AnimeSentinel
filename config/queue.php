@@ -97,7 +97,7 @@ return [
       'ShowUpdate(true)',
       [
         'AnimeFindVideos',
-        ['AnimeReprocessEpisode'],
+        ['AnimeReprocessEpisodes'],
         ['VideoRefreshLink'],
       ],
       [
