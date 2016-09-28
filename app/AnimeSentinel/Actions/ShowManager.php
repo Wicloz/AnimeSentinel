@@ -98,17 +98,16 @@ class ShowManager
     $show = Show::find($show_id);
     // Handle job related tasks
     $jobShowId = $show->mal_id !== null ? $show->mal_id : $show->title;
-    if (!handleJobFunction('ShowUpdate', $jobShowId, null, $fromJob)) return Show::find($show_id);
+    $mode = $episodes ? 'true' : 'false';
+    if (!handleJobFunction('ShowUpdate('.$mode.')', $jobShowId, null, $fromJob)) return Show::find($show_id);
 
     // If the mal id is not known yet, try to find it first
     if (!isset($show->mal_id)) {
       $mal_id = MyAnimeList::getMalIdForTitle($show->title);
       if (isset($mal_id)) {
-        $otherShow = Show::where('mal_id', $mal_id)->first();
-        if (!empty($otherShow)) {
-          $show->delete();
-          $show = $otherShow;
-        }
+        // Remove all other shows with this mal id
+        Show::where('id', '!=', $show->id)->where('mal_id', $mal_id)->delete();
+        // Update this show
         $show->update(MyAnimeList::getAnimeData($mal_id));
         Self::updateThumbnail($show);
         $episodes = true;
