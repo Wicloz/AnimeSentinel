@@ -18,45 +18,11 @@ class FindVideos
     $jobShowId = $show->mal_id !== null ? $show->mal_id : $show->title;
     if (!handleJobFunction('AnimeFindVideos', $jobShowId, null, $fromJob)) return;
 
-    // Mark show as not initialised
-    $show->videos_initialised = false;
-    $show->save();
-    // Remove all existing videos for this show
-    $show->videos()->delete();
-
-    // Grab all streamers data
-    $streamers = Streamer::all();
-
-    // Find and save videos for each streamer
-    $videosFound = 0;
-    foreach ($streamers as $streamer) {
-      $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
-      try {
-        $videosFound += $class::findVideosForShow($show);
-      } catch (Exception $e) {
-        queueJob(new \App\Jobs\AnimeReprocessEpisodes($show, ['sub', 'dub'], null, $streamer->id));
-        mailException('Failed to find videos for show', $e, [
-          'Show Title' => $show->title,
-          'Show Id' => $show->id,
-          'Ran From a Job' => $fromJob ? 'Yes' : 'No',
-        ]);
-      }
-    }
-
-    // Mark show as initialised
-    $show->videos_initialised = true;
-    $show->save();
-
-    // Mail an anomaly report if no videos were found
-    if ($videosFound <= 0) {
-      mailAnomaly($show, 'Could not find any videos when searching for all videos.', [
-        'Ran From a Job' => $fromJob ? 'Yes' : 'No',
-      ]);
-    }
+    Self::reprocessEpsiodes($show, ['sub', 'dub'], null, null, $fromJob);
   }
 
   /**
-   * Removes and adds all videos for the requested show and episode.
+   * Removes and adds all videos for the requested show, episode and streamer.
    */
   public static function reprocessEpsiodes($show, $translation_types = ['sub', 'dub'], $episode_num = null, $streamer_id = null, $fromJob = false) {
     // Handle job related tasks
@@ -78,6 +44,7 @@ class FindVideos
     if ($streamer_id !== null) {
       $query = $query->where('streamer_id', $streamer_id);
     }
+    $query->delete();
 
     // Grab all streamers data
     if ($streamer_id === null) {
@@ -97,9 +64,9 @@ class FindVideos
         mailException('Failed to find videos for show episode', $e, [
           'Show Title' => $show->title,
           'Show Id' => $show->id,
+          'Streaming Site' => $streamer->id,
           'Translation Types' => json_encode($translation_types),
           'Epsiode Number' => isset($episode_num) ? $episode_num : 'NA',
-          'Streaming Site' => isset($streamer_id) ? $streamer_id : 'NA',
           'Ran From a Job' => $fromJob ? 'Yes' : 'No',
         ]);
       }
