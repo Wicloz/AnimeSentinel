@@ -34,9 +34,9 @@ class VideoManager
   public static function findVideoLink($video) {
     $class = '\\App\\AnimeSentinel\\Connectors\\'.$video->streamer_id;
     $mirrors = collect($class::findMirrors($video->link_episode));
-    $mirror = $mirrors->where('mirror_id', $video->mirror_id);
+    $mirror = $mirrors->where('mirror_id', $video->mirror_id)->first();
     if (isset($mirror)) {
-      return $mirror->video_link;
+      return $mirror['link_video'];
     } else {
       return '';
     }
