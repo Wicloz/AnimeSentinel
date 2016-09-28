@@ -26,7 +26,15 @@
   <div class="content-generic">
     <div class="streamplayer">
       <div style="padding-top:{{ $video->video_aspect * 100 }}%;"></div>
-      @if($video->player_support)
+      @if($video->encoding === 'broken')
+        <div class="streamplayer-video streamplayer-broken">
+          <a href="{{ fullUrl('/about/broken') }}">
+            <p class="streamplayer-broken-text">
+              This video appears to be unreachable right now, please try another mirror or try again later.
+            </p>
+          </a>
+        </div>
+      @elseif($video->player_support)
         <video class="streamplayer-video" controls>
           <source src="{{ $video->link_video }}" type="{{ $video->encoding }}">
           <source src="{{ $video->link_video }}" type="video/mp4">

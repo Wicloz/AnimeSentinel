@@ -39,3 +39,16 @@
 	right: 0;
   border: none;
 }
+
+.streamplayer-broken {
+  background-image: url(/media/backgrounds/broken.png);
+  background-size: cover;
+}
+
+.streamplayer-broken-text {
+  color: red;
+  font-size: 24px;
+  margin-top: 10%;
+  text-align: center;
+  background-color: $background_colour-content_header;
+}
