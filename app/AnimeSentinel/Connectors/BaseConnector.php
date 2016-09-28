@@ -88,7 +88,6 @@ class BaseConnector
 
     // Find all stream pages
     $streamPages = Static::findStreamPages($show);
-    // dd($streamPages);
 
     foreach ($streamPages as $streamPage) {
       // If the stream page has the requested translation type
@@ -96,15 +95,13 @@ class BaseConnector
 
         // Find all episodes
         $episodes = Static::findEpisodes($streamPage['page']);
-        // dd($episodes);
 
-        foreach ($episodes as $episode) {
+        foreach (array_reverse($episodes) as $episode) {
           // If this is the requested episode
           if ($req_episode_num === null || $episode['episode_num'] === $req_episode_num) {
 
             // Find all mirrors
             $mirrors = Static::findMirrors($episode['link_episode']);
-            // dd($mirrors);
 
             foreach ($mirrors as $mirror) {
               // Create the video
@@ -115,8 +112,6 @@ class BaseConnector
               }
               $video->show_id = $show->id;
               $video->streamer_id = str_get_between(Static::class, '\\', '', true);
-
-              // dd($video);
 
               // Save the video
               VideoManager::saveVideos($video);

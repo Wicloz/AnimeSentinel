@@ -143,10 +143,9 @@ class kissanime extends BaseConnector
     }
 
     else {
-      if (!str_starts_with($text, '_Special ') && !str_starts_with($text, '_Specail ') && !str_starts_with($text, '_OVA ')) {
-        // Strip '_' and type names from the start of the text, followed by trimming
+      if (!str_starts_with($text, '_')) {
+        // Strip type names from the start of the text, followed by trimming
         $remove = [
-          '_',
           'Episode',
           'Movie',
           'Special',
@@ -173,9 +172,9 @@ class kissanime extends BaseConnector
       }
 
       else {
-        // Handle numbered specials
+        // Handle numbered specials etc.
         $episode_num = -99;
-        $notes = trim($text);
+        $notes = str_replace_first('_', '', trim($text));
       }
 
       return $notes;
