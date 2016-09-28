@@ -81,7 +81,7 @@ class Show extends BaseModel
   public function scopeWithTitle($query, $title, $allowPartial = false) {
     // fuzz title
     $title = str_fuzz($title, false);
-    // allow matching of ' and ', ' to ' and '&' to each other
+    // allow matching of ' and ', ' to ', ' und ' and '&' to each other
     // allow matching of ': ' to ' '
     $title = str_replace(': ', '% ', str_replace('&', '%', $title));
     // allow case insensitive matching of greek characters

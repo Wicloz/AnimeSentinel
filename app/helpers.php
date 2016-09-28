@@ -190,6 +190,7 @@ function str_fuzz($string, $removeColon = true) {
   $replace = [
     ' and ' => '&',
     ' to ' => '&',
+    ' und ' => '&',
     ' & ' => '&',
   ];
 
