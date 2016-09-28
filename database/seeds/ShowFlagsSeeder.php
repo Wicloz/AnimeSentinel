@@ -129,5 +129,12 @@ class ShowFlagsSeeder extends Seeder
       "Gintama: Aizome Kaori-hen" => "+",
     ];
     $gintamaaizomekaorihen->save();
+
+    $summer = ShowFlag::findOrNew(1692);
+    $summer->mal_id = 1692;
+    $summer->alt_rules = [
+      "Summer OVA" => "+",
+    ];
+    $summer->save();
   }
 }

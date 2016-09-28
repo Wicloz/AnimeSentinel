@@ -17,7 +17,7 @@ class animeshow extends BaseConnector
     foreach ($show->alts as $alt) {
       $url = Static::$page_main.'/'.str_to_url($alt);
       $page = Downloaders::downloadPage($url);
-      if (str_contains($page, 'episodes online in high quality with professional English subtitles on AnimeShow.tv"/>')) {
+      if (!str_contains($page, Static::$ide_invalidPage)) {
         return [[
           'translation_type' => 'all',
           'link_stream' => $url,
