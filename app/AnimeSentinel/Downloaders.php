@@ -15,7 +15,7 @@ class Downloaders
     }, $url);
 
     if ($tries > 7) {
-      throw new \Exception('Downloading of the page at '.$url.' failed after 8 tries.');
+      throw new \Exception('Download Failed: '.$url.' after 8 tries');
     }
 
     if (str_contains($url, 'kissanime.to')) {
@@ -52,7 +52,7 @@ class Downloaders
         });
       }
       elseif (str_contains($url, 'kissanime.to')) {
-        throw new \Exception('Downloading of the page at '.$url.' failed because it is locked by a ReCaptcha.');
+        throw new \Exception('Download Failed: '.$url.' is locked by a ReCaptcha');
       }
     }
 
