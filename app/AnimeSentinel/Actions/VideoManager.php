@@ -42,7 +42,7 @@ class VideoManager
       $mirror = null;
       mailException('Failed to find a video link', $e, [
         'Video Id' => $video->id,
-        'Show Title' => $video->show()->title,
+        'Show Title' => $video->show->title,
         'Show Id' => $video->show_id,
         'Translation Type' => $video->translation_type,
         'Episode Number' => $video->episode_num,

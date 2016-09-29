@@ -14,8 +14,8 @@ class Downloaders
       return urlencode($matches[1]);
     }, $url);
 
-    if ($tries > 9) {
-      throw new \Exception('Downloading of the page at '.$url.' failed after 10 tries.');
+    if ($tries > 7) {
+      throw new \Exception('Downloading of the page at '.$url.' failed after 8 tries.');
     }
 
     if (str_contains($url, 'kissanime.to')) {
@@ -39,6 +39,21 @@ class Downloaders
       curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
       $response = htmlentities_decode(curl_exec($curl));
       curl_close($curl);
+    }
+
+    if (str_contains($response, 'https://www.google.com/recaptcha/api.js')) {
+      if ($tries === 0) {
+        \Mail::send('emails.reports.general', ['description' => 'ReCaptcha Detected', 'vars' => [
+          'Url' => $url,
+        ]], function ($m) {
+          $m->subject('AnimeSentinel Detected ReCaptcha');
+          $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
+          $m->to('animesentinel@wilcodeboer.me');
+        });
+      }
+      elseif (str_contains($url, 'kissanime.to')) {
+        throw new \Exception('Downloading of the page at '.$url.' failed because it is locked by a ReCaptcha.');
+      }
     }
 
     if (empty($response) || $response === 'The service is unavailable.' || str_contains($response, '500 - Internal server error.')) {
@@ -100,15 +115,6 @@ class Downloaders
       return Self::downloadPage($url, $tries + 1);
     }
 
-    if ($tries === 0 && str_contains($response, 'https://www.google.com/recaptcha/api.js')) {
-      \Mail::send('emails.reports.general', ['description' => 'ReCaptcha Detected', 'vars' => [
-        'Url' => $url,
-      ]], function ($m) {
-        $m->subject('AnimeSentinel Detected ReCaptcha');
-        $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
-        $m->to('animesentinel@wilcodeboer.me');
-      });
-    }
     if (str_contains(preg_replace('/\s+/', '', $response), '<title>AreYouHuman</title>')) {
       exec('xvfb-run python "'. app_path('AnimeSentinel/Python/ReCaptcha.py') .'" "'. $url .'" "1" "3" "btnSubmit" "'. $cf_data->agent .'" 2> /dev/null');
       return Self::downloadPage($url, $tries + 1);
