@@ -24,21 +24,10 @@
   <div class="welcome-content-wrapper">
     <div class="content-header">Random Anime</div>
     @if(!empty($random))
-      @include('components.synopsis', [
-        'syn_mal' => false,
-        'syn_show' => $random,
-        'syn_unique' => 'random-'.$random->id,
+      @include('components.listitems.bigrow', [
+        'isMal' => !empty($random->mal),
+        'show' => $random,
       ])
     @endif
-
-    <div class="content-header">Recently Uploaded</div>
-    @foreach($recent as $video)
-      @include('components.synopsis', [
-        'syn_mal' => false,
-        'syn_show' => $video->show,
-        'syn_unique' => $video->show->id.'-'.$video->translation_type.'-'.$video->episode_num,
-        'syn_video' => $video,
-      ])
-    @endforeach
   </div>
 @endsection
