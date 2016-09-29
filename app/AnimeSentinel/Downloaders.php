@@ -56,6 +56,11 @@ class Downloaders
       }
     }
 
+    if (str_contains($url, 'kissanime.to') && str_contains(preg_replace('/\s+/', '', $response), '<title>AreYouHuman</title>')) {
+      exec('xvfb-run python "'. app_path('AnimeSentinel/Python/ReCaptcha.py') .'" "'. $url .'" "1" "3" "btnSubmit" "'. $cf_data->agent .'" 2> /dev/null');
+      $response = Self::downloadPage($url, $tries + 1);
+    }
+
     if (empty($response) || $response === 'The service is unavailable.' || str_contains($response, '500 - Internal server error.')) {
       $response = Self::downloadPage($url, $tries + 1);
     }
@@ -112,11 +117,6 @@ class Downloaders
 
     if (str_contains($response, '<title>Please wait 5 seconds...</title>')) {
       Self::requestCloudFlareData($url, $cookieid);
-      return Self::downloadPage($url, $tries + 1);
-    }
-
-    if (str_contains(preg_replace('/\s+/', '', $response), '<title>AreYouHuman</title>')) {
-      exec('xvfb-run python "'. app_path('AnimeSentinel/Python/ReCaptcha.py') .'" "'. $url .'" "1" "3" "btnSubmit" "'. $cf_data->agent .'" 2> /dev/null');
       return Self::downloadPage($url, $tries + 1);
     }
 
