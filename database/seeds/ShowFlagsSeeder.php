@@ -136,5 +136,12 @@ class ShowFlagsSeeder extends Seeder
       "Summer OVA" => "+",
     ];
     $summer->save();
+
+    $kaijuugirls = ShowFlag::findOrNew(33011);
+    $kaijuugirls->mal_id = 33011;
+    $kaijuugirls->alt_rules = [
+      "Kaijuu Girls" => "+",
+    ];
+    $kaijuugirls->save();
   }
 }

@@ -39,7 +39,7 @@ class UserPeriodicTasks implements ShouldQueue
       foreach ($users as $user) {
         try {
           $user->periodicTasks();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
           mailException('Failed to perform periodic tasks for a user', $e, [
             'Username' => $user->username,
             'Email' => $user->email,

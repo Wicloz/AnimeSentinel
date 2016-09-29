@@ -21,7 +21,7 @@ class PeriodicTasks
       $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
       try {
         $data = $class::findRecentlyAired();
-      } catch (Exception $e) {
+      } catch (\Exception $e) {
         $data = [];
         mailException('Failed to find recently aired anime', $e, [
           'Streamer Id' => $streamer->id,

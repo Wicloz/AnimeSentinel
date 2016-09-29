@@ -26,7 +26,7 @@ trait HasCompositePrimaryKey
       if ($this->$key)
         $query->where($key, '=', $this->$key);
       else
-        throw new Exception(__METHOD__ . 'Missing part of the primary key: ' . $key);
+        throw new \Exception(__METHOD__ . 'Missing part of the primary key: ' . $key);
     }
 
     return $query;

@@ -59,7 +59,7 @@ class FindVideos
       $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
       try {
         $videosFound += $class::findVideosForShow($show, $translation_types, $episode_num);
-      } catch (Exception $e) {
+      } catch (\Exception $e) {
         queueJob(new \App\Jobs\AnimeReprocessEpisodes($show, $translation_types, $episode_num, $streamer->id));
         mailException('Failed to find videos for show episode', $e, [
           'Show Title' => $show->title,

@@ -37,7 +37,7 @@ class VideoManager
     try {
       $mirrors = collect($class::findMirrors($video->link_episode));
       $mirror = $mirrors->where('mirror_id', $video->mirror_id)->first();
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
       queueJob(new \App\Jobs\VideoRefreshLink($video), 'low');
       $mirror = null;
       mailException('Failed to find a video link', $e, [
