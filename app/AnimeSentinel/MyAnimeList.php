@@ -173,19 +173,19 @@ class MyAnimeList
       }
     }
 
-    $amount = str_get_between($page, '<span class="dark_text">Episodes:</span>', '</div>');
-    settype($amount, 'int');
-    if ($amount === 0) $amount = null;
+    $episode_amount = str_get_between($page, '<span class="dark_text">Episodes:</span>', '</div>');
+    settype($episode_amount, 'int');
+    if ($episode_amount === 0) $episode_amount = null;
 
     $durations = explode('hr.', trim(str_get_between($page, '<span class="dark_text">Duration:</span>', '</div>')));
-    $duration = 0;
+    $episode_duration = 0;
     if (count($durations) === 1) {
-      $duration += $durations[0];
+      $episode_duration += $durations[0];
     } else if (count($durations) === 2) {
-      $duration += $durations[0] * 60;
-      $duration += $durations[1];
+      $episode_duration += $durations[0] * 60;
+      $episode_duration += $durations[1];
     }
-    if ($duration === 0) $duration = null;
+    if ($episode_duration === 0) $episode_duration = null;
 
     $genres = [];
     $set = explode('</a>', str_get_between($page, '<span class="dark_text">Genres:</span>', '</div>'));
@@ -220,6 +220,8 @@ class MyAnimeList
 
     $type = strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'), '>')));
 
+    $season = strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Premiered:</span>', '</a>'), '>')));
+
     return [
       'mal_id' => $mal_id,
       'thumbnail_id' => $thumbnail_id,
@@ -228,10 +230,11 @@ class MyAnimeList
       'description' => $description,
       'type' => !empty($type) ? $type : null,
       'genres' => $genres,
-      'episode_amount' => $amount,
-      'episode_duration' => $duration,
+      'episode_amount' => $episode_amount,
+      'episode_duration' => $episode_duration,
       'airing_start' => $airing_start,
       'airing_end' => $airing_end,
+      'season' => !empty($season) ? $season : null,
     ];
   }
 

@@ -45,6 +45,12 @@
       {{ !empty($details->airing_start) ? $details->airing_start->toFormattedDateString() : '?' }} to {{ !empty($details->airing_end) ? $details->airing_end->toFormattedDateString() : '?' }}
     @endif
   </p>
+  @if(!empty($details->season))
+    <p>
+      <strong>Season:</strong>
+      {{ ucwords($details->season) }}
+    </p>
+  @endif
   <div class="content-close"></div>
 </div>
 
