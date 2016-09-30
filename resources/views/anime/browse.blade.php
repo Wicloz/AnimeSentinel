@@ -23,6 +23,26 @@
   <div class="content-generic content-dark">
       @yield('form-left')
 
+      <div class="form-group" id="search-streamers">
+        <label for="search-streamers">Streamers:</label>
+
+        <input type="hidden" name="streamer-tv" value="off">
+        <input type="hidden" name="streamer-ova" value="off">
+
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="streamer-animeshow" {{ request('streamer-animeshow') !== 'off' ? 'checked' : '' }}>
+            AnimeShow.tv
+          </label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="streamer-kissanime" {{ request('streamer-kissanime') !== 'off' ? 'checked' : '' }}>
+            KissAnime
+          </label>
+        </div>
+      </div>
+
       <div class="form-group" id="search-types">
         <label for="search-types">Types:</label>
 
