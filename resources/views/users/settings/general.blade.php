@@ -132,7 +132,7 @@
       <div class="form-group {{ $errors->has('current_password') ? 'has-error' : '' }}">
         <label for="current_password" class="col-md-4 control-label">Current Password</label>
         <div class="col-md-6">
-          <input id="current_password" type="password" class="form-control" name="current_password">
+          <input id="current_password" type="password" class="form-control" name="current_password" required>
           @if ($errors->has('current_password'))
             <span class="help-block">
               <strong>{{ $errors->first('current_password') }}</strong>
@@ -144,7 +144,7 @@
       <div class="form-group {{ $errors->has('new_password') ? 'has-error' : '' }}">
         <label for="new_password" class="col-md-4 control-label">New Password</label>
         <div class="col-md-6">
-          <input id="new_password" type="password" class="form-control" name="new_password">
+          <input id="new_password" type="password" class="form-control" name="new_password" required>
           @if ($errors->has('new_password'))
             <span class="help-block">
               <strong>{{ $errors->first('new_password') }}</strong>
@@ -156,7 +156,7 @@
       <div class="form-group {{ $errors->has('new_password_confirmation') ? 'has-error' : '' }}">
         <label for="new_password-confirm" class="col-md-4 control-label">Confirm New Password</label>
         <div class="col-md-6">
-          <input id="new_password-confirm" type="password" class="form-control" name="new_password_confirmation">
+          <input id="new_password-confirm" type="password" class="form-control" name="new_password_confirmation" required>
           @if ($errors->has('new_password_confirmation'))
             <span class="help-block">
               <strong>{{ $errors->first('new_password_confirmation') }}</strong>
