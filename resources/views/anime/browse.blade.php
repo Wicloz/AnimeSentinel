@@ -26,18 +26,18 @@
       <div class="form-group" id="search-streamers">
         <label for="search-streamers">Streamers:</label>
 
-        <input type="hidden" name="streamer-tv" value="off">
-        <input type="hidden" name="streamer-ova" value="off">
+        <input type="hidden" name="streamer_tv" value="off">
+        <input type="hidden" name="streamer_ova" value="off">
 
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="streamer-animeshow" {{ request('streamer-animeshow') !== 'off' ? 'checked' : '' }}>
+            <input type="checkbox" name="streamer_animeshow" {{ request('streamer_animeshow') !== 'off' ? 'checked' : '' }}>
             AnimeShow.tv
           </label>
         </div>
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="streamer-kissanime" {{ request('streamer-kissanime') !== 'off' ? 'checked' : '' }}>
+            <input type="checkbox" name="streamer_kissanime" {{ request('streamer_kissanime') !== 'off' ? 'checked' : '' }}>
             KissAnime
           </label>
         </div>
@@ -46,39 +46,39 @@
       <div class="form-group" id="search-types">
         <label for="search-types">Types:</label>
 
-        <input type="hidden" name="type-tv" value="off">
-        <input type="hidden" name="type-ova" value="off">
-        <input type="hidden" name="type-ona" value="off">
-        <input type="hidden" name="type-movie" value="off">
-        <input type="hidden" name="type-special" value="off">
+        <input type="hidden" name="type_tv" value="off">
+        <input type="hidden" name="type_ova" value="off">
+        <input type="hidden" name="type_ona" value="off">
+        <input type="hidden" name="type_movie" value="off">
+        <input type="hidden" name="type_special" value="off">
 
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="type-tv" {{ request('type-tv') !== 'off' ? 'checked' : '' }}>
+            <input type="checkbox" name="type_tv" {{ request('type_tv') !== 'off' ? 'checked' : '' }}>
             Tv
           </label>
         </div>
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="type-ova" {{ request('type-ova') !== 'off' ? 'checked' : '' }}>
+            <input type="checkbox" name="type_ova" {{ request('type_ova') !== 'off' ? 'checked' : '' }}>
             Ova
           </label>
         </div>
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="type-ona" {{ request('type-ona') !== 'off' ? 'checked' : '' }}>
+            <input type="checkbox" name="type_ona" {{ request('type_ona') !== 'off' ? 'checked' : '' }}>
             Ona
           </label>
         </div>
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="type-movie" {{ request('type-movie') !== 'off' ? 'checked' : '' }}>
+            <input type="checkbox" name="type_movie" {{ request('type_movie') !== 'off' ? 'checked' : '' }}>
             Movie
           </label>
         </div>
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="type-special" {{ request('type-special') !== 'off' ? 'checked' : '' }}>
+            <input type="checkbox" name="type_special" {{ request('type_special') !== 'off' ? 'checked' : '' }}>
             Special
           </label>
         </div>

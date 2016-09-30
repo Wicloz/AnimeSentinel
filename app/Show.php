@@ -88,12 +88,14 @@ class Show extends BaseModel
     $title = preg_replace('/[α-ωΑ-Ω]/u', '\\u03__', $title);
     // encode to json, then escape all unescaped \'s
     $title = preg_replace('/([^\\\\])\\\\([^\\\\])/u', '$1\\\\\\\\$2', json_encode($title));
-    // return final query
-    if (!$allowPartial) {
-      return $query->whereLike('alts', '%'.$title.'%');
+    // create final query title
+    if ($allowPartial) {
+      $title = '%"%'.str_replace_last('"', '', str_replace_first('"', '', $title)).'%"%';
     } else {
-      return $query->whereLike('alts', '%"%'.str_replace_last('"', '', str_replace_first('"', '', $title)).'%"%');
+      $title = '%'.$title.'%';
     }
+    // return query
+    return $query->whereLike('alts', $title);
   }
 
   /**
@@ -101,37 +103,50 @@ class Show extends BaseModel
    *
    * @return array
    */
-  public static function search($query, $fill = false) {
+  public static function search($search, $start, $amount, $fill, $types) {
     $results = [];
-    $limit = 128;
+    $query = Self::orderBy('hits', 'desc')->skip($start)->take($amount);
 
-    // first match with full titles
-    $results = Self::orderBy('hits', 'desc')->take($limit)->withTitle($query)->get();
-    // match with partial titles
-    $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($query, true)->get()->all());
+    $query = $query->where(function($query) use ($search, $fill) {
+      // first match with full titles
+      $query->withTitle($search, false);
 
-    // match with partial titles, with non-alphanumeric characters ignored
-    $thisQuery = str_to_url($query, '%', '/[^a-zA-Z0-9]/u');
-    if (strlen(str_replace('%', '', $thisQuery)) >= 1) {
-      $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($thisQuery, true)->get()->all());
-    }
+      // match with partial titles
+      $query->orWhere(function ($query) use ($search) {
+        $query->withTitle($search, true);
+      });
 
-    // match with partial titles, with non-alphabetic characters ignored
-    $thisQuery = str_to_url($query, '%', '/[^a-zA-Z]/u');
-    if (strlen(str_replace('%', '', $thisQuery)) >= 1) {
-      $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($thisQuery, true)->get()->all());
-    }
-
-    if ($fill) {
-      // match any titles with the same letters in the same order, at any location
-      $thisQuery = str_to_url($query, '%', '/[^a-zA-Z]/u');
-      if (strlen(str_replace('%', '', $thisQuery)) >= 1) {
-        $thisQuery = '%'.str_to_url($thisQuery, '$1%', '/([a-zA-Z])/u');
-        $results = $results->merge(Self::orderBy('hits', 'desc')->whereNotIn('id', $results->pluck('id'))->take($limit - count($results))->withTitle($thisQuery)->get()->all());
+      // match with partial titles, with non-alphanumeric characters ignored
+      $thisSearch = str_to_url($search, '%', '/[^a-zA-Z0-9]/u');
+      if (strlen(str_replace('%', '', $thisSearch)) >= 1) {
+        $query->orWhere(function ($query) use ($thisSearch) {
+          $query->withTitle($thisSearch, true);
+        });
       }
-    }
 
-    return $results;
+      // match with partial titles, with non-alphabetic characters ignored
+      $thisSearch = str_to_url($search, '%', '/[^a-zA-Z]/u');
+      if (strlen(str_replace('%', '', $thisSearch)) >= 1) {
+        $query->orWhere(function ($query) use ($thisSearch) {
+          $query->withTitle($thisSearch, true);
+        });
+      }
+
+      if ($fill) {
+        // match any titles with the same letters in the same order, at any location
+        $thisSearch = str_to_url($search, '%', '/[^a-zA-Z]/u');
+        if (strlen(str_replace('%', '', $thisSearch)) >= 1) {
+          $thisSearch = '%'.str_to_url($thisSearch, '$1%', '/([a-zA-Z])/u');
+          $query->orWhere(function ($query) use ($thisSearch) {
+            $query->withTitle($thisSearch, false);
+          });
+        }
+      }
+    });
+
+    $query = $query->whereIn('type', $types);
+
+    return $query->get();
   }
 
   /**

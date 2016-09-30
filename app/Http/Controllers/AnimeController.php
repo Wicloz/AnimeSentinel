@@ -35,6 +35,23 @@ class AnimeController extends Controller
     ]);
   }
 
+  private function processRequest(Request & $request) {
+    $request->search = trim(mb_strtolower($request->q));
+    $this->validate($request, [
+      'search' => ['min:1', 'max:255']
+    ], [], [
+      'search' => 'query',
+    ]);
+
+    $request->types = collect([
+      'tv', 'ona', 'ova', 'movie', 'special',
+    ]);
+    $request->types = $request->types->filter(function ($value, $key) use ($request) {
+      $type = 'type_'.$value;
+      return $request->$type === 'on';
+    });
+  }
+
   /**
    * Find and show anime.
    *
@@ -42,26 +59,20 @@ class AnimeController extends Controller
    */
   public function search(Request $request) {
     $results = []; $shows = [];
+    $this->processRequest($request);
 
-    if (!empty($request->q)) {
-      $this->validate($request, [
-        'q' => ['min:1', 'max:255']
-      ], [], [
-        'q' => 'query'
-      ]);
-      $query = trim(mb_strtolower($request->q));
-
+    if (!empty($request->search)) {
       if ($request->source === 'mal') {
-        $shows = MalcacheSearch::search($query);
+        $shows = MalcacheSearch::search($request->search);
       }
 
       elseif ($request->source === 'as') {
-        $shows = Show::search($query, true);
+        $shows = Show::search($request->search, 0, 50, true, $request->types);
       }
 
       else {
-        $shows = Show::search($query);
-        $malShows = MalcacheSearch::search($query);
+        $shows = Show::search($request->search, 0, 50, false, $request->types);
+        $malShows = MalcacheSearch::search($request->search);
         $mal_ids = $shows->pluck('mal_id');
         foreach ($malShows as $malShow) {
           if (!$mal_ids->contains($malShow->mal_id)) {
@@ -97,21 +108,16 @@ class AnimeController extends Controller
    */
   public function recent(Request $request) {
     $results = [];
+    $this->processRequest($request);
+
     $getRecent = Video::where('encoding', '!=', 'embed')->orWhere('encoding', null)
                       ->distinctOn(['show_id', 'translation_type', 'episode_num', 'streamer_id'], 'uploadtime')
                       ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
-                      ->take(128)->with('show')->with('streamer');
+                      ->take(50)->with('show')->with('streamer');
 
-    if (!empty($request->q)) {
-      $this->validate($request, [
-        'q' => ['min:1', 'max:255']
-      ], [], [
-        'q' => 'query'
-      ]);
-      $query = trim(mb_strtolower($request->q));
-      $results = Show::search($query);
-
-      $recents = $getRecent->whereIn('show_id', $results->pluck('id'))->get();
+    if (!empty($request->search)) {
+      $shows = Show::search($request->search, 0, 50, false, $request->types);
+      $recents = $getRecent->whereIn('show_id', $shows->pluck('id'))->get();
     }
 
     else {
