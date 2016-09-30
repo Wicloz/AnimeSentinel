@@ -41,7 +41,7 @@ class Downloaders
       curl_close($curl);
     }
 
-    if (str_contains($response, 'https://www.google.com/recaptcha/api.js')) {
+    if (!str_contains($url, 'myanimelist.net') && str_contains($response, 'https://www.google.com/recaptcha/api.js')) {
       if ($tries === 0) {
         \Mail::send('emails.reports.general', ['description' => 'ReCaptcha Detected', 'vars' => [
           'Url' => $url,
