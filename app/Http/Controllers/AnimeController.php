@@ -48,7 +48,7 @@ class AnimeController extends Controller
     ]);
     $request->types = $request->types->filter(function ($value, $key) use ($request) {
       $type = 'type_'.$value;
-      return $request->$type === 'on';
+      return $request->$type !== 'off';
     });
 
     $request->streamers = collect([
@@ -56,7 +56,7 @@ class AnimeController extends Controller
     ]);
     $request->streamers = $request->streamers->filter(function ($value, $key) use ($request) {
       $streamer = 'streamer_'.$value;
-      return $request->$streamer === 'on';
+      return $request->$streamer !== 'off';
     });
   }
 
