@@ -116,7 +116,7 @@ class AnimeController extends Controller
     $results = [];
     $this->processRequest($request);
 
-    $shows = Show::search($request->search, $request->types, 0, 99999);
+    $shows = Show::search($request->search, $request->types);
 
     $recents = Video::whereIn('show_id', $shows->pluck('id'))
                     ->where(function ($query) {
