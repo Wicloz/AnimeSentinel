@@ -137,14 +137,12 @@ class Show extends BaseModel
       }
     }
 
-    // create sub query
-    $bindings = \DB::prepareBindings($queryTitle->getBindings());
-    $queryTitleSql = $queryTitle->toSql();
-    foreach ($bindings as $binding) {
-      $queryTitleSql = str_replace_first('?', '\''.$binding.'\'', $queryTitleSql);
+    // merge bindings
+    foreach ($queryTitle->getBindings() as $binding) {
+      $query->addBinding($binding, 'join');
     }
     // create final query
-    $query->from(\DB::raw('('.$queryTitleSql.') bt'));
+    $query->from(\DB::raw('('.$queryTitle->toSql().') bt'));
     // return results
     return $query->get();
   }
