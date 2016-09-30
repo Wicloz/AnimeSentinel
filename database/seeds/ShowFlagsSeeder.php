@@ -81,6 +81,13 @@ class ShowFlagsSeeder extends Seeder
     ];
     $danganronpa3despairearc->save();
 
+    $danganronpa3hopearc = ShowFlag::findOrNew(34103);
+    $danganronpa3hopearc->mal_id = 34103;
+    $danganronpa3hopearc->alt_rules = [
+      "Danganronpa 3 - Hope Arc" => "+",
+    ];
+    $danganronpa3hopearc->save();
+
     $yugioharcv = ShowFlag::findOrNew(21639);
     $yugioharcv->mal_id = 21639;
     $yugioharcv->alt_rules = [
