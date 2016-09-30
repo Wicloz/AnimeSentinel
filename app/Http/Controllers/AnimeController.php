@@ -50,6 +50,14 @@ class AnimeController extends Controller
       $type = 'type_'.$value;
       return $request->$type === 'on';
     });
+
+    $request->streamers = collect([
+      'animeshow', 'kissanime',
+    ]);
+    $request->streamers = $request->streamers->filter(function ($value, $key) use ($request) {
+      $streamer = 'streamer_'.$value;
+      return $request->$streamer === 'on';
+    });
   }
 
   /**
@@ -61,32 +69,30 @@ class AnimeController extends Controller
     $results = []; $shows = [];
     $this->processRequest($request);
 
-    if (!empty($request->search)) {
-      if ($request->source === 'mal') {
-        $shows = MalcacheSearch::search($request->search);
-      }
+    if ($request->source === 'mal') {
+      $shows = MalcacheSearch::search($request->search);
+    }
 
-      elseif ($request->source === 'as') {
-        $shows = Show::search($request->search, 0, 50, true, $request->types);
-      }
+    elseif ($request->source === 'as') {
+      $shows = Show::search($request->search, $request->types, 0, 50, true);
+    }
 
-      else {
-        $shows = Show::search($request->search, 0, 50, false, $request->types);
-        $malShows = MalcacheSearch::search($request->search);
-        $mal_ids = $shows->pluck('mal_id');
-        foreach ($malShows as $malShow) {
-          if (!$mal_ids->contains($malShow->mal_id)) {
-            $shows->push($malShow);
-          }
+    else {
+      $shows = Show::search($request->search, $request->types, 0, 50);
+      $malShows = MalcacheSearch::search($request->search);
+      $mal_ids = $shows->pluck('mal_id');
+      foreach ($malShows as $malShow) {
+        if (!$mal_ids->contains($malShow->mal_id)) {
+          $shows->push($malShow);
         }
       }
+    }
 
-      // Expand MAL results which are in our database
-      $dbShows = Show::whereIn('mal_id', $shows->where('mal', true)->pluck('mal_id'))->get();
-      foreach ($shows->where('mal', true) as $index => $show) {
-        if (!empty($dbShows->where('mal_id', $show->mal_id)->first())) {
-          $shows[$index] = $dbShows->where('mal_id', $show->mal_id)->first();
-        }
+    // Expand MAL results which are in our database
+    $dbShows = Show::whereIn('mal_id', $shows->where('mal', true)->pluck('mal_id'))->get();
+    foreach ($shows->where('mal', true) as $index => $show) {
+      if (!empty($dbShows->where('mal_id', $show->mal_id)->first())) {
+        $shows[$index] = $dbShows->where('mal_id', $show->mal_id)->first();
       }
     }
 
@@ -110,19 +116,13 @@ class AnimeController extends Controller
     $results = [];
     $this->processRequest($request);
 
-    $getRecent = Video::where('encoding', '!=', 'embed')->orWhere('encoding', null)
-                      ->distinctOn(['show_id', 'translation_type', 'episode_num', 'streamer_id'], 'uploadtime')
-                      ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
-                      ->take(50)->with('show')->with('streamer');
+    $shows = Show::search($request->search, $request->types, 0, 99999);
 
-    if (!empty($request->search)) {
-      $shows = Show::search($request->search, 0, 50, false, $request->types);
-      $recents = $getRecent->whereIn('show_id', $shows->pluck('id'))->get();
-    }
-
-    else {
-      $recents = $getRecent->get();
-    }
+    $recents = Video::where('encoding', '!=', 'embed')->orWhere('encoding', null)
+                    ->whereIn('show_id', $shows->pluck('id'))
+                    ->distinctOn(['show_id', 'translation_type', 'episode_num', 'streamer_id'], 'uploadtime')
+                    ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
+                    ->skip(0)->take(50)->with('show')->with('streamer')->get();
 
     foreach ($recents as $recent) {
       $results[] = [

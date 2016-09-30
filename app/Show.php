@@ -103,46 +103,54 @@ class Show extends BaseModel
    *
    * @return array
    */
-  public static function search($search, $start, $amount, $fill, $types) {
+  public static function search($search, $types, $start = 0, $amount = null, $fill = false) {
     $results = [];
     $query = Self::skip($start)->take($amount);
 
     // searching by types
     $query->whereIn('type', $types);
 
-    // match with full titles
-    $queryTitle = Self::withTitle($search, false);
+    // searching by title
+    if ($search !== '') {
+      // match with full titles
+      $queryTitle = Self::withTitle($search, false);
 
-    // match with partial titles
-    $queryTitle->union(Self::withTitle($search, true));
+      // match with partial titles
+      $queryTitle->union(Self::withTitle($search, true));
 
-    // match with partial titles, with non-alphanumeric characters ignored
-    $thisSearch = str_to_url($search, '%', '/[^a-zA-Z0-9]/u');
-    if (strlen(str_replace('%', '', $thisSearch)) >= 1) {
-      $queryTitle->union(Self::withTitle($thisSearch, true));
-    }
+      // match with partial titles, with non-alphanumeric characters ignored
+      $thisSearch = str_to_url($search, '%', '/[^a-zA-Z0-9]/u');
+      if (strlen(str_replace('%', '', $thisSearch)) >= 1) {
+        $queryTitle->union(Self::withTitle($thisSearch, true));
+      }
 
-    // match with partial titles, with non-alphabetic characters ignored
-    $thisSearch = str_to_url($search, '%', '/[^a-zA-Z]/u');
-    if (strlen(str_replace('%', '', $thisSearch)) >= 1) {
-      $queryTitle->union(Self::withTitle($thisSearch, true));
-    }
-
-    if ($fill) {
-      // match any titles with the same letters in the same order, at any location
+      // match with partial titles, with non-alphabetic characters ignored
       $thisSearch = str_to_url($search, '%', '/[^a-zA-Z]/u');
       if (strlen(str_replace('%', '', $thisSearch)) >= 1) {
-        $thisSearch = '%'.str_to_url($thisSearch, '$1%', '/([a-zA-Z])/u');
-        $queryTitle->union(Self::withTitle($thisSearch, false));
+        $queryTitle->union(Self::withTitle($thisSearch, true));
       }
+
+      if ($fill) {
+        // match any titles with the same letters in the same order, at any location
+        $thisSearch = str_to_url($search, '%', '/[^a-zA-Z]/u');
+        if (strlen(str_replace('%', '', $thisSearch)) >= 1) {
+          $thisSearch = '%'.str_to_url($thisSearch, '$1%', '/([a-zA-Z])/u');
+          $queryTitle->union(Self::withTitle($thisSearch, false));
+        }
+      }
+
+      // merge bindings
+      foreach ($queryTitle->getBindings() as $binding) {
+        $query->addBinding($binding, 'join');
+      }
+      // create final query
+      $query->from(\DB::raw('('.$queryTitle->toSql().') bt'));
     }
 
-    // merge bindings
-    foreach ($queryTitle->getBindings() as $binding) {
-      $query->addBinding($binding, 'join');
+    else {
+      $query->orderBy('title');
     }
-    // create final query
-    $query->from(\DB::raw('('.$queryTitle->toSql().') bt'));
+
     // return results
     return $query->get();
   }
