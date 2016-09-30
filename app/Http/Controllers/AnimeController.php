@@ -61,22 +61,20 @@ class AnimeController extends Controller
 
       else {
         $shows = Show::search($query);
-        $showsMal = MalcacheSearch::search($query);
+        $malShows = MalcacheSearch::search($query);
         $mal_ids = $shows->pluck('mal_id');
-        foreach ($showsMal as $showMal) {
-          if (!$mal_ids->contains($showMal->mal_id)) {
-            $shows->push($showMal);
+        foreach ($malShows as $malShow) {
+          if (!$mal_ids->contains($malShow->mal_id)) {
+            $shows->push($malShow);
           }
         }
       }
 
       // Expand MAL results which are in our database
-      foreach ($shows as $index => $show) {
-        if (!empty($show->mal)) {
-          $show = Show::where('mal_id', $show->mal_id)->first();
-          if (!empty($show)) {
-            $shows[$index] = $show;
-          }
+      $dbShows = Show::whereIn('mal_id', $shows->where('mal', true)->pluck('mal_id'))->get();
+      foreach ($shows->where('mal', true) as $index => $show) {
+        if (!empty($dbShows->where('mal_id', $show->mal_id)->first())) {
+          $shows[$index] = $dbShows->where('mal_id', $show->mal_id)->first();
         }
       }
     }

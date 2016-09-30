@@ -7,7 +7,7 @@
     <select class="form-control" id="search-source" name="source">
       <option value="mal" {{ request('source') === 'mal' ? 'selected' : '' }}>MyAnimeList</option>
       <option value="as" {{ request('source') === 'as' ? 'selected' : '' }}>AnimeSentinel</option>
-      <option value="" {{ request('source') !== 'mal' && request('source') !== 'as' ? 'selected' : '' }}>Both</option>
+      <option value="" {{ request('source') !== 'mal' && request('source') !== 'as' ? 'selected' : '' }}>Hybrid</option>
     </select>
   </div>
 @endsection
