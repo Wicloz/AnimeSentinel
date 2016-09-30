@@ -22,7 +22,50 @@
 @section('content-left')
   <div class="content-generic content-dark">
       @yield('form-left')
+
+      <div class="form-group" id="search-types">
+        <label for="search-types">Types:</label>
+
+        <input type="hidden" name="type-tv" value="off">
+        <input type="hidden" name="type-ova" value="off">
+        <input type="hidden" name="type-ona" value="off">
+        <input type="hidden" name="type-movie" value="off">
+        <input type="hidden" name="type-special" value="off">
+
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="type-tv" {{ request('type-tv') !== 'off' ? 'checked' : '' }}>
+            Tv
+          </label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="type-ova" {{ request('type-ova') !== 'off' ? 'checked' : '' }}>
+            Ova
+          </label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="type-ona" {{ request('type-ona') !== 'off' ? 'checked' : '' }}>
+            Ona
+          </label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="type-movie" {{ request('type-movie') !== 'off' ? 'checked' : '' }}>
+            Movie
+          </label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="type-special" {{ request('type-special') !== 'off' ? 'checked' : '' }}>
+            Special
+          </label>
+        </div>
+      </div>
+
       <button type="submit" class="btn btn-primary">Search</button>
+      <button type="reset" class="btn btn-default">Reset</button>
     </form>
   </div>
 @endsection
