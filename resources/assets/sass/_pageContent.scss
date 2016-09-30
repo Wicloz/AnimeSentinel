@@ -104,6 +104,10 @@
   padding: 15px;
 }
 
+.content-dark {
+  background-color: $background_colour-content_header;
+}
+
 .content-close {
   border: 1px solid $border_colour-main;
   width: 100%;

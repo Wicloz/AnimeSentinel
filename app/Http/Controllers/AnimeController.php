@@ -11,39 +11,6 @@ use App\Video;
 
 class AnimeController extends Controller
 {
-  private function searchShows($query, $source) {
-    if ($source === 'mal') {
-      $results = MalcacheSearch::search($query);
-    }
-
-    elseif ($source === 'as') {
-      $results = Show::search($query, true);
-    }
-
-    else {
-      $results = Show::search($query);
-      $resultsMal = MalcacheSearch::search($query);
-      $mal_ids = $results->pluck('mal_id')->all();
-      foreach ($resultsMal as $resultMal) {
-        if (!in_array($resultMal->mal_id, $mal_ids)) {
-          $results->push($resultMal);
-        }
-      }
-    }
-
-    // Expand MAL results which are in our database
-    foreach ($results as $index => $result) {
-      if (!empty($result->mal)) {
-        $show = Show::where('mal_id', $result->mal_id)->first();
-        if (!empty($show)) {
-          $results[$index] = $show;
-        }
-      }
-    }
-
-    return $results;
-  }
-
   /**
    * Show the home page.
    *
@@ -74,7 +41,7 @@ class AnimeController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function search(Request $request) {
-    $results = []; $resultsNested = [];
+    $results = []; $shows = [];
 
     if (!empty($request->q)) {
       $this->validate($request, [
@@ -83,18 +50,46 @@ class AnimeController extends Controller
         'q' => 'query'
       ]);
       $query = trim(mb_strtolower($request->q));
-      $results = $this->searchShows($query, $request->source);
+
+      if ($request->source === 'mal') {
+        $shows = MalcacheSearch::search($query);
+      }
+
+      elseif ($request->source === 'as') {
+        $shows = Show::search($query, true);
+      }
+
+      else {
+        $shows = Show::search($query);
+        $showsMal = MalcacheSearch::search($query);
+        $mal_ids = $shows->pluck('mal_id');
+        foreach ($showsMal as $showMal) {
+          if (!$mal_ids->contains($showMal->mal_id)) {
+            $shows->push($showMal);
+          }
+        }
+      }
+
+      // Expand MAL results which are in our database
+      foreach ($shows as $index => $show) {
+        if (!empty($show->mal)) {
+          $show = Show::where('mal_id', $show->mal_id)->first();
+          if (!empty($show)) {
+            $shows[$index] = $show;
+          }
+        }
+      }
     }
 
-    foreach ($results as $result) {
-      $resultsNested[] = [
-        'isMal' => !empty($result->mal),
-        'show' => $result,
+    foreach ($shows as $show) {
+      $results[] = [
+        'isMal' => !empty($show->mal),
+        'show' => $show,
         'video' => null,
       ];
     }
 
-    return $this->browse($request, 'search', $resultsNested);
+    return $this->browse($request, 'search', $results);
   }
 
   /**
@@ -103,7 +98,7 @@ class AnimeController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function recent(Request $request) {
-    $resultsNested = [];
+    $results = [];
     $getRecent = Video::where('encoding', '!=', 'embed')->orWhere('encoding', null)
                       ->distinctOn(['show_id', 'translation_type', 'episode_num', 'streamer_id'], 'uploadtime')
                       ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
@@ -126,13 +121,13 @@ class AnimeController extends Controller
     }
 
     foreach ($recents as $recent) {
-      $resultsNested[] = [
+      $results[] = [
         'isMal' => false,
         'show' => $recent->show,
         'video' => $recent,
       ];
     }
 
-    return $this->browse($request, 'recent', $resultsNested);
+    return $this->browse($request, 'recent', $results);
   }
 }

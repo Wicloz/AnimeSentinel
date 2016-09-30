@@ -3,44 +3,23 @@
 
 .searchbar-top {
   background-color: $background_colour-content_header;
+  width: calc(100% - 30px);
   padding: 15px 15px 0px;
-  width: 100%;
-  margin-top: -19px;
   form {
-    .loop {
-      font-size: 18px;
-    }
     .group-search {
-      width: calc(100% - 67.8167px - 15px);
+      width: calc(100% - 68px - 15px);
       display: inline-block;
-    }
-    .group-source {
-      margin-bottom: 5px;
-      margin-top: -5px;
     }
     button {
       display: inline-block;
       margin-top: 25px;
     }
     .help-block {
-      margin-bottom: 0px;
+      margin-bottom: -5px;
     }
     @media (min-width: 768px) {
-      .group-source {
-        width: auto;
-        display: inline-block;
-        float: left;
-        margin-bottom: 15px;
-      }
       .group-search {
-        width: calc(100% - 67.8167px - 15px - 140.75px - 15px);
-        float: left;
-        margin-top: -5px;
-        margin-left: 15px;
-        margin-bottom: 10px;
-      }
-      button {
-        margin-top: 20px;
+        width: calc(100% - 67.8167px - 15px);
       }
     }
   }
@@ -49,6 +28,9 @@
 @media (min-width: 992px) {
   .searchbar-top {
     margin: 0px 15px 20px;
-    width: calc(100% - 30px);
   }
+}
+
+.loop-icon {
+  font-size: 18px;
 }
