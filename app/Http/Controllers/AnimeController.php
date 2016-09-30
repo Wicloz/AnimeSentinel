@@ -118,8 +118,10 @@ class AnimeController extends Controller
 
     $shows = Show::search($request->search, $request->types, 0, 99999);
 
-    $recents = Video::where('encoding', '!=', 'embed')->orWhere('encoding', null)
-                    ->whereIn('show_id', $shows->pluck('id'))
+    $recents = Video::whereIn('show_id', $shows->pluck('id'))
+                    ->where(function ($query) {
+                        $query->where('encoding', '!=', 'embed')->orWhere('encoding', null);
+                      })
                     ->distinctOn(['show_id', 'translation_type', 'episode_num', 'streamer_id'], 'uploadtime')
                     ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
                     ->skip(0)->take(50)->with('show')->with('streamer')->get();
