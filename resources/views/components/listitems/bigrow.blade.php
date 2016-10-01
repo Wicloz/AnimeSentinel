@@ -1,4 +1,4 @@
-<div class="bigrow-item">
+<div class="item-bigrow">
   <div class="row">
 
     <div class="col-sm-2">
@@ -45,12 +45,12 @@
                   Completed
                 @endif
               @else
-                @if(!isset($show->latest_sub->episode_num))
-                  Upcoming
-                @elseif($show->isAiring('sub'))
+                @if($show->isAiring('sub'))
                   Currently Airing
-                @else
+                @elseif($show->finishedAiring('sub'))
                   Completed
+                @else
+                  Upcoming
                 @endif
               @endif
             </p>

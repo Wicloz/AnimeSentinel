@@ -31,7 +31,7 @@ class AnimeController extends Controller
   public function browse(Request $request, $mode, $results) {
     return view('anime.'.$mode, [
       'results' => $results,
-      'display' => 'bigrow',
+      'display' => 'smallrow',
     ]);
   }
 

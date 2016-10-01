@@ -57,22 +57,22 @@
 <div class="content-generic">
   <p>
     <strong>Status (Sub):</strong>
-    @if(!isset($details->latest_sub->episode_num))
-      Upcoming
-    @elseif($details->isAiring('sub'))
+    @if($details->isAiring('sub'))
       Currently Airing
-    @else
+    @elseif($details->finishedAiring('sub'))
       Completed
+    @else
+      Upcoming
     @endif
   </p>
   <p>
     <strong>Status (Dub):</strong>
-    @if(!isset($details->latest_dub->episode_num))
-      Upcoming
-    @elseif($details->isAiring('dub'))
+    @if($details->isAiring('dub'))
       Currently Airing
-    @else
+    @elseif($details->finishedAiring('dub'))
       Completed
+    @else
+      Upcoming
     @endif
   </p>
   <p>
