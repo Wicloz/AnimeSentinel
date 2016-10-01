@@ -74,16 +74,7 @@ class Video extends BaseModel
   }
 
   /**
-   * Scope a query to only include video's for this episode.
-   *
-   * @return \Illuminate\Database\Eloquent\Builder
-   */
-  public function scopeEpisode($query, $translation_type, $episode_num) {
-    return $query->where('translation_type', $translation_type)->where('episode_num', $episode_num);
-  }
-
-  /**
-  * Get all streamers that stream this episode.// TODO: fix when episodes don't differ by a simple 1
+  * Get all streamers that stream this episode.
   */
   public function getStreamersAttribute() {
     $show = $this;
@@ -94,6 +85,15 @@ class Video extends BaseModel
                              ->where('translation_type', $show->translation_type)
                              ->where('episode_num', $show->episode_num);
                      })->get();
+  }
+
+  /**
+   * Scope a query to only include video's for this episode.
+   *
+   * @return \Illuminate\Database\Eloquent\Builder
+   */
+  public function scopeEpisode($query, $translation_type, $episode_num) {
+    return $query->where('translation_type', $translation_type)->where('episode_num', $episode_num);
   }
 
   /**

@@ -221,7 +221,7 @@ class Show extends BaseModel
   }
 
   /**
-  * Get the latest subbed episode number for this show.
+  * Get the latest subbed episode for this show.
   *
   * @return integer
   */
@@ -230,11 +230,12 @@ class Show extends BaseModel
                 ->where('translation_type', 'sub')
                 ->orderBy('episode_num', 'desc')
                 ->orderBy('uploadtime', 'asc')
+                ->orderBy('id', 'asc')
                 ->first();
   }
 
   /**
-  * Get the latest dubbed episode number for this show.
+  * Get the latest dubbed episode for this show.
   *
   * @return integer
   */
@@ -243,25 +244,26 @@ class Show extends BaseModel
                 ->where('translation_type', 'dub')
                 ->orderBy('episode_num', 'desc')
                 ->orderBy('uploadtime', 'asc')
+                ->orderBy('id', 'asc')
                 ->first();
   }
 
   /**
-  * Get the first uploaded video
+  * Get the first uploaded video.
   *
   * @return Video
   */
   public function getFirstVideoAttribute() {
-    return $this->videos()->orderBy('uploadtime', 'asc')->first();
+    return $this->videos()->orderBy('uploadtime', 'asc')->orderBy('id', 'asc')->first();
   }
 
   /**
-  * Get the last uploaded video
+  * Get the last uploaded video.
   *
   * @return Video
   */
   public function getLastVideoAttribute() {
-    return $this->videos()->orderBy('uploadtime', 'desc')->first();
+    return $this->videos()->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')->first();
   }
 
 
@@ -273,9 +275,10 @@ class Show extends BaseModel
   public function episodes($translation_type) {
     return $this->videos()
                 ->where('translation_type', $translation_type)
-                ->distinctOn('episode_num')
+                ->distinctOn('episode_num', 'uploadtime')
                 ->orderBy('episode_num', 'desc')
                 ->orderBy('uploadtime', 'asc')
+                ->orderBy('id', 'asc')
                 ->get();
   }
 

@@ -30,7 +30,7 @@
     {{ $details->episode_amount or 'Unknown' }}
   </p>
   <p>
-    <strong>Duration:</strong>
+    <strong>Expected Duration:</strong>
     @if(isset($details->episode_duration))
       {{ fancyDuration($details->episode_duration * 60, false) }} per ep.
     @else
@@ -38,7 +38,7 @@
     @endif
   </p>
   <p>
-    <strong>Airing:</strong>
+    <strong>Expected Airing:</strong>
     @if(empty($details->airing_start) && empty($details->airing_end))
       Unknown
     @else
@@ -56,10 +56,20 @@
 
 <div class="content-generic">
   <p>
-    <strong>Status:</strong>
+    <strong>Status (Sub):</strong>
     @if(!isset($details->latest_sub->episode_num))
       Upcoming
     @elseif($details->isAiring('sub'))
+      Currently Airing
+    @else
+      Completed
+    @endif
+  </p>
+  <p>
+    <strong>Status (Dub):</strong>
+    @if(!isset($details->latest_dub->episode_num))
+      Upcoming
+    @elseif($details->isAiring('dub'))
       Currently Airing
     @else
       Completed
@@ -75,10 +85,10 @@
   </p>
   <p>
     <strong>Average Duration:</strong>
-    @if(isset($details->episode_duration))
+    @if($details->videos()->avg('duration') !== null)
       {{ fancyDuration($details->videos()->avg('duration')) }}
     @else
-      Unknown
+      NA
     @endif
   </p>
   <p>
