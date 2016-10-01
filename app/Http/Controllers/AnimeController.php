@@ -119,6 +119,7 @@ class AnimeController extends Controller
     $shows = Show::search($request->search, $request->types);
 
     $recents = Video::whereIn('show_id', $shows->pluck('id'))
+                    ->whereIn('streamer_id', $request->streamers)
                     ->where(function ($query) {
                         $query->where('encoding', '!=', 'embed')->orWhere('encoding', null);
                       })
