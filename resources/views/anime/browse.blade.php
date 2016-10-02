@@ -2,7 +2,7 @@
 
 @section('content-top')
   <div class="container-fluid searchbar-top">
-    <form method="GET">
+    <form method="GET" id="search-form">
       <div class="form-group group-search {{ $errors->has('q') ? 'has-error' : '' }}">
         <label for="search-query">Search Query:</label>
         <div class="input-group">
@@ -71,14 +71,61 @@
 @endsection
 
 @section('content-center')
+  <div class="content-header header-center">
+    <a href="{{ '?page='.(request()->page - 1) }}" class="arrow-left {{ request()->page > 1 ? '' : 'arrow-hide' }}" onclick="
+      event.preventDefault();
+      var form = document.getElementById('search-form');
+      var input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'page';
+      input.value = {{ request()->page - 1 }};
+      form.appendChild(input);
+      form.submit();
+    ">&#8666;</a>
+    Results - Page {{ request()->page }}
+    <a href="{{ '?page='.(request()->page + 1) }}" class="arrow-right {{ count($results) >= 50 ? '' : 'arrow-hide' }}" onclick="
+      event.preventDefault();
+      var form = document.getElementById('search-form');
+      var input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'page';
+      input.value = {{ request()->page + 1 }};
+      form.appendChild(input);
+      form.submit();
+    ">&#8667;</a>
+  </div>
+
   @if (count($results) === 0)
     <div class="content-header">No Results</div>
   @else
-    <div class="content-header">Results</div>
     @foreach($results as $result)
       @include('components.listitems.'.$display, $result)
     @endforeach
   @endif
+
+  <div class="content-header header-center">
+    <a href="{{ '?page='.(request()->page - 1) }}" class="arrow-left {{ request()->page > 1 ? '' : 'arrow-hide' }}" onclick="
+      event.preventDefault();
+      var form = document.getElementById('search-form');
+      var input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'page';
+      input.value = {{ request()->page - 1 }};
+      form.appendChild(input);
+      form.submit();
+    ">&#8666;</a>
+    Results - Page {{ request()->page }}
+    <a href="{{ '?page='.(request()->page + 1) }}" class="arrow-right {{ count($results) >= 50 ? '' : 'arrow-hide' }}" onclick="
+      event.preventDefault();
+      var form = document.getElementById('search-form');
+      var input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'page';
+      input.value = {{ request()->page + 1 }};
+      form.appendChild(input);
+      form.submit();
+    ">&#8667;</a>
+  </div>
 @endsection
 
 @section('content-right')

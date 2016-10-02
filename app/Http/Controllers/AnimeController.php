@@ -72,9 +72,15 @@ class AnimeController extends Controller
     $request->search = trim(mb_strtolower($request->q));
     $this->validate($request, [
       'search' => ['min:1', 'max:255'],
+      'page' => ['integer', 'between:1,max'],
     ], [], [
       'search' => 'query',
     ]);
+
+    if ($request->page === null) {
+      $request->page = 1;
+    }
+    $request->pageZ = $request->page - 1;
 
     $request->types = collect([
       'tv', 'ona', 'ova', 'movie', 'special',
@@ -109,20 +115,28 @@ class AnimeController extends Controller
     $this->processRequest($request);
 
     if ($request->source === 'mal') {
-      $shows = MalcacheSearch::search($request->search);
+      $shows = MalcacheSearch::search($request->search, $request->pageZ * 50, 50);
     }
 
-    elseif ($request->source === 'as') {
-      $shows = Show::search($request->search, $request->types, 0, 50, true);
+    elseif ($request->source === 'as' || $request->search === '') {
+      $shows = Show::search($request->search, $request->types, $request->pageZ * 50, 50, true);
     }
 
     else {
-      $shows = Show::search($request->search, $request->types, 0, 50);
+      $dbShows = Show::search($request->search, $request->types);
+      $malIds = $dbShows->pluck('mal_id');
       $malShows = MalcacheSearch::search($request->search);
-      $mal_ids = $shows->pluck('mal_id');
+
+      $shows = $dbShows->slice($request->pageZ * 50, 50);
+
+      $malShown = $request->pageZ * 50 - $dbShows->count();
+      $index = 0;
       foreach ($malShows as $malShow) {
-        if (!$mal_ids->contains($malShow->mal_id)) {
-          $shows->push($malShow);
+        if (count($shows) < 50 && !$malIds->contains($malShow->mal_id)) {
+          $index++;
+          if ($index > $malShown) {
+            $shows->push($malShow);
+          }
         }
       }
     }
@@ -164,7 +178,7 @@ class AnimeController extends Controller
                       })
                     ->distinctOn($request->distincts, 'uploadtime')
                     ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
-                    ->skip(0)->take(50)->with('show')->with('streamer')->get();
+                    ->skip($request->pageZ * 50)->take(50)->with('show')->with('streamer')->get();
 
     foreach ($recents as $recent) {
       $results[] = [
