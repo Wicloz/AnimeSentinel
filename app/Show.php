@@ -103,12 +103,22 @@ class Show extends BaseModel
    *
    * @return array
    */
-  public static function search($search, $types, $start = 0, $amount = null, $fill = false) {
+  public static function search($search, $types, $genres, $start = 0, $amount = null, $fill = false) {
     $results = [];
     $query = Self::skip($start)->take($amount);
 
     // searching by types
     $query->whereIn('type', $types);
+
+    // searching by genres
+    $query->where(function ($query) use ($genres) {
+      $query->where(\DB::raw('1'), \DB::raw('0'));
+      foreach ($genres as $genre) {
+        $query->orWhere(function ($query) use ($genre) {
+          $query->whereLike('genres', '%'.json_encode($genre).'%');
+        });
+      }
+    });
 
     // searching by title
     if ($search !== '') {

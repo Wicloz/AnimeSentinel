@@ -46,8 +46,8 @@
         @foreach ($checkboxes['genres'] as $genre)
           <div class="checkbox">
             <label>
-              <input type="checkbox" name="genre_{{ $genre }}" {{ request('genre_'.$genre) !== 'off' ? 'checked' : '' }}>
-              {{ ucwords($genre) }}
+              <input type="checkbox" name="genre_{{ str_replace(' ', '_', $genre) }}" {{ request('genre_'.str_replace(' ', '_', $genre)) !== 'off' ? 'checked' : '' }}>
+              {{ $genre }}
             </label>
           </div>
         @endforeach

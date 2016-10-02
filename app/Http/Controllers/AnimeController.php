@@ -112,7 +112,7 @@ class AnimeController extends Controller
     foreach ($this->checkboxes as $checkbox => $values) {
       $request->$checkbox = collect($values);
       $request->$checkbox = $request->$checkbox->filter(function ($value, $key) use ($checkbox, $request) {
-        return $request->{str_replace_last('s', '', $checkbox).'_'.$value} !== 'off';
+        return $request->{str_replace_last('s', '', $checkbox).'_'.str_replace(' ', '_', $value)} !== 'off';
       });
     }
   }
@@ -131,11 +131,11 @@ class AnimeController extends Controller
     }
 
     elseif ($request->source === 'as' || $request->search === '') {
-      $shows = Show::search($request->search, $request->types, $request->pageZ * 50, 51, true);
+      $shows = Show::search($request->search, $request->types, $request->genres, $request->pageZ * 50, 51, true);
     }
 
     else {
-      $dbShows = Show::search($request->search, $request->types);
+      $dbShows = Show::search($request->search, $request->types, $request->genres);
       $malIds = $dbShows->pluck('mal_id');
       $malShows = MalcacheSearch::search($request->search);
 
@@ -187,7 +187,7 @@ class AnimeController extends Controller
     $results = [];
     $this->processRequest($request);
 
-    $shows = Show::search($request->search, $request->types);
+    $shows = Show::search($request->search, $request->types, $request->genres);
 
     $recents = Video::whereIn('show_id', $shows->pluck('id'))
                     ->whereIn('streamer_id', $request->streamers)
