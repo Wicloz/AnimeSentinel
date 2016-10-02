@@ -71,18 +71,24 @@ class MalcacheSearch extends BaseModel
    *
    * @return array
    */
-  public static function search($query) {
-    while (strlen($query) < 3) {
-      $query .= ' ';
-    }
-    $search = Self::firstOrNew(['query' => $query]);
+  public static function search($query, $start = 0, $amount = null) {
+    if ($query !== '') {
+      while (strlen($query) < 3) {
+        $query .= ' ';
+      }
+      $search = Self::firstOrNew(['query' => $query]);
 
-    if (count($search->results) <= 0 || $search->cache_updated_at->diffInHours(Carbon::now()) >= rand(24, 48)) {
-      $search->results = MyAnimeList::search($query);
-      $search->cache_updated_at = Carbon::now();
-      $search->save();
+      if (count($search->results) <= 0 || $search->cache_updated_at->diffInHours(Carbon::now()) >= rand(24, 48)) {
+        $search->results = MyAnimeList::search($query);
+        $search->cache_updated_at = Carbon::now();
+        $search->save();
+      }
+
+      return $search->results->slice($start, $amount);
     }
 
-    return $search->results;
+    else {
+      return [];
+    }
   }
 }
