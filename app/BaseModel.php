@@ -12,7 +12,6 @@ abstract class BaseModel extends Model
   }
 
   // NOTE: must not be followed by ->where()
-  // NOTE: cannot be used with ->select()
   public function scopeDistinctOn($query, $columns, $orderBy = null, $orderDir = 'asc') {
     if (!is_array($columns)) {
       $columns = [$columns];
@@ -26,8 +25,8 @@ abstract class BaseModel extends Model
         $orderDir = strtolower($orderDir) == 'asc' ? 'asc' : 'desc';
         $sort = isset($orderBy) ? ', "'.str_replace('"', '""', $orderBy).'" '.$orderDir : '';
 
-        $query->select(DB::raw(
-          '* from (select distinct on ('.implode(', ', $columns).') *'
+        $query->from(DB::raw(
+          '(select distinct on ('.implode(', ', $columns).') * from '.str_get_between($query->toSql(), 'from ', ' ')
         ));
 
         $query->where(DB::raw(
