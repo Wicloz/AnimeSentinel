@@ -82,13 +82,12 @@ class AnimeController extends Controller
     }
     $request->pageZ = $request->page - 1;
 
-    $request->types = collect([
-      'tv', 'ona', 'ova', 'movie', 'special',
+    // Specific to recent page
+    $distinct = $request->cookie('distinct_recent') !== null ? $request->cookie('distinct_recent') : 'episode_num';
+    $request->distincts = collect([
+      'show_id', 'translation_type', 'episode_num', 'streamer_id', 'mirror',
     ]);
-    $request->types = $request->types->filter(function ($value, $key) use ($request) {
-      $type = 'type_'.$value;
-      return $request->$type !== 'off';
-    });
+    $request->distincts = $request->distincts->slice(0, $request->distincts->flip()->get($distinct) + 1)->all();
 
     $request->streamers = collect([
       'animeshow', 'kissanime',
@@ -98,11 +97,22 @@ class AnimeController extends Controller
       return $request->$streamer !== 'off';
     });
 
-    $distinct = $request->cookie('distinct_recent') !== null ? $request->cookie('distinct_recent') : 'episode_num';
-    $request->distincts = collect([
-      'show_id', 'translation_type', 'episode_num', 'streamer_id', 'mirror',
+    $request->ttypes = collect([
+      'sub', 'dub',
     ]);
-    $request->distincts = $request->distincts->slice(0, $request->distincts->flip()->get($distinct) + 1)->all();
+    $request->ttypes = $request->ttypes->filter(function ($value, $key) use ($request) {
+      $ttype = 'ttype_'.$value;
+      return $request->$ttype !== 'off';
+    });
+
+    // General searching
+    $request->types = collect([
+      'tv', 'ona', 'ova', 'movie', 'special',
+    ]);
+    $request->types = $request->types->filter(function ($value, $key) use ($request) {
+      $type = 'type_'.$value;
+      return $request->$type !== 'off';
+    });
   }
 
   /**
@@ -182,6 +192,7 @@ class AnimeController extends Controller
                     ->where(function ($query) {
                         $query->where('encoding', '!=', 'embed')->orWhere('encoding', null);
                       })
+                    ->whereIn('translation_type', $request->ttypes)
                     ->distinctOn($request->distincts, 'uploadtime')
                     ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
                     ->skip($request->pageZ * 50)->take(51)->with('show')->with('streamer')->get();

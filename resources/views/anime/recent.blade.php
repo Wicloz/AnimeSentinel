@@ -8,16 +8,36 @@
     <input type="hidden" name="streamer_animeshow" value="off">
     <input type="hidden" name="streamer_kissanime" value="off">
 
-    <div class="radio">
+    <div class="checkbox">
       <label>
-        <input type="radio" name="streamer_animeshow" {{ request('streamer_animeshow') !== 'off' ? 'checked' : '' }}>
+        <input type="checkbox" name="streamer_animeshow" {{ request('streamer_animeshow') !== 'off' ? 'checked' : '' }}>
         AnimeShow.tv
       </label>
     </div>
-    <div class="radio">
+    <div class="checkbox">
       <label>
-        <input type="radio" name="streamer_kissanime" {{ request('streamer_kissanime') !== 'off' ? 'checked' : '' }}>
+        <input type="checkbox" name="streamer_kissanime" {{ request('streamer_kissanime') !== 'off' ? 'checked' : '' }}>
         KissAnime
+      </label>
+    </div>
+  </div>
+
+  <div class="form-group" id="search-ttypes">
+    <label for="search-ttypes">Translation Types:</label>
+
+    <input type="hidden" name="ttype_sub" value="off">
+    <input type="hidden" name="ttype_dub" value="off">
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="ttype_sub" {{ request('ttype_sub') !== 'off' ? 'checked' : '' }}>
+        Subbed
+      </label>
+    </div>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="ttype_dub" {{ request('ttype_dub') !== 'off' ? 'checked' : '' }}>
+        Dubbed
       </label>
     </div>
   </div>
