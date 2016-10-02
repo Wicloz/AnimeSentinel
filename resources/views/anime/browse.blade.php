@@ -25,43 +25,32 @@
 
       <div class="form-group" id="search-types">
         <label for="search-types">Types:</label>
+        @foreach ($checkboxes['types'] as $type)
+          <input type="hidden" name="type_{{ $type }}" value="off">
+        @endforeach
+        @foreach ($checkboxes['types'] as $type)
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="type_{{ $type }}" {{ request('type_'.$type) !== 'off' ? 'checked' : '' }}>
+              {{ ucwords($type) }}
+            </label>
+          </div>
+        @endforeach
+      </div>
 
-        <input type="hidden" name="type_tv" value="off">
-        <input type="hidden" name="type_ova" value="off">
-        <input type="hidden" name="type_ona" value="off">
-        <input type="hidden" name="type_movie" value="off">
-        <input type="hidden" name="type_special" value="off">
-
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" name="type_tv" {{ request('type_tv') !== 'off' ? 'checked' : '' }}>
-            Tv
-          </label>
-        </div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" name="type_ova" {{ request('type_ova') !== 'off' ? 'checked' : '' }}>
-            Ova
-          </label>
-        </div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" name="type_ona" {{ request('type_ona') !== 'off' ? 'checked' : '' }}>
-            Ona
-          </label>
-        </div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" name="type_movie" {{ request('type_movie') !== 'off' ? 'checked' : '' }}>
-            Movie
-          </label>
-        </div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" name="type_special" {{ request('type_special') !== 'off' ? 'checked' : '' }}>
-            Special
-          </label>
-        </div>
+      <div class="form-group" id="search-genres">
+        <label for="search-genres">Genres:</label>
+        @foreach ($checkboxes['genres'] as $genre)
+          <input type="hidden" name="genre_{{ $genre }}" value="off">
+        @endforeach
+        @foreach ($checkboxes['genres'] as $genre)
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="genre_{{ $genre }}" {{ request('genre_'.$genre) !== 'off' ? 'checked' : '' }}>
+              {{ ucwords($genre) }}
+            </label>
+          </div>
+        @endforeach
       </div>
 
       <button type="submit" class="btn btn-primary">Search</button>

@@ -12,6 +12,25 @@ use App\Video;
 class AnimeController extends Controller
 {
   private $allowedDisplays = ['smallrow', 'bigrow'];
+  private $checkboxes = [
+    'streamers' => [
+      'animeshow', 'kissanime',
+    ],
+    'ttypes' => [
+      'sub', 'dub',
+    ],
+    'types' => [
+      'tv', 'ona', 'ova', 'movie', 'special',
+    ],
+    'genres' => [
+      'Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demons', 'Drama', 'Ecchi',
+      'Fantasy', 'Game', 'Harem', 'Historical', 'Horror', 'Josei', 'Kids',
+      'Magic', 'Martial Arts', 'Mecha', 'Military', 'Music', 'Mystery', 'Parody', 'Police',
+      'Psychological', 'Romance', 'Samurai', 'School', 'Sci-Fi', 'Seinen', 'Shoujo', 'Shoujo Ai',
+      'Shounen', 'Shounen Ai', 'Slice of Life', 'Space', 'Sports', 'Super Power', 'Supernatural', 'Thriller',
+      'Vampire', 'Yaoi', 'Yuri',
+    ],
+  ];
 
   /**
    * Show the home page.
@@ -65,11 +84,13 @@ class AnimeController extends Controller
       'display' => $display,
       'mode' => $mode,
       'distinct' => $request->distincts[count($request->distincts) - 1],
+      'checkboxes' => $this->checkboxes,
     ]);
   }
 
   private function processRequest(Request & $request) {
     $request->search = trim(mb_strtolower($request->q));
+
     $this->validate($request, [
       'search' => ['min:1', 'max:255'],
       'page' => ['integer', 'between:1,max'],
@@ -82,37 +103,18 @@ class AnimeController extends Controller
     }
     $request->pageZ = $request->page - 1;
 
-    // Specific to recent page
     $distinct = $request->cookie('distinct_recent') !== null ? $request->cookie('distinct_recent') : 'episode_num';
     $request->distincts = collect([
       'show_id', 'translation_type', 'episode_num', 'streamer_id', 'mirror',
     ]);
     $request->distincts = $request->distincts->slice(0, $request->distincts->flip()->get($distinct) + 1)->all();
 
-    $request->streamers = collect([
-      'animeshow', 'kissanime',
-    ]);
-    $request->streamers = $request->streamers->filter(function ($value, $key) use ($request) {
-      $streamer = 'streamer_'.$value;
-      return $request->$streamer !== 'off';
-    });
-
-    $request->ttypes = collect([
-      'sub', 'dub',
-    ]);
-    $request->ttypes = $request->ttypes->filter(function ($value, $key) use ($request) {
-      $ttype = 'ttype_'.$value;
-      return $request->$ttype !== 'off';
-    });
-
-    // General searching
-    $request->types = collect([
-      'tv', 'ona', 'ova', 'movie', 'special',
-    ]);
-    $request->types = $request->types->filter(function ($value, $key) use ($request) {
-      $type = 'type_'.$value;
-      return $request->$type !== 'off';
-    });
+    foreach ($this->checkboxes as $checkbox => $values) {
+      $request->$checkbox = collect($values);
+      $request->$checkbox = $request->$checkbox->filter(function ($value, $key) use ($checkbox, $request) {
+        return $request->{str_replace_last('s', '', $checkbox).'_'.$value} !== 'off';
+      });
+    }
   }
 
   /**

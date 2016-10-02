@@ -4,42 +4,32 @@
 @section('form-left')
   <div class="form-group" id="search-streamers">
     <label for="search-streamers">Streamers:</label>
-
-    <input type="hidden" name="streamer_animeshow" value="off">
-    <input type="hidden" name="streamer_kissanime" value="off">
-
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" name="streamer_animeshow" {{ request('streamer_animeshow') !== 'off' ? 'checked' : '' }}>
-        AnimeShow.tv
-      </label>
-    </div>
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" name="streamer_kissanime" {{ request('streamer_kissanime') !== 'off' ? 'checked' : '' }}>
-        KissAnime
-      </label>
-    </div>
+    @foreach ($checkboxes['streamers'] as $streamer)
+      <input type="hidden" name="streamer_{{ $streamer }}" value="off">
+    @endforeach
+    @foreach ($checkboxes['streamers'] as $streamer)
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="streamer_{{ $streamer }}" {{ request('streamer_'.$streamer) !== 'off' ? 'checked' : '' }}>
+          {{ ucwords($streamer) }}
+        </label>
+      </div>
+    @endforeach
   </div>
 
   <div class="form-group" id="search-ttypes">
     <label for="search-ttypes">Translation Types:</label>
-
-    <input type="hidden" name="ttype_sub" value="off">
-    <input type="hidden" name="ttype_dub" value="off">
-
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" name="ttype_sub" {{ request('ttype_sub') !== 'off' ? 'checked' : '' }}>
-        Subbed
-      </label>
-    </div>
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" name="ttype_dub" {{ request('ttype_dub') !== 'off' ? 'checked' : '' }}>
-        Dubbed
-      </label>
-    </div>
+    @foreach ($checkboxes['ttypes'] as $ttype)
+      <input type="hidden" name="ttype_{{ $ttype }}" value="off">
+    @endforeach
+    @foreach ($checkboxes['ttypes'] as $ttype)
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="ttype_{{ $ttype }}" {{ request('ttype_'.$ttype) !== 'off' ? 'checked' : '' }}>
+          {{ $ttype === 'sub' ? 'Subbed' : '' }}{{ $ttype === 'dub' ? 'Dubbed' : ''}}
+        </label>
+      </div>
+    @endforeach
   </div>
 @endsection
 
