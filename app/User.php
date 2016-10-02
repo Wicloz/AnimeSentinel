@@ -203,9 +203,10 @@ class User extends Authenticatable
         // If we have the show and the show state has not been changed before
         // and the show is currently airing for the desired tranlation type
         if (
-          isset($mal_field->show) && !$mal_field->auto_watching_changed &&
-          ($mal_field->notsMailWantsForType('sub') && $mal_field->show->isAiring('sub')) ||
-          ($mal_field->notsMailWantsForType('dub') && $mal_field->show->isAiring('dub'))
+          isset($mal_field->show) && !$mal_field->auto_watching_changed && (
+            $mal_field->notsMailWantsForType('sub') && $mal_field->show->isAiring('sub') ||
+            $mal_field->notsMailWantsForType('dub') && $mal_field->show->isAiring('dub')
+          )
         ) {
           $mal_field->auto_watching_changed = true;
           $mal_field->save();
