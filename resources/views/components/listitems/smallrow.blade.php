@@ -44,11 +44,16 @@
 
       <div class="smallrow-bottombar">
         <div class="row">
-          <div class="col-sm-3">
+          @if(!empty($show->season))
+            <div class="col-sm-2">
+              {{ ucwords($show->season) }}
+            </div>
+          @endif
+          <div class="col-sm-2">
             <strong>Type:</strong>
             {{ isset($show->type) ? ucwords($show->type) : 'Unknown' }}
           </div>
-          <div class="col-sm-9">
+          <div class="col-sm-{{ !empty($show->season) ? '8' : '10' }}">
             <strong>Genres:</strong>
             @if(isset($show->genres) && count($show->genres) > 0)
               @foreach($show->genres as $index => $genre)

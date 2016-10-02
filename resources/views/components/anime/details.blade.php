@@ -17,7 +17,7 @@
   </p>
   <p>
     <strong>Genres:</strong>
-    @if(count($details->genres) > 0)
+    @if(isset($details->genres) && count($details->genres) > 0)
       @foreach($details->genres as $index => $genre)
         {{ ucwords($genre) }}{{ $index === count($details->genres) -1 ? '' : ',' }}
       @endforeach
