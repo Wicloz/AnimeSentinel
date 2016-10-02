@@ -177,9 +177,10 @@ class Show extends BaseModel
           }
         }
       }
+      $results = $results->sortByDesc('matchScore');
     }
 
-    return $results->sortByDesc('matchScore');
+    return $results;
   }
 
   /**
