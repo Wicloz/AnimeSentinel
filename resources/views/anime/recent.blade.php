@@ -8,15 +8,15 @@
     <input type="hidden" name="streamer_animeshow" value="off">
     <input type="hidden" name="streamer_kissanime" value="off">
 
-    <div class="checkbox">
+    <div class="radio">
       <label>
-        <input type="checkbox" name="streamer_animeshow" {{ request('streamer_animeshow') !== 'off' ? 'checked' : '' }}>
+        <input type="radio" name="streamer_animeshow" {{ request('streamer_animeshow') !== 'off' ? 'checked' : '' }}>
         AnimeShow.tv
       </label>
     </div>
-    <div class="checkbox">
+    <div class="radio">
       <label>
-        <input type="checkbox" name="streamer_kissanime" {{ request('streamer_kissanime') !== 'off' ? 'checked' : '' }}>
+        <input type="radio" name="streamer_kissanime" {{ request('streamer_kissanime') !== 'off' ? 'checked' : '' }}>
         KissAnime
       </label>
     </div>
@@ -30,34 +30,33 @@
 
       <div class="form-group" id="option-distinct">
         <label for="option-distinct">Show One Entry Per:</label>
-
-        <div class="checkbox">
+        <div class="radio">
           <label>
-            <input type="checkbox" name="distinct_show_id" {{ in_array('show_id', $request->distincts) ? 'checked' : '' }}>
+            <input type="radio" name="distinct" value="show_id" {{ $distinct === 'show_id' ? 'checked' : '' }}>
             Show
           </label>
         </div>
-        <div class="checkbox">
+        <div class="radio">
           <label>
-            <input type="checkbox" name="distinct_translation_type" {{ in_array('translation_type', $request->distincts) ? 'checked' : '' }}>
+            <input type="radio" name="distinct" value="translation_type" {{ $distinct === 'translation_type' ? 'checked' : '' }}>
             Translation Type
           </label>
         </div>
-        <div class="checkbox">
+        <div class="radio">
           <label>
-            <input type="checkbox" name="distinct_episode_num" {{ in_array('episode_num', $request->distincts) ? 'checked' : '' }}>
+            <input type="radio" name="distinct" value="episode_num" {{ $distinct === 'episode_num' ? 'checked' : '' }}>
             Episode
           </label>
         </div>
-        <div class="checkbox">
+        <div class="radio">
           <label>
-            <input type="checkbox" name="distinct_streamer_id" {{ in_array('streamer_id', $request->distincts) ? 'checked' : '' }}>
+            <input type="radio" name="distinct" value="streamer_id" {{ $distinct === 'streamer_id' ? 'checked' : '' }}>
             Streamer
           </label>
         </div>
-        <div class="checkbox">
+        <div class="radio">
           <label>
-            <input type="checkbox" name="distinct_mirror" {{ in_array('mirror', $request->distincts) ? 'checked' : '' }}>
+            <input type="radio" name="distinct" value="mirror" {{ $distinct === 'mirror' ? 'checked' : '' }}>
             Mirror
           </label>
         </div>

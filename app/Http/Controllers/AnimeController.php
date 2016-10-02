@@ -44,14 +44,10 @@ class AnimeController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function setDistinct(Request $request) {
-    $distincts = collect([
-      'show_id', 'translation_type', 'episode_num', 'streamer_id', 'mirror',
+    $this->validate($request, [
+      'distinct' => ['required'],
     ]);
-    $distincts = $distincts->filter(function ($value, $key) use ($request) {
-      $distinct = 'distinct_'.$value;
-      return $request->$distinct === 'on';
-    });
-    return back()->withCookie(cookie()->forever('distincton', json_encode($distincts)));
+    return back()->withCookie(cookie()->forever('distinct_recent', $request->distinct));
   }
 
   /**
@@ -68,7 +64,7 @@ class AnimeController extends Controller
       'results' => $results,
       'display' => $display,
       'mode' => $mode,
-      'request' => $request,
+      'distinct' => $request->distincts[count($request->distincts) - 1],
     ]);
   }
 
@@ -96,9 +92,11 @@ class AnimeController extends Controller
       return $request->$streamer !== 'off';
     });
 
-    $request->distincts = $request->cookie('distincton') !== null ? json_decode($request->cookie('distincton')) : [
-      'show_id', 'translation_type', 'episode_num',
-    ];
+    $distinct = $request->cookie('distinct_recent') !== null ? $request->cookie('distinct_recent') : 'episode_num';
+    $request->distincts = collect([
+      'show_id', 'translation_type', 'episode_num', 'streamer_id', 'mirror',
+    ]);
+    $request->distincts = $request->distincts->slice(0, $request->distincts->flip()->get($distinct) + 1)->all();
   }
 
   /**
