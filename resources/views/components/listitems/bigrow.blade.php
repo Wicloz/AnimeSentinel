@@ -69,6 +69,8 @@
               <strong>Expected Duration:</strong>
               @if(isset($show->episode_duration))
                 {{ fancyDuration($show->episode_duration * 60, false) }} per ep.
+              @elseif($show->videos()->avg('duration') !== null)
+                {{ fancyDuration($show->videos()->avg('duration')) }}
               @else
                 Unknown
               @endif
