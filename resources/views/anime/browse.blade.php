@@ -83,7 +83,7 @@
       form.submit();
     ">&#8666;</a>
     Results - Page {{ request()->page }}
-    <a href="{{ '?page='.(request()->page + 1) }}" class="arrow-right {{ count($results) >= 50 ? '' : 'arrow-hide' }}" onclick="
+    <a href="{{ '?page='.(request()->page + 1) }}" class="arrow-right {{ request()->nextPage ? '' : 'arrow-hide' }}" onclick="
       event.preventDefault();
       var form = document.getElementById('search-form');
       var input = document.createElement('input');
@@ -115,7 +115,7 @@
       form.submit();
     ">&#8666;</a>
     Results - Page {{ request()->page }}
-    <a href="{{ '?page='.(request()->page + 1) }}" class="arrow-right {{ count($results) >= 50 ? '' : 'arrow-hide' }}" onclick="
+    <a href="{{ '?page='.(request()->page + 1) }}" class="arrow-right {{ request()->nextPage ? '' : 'arrow-hide' }}" onclick="
       event.preventDefault();
       var form = document.getElementById('search-form');
       var input = document.createElement('input');

@@ -115,11 +115,11 @@ class AnimeController extends Controller
     $this->processRequest($request);
 
     if ($request->source === 'mal') {
-      $shows = MalcacheSearch::search($request->search, $request->pageZ * 50, 50);
+      $shows = MalcacheSearch::search($request->search, $request->pageZ * 50, 51);
     }
 
     elseif ($request->source === 'as' || $request->search === '') {
-      $shows = Show::search($request->search, $request->types, $request->pageZ * 50, 50, true);
+      $shows = Show::search($request->search, $request->types, $request->pageZ * 50, 51, true);
     }
 
     else {
@@ -127,18 +127,24 @@ class AnimeController extends Controller
       $malIds = $dbShows->pluck('mal_id');
       $malShows = MalcacheSearch::search($request->search);
 
-      $shows = $dbShows->slice($request->pageZ * 50, 50);
+      $shows = $dbShows->slice($request->pageZ * 50, 51);
 
       $malShown = $request->pageZ * 50 - $dbShows->count();
       $index = 0;
       foreach ($malShows as $malShow) {
-        if (count($shows) < 50 && !$malIds->contains($malShow->mal_id)) {
+        if (count($shows) < 51 && !$malIds->contains($malShow->mal_id)) {
           $index++;
           if ($index > $malShown) {
             $shows->push($malShow);
           }
         }
       }
+    }
+
+    // Determine whether there is a next page
+    if (count($shows) > 50) {
+      $shows->pop();
+      $request->nextPage = true;
     }
 
     // Expand MAL results which are in our database
@@ -178,7 +184,13 @@ class AnimeController extends Controller
                       })
                     ->distinctOn($request->distincts, 'uploadtime')
                     ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
-                    ->skip($request->pageZ * 50)->take(50)->with('show')->with('streamer')->get();
+                    ->skip($request->pageZ * 50)->take(51)->with('show')->with('streamer')->get();
+
+    // Determine whether there is a next page
+    if (count($recents) > 50) {
+      $recents->pop();
+      $request->nextPage = true;
+    }
 
     foreach ($recents as $recent) {
       $results[] = [
