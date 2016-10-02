@@ -11,8 +11,8 @@ abstract class BaseModel extends Model
     parent::__construct($attributes);
   }
 
-  // TODO: make more secure against SQL injection
-  // NOTE: must not be followed by ->where() or ->select()
+  // NOTE: must not be followed by ->where()
+  // NOTE: cannot be used with ->select()
   public function scopeDistinctOn($query, $columns, $orderBy = null, $orderDir = 'asc') {
     if (!is_array($columns)) {
       $columns = [$columns];
@@ -20,16 +20,16 @@ abstract class BaseModel extends Model
 
     switch (config('database.default')) {
       case 'pgsql':
-        $inserts = [];
-        foreach ($columns as $column) {
-          $inserts[] = '?';
+        foreach ($columns as $index => $column) {
+          $columns[$index] = '"'.str_replace('"', '""', $column).'"';
         }
+        $orderDir = strtolower($orderDir) == 'asc' ? 'asc' : 'desc';
+        $sort = isset($orderBy) ? ', "'.str_replace('"', '""', $orderBy).'" '.$orderDir : '';
 
         $query->select(DB::raw(
-          '* FROM (SELECT DISTINCT ON ('.implode(', ', $columns).') *'
+          '* from (select distinct on ('.implode(', ', $columns).') *'
         ));
 
-        $sort = isset($orderBy) ? ', '.$orderBy.' '.$orderDir : '';
         $query->where(DB::raw(
           '1=1 ORDER BY '.implode(', ', $columns).$sort.') d where 1'
         ), '=', '1');
