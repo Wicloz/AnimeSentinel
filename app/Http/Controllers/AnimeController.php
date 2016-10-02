@@ -11,6 +11,8 @@ use App\Video;
 
 class AnimeController extends Controller
 {
+  private $allowedDisplays = ['smallrow', 'bigrow'];
+
   /**
    * Show the home page.
    *
@@ -24,21 +26,56 @@ class AnimeController extends Controller
   }
 
   /**
+   * Set a cookie for the display to use for lists on the requested page.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function setDisplay(Request $request) {
+    $this->validate($request, [
+      'display' => ['required'],
+      'page' => ['required'],
+    ]);
+    return back()->withCookie(cookie()->forever('display_'.$request->page, $request->display));
+  }
+
+  /**
+   * Set a cookie for the distinct on columns to use for the recently uploaded page.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function setDistinct(Request $request) {
+    $distincts = collect([
+      'show_id', 'translation_type', 'episode_num', 'streamer_id', 'mirror',
+    ]);
+    $distincts = $distincts->filter(function ($value, $key) use ($request) {
+      $distinct = 'distinct_'.$value;
+      return $request->$distinct === 'on';
+    });
+    return back()->withCookie(cookie()->forever('distincton', json_encode($distincts)));
+  }
+
+  /**
    * Show the browse page with the requested results.
    *
    * @return \Illuminate\Http\Response
    */
   public function browse(Request $request, $mode, $results) {
+    $display = $request->cookie('display_'.$mode);
+    if (!in_array($display, $this->allowedDisplays)) {
+      $display = 'smallrow';
+    }
     return view('anime.'.$mode, [
       'results' => $results,
-      'display' => 'smallrow',
+      'display' => $display,
+      'mode' => $mode,
+      'request' => $request,
     ]);
   }
 
   private function processRequest(Request & $request) {
     $request->search = trim(mb_strtolower($request->q));
     $this->validate($request, [
-      'search' => ['min:1', 'max:255']
+      'search' => ['min:1', 'max:255'],
     ], [], [
       'search' => 'query',
     ]);
@@ -58,6 +95,10 @@ class AnimeController extends Controller
       $streamer = 'streamer_'.$value;
       return $request->$streamer !== 'off';
     });
+
+    $request->distincts = $request->cookie('distincton') !== null ? json_decode($request->cookie('distincton')) : [
+      'show_id', 'translation_type', 'episode_num',
+    ];
   }
 
   /**
@@ -123,7 +164,7 @@ class AnimeController extends Controller
                     ->where(function ($query) {
                         $query->where('encoding', '!=', 'embed')->orWhere('encoding', null);
                       })
-                    ->distinctOn(['show_id', 'translation_type', 'episode_num', 'streamer_id'], 'uploadtime')
+                    ->distinctOn($request->distincts, 'uploadtime')
                     ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
                     ->skip(0)->take(50)->with('show')->with('streamer')->get();
 

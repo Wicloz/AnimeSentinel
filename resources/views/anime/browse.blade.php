@@ -82,5 +82,22 @@
 @endsection
 
 @section('content-right')
-  @yield('content-right')
+  <div class="content-generic content-dark">
+    <form action="{{ fullUrl('/anime/setdisplay') }}" method="POST">
+      {{ csrf_field() }}
+      <input type="hidden" name="page" value="{{ $mode }}"></input>
+
+      <div class="form-group">
+        <label for="option-display">List Type:</label>
+        <select class="form-control" id="option-display" name="display">
+          <option value="smallrow" {{ $display === 'smallrow' ? 'selected' : '' }}>Small Rows</option>
+          <option value="bigrow" {{ $display === 'bigrow' ? 'selected' : '' }}>Big Rows</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Set</button>
+    </form>
+  </div>
+
+  @yield('form-right')
 @endsection
