@@ -76,7 +76,6 @@ class MyAnimeList
         $result->mal = true;
 
         $result->mal_id = $show['mal_id'];
-        $result->details_url = 'https://myanimelist.net/anime/'.$show['mal_id'];
         $result->title = $show['title'];
 
         $result->type = strtolower(trim($show['type']));

@@ -174,29 +174,39 @@ class Show extends BaseModel
     }
   }
   public function printLatestSub() {
-    if (!isset($this->latest_sub)) {
-      if (!$this->videos_initialised) {
-        return 'Searching for Episodes ...';
+    if (empty($this->mal)) {
+      if (!isset($this->latest_sub)) {
+        if (!$this->videos_initialised) {
+          return 'Searching for Episodes ...';
+        }
+        else {
+          return 'No Episodes Available';
+        }
       }
       else {
-        return 'No Episodes Available';
+        return 'Episode ' . $this->latest_sub->episode_num;
       }
     }
     else {
-      return 'Episode ' . $this->latest_sub->episode_num;
+      return 'Unknown';
     }
   }
   public function printLatestDub() {
-    if (!isset($this->latest_dub)) {
-      if (!$this->videos_initialised) {
-        return 'Searching for Episodes ...';
+    if (empty($this->mal)) {
+      if (!isset($this->latest_dub)) {
+        if (!$this->videos_initialised) {
+          return 'Searching for Episodes ...';
+        }
+        else {
+          return 'No Episodes Available';
+        }
       }
       else {
-        return 'No Episodes Available';
+        return 'Episode ' . $this->latest_dub->episode_num;
       }
     }
     else {
-      return 'Episode ' . $this->latest_dub->episode_num;
+      return 'Unknown';
     }
   }
 
@@ -448,7 +458,7 @@ class Show extends BaseModel
     if (empty($this->mal)) {
       return fullUrl('/anime/'.$this->id.'/'.slugify($this->title));
     } else {
-      return $this->attributes['details_url'];
+      return $this->mal_url;
     }
   }
 
@@ -461,7 +471,7 @@ class Show extends BaseModel
     if (empty($this->mal)) {
       return fullUrl('/anime/-/'.slugify($this->title), true);
     } else {
-      return $this->attributes['details_url'];
+      return $this->mal_url;
     }
   }
 
