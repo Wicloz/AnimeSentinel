@@ -70,7 +70,7 @@
               @if(isset($show->episode_duration))
                 {{ fancyDuration($show->episode_duration * 60, false) }} per ep.
               @elseif(!$isMal && $show->videos()->avg('duration') !== null)
-                {{ fancyDuration($show->videos()->avg('duration')) }}
+                {{ fancyDuration($show->videos()->avg('duration'), false) }} per ep.
               @else
                 Unknown
               @endif

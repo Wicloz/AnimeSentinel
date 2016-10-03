@@ -78,7 +78,7 @@
           @if(isset($show->episode_duration))
             {{ fancyDuration($show->episode_duration * 60, false) }} per ep.
           @elseif(!$isMal && $show->videos()->avg('duration') !== null)
-            {{ fancyDuration($show->videos()->avg('duration')) }}
+            {{ fancyDuration($show->videos()->avg('duration'), false) }} per ep.
           @else
             Unknown
           @endif
@@ -101,7 +101,23 @@
           <p>
             Uploaded on {{ $video->uploadtime->format('M j, Y (l)') }}
           </p>
-        @elseif (!$isMal)
+        @elseif ($isMal)
+          <p>
+            This show is not in our database yet.
+          </p>
+          <form action="{{ fullUrl('/anime/add') }}" method="POST">
+            {{ csrf_field() }}
+            <input type="hidden" name="mal_id" value="{{ $show->mal_id }}"></input>
+            <input type="hidden" name="gotodetails" value="0"></input>
+            <button type="submit" class="btn btn-primary">Add and return to Search Results</button>
+          </form>
+          <form action="{{ fullUrl('/anime/add') }}" method="POST">
+            {{ csrf_field() }}
+            <input type="hidden" name="mal_id" value="{{ $show->mal_id }}"></input>
+            <input type="hidden" name="gotodetails" value="1"></input>
+            <button type="submit" class="btn btn-primary">Add and go to Details Page</button>
+          </form>
+        @else
           <p>
             @if(!isset($show->latest_sub))
               @if(!$show->videos_initialised)
@@ -132,22 +148,6 @@
               Uploaded On: {{ $show->latest_dub->uploadtime->format('M j, Y (l)') }}
             @endif
           </p>
-        @else
-          <p>
-            This show is not in our database yet.
-          </p>
-          <form action="{{ fullUrl('/anime/add') }}" method="POST">
-            {{ csrf_field() }}
-            <input type="hidden" name="mal_id" value="{{ $show->mal_id }}"></input>
-            <input type="hidden" name="gotodetails" value="0"></input>
-            <button type="submit" class="btn btn-primary">Add and return to Search Results</button>
-          </form>
-          <form action="{{ fullUrl('/anime/add') }}" method="POST">
-            {{ csrf_field() }}
-            <input type="hidden" name="mal_id" value="{{ $show->mal_id }}"></input>
-            <input type="hidden" name="gotodetails" value="1"></input>
-            <button type="submit" class="btn btn-primary">Add and go to Details Page</button>
-          </form>
         @endif
       </div>
     </div>
