@@ -18,15 +18,28 @@
   fieldset { display: table-cell; }
 }
 
+.table-responsive > .table-anime > tbody > tr > td {
+  white-space: normal;
+}
+
 .table-anime {
-  .col-thumbnail {
-    width: 10%;
-    min-width: 80px;
-  }
   > tbody > tr {
     cursor: pointer;
     p, button {
       margin-bottom: 8px;
     }
+  }
+  .col-thumbnail {
+    width: 10%;
+    min-width: 80px;
+  }
+  .col-description {
+    width: 20%;
+    min-width: 200px;
+  }
+  .table-description {
+    overflow-y: scroll;
+    height: 160px;
+    padding-right: 3px;
   }
 }

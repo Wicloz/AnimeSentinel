@@ -44,7 +44,9 @@
                 {{ $show->title }}
 
               @elseif ($column === 'description')
-                {!! $show->description !!}
+                <div class="table-description">
+                  {!! $show->description !!}
+                </div>
 
               @elseif ($column === 'type')
                 {{ $show->printType() }}
