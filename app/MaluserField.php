@@ -56,6 +56,22 @@ class MaluserField extends BaseModel
   }
 
   /**
+  * Convert this field's mal information to a Show model.
+  *
+  * @return \App\Show
+  */
+  public function toShow() {
+    $show = new Show();
+    $show->mal = true;
+    $show->mal_id = $this->mal_show->mal_id;
+    $show->status = $this->mal_show->status;
+    $show->title = $this->mal_show->title;
+    $show->thumbnail_id = $this->mal_show->thumbnail_id;
+    $show->eps_watched = $this->mal_show->eps_watched;
+    return $show;
+  }
+
+  /**
   * Return the setting for this mal show's mail notifications combined with the default.
   *
   * @return string

@@ -23,7 +23,14 @@ class UserController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function overview() {
-    return view('users.overview');
+    $shows = [];
+    $malFields = Auth::user()->malFields;
+    foreach ($malFields as $malField) {
+      $shows[] = $malField->toShow();
+    }
+    return view('users.overview', [
+      'shows' => $shows,
+    ]);
   }
 
   /**

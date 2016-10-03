@@ -53,6 +53,15 @@ class User extends Authenticatable
   }
 
   /**
+  * Get all shows for this user.
+  *
+  * @return \Illuminate\Database\Eloquent\Collection
+  */
+  public function shows() {
+    return Show::whereIn('mal_id', $this->malFields()->pluck('mal_id'))->get();
+  }
+
+  /**
    * Handle encryption of the users MAL password.
    */
   public function getMalPassAttribute($value) {
@@ -85,6 +94,7 @@ class User extends Authenticatable
     // Srape page for anime list
     $results = collect(Helpers::scrape_page(str_get_between($page, '</tbody>', '</table>'), '</td>', [
       'status' => [true, '<td class="data status ', '">'],
+      'thumbnail_id' => [false, '/images/anime', '?'],
       'partialUrl' => [false, '<a class="link sort" href="', '</a>'],
       'progress' => [false, '<div class="progress', '</div>'],
     ]));
@@ -96,6 +106,8 @@ class User extends Authenticatable
 
       $mal_show->mal_id = str_get_between($result['partialUrl'], '/anime/', '/');
       $mal_show->title = str_get_between($result['partialUrl'], '">');
+
+      $mal_show->thumbnail_id = $result['thumbnail_id'];
 
       $eps_watched = str_get_between($result['progress'], '<a href="javascript: void(0);" class="link edit-disabled">', '</a>');
       if ($eps_watched !== false) {
