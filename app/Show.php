@@ -76,6 +76,126 @@ class Show extends BaseModel
   }
 
   /**
+  * Functions to print information in a fancy way.
+  */
+  public function printAlts() {
+    return implode(', ', $this->alts);
+  }
+  public function printType() {
+    return isset($this->type) ? ucwords($this->type) : 'Unknown';
+  }
+  public function printGenres() {
+    if (count($this->genres) > 0) {
+      $string = '';
+      foreach ($this->genres as $index => $genre) {
+        $string .= ucwords($genre);
+        $string .= $index < count($this->genres) - 1 ? ', ' : '';
+      }
+      return $string;
+    }
+    else {
+      return 'Unknown';
+    }
+  }
+  public function printTotalEpisodes() {
+    return isset($this->episode_amount) ? $this->episode_amount : 'Unknown';
+  }
+  public function printExpectedDuration($withEp = true) {
+    if (isset($this->episode_duration)) {
+      return fancyDuration($this->episode_duration * 60, false) . ($withEp ? ' per ep.' : '');
+    }
+    elseif ($this->videos()->avg('duration') !== null) {
+      return fancyDuration($this->videos()->avg('duration'), false) . ($withEp ? ' per ep.' : '');
+    }
+    else {
+      return 'Unknown';
+    }
+  }
+  public function printAvarageDuration($withEp = true) {
+    if ($this->videos()->avg('duration') !== null) {
+      return fancyDuration($this->videos()->avg('duration')) . ($withEp ? ' per ep.' : '');
+    }
+    else {
+      return 'NA';
+    }
+  }
+  public function printExpectedAiring() {
+    if (empty($this->airing_start) && empty($this->airing_end)) {
+      return 'Unknown';
+    }
+    else {
+      $string = !empty($this->airing_start) ? $this->airing_start->toFormattedDateString() : '?';
+      $string .= ' to ';
+      $string .= !empty($this->airing_end) ? $this->airing_end->toFormattedDateString() : '?';
+      return $string;
+    }
+  }
+  public function printSeason() {
+    return isset($this->season) ? ucwords($this->season) : 'Unknown';
+  }
+  public function printStatusSub() {
+    if (!empty($this->mal)) {
+      if (!isset($this->airing_start) || Carbon::now()->endOfDay()->lt($this->airing_start)) {
+        return 'Upcoming';
+      }
+      elseif (!isset($this->airing_end) || Carbon::now()->startOfDay()->lte($this->airing_end)) {
+        return 'Currently Airing';
+      }
+      else {
+        return 'Completed';
+      }
+    }
+    else {
+      if ($this->isAiring('sub')) {
+        return 'Currently Airing';
+      }
+      elseif ($this->finishedAiring('sub')) {
+        return 'Completed';
+      }
+      else {
+        return 'Upcoming';
+      }
+    }
+  }
+  public function printStatusDub() {
+    if ($this->isAiring('dub')) {
+      return 'Currently Airing';
+    }
+    elseif ($this->finishedAiring('dub')) {
+      return 'Completed';
+    }
+    else {
+      return 'Upcoming';
+    }
+  }
+  public function printLatestSub() {
+    if (!isset($this->latest_sub)) {
+      if (!$this->videos_initialised) {
+        return 'Searching for Episodes ...';
+      }
+      else {
+        return 'No Episodes Available';
+      }
+    }
+    else {
+      return 'Episode ' . $this->latest_sub->episode_num;
+    }
+  }
+  public function printLatestDub() {
+    if (!isset($this->latest_dub)) {
+      if (!$this->videos_initialised) {
+        return 'Searching for Episodes ...';
+      }
+      else {
+        return 'No Episodes Available';
+      }
+    }
+    else {
+      return 'Episode ' . $this->latest_dub->episode_num;
+    }
+  }
+
+  /**
    * Include show's where the requested title matches any alt.
    *
    * @return \Illuminate\Database\Eloquent\Builder

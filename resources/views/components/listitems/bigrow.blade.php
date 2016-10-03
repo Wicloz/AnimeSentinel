@@ -18,22 +18,8 @@
             <a href="{{ $video->episode_url }}">
               Episode {{ $video->episode_num }} {{ $video->translation_type === 'sub' ? '(Sub)' : '' }}{{ $video->translation_type === 'dub' ? '(Dub)' : ''}}
             </a>
-          @elseif ($isMal)
-            @if(!isset($show->airing_start) || Carbon\Carbon::now()->endOfDay()->lt($show->airing_start))
-              Upcoming
-            @elseif(!isset($show->airing_end) || Carbon\Carbon::now()->startOfDay()->lte($show->airing_end))
-              Currently Airing
-            @else
-              Completed
-            @endif
           @else
-            @if($show->isAiring('sub'))
-              Currently Airing
-            @elseif($show->finishedAiring('sub'))
-              Completed
-            @else
-              Upcoming
-            @endif
+            {{ $show->printStatusSub() }}
           @endif
         </span>
       </div>
@@ -49,44 +35,28 @@
           <div class="bigrow-details">
             <p>
               <strong>Type:</strong>
-              {{ isset($show->type) ? ucwords($show->type) : 'Unknown' }}
+              {{ $show->printType() }}
             </p>
             <p>
               <strong>Genres:</strong>
-              @if(isset($show->genres) && count($show->genres) > 0)
-                @foreach($show->genres as $index => $genre)
-                  {{ ucwords($genre) }}{{ $index === count($show->genres) -1 ? '' : ',' }}
-                @endforeach
-              @else
-                Unknown
-              @endif
+              {{ $show->printGenres() }}
             </p>
             <p>
               <strong>Total Episodes:</strong>
-              {{ $show->episode_amount or 'Unknown' }}
+              {{ $show->printTotalEpisodes() }}
             </p>
             <p>
               <strong>Expected Duration:</strong>
-              @if(isset($show->episode_duration))
-                {{ fancyDuration($show->episode_duration * 60, false) }} per ep.
-              @elseif(!$isMal && $show->videos()->avg('duration') !== null)
-                {{ fancyDuration($show->videos()->avg('duration'), false) }} per ep.
-              @else
-                Unknown
-              @endif
+              {{ $show->printExpectedDuration() }}
             </p>
             <p>
               <strong>Expected Airing:</strong>
-              @if(empty($show->airing_start) && empty($show->airing_end))
-                Unknown
-              @else
-                {{ !empty($show->airing_start) ? $show->airing_start->toFormattedDateString() : '?' }} to {{ !empty($show->airing_end) ? $show->airing_end->toFormattedDateString() : '?' }}
-              @endif
+              {{ $show->printExpectedAiring() }}
             </p>
             @if(!empty($show->season))
               <p>
                 <strong>Season:</strong>
-                {{ ucwords($show->season) }}
+                {{ $show->printSeason() }}
               </p>
             @endif
           </div>
@@ -130,31 +100,23 @@
             </div>
           @else
             <div class="col-sm-6">
-              @if(!isset($show->latest_sub))
-                @if(!$show->videos_initialised)
-                  <strong>Latest Subbed:</strong> Searching for episodes ...
-                @else
-                  <strong>Latest Subbed:</strong> No episodes available
-                @endif
-              @else
+              @if(isset($show->latest_sub))
                 <a href="{{ $show->latest_sub->episode_url }}">
-                  <strong>Latest Subbed:</strong> Episode {{ $show->latest_sub->episode_num }};
+                  <strong>Latest Subbed:</strong> {{ $show->printLatestSub() }};
                   <strong>Uploaded On:</strong> {{ $show->latest_sub->uploadtime->format('M j, Y (l)') }}
                 </a>
+              @else
+                <strong>Latest Subbed:</strong> {{ $show->printLatestSub() }}
               @endif
             </div>
             <div class="col-sm-6">
-              @if(!isset($show->latest_dub))
-                @if(!$show->videos_initialised)
-                  <strong>Latest Dubbed:</strong> Searching for episodes ...
-                @else
-                  <strong>Latest Dubbed:</strong> No episodes available
-                @endif
-              @else
+              @if(isset($show->latest_dub))
                 <a href="{{ $show->latest_dub->episode_url }}">
-                  <strong>Latest Dubbed:</strong> Episode {{ $show->latest_dub->episode_num }};
+                  <strong>Latest Dubbed:</strong> {{ $show->printLatestDub() }};
                   <strong>Uploaded On:</strong> {{ $show->latest_dub->uploadtime->format('M j, Y (l)') }}
                 </a>
+              @else
+                <strong>Latest Dubbed:</strong> {{ $show->printLatestDub() }}
               @endif
             </div>
           @endif
