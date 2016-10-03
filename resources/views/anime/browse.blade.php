@@ -95,7 +95,12 @@
           'columns' => [
             'thumbnail',
             'title',
+            'description',
             'type',
+            'genres',
+            'season',
+            'episode_amount',
+            'episode_duration',
             'videos',
           ],
         ])

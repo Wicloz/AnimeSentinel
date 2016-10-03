@@ -8,8 +8,18 @@
           @if ($column === 'thumbnail')
           @elseif ($column === 'title')
             Title
+          @elseif ($column === 'description')
+            Description
           @elseif ($column === 'type')
             Type
+          @elseif ($column === 'genres')
+            Genres
+          @elseif ($column === 'season')
+            Season
+          @elseif ($column === 'episode_amount')
+            Total Episodes
+          @elseif ($column === 'episode_duration')
+            Expected Duration
           @elseif ($column === 'videos')
             Videos
           @endif
@@ -33,8 +43,23 @@
               @elseif ($column === 'title')
                 {{ $show->title }}
 
+              @elseif ($column === 'description')
+                {!! $show->description !!}
+
               @elseif ($column === 'type')
-                {{ isset($show->type) ? ucwords($show->type) : 'Unknown' }}
+                {{ $show->printType() }}
+
+              @elseif ($column === 'genres')
+                {{ $show->printGenres() }}
+
+              @elseif ($column === 'season')
+                {{ $show->printSeason() }}
+
+              @elseif ($column === 'episode_amount')
+                {{ $show->printTotalEpisodes() }}
+
+              @elseif ($column === 'episode_duration')
+                {{ $show->printExpectedDuration() }}
 
               @elseif ($column === 'videos')
                 @if(isset($videos[$index]) && $videos[$index] !== null)
@@ -76,33 +101,25 @@
                   </form>
                 @else
                   <p>
-                    @if(!isset($show->latest_sub))
-                      @if(!$show->videos_initialised)
-                        <strong>Latest Subbed:</strong> Searching for Episodes ...
-                      @else
-                        <strong>Latest Subbed:</strong> No Episodes Available
-                      @endif
-                    @else
+                    @if(isset($show->latest_sub))
                       <a href="{{ $show->latest_sub->episode_url }}">
-                        <strong>Latest Subbed:</strong> Episode {{ $show->latest_sub->episode_num }}
+                        <strong>Latest Subbed:</strong> {{ $show->printLatestSub() }}
                       </a>
                     </p><p>
                       <strong>Uploaded On:</strong> {{ $show->latest_sub->uploadtime->format('M j, Y (l)') }}
+                    @else
+                      <strong>Latest Subbed:</strong> {{ $show->printLatestSub() }}
                     @endif
                   </p>
                   <p>
-                    @if(!isset($show->latest_dub))
-                      @if(!$show->videos_initialised)
-                        <strong>Latest Dubbed:</strong> Searching for Episodes ...
-                      @else
-                        <strong>Latest Dubbed:</strong> No Episodes Available
-                      @endif
-                    @else
+                    @if(isset($show->latest_dub))
                       <a href="{{ $show->latest_dub->episode_url }}">
-                        <strong>Latest Dubbed:</strong> Episode {{ $show->latest_dub->episode_num }}
+                        <strong>Latest Dubbed:</strong> {{ $show->printLatestDub() }}
                       </a>
                     </p><p>
                       <strong>Uploaded On:</strong> {{ $show->latest_dub->uploadtime->format('M j, Y (l)') }}
+                    @else
+                      <strong>Latest Dubbed:</strong> {{ $show->printLatestDub() }}
                     @endif
                   </p>
                 @endif
