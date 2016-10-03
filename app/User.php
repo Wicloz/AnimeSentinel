@@ -205,10 +205,12 @@ class User extends Authenticatable
    * Update the MAL caches and send notifications.
    */
   public function periodicTasks() {
-    // Update the MAL cache
-    if ($this->mal_user !== '') {
-      $this->updateMalCache();
+    if ($this->mal_user === '') {
+      return;
     }
+
+    // Update the MAL cache
+    $this->updateMalCache();
 
     // Mark plan to watch shows as watching
     if ($this->auto_watching_state && $this->mal_canwrite) {
@@ -230,7 +232,7 @@ class User extends Authenticatable
     }
 
     // Send mail notifications
-    if ($this->nots_mail_state) {
+    if ($this->nots_mail_state && $this->mal_canread) {
       // For all shows on the user's mal list
       foreach ($this->malFields->load('show', 'user') as $mal_field) {
         // If the user wants subbed notifications for this show and we have at least one episode
