@@ -89,17 +89,22 @@
         @if (isset($video))
           <p>
             <a href="{{ $video->episode_url }}">
-              Episode {{ $video->episode_num }} Has Aired
+              <strong>
+                Episode {{ $video->episode_num }} Has Aired
+              </strong>
             </a>
           </p>
           <p>
-            Episode Type: {{ $video->translation_type === 'sub' ? 'Subbed' : '' }}{{ $video->translation_type === 'dub' ? 'Dubbed' : ''}}
+            <strong>Episode Type:</strong>
+            {{ $video->translation_type === 'sub' ? 'Subbed' : '' }}{{ $video->translation_type === 'dub' ? 'Dubbed' : ''}}
           </p>
           <p>
-            Uploaded by <a href="{{ $video->streamer->details_url }}">{{ $video->streamer->name }}</a>
+            <strong>Uploaded By:</strong>
+            <a href="{{ $video->streamer->details_url }}">{{ $video->streamer->name }}</a>
           </p>
           <p>
-            Uploaded on {{ $video->uploadtime->format('M j, Y (l)') }}
+            <strong>Uploaded On:</strong>
+            {{ $video->uploadtime->format('M j, Y (l)') }}
           </p>
         @elseif ($isMal)
           <p>
@@ -121,31 +126,31 @@
           <p>
             @if(!isset($show->latest_sub))
               @if(!$show->videos_initialised)
-                Latest Subbed: Searching for Episodes ...
+                <strong>Latest Subbed:</strong> Searching for Episodes ...
               @else
-                Latest Subbed: No Episodes Available
+                <strong>Latest Subbed:</strong> No Episodes Available
               @endif
             @else
               <a href="{{ $show->latest_sub->episode_url }}">
-                Latest Subbed: Epsiode {{ $show->latest_sub->episode_num }}
+                <strong>Latest Subbed:</strong> Episode {{ $show->latest_sub->episode_num }}
               </a>
             </p><p>
-              Uploaded On: {{ $show->latest_sub->uploadtime->format('M j, Y (l)') }}
+              <strong>Uploaded On:</strong> {{ $show->latest_sub->uploadtime->format('M j, Y (l)') }}
             @endif
           </p>
           <p>
             @if(!isset($show->latest_dub))
               @if(!$show->videos_initialised)
-                Latest Dubbed: Searching for Episodes ...
+                <strong>Latest Dubbed:</strong> Searching for Episodes ...
               @else
-                Latest Dubbed: No Episodes Available
+                <strong>Latest Dubbed:</strong> No Episodes Available
               @endif
             @else
               <a href="{{ $show->latest_dub->episode_url }}">
-                Latest Dubbed: Epsiode {{ $show->latest_dub->episode_num }}
+                <strong>Latest Dubbed:</strong> Episode {{ $show->latest_dub->episode_num }}
               </a>
             </p><p>
-              Uploaded On: {{ $show->latest_dub->uploadtime->format('M j, Y (l)') }}
+              <strong>Uploaded On:</strong> {{ $show->latest_dub->uploadtime->format('M j, Y (l)') }}
             @endif
           </p>
         @endif
