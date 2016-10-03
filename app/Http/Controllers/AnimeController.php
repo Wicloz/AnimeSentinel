@@ -124,7 +124,7 @@ class AnimeController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function search(Request $request) {
-    $results = collect([]); $shows = [];
+    $results = collect([]); $shows = collect([]);
     $this->processRequest($request);
 
     if ($request->source === 'mal') {
