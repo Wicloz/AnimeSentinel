@@ -57,7 +57,7 @@ class User extends Authenticatable
   *
   * @return \Illuminate\Database\Eloquent\Collection
   */
-  public function shows() {
+  public function getShowsAttribute() {
     return Show::whereIn('mal_id', $this->malFields()->pluck('mal_id'))->get();
   }
 

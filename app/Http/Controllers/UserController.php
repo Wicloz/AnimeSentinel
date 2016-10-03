@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
+use App\Show;
 
 class UserController extends Controller
 {
@@ -22,12 +23,24 @@ class UserController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function overview() {
-    $shows = [];
+  public function overview(Request $request) {
+    $shows = collect([]);
+
     $malFields = Auth::user()->malFields;
     foreach ($malFields as $malField) {
-      $shows[] = $malField->toShow();
+      if (!isset($request->status) || $request->status === $malField->mal_show->status) {
+        $shows[] = $malField->toShow();
+      }
     }
+
+    // Expand MAL results which are in our database
+    $dbShows = Show::whereIn('mal_id', $shows->pluck('mal_id'))->get();
+    foreach ($shows as $index => $show) {
+      if (!empty($dbShows->where('mal_id', $show->mal_id)->first())) {
+        $shows[$index] = $dbShows->where('mal_id', $show->mal_id)->first();
+      }
+    }
+
     return view('users.overview', [
       'shows' => $shows,
     ]);
