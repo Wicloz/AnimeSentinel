@@ -70,6 +70,8 @@ class MalcacheSearch extends BaseModel
    * These are returned from the cache whenever possible.
    *
    * @return array
+   *
+   * TODO: add filters
    */
   public static function search($query, $start = 0, $amount = null) {
     if ($query !== '') {

@@ -11,7 +11,7 @@ use App\Video;
 
 class AnimeController extends Controller
 {
-  private $allowedDisplays = ['smallrow', 'bigrow'];
+  private $allowedDisplays = ['smallrow', 'bigrow', 'table'];
   private $checkboxes = [
     'streamers' => [
       'animeshow', 'kissanime',
@@ -63,6 +63,7 @@ class AnimeController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function setDistinct(Request $request) {
+    // TODO: make this less useless
     $this->validate($request, [
       'distinct' => ['required'],
     ]);
@@ -123,7 +124,7 @@ class AnimeController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function search(Request $request) {
-    $results = []; $shows = [];
+    $results = collect([]); $shows = [];
     $this->processRequest($request);
 
     if ($request->source === 'mal') {
@@ -184,7 +185,7 @@ class AnimeController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function recent(Request $request) {
-    $results = [];
+    $results = collect([]);
     $this->processRequest($request);
 
     $shows = Show::search($request->search, $request->types, $request->genres);

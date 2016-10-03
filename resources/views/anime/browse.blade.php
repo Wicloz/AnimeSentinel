@@ -87,9 +87,22 @@
   @if (count($results) === 0)
     <div class="content-header">No Results</div>
   @else
-    @foreach($results as $result)
-      @include('components.listitems.'.$display, $result)
-    @endforeach
+    @if ($display === 'table')
+      <div class="content-generic">
+        @include('components.anime.table', [
+          'shows' => $results->pluck('show'),
+          'columns' => [
+            'thumbnail',
+            'title',
+          ],
+        ])
+        <div class="content-close"></div>
+      </div>
+    @else
+      @foreach($results as $result)
+        @include('components.listitems.'.$display, $result)
+      @endforeach
+    @endif
   @endif
 
   <div class="content-header header-center">
@@ -128,6 +141,7 @@
         <select class="form-control" id="option-display" name="display">
           <option value="smallrow" {{ $display === 'smallrow' ? 'selected' : '' }}>Small Rows</option>
           <option value="bigrow" {{ $display === 'bigrow' ? 'selected' : '' }}>Big Rows</option>
+          <option value="table" {{ $display === 'table' ? 'selected' : '' }}>Table</option>
         </select>
       </div>
 
