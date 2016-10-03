@@ -5,6 +5,7 @@ namespace App;
 use App\Scopes\CacheShowScope;
 use Carbon\Carbon;
 use App\AnimeSentinel\Actions\ShowManager;
+use Illuminate\Support\Facades\Auth;
 
 class Show extends BaseModel
 {
@@ -73,6 +74,15 @@ class Show extends BaseModel
   */
   public function show_flag() {
     return $this->hasOne(ShowFlag::class, 'mal_id', 'mal_id');
+  }
+
+  /**
+  * Get the mal data for this show for the logged in user.
+  *
+  * @return \Illuminate\Database\Eloquent\Collection
+  */
+  public function getMalShowAttribute() {
+    return Auth::check() ? Auth::user()->malFields()->where('mal_id', $this->mal_id)->first()->mal_show : null;
   }
 
   /**

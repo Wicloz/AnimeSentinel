@@ -7,7 +7,6 @@ use App\Http\Requests;
 
 use App\Show;
 use App\AnimeSentinel\Actions\ShowManager;
-use Illuminate\Support\Facades\Auth;
 
 class ShowController extends Controller
 {
@@ -27,7 +26,6 @@ class ShowController extends Controller
         }
         return view('anime.details', [
           'show' => $show,
-          'mal_field' => Auth::check() ? Auth::user()->malFields()->where('mal_id', $show->mal_id)->first() : null,
         ]);
       }
       else {
