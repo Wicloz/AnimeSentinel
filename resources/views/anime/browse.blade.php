@@ -91,9 +91,12 @@
       <div class="content-generic">
         @include('components.anime.table', [
           'shows' => $results->pluck('show'),
+          'videos' => $results->pluck('video'),
           'columns' => [
             'thumbnail',
             'title',
+            'type',
+            'videos',
           ],
         ])
         <div class="content-close"></div>

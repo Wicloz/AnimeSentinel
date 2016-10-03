@@ -14,14 +14,19 @@
   background-color: $background_colour-content_accent2;
 }
 
-.table-responsive {
-  @-moz-document url-prefix() {
-    fieldset { display: table-cell; }
-  }
+@-moz-document url-prefix() {
+  fieldset { display: table-cell; }
 }
 
 .table-anime {
   .col-thumbnail {
     width: 10%;
+    min-width: 80px;
+  }
+  > tbody > tr {
+    cursor: pointer;
+    p, button {
+      margin-bottom: 8px;
+    }
   }
 }
