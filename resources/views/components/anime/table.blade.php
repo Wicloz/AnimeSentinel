@@ -52,7 +52,7 @@
                 {{ $show->printType() }}
 
               @elseif ($column === 'genres')
-                {{ $show->printGenres() }}
+                {!! str_replace(', ', ',<br>', $show->printGenres()) !!}
 
               @elseif ($column === 'season')
                 {{ $show->printSeason() }}
