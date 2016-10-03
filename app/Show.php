@@ -8,6 +8,8 @@ use App\AnimeSentinel\Actions\ShowManager;
 
 class Show extends BaseModel
 {
+  protected static $cachesUpdated = 0;
+
   /**
    * The attributes that are mass assignable.
    *
@@ -357,7 +359,8 @@ class Show extends BaseModel
   */
   public function handleCaching() {
     // TODO: smarter cache time
-    if ($this->cache_updated_at->diffInHours(Carbon::now()) >= rand(168, 336)) {
+    if (Self::$cachesUpdated < 1 && $this->cache_updated_at->diffInHours(Carbon::now()) >= rand(168, 336)) {
+      Self::$cachesUpdated++;
       ShowManager::updateShowCache($this->id);
     }
   }
