@@ -43,26 +43,13 @@ class MalcacheSearch extends BaseModel
   ];
 
   /**
-   * Properly decode the results attribute.
+   * Properly serialize and unserialize the results attribute.
    */
   public function getResultsAttribute($value) {
-    $results = json_decode($value);
-    if (isset($results)) {
-      foreach ($results as $index => $result) {
-        if (isset($result->airing_start)) {
-          $airing_start = serialize($result->airing_start);
-          $airing_start = preg_replace('@^O:8:"stdClass":@','O:13:"Carbon\Carbon":', $airing_start);
-          $result->airing_start = unserialize($airing_start);
-        }
-        if (isset($result->airing_end)) {
-          $airing_end = serialize($result->airing_end);
-          $airing_end = preg_replace('@^O:8:"stdClass":@','O:13:"Carbon\Carbon":', $airing_end);
-          $result->airing_end = unserialize($airing_end);
-        }
-        $results[$index] = $result;
-      }
-    }
-    return collect($results);
+    return unserialize(json_decode($value));
+  }
+  public function setResultsAttribute($value) {
+    $this->attributes['results'] = json_encode(serialize($value));
   }
 
   /**
@@ -80,7 +67,7 @@ class MalcacheSearch extends BaseModel
       }
       $search = Self::firstOrNew(['query' => $query]);
 
-      if (count($search->results) <= 0 || $search->cache_updated_at->diffInHours(Carbon::now()) >= rand(24, 48)) {
+      if (empty($search->results) || count($search->results) <= 0 || $search->cache_updated_at->diffInHours(Carbon::now()) >= rand(24, 48)) {
         $search->results = MyAnimeList::search($query);
         $search->cache_updated_at = Carbon::now();
         $search->save();

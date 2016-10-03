@@ -104,7 +104,7 @@ class Show extends BaseModel
     if (isset($this->episode_duration)) {
       return fancyDuration($this->episode_duration * 60, false) . ($withEp ? ' per ep.' : '');
     }
-    elseif ($this->videos()->avg('duration') !== null) {
+    elseif (empty($this->mal) && $this->videos()->avg('duration') !== null) {
       return fancyDuration($this->videos()->avg('duration'), false) . ($withEp ? ' per ep.' : '');
     }
     else {
@@ -112,7 +112,7 @@ class Show extends BaseModel
     }
   }
   public function printAvarageDuration($withEp = true) {
-    if ($this->videos()->avg('duration') !== null) {
+    if (empty($this->mal) && $this->videos()->avg('duration') !== null) {
       return fancyDuration($this->videos()->avg('duration')) . ($withEp ? ' per ep.' : '');
     }
     else {
@@ -134,18 +134,7 @@ class Show extends BaseModel
     return isset($this->season) ? ucwords($this->season) : 'Unknown';
   }
   public function printStatusSub() {
-    if (!empty($this->mal)) {
-      if (!isset($this->airing_start) || Carbon::now()->endOfDay()->lt($this->airing_start)) {
-        return 'Upcoming';
-      }
-      elseif (!isset($this->airing_end) || Carbon::now()->startOfDay()->lte($this->airing_end)) {
-        return 'Currently Airing';
-      }
-      else {
-        return 'Completed';
-      }
-    }
-    else {
+    if (empty($this->mal)) {
       if ($this->isAiring('sub')) {
         return 'Currently Airing';
       }
@@ -156,16 +145,32 @@ class Show extends BaseModel
         return 'Upcoming';
       }
     }
+    else {
+      if (!isset($this->airing_start) || Carbon::now()->endOfDay()->lt($this->airing_start)) {
+        return 'Upcoming';
+      }
+      elseif (!isset($this->airing_end) || Carbon::now()->startOfDay()->lte($this->airing_end)) {
+        return 'Currently Airing';
+      }
+      else {
+        return 'Completed';
+      }
+    }
   }
   public function printStatusDub() {
-    if ($this->isAiring('dub')) {
-      return 'Currently Airing';
-    }
-    elseif ($this->finishedAiring('dub')) {
-      return 'Completed';
+    if (empty($this->mal)) {
+      if ($this->isAiring('dub')) {
+        return 'Currently Airing';
+      }
+      elseif ($this->finishedAiring('dub')) {
+        return 'Completed';
+      }
+      else {
+        return 'Upcoming';
+      }
     }
     else {
-      return 'Upcoming';
+      return 'Unknown';
     }
   }
   public function printLatestSub() {
@@ -440,7 +445,11 @@ class Show extends BaseModel
   * @return string
   */
   public function getDetailsUrlAttribute() {
-    return fullUrl('/anime/'.$this->id.'/'.slugify($this->title));
+    if (empty($this->mal)) {
+      return fullUrl('/anime/'.$this->id.'/'.slugify($this->title));
+    } else {
+      return $this->attributes['details_url'];
+    }
   }
 
   /**
@@ -449,7 +458,11 @@ class Show extends BaseModel
   * @return string
   */
   public function getDetailsUrlStaticAttribute() {
-    return fullUrl('/anime/-/'.slugify($this->title), true);
+    if (empty($this->mal)) {
+      return fullUrl('/anime/-/'.slugify($this->title), true);
+    } else {
+      return $this->attributes['details_url'];
+    }
   }
 
   /**
@@ -471,7 +484,11 @@ class Show extends BaseModel
   * @return string
   */
   public function getThumbnailUrlAttribute() {
-    return fullUrl('/media/thumbnails/'.$this->thumbnail_id);
+    if (empty($this->mal)) {
+      return fullUrl('/media/thumbnails/'.$this->thumbnail_id);
+    } else {
+      return $this->attributes['thumbnail_url'];
+    }
   }
 
   /**
@@ -479,7 +496,7 @@ class Show extends BaseModel
   */
   public function handleCaching() {
     // TODO: smarter cache time
-    if (Self::$cachesUpdated < 1 && $this->cache_updated_at->diffInHours(Carbon::now()) >= rand(168, 336)) {
+    if (!$this->mal && Self::$cachesUpdated < 1 && $this->cache_updated_at->diffInHours(Carbon::now()) >= rand(168, 336)) {
       Self::$cachesUpdated++;
       ShowManager::updateShowCache($this->id);
     }

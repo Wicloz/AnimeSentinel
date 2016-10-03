@@ -3,6 +3,7 @@
 namespace App\AnimeSentinel;
 
 use Carbon\Carbon;
+use App\Show;
 
 class MyAnimeList
 {
@@ -68,10 +69,10 @@ class MyAnimeList
       'airing' => [false, 'width="80">', ''],
     ]), 0, 128);
 
-    $results = [];
+    $results = collect([]);
     foreach ($shows as $show) {
       if (trim($show['type']) !== 'Music') {
-        $result = new \stdClass();
+        $result = new Show();
         $result->mal = true;
 
         $result->mal_id = $show['mal_id'];
