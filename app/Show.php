@@ -497,7 +497,7 @@ class Show extends BaseModel
     if (empty($this->mal)) {
       return fullUrl('/media/thumbnails/'.$this->thumbnail_id);
     } else {
-      return $this->attributes['thumbnail_url'];
+      return 'https://myanimelist.cdn-dena.com/images/anime/'.$this->thumbnail_id;
     }
   }
 

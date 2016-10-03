@@ -99,9 +99,9 @@ class MyAnimeList
         $result->airing_end = Self::convertSearchAiringToCarbon(trim(str_get_between($airing[1], 'width="80">')));
 
         if (!empty($show['thumbnail_id'])) {
-          $result->thumbnail_url = 'https://myanimelist.cdn-dena.com/images/anime/'.$show['thumbnail_id'];
+          $result->thumbnail_id = $show['thumbnail_id'];
         } else {
-          $result->thumbnail_url = 'TODO';
+          $result->thumbnail_id = null;
         }
 
         $results[] = $result;
