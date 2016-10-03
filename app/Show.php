@@ -82,7 +82,13 @@ class Show extends BaseModel
   * @return \Illuminate\Database\Eloquent\Collection
   */
   public function getMalShowAttribute() {
-    return Auth::check() ? Auth::user()->malFields()->where('mal_id', $this->mal_id)->first()->mal_show : null;
+    if (Auth::check()) {
+      $malField = Auth::user()->malFields()->where('mal_id', $this->mal_id)->first();
+      if(isset($malField)) {
+        return $malField->mal_show;
+      }
+    }
+    return null;
   }
 
   /**
