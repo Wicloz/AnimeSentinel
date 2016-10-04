@@ -37,7 +37,9 @@ class UserController extends Controller
     $malFields = Auth::user()->malFields;
     foreach ($malFields as $malField) {
       if (!isset($request->status) || $request->status === $malField->mal_show->status) {
-        $shows[$malField->mal_show->status][] = $malField->toShow();
+        $mal_show = $malField->toShow();
+        $mal_show->mal_show = $malField->mal_show;
+        $shows[$malField->mal_show->status][] = $mal_show;
       }
     }
 
