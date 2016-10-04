@@ -3,7 +3,7 @@
     MAL Interaction Disabled
   </div>
 @elseif(!Auth::user()->mal_canread)
-  <div class="alert alert-error">
+  <div class="alert alert-danger">
     MAL Username Invalid
   </div>
 @elseif(Auth::user()->mal_pass === '')
@@ -11,7 +11,7 @@
     MAL Interaction Read Only
   </div>
 @elseif(!Auth::user()->mal_canwrite)
-  <div class="alert alert-error">
+  <div class="alert alert-danger">
     MAL Password Invalid
   </div>
 @else

@@ -132,13 +132,13 @@
                 @if (!$show->mal)
                   <ul class="list-unstyled">
                     @forelse ($show->episodes('sub', 'asc', $show->mal_show->eps_watched) as $episode)
-                      <li>
+                      <li class="text-warning">
                         <a href="{{ $episode->episode_url }}">
                           Episode {{ $episode->episode_num }}
                         </a>
                       </li>
                     @empty
-                      <li>
+                      <li class="text-success">
                         - Up To Date -
                       </li>
                     @endforelse
