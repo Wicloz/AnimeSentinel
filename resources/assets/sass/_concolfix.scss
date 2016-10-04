@@ -1,0 +1,26 @@
+// main: app.scss
+@import 'vars';
+
+.text-muted {
+  color: $concol-muted_text;
+}
+
+.text-primary {
+  color: $concol-primary_text;
+}
+
+.text-success {
+  color: $concol-success_text;
+}
+
+.text-info {
+  color: $concol-info_text;
+}
+
+.text-warning {
+  color: $concol-warning_text;
+}
+
+.text-danger {
+  color: $concol-danger_text;
+}
