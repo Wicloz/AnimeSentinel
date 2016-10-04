@@ -1,4 +1,4 @@
-@if(empty(Auth::user()->mal_user))
+@if(Auth::user()->mal_user === '')
   <div class="alert alert-warning">
     MAL Interaction Disabled
   </div>
@@ -6,7 +6,7 @@
   <div class="alert alert-error">
     MAL Username Invalid
   </div>
-@elseif(empty(Auth::user()->mal_pass))
+@elseif(Auth::user()->mal_pass === '')
   <div class="alert alert-warning">
     MAL Interaction Read Only
   </div>
