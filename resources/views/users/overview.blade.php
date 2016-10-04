@@ -8,6 +8,7 @@
       'columns' => [
         'thumbnail',
         'title',
+        'watchable',
       ],
     ])
     <div class="content-close"></div>

@@ -469,14 +469,18 @@ class Show extends BaseModel
   *
   * @return array
   */
-  public function episodes($translation_type) {
-    return $this->videos()
-                ->where('translation_type', $translation_type)
-                ->distinctOn('episode_num', 'uploadtime')
-                ->orderBy('episode_num', 'desc')
-                ->orderBy('uploadtime', 'asc')
-                ->orderBy('id', 'asc')
-                ->get();
+  public function episodes($translation_type, $order = 'desc', $episode_num_min = null) {
+    $query = $this->videos()->where('translation_type', $translation_type);
+
+    if (isset($episode_num_min)) {
+      $query->where('episode_num', '>', $episode_num_min);
+    }
+
+    return $query->distinctOn('episode_num', 'uploadtime')
+                 ->orderBy('episode_num', $order)
+                 ->orderBy('uploadtime', 'asc')
+                 ->orderBy('id', 'asc')
+                 ->get();
   }
 
   /**

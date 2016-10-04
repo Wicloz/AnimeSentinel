@@ -22,6 +22,8 @@
             Expected Duration
           @elseif ($column === 'videos')
             Videos
+          @elseif ($column === 'watchable')
+            Watchable
           @endif
           </th>
         @endforeach
@@ -124,6 +126,25 @@
                       <strong>Latest Dubbed:</strong> {{ $show->printLatestDub() }}
                     @endif
                   </p>
+                @endif
+
+              @elseif ($column === 'watchable')
+                @if (!$show->mal)
+                  <ul class="list-unstyled">
+                    @forelse ($show->episodes('sub', 'asc', $show->mal_show->eps_watched) as $episode)
+                      <li>
+                        <a href="{{ $episode->episode_url }}">
+                          Episode {{ $episode->episode_num }}
+                        </a>
+                      </li>
+                    @empty
+                      <li>
+                        - Up To Date -
+                      </li>
+                    @endforelse
+                  </ul>
+                @else
+                  - Unknown -
                 @endif
 
               @endif
