@@ -24,6 +24,11 @@ class UserController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function overview(Request $request) {
+    // Set status to watching if none is requested
+    if (!isset($request->status)) {
+      $request->status = 'watching';
+    }
+
     // Create shows per status
     $shows = collect([
       'watching' => collect([]),
@@ -36,7 +41,7 @@ class UserController extends Controller
     // Fill all states that are requested
     $malFields = Auth::user()->malFields;
     foreach ($malFields as $malField) {
-      if (!isset($request->status) || $request->status === $malField->mal_show->status) {
+      if ($request->status === 'all' || $request->status === $malField->mal_show->status) {
         $mal_show = $malField->toShow();
         $mal_show->mal_show = $malField->mal_show;
         $shows[$malField->mal_show->status][] = $mal_show;
