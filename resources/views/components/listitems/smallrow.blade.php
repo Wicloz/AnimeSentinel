@@ -88,13 +88,13 @@
             {{ csrf_field() }}
             <input type="hidden" name="mal_id" value="{{ $show->mal_id }}"></input>
             <input type="hidden" name="gotodetails" value="0"></input>
-            <button type="submit" class="btn btn-primary">Add and return to Search Results</button>
+            <button type="submit" class="btn">Add and return to Search Results</button>
           </form>
           <form action="{{ fullUrl('/anime/add') }}" method="POST">
             {{ csrf_field() }}
             <input type="hidden" name="mal_id" value="{{ $show->mal_id }}"></input>
             <input type="hidden" name="gotodetails" value="1"></input>
-            <button type="submit" class="btn btn-primary">Add and go to Details Page</button>
+            <button type="submit" class="btn">Add and go to Details Page</button>
           </form>
         @else
           <p>

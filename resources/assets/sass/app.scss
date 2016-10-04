@@ -75,6 +75,10 @@ img {
   max-width: 100%;
 }
 
+button {
+  color: $background_colour-content_header;
+}
+
 .img-thumbnail {
   color: $background_colour-content_header;
   background-color: $text_colour-navs;
