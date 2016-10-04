@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class Show extends BaseModel
 {
   protected static $cachesUpdated = 0;
+  private $malShow = null;
 
   /**
    * The attributes that are mass assignable.
@@ -82,13 +83,26 @@ class Show extends BaseModel
   * @return \Illuminate\Database\Eloquent\Collection
   */
   public function getMalShowAttribute() {
-    if (Auth::check()) {
-      $malField = Auth::user()->malFields()->where('mal_id', $this->mal_id)->first();
-      if(isset($malField)) {
-        return $malField->mal_show;
+    if (Auth::check() && $this->malShow !== 'NA') {
+      if ($this->malShow === null) {
+        $malField = Auth::user()->malFields()->where('mal_id', $this->mal_id)->first();
+        if (isset($malField)) {
+          $this->malShow = $malField->mal_show;
+        } else {
+          $this->malShow = 'NA';
+          return null;
+        }
       }
+      return $this->malShow;
     }
     return null;
+  }
+
+  /**
+  * Set the cached mal show.
+  */
+  public function setMalShowAttribute($value) {
+    $this->malShow = $value;
   }
 
   /**
