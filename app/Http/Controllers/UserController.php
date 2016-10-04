@@ -24,16 +24,30 @@ class UserController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function overview(Request $request) {
-    $shows = collect([]);
+    // Create shows per status
+    $shows = collect([
+      'watching' => collect([]),
+      'completed' => collect([]),
+      'onhold' => collect([]),
+      'dropped' => collect([]),
+      'plantowatch' => collect([]),
+    ]);
 
+    // Fill all states that are requested
     $malFields = Auth::user()->malFields;
     foreach ($malFields as $malField) {
       if (!isset($request->status) || $request->status === $malField->mal_show->status) {
-        $shows[] = $malField->toShow();
+        $shows[$malField->mal_show->status][] = $malField->toShow();
       }
     }
 
-    // Expand MAL results which are in our database
+    // Sort and flatten the shows
+    foreach ($shows as $status => $items) {
+      $shows[$status] = $items->sortBy('title');
+    }
+    $shows = $shows->flatten();
+
+    // Expand mal shows which are in our database
     $dbShows = Show::whereIn('mal_id', $shows->pluck('mal_id'))->get();
     foreach ($shows as $index => $show) {
       if (!empty($dbShows->where('mal_id', $show->mal_id)->first())) {
@@ -41,6 +55,7 @@ class UserController extends Controller
       }
     }
 
+    // Return the view
     return view('users.overview', [
       'shows' => $shows,
     ]);
