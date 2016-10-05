@@ -20,6 +20,8 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
 
+            $table->text('viewsettings_overview')->nullable();
+
             $table->string('mal_user')->default('');
             $table->string('mal_pass')->default('');
             $table->boolean('mal_canread')->default(false);

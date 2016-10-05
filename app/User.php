@@ -22,7 +22,7 @@ class User extends Authenticatable
    * @var array
    */
   protected $fillable = [
-    'username', 'email', 'password', 'mal_user', 'mal_pass', 'mal_canread', 'mal_canwrite', 'nots_mail_state', 'nots_mail_settings', 'auto_watching_state',
+    'username', 'email', 'password', 'viewsettings_overview', 'mal_user', 'mal_pass', 'mal_canread', 'mal_canwrite', 'nots_mail_state', 'nots_mail_settings', 'auto_watching_state',
   ];
 
   /**
@@ -31,6 +31,7 @@ class User extends Authenticatable
    * @var array
    */
   protected $casts = [
+    'viewsettings_overview' => 'collection',
     'nots_mail_settings' => 'collection',
   ];
 
