@@ -59,6 +59,7 @@ class UserController extends Controller
     // Find the columns that need to be shown
     $columns = collect([
       'title',
+      'episode_duration',
       'watchable',
     ]);
     if (Auth::user()->viewsettings_overview->get('thumbnails')) {
