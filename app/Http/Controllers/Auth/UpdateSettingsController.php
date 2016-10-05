@@ -113,6 +113,14 @@ class UpdateSettingsController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function notifications_mail_general(Request $request) {
+    $this->validate($request, [
+      'setting_watching' => ['required'],
+      'setting_completed' => ['required'],
+      'setting_onhold' => ['required'],
+      'setting_dropped' => ['required'],
+      'setting_plantowatch' => ['required'],
+    ]);
+
     Auth::user()->nots_mail_settings = [
       'watching' => $request->setting_watching,
       'completed' => $request->setting_completed,
@@ -141,6 +149,26 @@ class UpdateSettingsController extends Controller
         }
       }
     }
+
+    return back();
+  }
+
+  /**
+   * Update the setting for this user's overview page.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function overview(Request $request) {
+    $states = collect(['watching', 'completed', 'onhold', 'dropped', 'plantowatch']);
+    $states = $states->filter(function ($value, $key) use ($request) {
+      return $request->{'state_'.$value} === 'on';
+    });
+
+    Auth::user()->viewsettings_overview = [
+      'states' => $states,
+      'thumbnails' => $request->option_thumbnails === 'on',
+    ];
+    Auth::user()->save();
 
     return back();
   }

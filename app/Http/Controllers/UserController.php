@@ -23,12 +23,7 @@ class UserController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function overview(Request $request) {
-    // Set status to watching if none is requested
-    if (!isset($request->status)) {
-      $request->status = 'watching';
-    }
-
+  public function overview() {
     // Create shows per status
     $shows = collect([
       'watching' => collect([]),
@@ -41,7 +36,7 @@ class UserController extends Controller
     // Fill all states that are requested
     $malFields = Auth::user()->malFields;
     foreach ($malFields as $malField) {
-      if ($request->status === 'all' || $request->status === $malField->mal_show->status) {
+      if (in_array($malField->mal_show->status, Auth::user()->viewsettings_overview->get('states'))) {
         $shows[$malField->mal_show->status][] = $malField->toShow();
       }
     }
@@ -61,9 +56,19 @@ class UserController extends Controller
       }
     }
 
+    // Find the columns that need to be shown
+    $columns = collect([
+      'title',
+      'watchable',
+    ]);
+    if (Auth::user()->viewsettings_overview->get('thumbnails')) {
+      $columns->prepend('thumbnail');
+    }
+
     // Return the view
     return view('users.overview', [
       'shows' => $shows,
+      'columns' => $columns,
     ]);
   }
 
