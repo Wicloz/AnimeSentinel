@@ -190,7 +190,7 @@ class MyAnimeList
     $genres = [];
     $set = explode('</a>', str_get_between($page, '<span class="dark_text">Genres:</span>', '</div>'));
     foreach ($set as $item) {
-      if (trim($item) !== '') {
+      if (trim($item) !== '' && trim($item) !== 'No genres have been added yet.') {
         $genres[] = strtolower(trim(str_get_between($item, '>')));
       }
     }

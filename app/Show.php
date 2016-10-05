@@ -275,15 +275,25 @@ class Show extends BaseModel
     $query = Self::skip($start)->take($amount)->orderBy('title');
 
     // searching by types
-    $query->whereIn('type', $types);
+    $query->where(function ($query) use ($types) {
+      $query->whereIn('type', $types);
+      if ($types->contains('unknown')) {
+        $query->orWhere('type', null);
+      }
+    });
 
     // searching by genres
     $query->where(function ($query) use ($genres) {
       $query->where(\DB::raw('1'), \DB::raw('0'));
       foreach ($genres as $genre) {
-        $query->orWhere(function ($query) use ($genre) {
-          $query->whereLike('genres', '%'.json_encode($genre).'%');
-        });
+        if ($genre !== 'Unknown') {
+          $query->orWhere(function ($query) use ($genre) {
+            $query->whereLike('genres', '%'.json_encode($genre).'%');
+          });
+        }
+        else {
+          $query->orWhere('genres', '[]');
+        }
       }
     });
 
