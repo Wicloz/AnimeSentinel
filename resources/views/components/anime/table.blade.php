@@ -131,12 +131,18 @@
               @elseif ($column === 'watchable')
                 @if (!$show->mal)
                   <ul class="list-unstyled">
-                    @forelse ($show->episodes('sub', 'asc', $show->mal_show->eps_watched) as $episode)
-                      <li class="text-warning">
-                        <a href="{{ $episode->episode_url }}">
-                          Episode {{ $episode->episode_num }}
-                        </a>
-                      </li>
+                    @forelse ($show->episodes('sub', 'asc', $show->mal_show->eps_watched) as $index => $episode)
+                      @if ($index < 10)
+                        <li class="text-warning">
+                          <a href="{{ $episode->episode_url }}">
+                            Episode {{ $episode->episode_num }}
+                          </a>
+                        </li>
+                      @elseif ($index === 10)
+                        <li>
+                          ...
+                        </li>
+                      @endif
                     @empty
                       <li class="text-success">
                         - Up To Date -
