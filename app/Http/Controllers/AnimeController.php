@@ -67,7 +67,7 @@ class AnimeController extends Controller
     if ($request->ttype_dub === 'on') {
       $ttypes[] = 'dub';
     }
-    return back()->withCookie(cookie()->forever('ttype_recent', json_encode($ttypes)));
+    return back()->withCookie(cookie()->forever('options_recent_ttype', json_encode($ttypes)));
   }
 
   /**
@@ -80,7 +80,7 @@ class AnimeController extends Controller
     $this->validate($request, [
       'distinct' => ['required'],
     ]);
-    return back()->withCookie(cookie()->forever('distinct_recent', $request->distinct));
+    return back()->withCookie(cookie()->forever('options_recent_distinct', $request->distinct));
   }
 
   /**
@@ -117,14 +117,14 @@ class AnimeController extends Controller
     }
     $request->pageZ = $request->page - 1;
 
-    $distinct = $request->cookie('distinct_recent') !== null ? $request->cookie('distinct_recent') : 'episode_num';
+    $distinct = $request->cookie('options_recent_distinct') !== null ? $request->cookie('options_recent_distinct') : 'episode_num';
     $request->distincts = collect([
       'show_id', 'translation_type', 'episode_num', 'streamer_id', 'mirror',
     ]);
     $request->distincts = $request->distincts->slice(0, $request->distincts->flip()->get($distinct) + 1)->all();
 
-    if ($request->cookie('ttype_recent') !== null) {
-      $request->ttypes = collect(json_decode($request->cookie('ttype_recent')));
+    if ($request->cookie('options_recent_ttype') !== null) {
+      $request->ttypes = collect(json_decode($request->cookie('options_recent_ttype')));
     } else {
       $request->ttypes = collect([
         'sub', 'dub',
