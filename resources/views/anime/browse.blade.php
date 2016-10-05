@@ -20,9 +20,9 @@
 @endsection
 
 @section('content-left')
-  <div class="content-generic content-dark">
-      @yield('form-left')
+    @yield('form-left')
 
+    <div class="content-generic content-dark">
       <div class="form-group" id="search-types">
         <label for="search-types">Types:</label>
         @foreach ($checkboxes['types'] as $type)
@@ -37,7 +37,9 @@
           </div>
         @endforeach
       </div>
+    </div>
 
+    <div class="content-generic content-dark">
       <div class="form-group" id="search-genres">
         <label for="search-genres">Genres:</label>
         @foreach ($checkboxes['genres'] as $genre)
@@ -52,11 +54,13 @@
           </div>
         @endforeach
       </div>
+    </div>
 
+    <div class="content-generic content-dark">
       <button type="submit" class="btn btn-primary">Search</button>
       <button type="reset" class="btn btn-default">Reset</button>
-    </form>
-  </div>
+    </div>
+  </form>
 @endsection
 
 @section('content-center')
