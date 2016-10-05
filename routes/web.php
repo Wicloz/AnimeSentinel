@@ -40,6 +40,7 @@ Route::post('/user/settings/mal', 'Auth\UpdateSettingsController@mal');
 Route::post('/user/settings/password', 'Auth\UpdateSettingsController@password');
 Route::post('/user/notifications/mail/general', 'Auth\UpdateSettingsController@notifications_mail_general');
 Route::post('/user/notifications/mail/specific', 'Auth\UpdateSettingsController@notifications_mail_specific');
+Route::post('/user/settings/overview', 'Auth\UpdateSettingsController@overview');
 
 // CSS Routes
 Route::get('/user/settings/css', 'CssController@showUserSettings'); //TODO
@@ -50,6 +51,7 @@ Route::get('/anime/browse', 'AnimeController@search');
 Route::get('/anime/recent', 'AnimeController@recent');
 Route::post('/anime/setdisplay', 'AnimeController@setDisplay');
 Route::post('/anime/recent/setdistinct', 'AnimeController@setDistinct');
+Route::post('/anime/recent/setttype', 'AnimeController@setTtype');
 
 // Anime Details
 Route::get('/anime/{show}/{title?}', 'ShowController@details');

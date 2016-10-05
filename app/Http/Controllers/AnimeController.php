@@ -16,9 +16,6 @@ class AnimeController extends Controller
     'streamers' => [
       'animeshow', 'kissanime',
     ],
-    'ttypes' => [
-      'sub', 'dub',
-    ],
     'types' => [
       'tv', 'ona', 'ova', 'movie', 'special',
     ],
@@ -55,6 +52,22 @@ class AnimeController extends Controller
       'page' => ['required'],
     ]);
     return back()->withCookie(cookie()->forever('display_'.$request->page, $request->display));
+  }
+
+  /**
+   * Set a cookie for the selected translation types for the recently uploaded page.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function setTtype(Request $request) {
+    $ttypes = [];
+    if ($request->ttype_sub === 'on') {
+      $ttypes[] = 'sub';
+    }
+    if ($request->ttype_dub === 'on') {
+      $ttypes[] = 'dub';
+    }
+    return back()->withCookie(cookie()->forever('ttype_recent', json_encode($ttypes)));
   }
 
   /**
@@ -109,6 +122,14 @@ class AnimeController extends Controller
       'show_id', 'translation_type', 'episode_num', 'streamer_id', 'mirror',
     ]);
     $request->distincts = $request->distincts->slice(0, $request->distincts->flip()->get($distinct) + 1)->all();
+
+    if ($request->cookie('ttype_recent') !== null) {
+      $request->ttypes = collect(json_decode($request->cookie('ttype_recent')));
+    } else {
+      $request->ttypes = collect([
+        'sub', 'dub',
+      ]);
+    }
 
     foreach ($this->checkboxes as $checkbox => $values) {
       $request->$checkbox = collect($values);

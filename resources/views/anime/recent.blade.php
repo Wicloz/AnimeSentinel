@@ -18,26 +18,33 @@
       @endforeach
     </div>
   </div>
-
-  <div class="content-generic content-dark">
-    <div class="form-group" id="search-ttypes">
-      <label for="search-ttypes">Translation Types:</label>
-      @foreach ($checkboxes['ttypes'] as $ttype)
-        <input type="hidden" name="ttype_{{ $ttype }}" value="off">
-      @endforeach
-      @foreach ($checkboxes['ttypes'] as $ttype)
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" name="ttype_{{ $ttype }}" {{ request('ttype_'.$ttype) !== 'off' ? 'checked' : '' }}>
-            {{ $ttype === 'sub' ? 'Subbed' : '' }}{{ $ttype === 'dub' ? 'Dubbed' : ''}}
-          </label>
-        </div>
-      @endforeach
-    </div>
-  </div>
 @endsection
 
 @section('form-right')
+  <div class="content-generic content-dark">
+    <form action="{{ fullUrl('/anime/recent/setttype') }}" method="POST">
+      {{ csrf_field() }}
+
+      <div class="form-group" id="option-ttypes">
+        <label for="option-ttypes">Translation Types:</label>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="ttype_sub" {{ request()->ttypes->contains('sub') ? 'checked' : '' }}>
+            Subbed
+          </label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="ttype_dub" {{ request()->ttypes->contains('dub') ? 'checked' : '' }}>
+            Dubbed
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Set</button>
+    </form>
+  </div>
+
   <div class="content-generic content-dark">
     <form action="{{ fullUrl('/anime/recent/setdistinct') }}" method="POST">
       {{ csrf_field() }}
