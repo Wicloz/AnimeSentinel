@@ -64,10 +64,9 @@ class MaluserField extends BaseModel
     $show = new Show();
     $show->mal = true;
     $show->mal_id = $this->mal_show->mal_id;
-    $show->status = $this->mal_show->status;
     $show->title = $this->mal_show->title;
     $show->thumbnail_id = $this->mal_show->thumbnail_id;
-    $show->eps_watched = $this->mal_show->eps_watched;
+    $show->mal_show = $this->mal_show;
     return $show;
   }
 

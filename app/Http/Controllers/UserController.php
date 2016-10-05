@@ -42,9 +42,7 @@ class UserController extends Controller
     $malFields = Auth::user()->malFields;
     foreach ($malFields as $malField) {
       if ($request->status === 'all' || $request->status === $malField->mal_show->status) {
-        $mal_show = $malField->toShow();
-        $mal_show->mal_show = $malField->mal_show;
-        $shows[$malField->mal_show->status][] = $mal_show;
+        $shows[$malField->mal_show->status][] = $malField->toShow();
       }
     }
 
@@ -59,6 +57,7 @@ class UserController extends Controller
     foreach ($shows as $index => $show) {
       if (!empty($dbShows->where('mal_id', $show->mal_id)->first())) {
         $shows[$index] = $dbShows->where('mal_id', $show->mal_id)->first();
+        $shows[$index]->mal_show = $show->mal_show;
       }
     }
 
