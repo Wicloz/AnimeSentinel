@@ -149,7 +149,7 @@ class AnimeController extends Controller
     $this->processRequest($request);
 
     if ($request->source === 'mal') {
-      $shows = MalcacheSearch::search($request->search, $request->pageZ * 50, 51);
+      $shows = MalcacheSearch::search($request->search, $request->types, $request->genres, $request->pageZ * 50, 51);
     }
 
     elseif ($request->source === 'as' || $request->search === '') {
@@ -158,8 +158,8 @@ class AnimeController extends Controller
 
     else {
       $dbShows = Show::search($request->search, $request->types, $request->genres);
+      $malShows = MalcacheSearch::search($request->search, $request->types, $request->genres);
       $malIds = $dbShows->pluck('mal_id');
-      $malShows = MalcacheSearch::search($request->search);
 
       $shows = $dbShows->slice($request->pageZ * 50, 51);
 

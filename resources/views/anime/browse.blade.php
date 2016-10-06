@@ -49,7 +49,11 @@
           <div class="checkbox">
             <label>
               <input type="checkbox" name="genre_{{ str_replace(' ', '_', $genre) }}" {{ request('genre_'.str_replace(' ', '_', $genre)) !== 'off' ? 'checked' : '' }}>
-              {{ $genre }}
+              @if ($genre === 'Unknown')
+                Unknown (NOTE: All results from MAL have an unknown genre)
+              @else
+                {{ $genre }}
+              @endif
             </label>
           </div>
         @endforeach
