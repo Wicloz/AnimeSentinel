@@ -116,12 +116,7 @@ class Show extends BaseModel
   }
   public function printGenres() {
     if (count($this->genres) > 0) {
-      $string = '';
-      foreach ($this->genres as $index => $genre) {
-        $string .= ucwords($genre);
-        $string .= $index < count($this->genres) - 1 ? ', ' : '';
-      }
-      return $string;
+      return ucwords(implode(', ', $this->genres->all()));
     }
     else {
       return 'Unknown';
