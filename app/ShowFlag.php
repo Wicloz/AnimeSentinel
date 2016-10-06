@@ -22,7 +22,7 @@ class ShowFlag extends BaseModel
    * @var array
    */
   protected $casts = [
-    'alt_rules' => 'array'
+    'alt_rules' => 'collection',
   ];
 
   /**

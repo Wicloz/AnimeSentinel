@@ -27,8 +27,8 @@ class Show extends BaseModel
    * @var array
    */
   protected $casts = [
-    'alts' => 'array',
-    'genres' => 'array',
+    'alts' => 'collection',
+    'genres' => 'collection',
   ];
 
   /**
@@ -36,11 +36,11 @@ class Show extends BaseModel
    */
   public function getAltsAttribute($value) {
     $this->handleCaching();
-    return (array) json_decode($value);
+    return collect(json_decode($value));
   }
   public function getGenresAttribute($value) {
     $this->handleCaching();
-    return (array) json_decode($value);
+    return collect(json_decode($value));
   }
 
   /**
