@@ -109,7 +109,7 @@ class Show extends BaseModel
   * Functions to print information in a fancy way.
   */
   public function printAlts() {
-    return implode(', ', $this->alts);
+    return implode(', ', $this->alts->all());
   }
   public function printType() {
     return isset($this->type) ? ucwords($this->type) : 'Unknown';
