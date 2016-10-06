@@ -159,6 +159,10 @@ class UpdateSettingsController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function overview(Request $request) {
+    $this->validate($request, [
+      'option_cutoff' => ['required', 'integer'],
+    ]);
+
     $states = collect(['watching', 'completed', 'onhold', 'dropped', 'plantowatch']);
     $states = $states->filter(function ($value, $key) use ($request) {
       return $request->{'state_'.$value} === 'on';
@@ -167,6 +171,7 @@ class UpdateSettingsController extends Controller
     Auth::user()->viewsettings_overview = [
       'states' => $states,
       'thumbnails' => $request->option_thumbnails === 'on',
+      'cutoff' => $request->option_cutoff,
     ];
     Auth::user()->save();
 

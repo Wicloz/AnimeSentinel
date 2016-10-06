@@ -11,7 +11,7 @@
       {{ csrf_field() }}
 
       <div class="form-group" id="option-states">
-        <label for="option-states">Show for States:</label>
+        <label for="option-states">Show:</label>
         <div class="checkbox">
           <label>
             <input type="checkbox" name="state_watching" {{ in_array('watching', Auth::user()->viewsettings_overview->get('states')) ? 'checked' : '' }}>
@@ -44,13 +44,23 @@
         </div>
       </div>
 
-      <div class="form-group" id="option-thumbnails">
+      <div class="form-group">
         <div class="checkbox">
           <label>
             <input type="checkbox" name="option_thumbnails" {{ Auth::user()->viewsettings_overview->get('thumbnails') ? 'checked' : '' }}>
             Show Thumbnails
           </label>
         </div>
+      </div>
+
+      <div class="form-group {{ $errors->has('option_cutoff') ? 'has-error' : '' }}">
+        <label for="option-cutoff"># of Watchable Episodes to Show:</label>
+        <input id="option-cutoff" type="number" class="form-control" name="option_cutoff" value="{{ Auth::user()->viewsettings_overview->get('cutoff') }}" min="1" required>
+        @if ($errors->has('option_cutoff'))
+          <span class="help-block">
+            <strong>{{ $errors->first('option_cutoff') }}</strong>
+          </span>
+        @endif
       </div>
 
       <button type="submit" class="btn btn-primary">Set</button>

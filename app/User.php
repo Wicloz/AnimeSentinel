@@ -73,6 +73,32 @@ class User extends Authenticatable
   }
 
   /**
+  * Get the viewsettings for the overview page with missing values set to defaults.
+  *
+  * @return \Illuminate\Database\Eloquent\Collection
+  */
+  public function getViewsettingsOverviewAttribute($value) {
+    $settings = collect(json_decode($value));
+
+    if (!$settings->has('states')) {
+      $settings['states'] = ['watching'];
+    }
+
+    if (!$settings->has('thumbnails')) {
+      $settings['thumbnails'] = true;
+    }
+
+    if (!$settings->has('cutoff')) {
+      $settings['cutoff'] = 10;
+    } else {
+      $settings['cutoff'] = (int) $settings['cutoff'];
+    }
+
+    return $settings;
+  }
+
+
+  /**
    * Update this user's cached MAL list and credential status.
    *
    * @return boolean

@@ -132,13 +132,13 @@
                 @if (!$show->mal)
                   <ul class="list-unstyled">
                     @forelse ($show->episodes('sub', 'asc', $show->mal_show->eps_watched) as $index => $episode)
-                      @if ($index < 10)
+                      @if ($index < Auth::user()->viewsettings_overview->get('cutoff'))
                         <li class="text-warning">
                           <a href="{{ $episode->episode_url }}">
                             Episode {{ $episode->episode_num }}
                           </a>
                         </li>
-                      @elseif ($index === 10)
+                      @elseif ($index === Auth::user()->viewsettings_overview->get('cutoff'))
                         <li>
                           ...
                         </li>

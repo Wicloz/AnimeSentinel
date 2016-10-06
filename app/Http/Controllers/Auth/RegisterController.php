@@ -68,10 +68,6 @@ class RegisterController extends Controller
       'password' => bcrypt($data['password']),
       'mal_user' => $data['mal_user'],
       'mal_pass' => $data['mal_pass'],
-      'viewsettings_overview' => [
-        'states' => ['watching'],
-        'thumbnails' => true,
-      ],
     ]);
     $user->updateMalCache();
     return $user;
