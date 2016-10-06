@@ -126,6 +126,7 @@ class User extends Authenticatable
       'progress' => [false, '<div class="progress', '</div>'],
     ]));
 
+    $malIds_list = [];
     // Convert the results to more convenient objects and save them
     foreach ($results as $result) {
       $mal_show = new \stdClass();
@@ -146,11 +147,18 @@ class User extends Authenticatable
         $mal_show->eps_watched = 0;
       }
 
+      $malIds_list[] = $mal_show->mal_id;
+
       // Save or update the mal field
       $mal_field = $this->malFields()->firstOrNew(['mal_id' => $mal_show->mal_id]);
       $mal_field->mal_show = $mal_show;
       $mal_field->save();
     }
+
+    // Remove all mal fields no longer on the user's list
+    $malIds_db = $this->malFields()->pluck('mal_id');
+    $malIds_diff = $malIds_db->diff($malIds_list);
+    $this->malFields()->whereIn('mal_id', $malIds_diff)->delete();
   }
 
   /**
