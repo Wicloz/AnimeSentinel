@@ -89,7 +89,7 @@ class User extends Authenticatable
     }
 
     if (!$settings->has('cutoff')) {
-      $settings['cutoff'] = 10;
+      $settings['cutoff'] = 3;
     } else {
       $settings['cutoff'] = (int) $settings['cutoff'];
     }
