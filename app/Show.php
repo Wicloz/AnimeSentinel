@@ -367,27 +367,18 @@ class Show extends BaseModel
     }
 
     if (isset($show)) {
-      if ($title === slugify($show->title) || empty($title)) {
+      if ($title === '') {
         return $show;
       }
-      else {
-        foreach ($show->alts as $alt) {
-          if ($title === slugify($alt)) {
-            return $show;
-          }
+      foreach ($show->alts as $alt) {
+        if ($title === slugify($alt)) {
+          return $show;
         }
       }
     }
 
-    if (!empty($title)) {
-      $replace = [
-        '⧸' => '/',
-        '⧹' => '\\',
-      ];
-      foreach ($replace as $from => $to) {
-        $title = str_replace($from, $to, $title);
-      }
-      $title = str_replace('‑', ' ', $title);
+    if ($title !== '') {
+      $title = deslugify($title);
       $show = Show::withTitle($title)->first();
       if (isset($show)) {
         return $show;

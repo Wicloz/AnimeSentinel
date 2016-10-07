@@ -21,7 +21,13 @@ class EpisodeController extends Controller
     if (!isset($show)) {
       abort(404);
     }
-    if ($show->id !== (int) $show_id || $title !== slugify($show->title)) {
+    if ($show->id === (int) $show_id && $title === slugify($show->title)) {
+      if (!visitPage('show_'.$show->id)) {
+        $show->hits++;
+        $show->save();
+      }
+    }
+    else {
       return redirect($show->details_url.'/'.$translation_type.'/episode-'.$episode_num);
     }
 
@@ -53,7 +59,13 @@ class EpisodeController extends Controller
     if (!isset($show)) {
       abort(404);
     }
-    if ($show->id !== (int) $show_id || $title !== slugify($show->title)) {
+    if ($show->id === (int) $show_id && $title === slugify($show->title)) {
+      if (!visitPage('show_'.$show->id)) {
+        $show->hits++;
+        $show->save();
+      }
+    }
+    else {
       return redirect($show->details_url.'/'.$translation_type.'/episode-'.$episode_num.'/'.$streamer.'/'.$mirror);
     }
 

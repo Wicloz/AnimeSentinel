@@ -143,6 +143,20 @@ function slugify($string) {
   return str_replace(' ', '‑', $string);
 }
 
+function deslugify($string) {
+  $string = mb_strtolower($string);
+
+  $replace = [
+    '⧸' => '/',
+    '⧹' => '\\',
+  ];
+  foreach ($replace as $from => $to) {
+    $string = str_replace($from, $to, $string);
+  }
+
+  return str_replace('‑', ' ', $string);
+}
+
 // String Helpers //
 
 function str_get_between($string, $start, $end = '', $last = false) {

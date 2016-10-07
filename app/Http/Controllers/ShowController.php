@@ -18,21 +18,21 @@ class ShowController extends Controller
   public function details($show_id, $title = '') {
     $show = Show::getShowFromUrl($show_id, $title);
 
-    if (isset($show)) {
-      if ($show->id === (int) $show_id && $title === slugify($show->title)) {
-        if (!visitPage('show_'.$show->id)) {
-          $show->hits++;
-          $show->save();
-        }
-        return view('anime.details', [
-          'show' => $show,
-        ]);
-      }
-      else {
-        return redirect($show->details_url);
-      }
+    if (!isset($show)) {
+      abort(404);
     }
 
-    abort(404);
+    if ($show->id === (int) $show_id && $title === slugify($show->title)) {
+      if (!visitPage('show_'.$show->id)) {
+        $show->hits++;
+        $show->save();
+      }
+      return view('anime.details', [
+        'show' => $show,
+      ]);
+    }
+    else {
+      return redirect($show->details_url);
+    }
   }
 }
