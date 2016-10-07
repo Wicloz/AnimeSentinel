@@ -5,7 +5,7 @@ function queueJob($job, $queue = 'default') {
   $job_data = $job->db_data;
 
   if ($job_data['show_id'] !== null) {
-    // Check whether a higher job is queued
+    // Check whether a higher job is queued, elevate and stop
     $highers = \App\Job::higherThan($job_data['job_task'], $job_data['show_id']);
     if (count($highers) > 0) {
       foreach ($highers as $higher) {
@@ -14,7 +14,7 @@ function queueJob($job, $queue = 'default') {
       return;
     }
 
-    // Check whether the same job is already queued
+    // Check whether the same job is already queued, elevate and stop
     $duplicates = \App\Job::where([
       ['job_task', '=', $job_data['job_task']],
       ['show_id', '=', $job_data['show_id']],
@@ -28,7 +28,7 @@ function queueJob($job, $queue = 'default') {
       return;
     }
 
-    // Remove any lower jobs
+    // Remove any lower queued jobs, elevate this queue
     $newQueue = \App\Job::deleteLowerThan($job_data['job_task'], $job_data['show_id']);
     if (in_array($newQueue, array_get_parents(config('queue.queuehierarchy'), $queue))) {
       $queue = $newQueue;
@@ -51,7 +51,7 @@ function handleJobFunction($job_task, $show_id, $job_data, $fromJob) {
     ['show_id', '=', $show_id],
     ['job_data', '=', json_encode($job_data)],
   ];
-  // Remove any inferior queued jobs
+  // Remove any lower queued jobs
   \App\Job::deleteLowerThan($job_task, $show_id);
   // If this is queued as a job, remove it from the queue
   \App\Job::where(array_merge($job_dbdata, [['reserved_at', '=', null]]))->delete();
