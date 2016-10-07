@@ -472,7 +472,7 @@ class Show extends BaseModel
       $query->where('episode_num', '>', $episode_num_min);
     }
 
-    return $query->distinctOn('episode_num', 'uploadtime')
+    return $query->distinctOn('episode_num', ['uploadtime' => 'asc', 'id' => 'asc'])
                  ->orderBy('episode_num', $order)
                  ->orderBy('uploadtime', 'asc')
                  ->orderBy('id', 'asc')

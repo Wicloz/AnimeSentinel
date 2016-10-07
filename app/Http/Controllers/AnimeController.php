@@ -217,7 +217,7 @@ class AnimeController extends Controller
                         $query->where('encoding', '!=', 'embed')->orWhere('encoding', null);
                       })
                     ->whereIn('translation_type', $request->ttypes)
-                    ->distinctOn($request->distincts, 'uploadtime')
+                    ->distinctOn($request->distincts, ['uploadtime' => 'asc', 'id' => 'asc'])
                     ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
                     ->skip($request->pageZ * 50)->take(51)->with('show')->with('streamer')->get();
 

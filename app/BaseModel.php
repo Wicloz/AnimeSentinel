@@ -12,25 +12,37 @@ abstract class BaseModel extends Model
   }
 
   // NOTE: must not be followed by ->where()
-  public function scopeDistinctOn($query, $columns, $orderBy = null, $orderDir = 'asc') {
+  public function scopeDistinctOn($query, $columns, $orderBy = []) {
     if (!is_array($columns)) {
       $columns = [$columns];
+    }
+    foreach ($orderBy as $column => $direction) {
+      $orderBy[$column] = strtolower($direction) == 'asc' ? 'asc' : 'desc';
     }
 
     switch (config('database.default')) {
       case 'pgsql':
+        $orderByString = '';
+
         foreach ($columns as $index => $column) {
           $columns[$index] = '"'.str_replace('"', '""', $column).'"';
         }
-        $orderDir = strtolower($orderDir) == 'asc' ? 'asc' : 'desc';
-        $sort = isset($orderBy) ? ', "'.str_replace('"', '""', $orderBy).'" '.$orderDir : '';
+
+        $index = 0;
+        foreach ($orderBy as $column => $direction) {
+          if ($index < count($orderBy)) {
+            $orderByString .= ', ';
+          }
+          $orderByString .= '"'.str_replace('"', '""', $column).'" '.$direction;
+          $index++;
+        }
 
         $query->from(DB::raw(
           '(select distinct on ('.implode(', ', $columns).') * from '.str_get_between($query->toSql(), 'from ', ' ')
         ));
 
         $query->where(DB::raw(
-          '1=1 ORDER BY '.implode(', ', $columns).$sort.') d where 1'
+          '1=1 ORDER BY '.implode(', ', $columns).$orderByString.') d where 1'
         ), '=', '1');
       break;
 
