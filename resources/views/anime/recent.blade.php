@@ -50,35 +50,29 @@
       {{ csrf_field() }}
 
       <div class="form-group" id="option-distinct">
-        <label for="option-distinct">Show One Entry Per:</label>
+        <label for="option-distinct">Amount of Episodes Shown:</label>
         <div class="radio">
           <label>
             <input type="radio" name="distinct" value="show_id" {{ request()->distincts->keys()->last() === 'show_id' ? 'checked' : '' }}>
-            Show
+            Show the latest episode (subbed or dubbed) for each anime.
           </label>
         </div>
         <div class="radio">
           <label>
             <input type="radio" name="distinct" value="translation_type" {{ request()->distincts->keys()->last() === 'translation_type' ? 'checked' : '' }}>
-            Translation Type
+            Show the latest subbed and latest dubbed episode for each anime.
           </label>
         </div>
         <div class="radio">
           <label>
             <input type="radio" name="distinct" value="episode_num" {{ request()->distincts->keys()->last() === 'episode_num' ? 'checked' : '' }}>
-            Episode
+            Show every episode for each anime from the first streaming site.
           </label>
         </div>
         <div class="radio">
           <label>
             <input type="radio" name="distinct" value="streamer_id" {{ request()->distincts->keys()->last() === 'streamer_id' ? 'checked' : '' }}>
-            Streamer
-          </label>
-        </div>
-        <div class="radio">
-          <label>
-            <input type="radio" name="distinct" value="mirror" {{ request()->distincts->keys()->last() === 'mirror' ? 'checked' : '' }}>
-            Mirror
+            Show every episode for each anime from all streaming sites.
           </label>
         </div>
       </div>

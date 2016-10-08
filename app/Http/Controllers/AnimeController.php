@@ -116,17 +116,16 @@ class AnimeController extends Controller
     $request->pageZ = $request->page - 1;
 
     $request->distincts = collect([
-      'show_id' => [0, 'desc'],
-      'translation_type' => [1, 'desc'],
-      'episode_num' => [2, 'asc'],
-      'streamer_id' => [3, 'asc'],
-      'mirror' => [4, 'asc'],
+      'show_id' => ['episode_num' => 'desc'],
+      'translation_type' => ['episode_num' => 'desc'],
+      'episode_num' => [],
+      'streamer_id' => [],
     ]);
     $distinct = $request->cookie('options_recent_distinct') !== null ? $request->cookie('options_recent_distinct') : 'episode_num';
     if (!$request->distincts->has($distinct)) {
       $distinct = 'episode_num';
     }
-    $request->distincts = $request->distincts->slice(0, $request->distincts->get($distinct)[0] + 1);
+    $request->distincts = $request->distincts->slice(0, $request->distincts->keys()->flip()->get($distinct) + 1);
 
     if ($request->cookie('options_recent_ttype') !== null) {
       $request->ttypes = collect(json_decode($request->cookie('options_recent_ttype')));
@@ -222,7 +221,7 @@ class AnimeController extends Controller
                         $query->where('encoding', '!=', 'embed')->orWhere('encoding', null);
                       })
                     ->whereIn('translation_type', $request->ttypes)
-                    ->distinctOn($request->distincts->keys(), ['uploadtime' => request()->distincts->last()[1], 'id' => request()->distincts->last()[1]])
+                    ->distinctOn($request->distincts->keys(), array_merge($request->distincts->last(), ['uploadtime' => 'asc', 'id' => 'asc']))
                     ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
                     ->skip($request->pageZ * 50)->take(51)->with('show')->with('streamer')->get();
 
