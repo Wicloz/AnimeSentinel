@@ -147,10 +147,26 @@
                       <li class="text-success">
                         - Up To Date -
                       </li>
+                      @if($show->printNextUploadSub() !== 'NA')
+                        <li>
+                          ETA: {{ $show->printNextUploadSub('M j, Y (l)') }}
+                        </li>
+                      @endif
                     @endforelse
                   </ul>
                 @else
-                  - Unknown -
+                  <form action="{{ fullUrl('/anime/add') }}" method="POST">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="mal_id" value="{{ $show->mal_id }}"></input>
+                    <input type="hidden" name="gotodetails" value="0"></input>
+                    <button type="submit" class="btn">Add and return to the Overview</button>
+                  </form>
+                  <form action="{{ fullUrl('/anime/add') }}" method="POST">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="mal_id" value="{{ $show->mal_id }}"></input>
+                    <input type="hidden" name="gotodetails" value="1"></input>
+                    <button type="submit" class="btn last-margin">Add and go to the Details Page</button>
+                  </form>
                 @endif
 
               @endif

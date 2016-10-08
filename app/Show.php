@@ -234,26 +234,26 @@ class Show extends BaseModel
       return 'Unknown';
     }
   }
-  public function printNextUploadSub() {
+  public function printNextUploadSub($dateFormat = 'l j F, Y') {
     if (!empty($this->mal) || $this->nextUploadEstimate('sub') === null) {
       return 'NA';
     }
     else {
       $date = $this->nextUploadEstimate('sub');
-      $dateString = $date->format('l j F, Y');
+      $dateString = $date->format($dateFormat);
       if ($date->hour !== 12 || $date->minute !== 0 || $date->second !== 0) {
         $dateString .= ' at '.$date->format('H:i');
       }
       return $dateString;
     }
   }
-  public function printNextUploadDub() {
+  public function printNextUploadDub($dateFormat = 'l j F, Y') {
     if (!empty($this->mal) || $this->nextUploadEstimate('dub') === null) {
       return 'NA';
     }
     else {
       $date = $this->nextUploadEstimate('dub');
-      $dateString = $date->format('l j F, Y');
+      $dateString = $date->format($dateFormat);
       if ($date->hour !== 12 || $date->minute !== 0 || $date->second !== 0) {
         $dateString .= ' at '.$date->format('H:i');
       }
