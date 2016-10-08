@@ -10,6 +10,7 @@ function queueJob($job, $queue = 'default') {
     if (count($highers) > 0) {
       foreach ($highers as $higher) {
         $higher->elevateQueue($queue);
+        $higher->elevateDelay($job->delay);
       }
       return;
     }
@@ -24,15 +25,13 @@ function queueJob($job, $queue = 'default') {
     if (count($duplicates) > 0) {
       foreach ($duplicates as $duplicate) {
         $duplicate->elevateQueue($queue);
+        $duplicate->elevateDelay($job->delay);
       }
       return;
     }
 
-    // Remove any lower queued jobs, elevate this queue
-    $newQueue = \App\Job::deleteLowerThan($job_data['job_task'], $job_data['show_id']);
-    if (in_array($newQueue, array_get_parents(config('queue.queuehierarchy'), $queue))) {
-      $queue = $newQueue;
-    }
+    // Remove any lower queued jobs, elevate this queue and delay
+    \App\Job::deleteLowerThan($job_data['job_task'], $job_data['show_id'], $queue, $job->delay);
   }
 
   // Add this job to the queue

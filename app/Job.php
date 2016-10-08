@@ -74,23 +74,22 @@ class Job extends BaseModel
    * Returns all 'higher' jobs than the requested task, operating on the same show title.
    */
   public static function higherThan($job_task, $show_id, $unReserved = true) {
+    $query = Self::where('show_id', $show_id)->whereIn('job_task', array_get_parents(config('queue.jobhierarchy'), $job_task));
     if ($unReserved) {
-      return Self::where('show_id', $show_id)->whereNull('reserved_at')
-                 ->whereIn('job_task', array_get_parents(config('queue.jobhierarchy'), $job_task))
-                 ->get();
-    } else {
-      return Self::where('show_id', $show_id)
-                 ->whereIn('job_task', array_get_parents(config('queue.jobhierarchy'), $job_task))
-                 ->get();
+      $query->whereNull('reserved_at');
     }
+    return $query->get();
   }
 
   /**
    * Returns all 'lower' jobs than the requested task, operating on the same show title.
    */
   public static function lowerThan($job_task, $show_id, $unReserved = true) {
-    return Self::where('show_id', $show_id)->whereNull('reserved_at')
-               ->whereIn('job_task', array_get_childs(config('queue.jobhierarchy'), $job_task))->get();
+    $query = Self::where('show_id', $show_id)->whereIn('job_task', array_get_childs(config('queue.jobhierarchy'), $job_task));
+    if ($unReserved) {
+      $query->whereNull('reserved_at');
+    }
+    return $query->get();
   }
 
   /**
@@ -99,40 +98,60 @@ class Job extends BaseModel
    *
    * @return string
    */
-  public static function deleteLowerThan($job_task, $show_id = null) {
+  public static function deleteLowerThan($job_task, $show_id = null, & $highestQueue = null, & $shortestDelay = null) {
     $lower_tasks = array_get_childs(config('queue.jobhierarchy'), $job_task);
+    if ($highestQueue !== null || $shortestDelay !== null) {
+      $lower_jobs = Self::whereIn('job_task', $lower_tasks)
+                        ->where('show_id', $show_id)
+                        ->whereNull('reserved_at')
+                        ->get();
+    }
 
     // Determine the 'highest' queue of all jobs that will be removed
-    $queues = Self::whereIn('job_task', $lower_tasks)
-                  ->where('show_id', $show_id)
-                  ->whereNull('reserved_at')
-                  ->get()->pluck('queue');
-    $highestQueue = collect(config('queue.queuehierarchy'))->collapse()->last();
-    if (count($queues) > 0) {
-      foreach ($queues as $queue) {
+    if ($highestQueue !== null) {
+      foreach ($lower_jobs->pluck('queue') as $queue) {
         if (in_array($queue, array_get_parents(config('queue.queuehierarchy'), $highestQueue))) {
           $highestQueue = $queue;
         }
       }
     }
 
-    // Remove all applicable jobs
+    // Determine the 'shortest' delay of all jobs that will be removed
+    if ($shortestDelay !== null) {
+      foreach ($lower_jobs->pluck('available_at') as $delay) {
+        if ($delay->lt($shortestDelay)) {
+          $shortestDelay = $delay;
+        }
+      }
+    }
+
+    // Remove all lower jobs
     Self::whereIn('job_task', $lower_tasks)
         ->where('show_id', $show_id)
         ->whereNull('reserved_at')
         ->delete();
-
-    return $highestQueue;
   }
 
   /**
    * Elevates this job's queue if the new one is higher in the hierarchy.
    */
   public function elevateQueue($newQueue) {
-    if (in_array($this->queue, array_get_childs(config('queue.queuehierarchy'), $newQueue))) {
+    if (in_array($newQueue, array_get_parents(config('queue.queuehierarchy'), $this->queue))) {
       $this->queue = $newQueue;
-      $this->delete();
-      \App\Job::create($this->toArray());
+      $this->save();
+    }
+  }
+
+  /**
+   * Change the available_at time of this job if the new time comes earlier.
+   */
+  public function elevateDelay($newDelay) {
+    if ($newDelay === null) {
+      $newDelay = Carbon::now();
+    }
+    if ($newDelay->lt($this->available_at)) {
+      $this->available_at = $newDelay;
+      $this->save();
     }
   }
 }
