@@ -125,7 +125,7 @@ class AnimeController extends Controller
     if (!$request->distincts->has($distinct)) {
       $distinct = 'episode_num';
     }
-    $request->distincts = $request->distincts->slice(0, $request->distincts->keys()->flip()->get($distinct) + 1);
+    $request->distincts = $request->distincts->slice(0, $request->distincts->keys()->search($distinct) + 1);
 
     if ($request->cookie('options_recent_ttype') !== null) {
       $request->ttypes = collect(json_decode($request->cookie('options_recent_ttype')));
