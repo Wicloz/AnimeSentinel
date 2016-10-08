@@ -150,5 +150,82 @@ class ShowFlagsSeeder extends Seeder
       "Kaijuu Girls" => "+",
     ];
     $kaijuugirls->save();
+
+    $girlishnumber = ShowFlag::findOrNew(32607);
+    $girlishnumber->mal_id = 32607;
+    $girlishnumber->alt_rules = [
+      "Girlish Number" => "+",
+    ];
+    $girlishnumber->save();
+
+    $honoonokokuinhome = ShowFlag::findOrNew(32415);
+    $honoonokokuinhome->mal_id = 32415;
+    $honoonokokuinhome->alt_rules = [
+      "Garo: Honoo no Kouin - Home" => "+",
+    ];
+    $honoonokokuinhome->save();
+
+    $bernardjouiwaku = ShowFlag::findOrNew(33462);
+    $bernardjouiwaku->mal_id = 33462;
+    $bernardjouiwaku->alt_rules = [
+      "Bernard Jou Iwaku." => "+",
+    ];
+    $bernardjouiwaku->save();
+
+    $hibikeeuphonium2 = ShowFlag::findOrNew(31988);
+    $hibikeeuphonium2->mal_id = 31988;
+    $hibikeeuphonium2->alt_rules = [
+      "Hibike! Euphonium 2nd Season" => "+",
+    ];
+    $hibikeeuphonium2->save();
+
+    $cranegamegirls2 = ShowFlag::findOrNew(33541);
+    $cranegamegirls2->mal_id = 33541;
+    $cranegamegirls2->alt_rules = [
+      "Bishoujo Yuugi Unit Crane Game Girls 2nd Season" => "+",
+    ];
+    $cranegamegirls2->save();
+
+    $natsumeyuujinchou5 = ShowFlag::findOrNew(32983);
+    $natsumeyuujinchou5->mal_id = 32983;
+    $natsumeyuujinchou5->alt_rules = [
+      "Natsume Yuujinchou 5" => "+",
+    ];
+    $natsumeyuujinchou5->save();
+
+    $kaitoujoker4 = ShowFlag::findOrNew(33490);
+    $kaitoujoker4->mal_id = 33490;
+    $kaitoujoker4->alt_rules = [
+      "Kaitou Joker Season 4" => "+",
+    ];
+    $kaitoujoker4->save();
+
+    $okusamagaseitokaichou2 = ShowFlag::findOrNew(32603);
+    $okusamagaseitokaichou2->mal_id = 32603;
+    $okusamagaseitokaichou2->alt_rules = [
+      "Okusama ga Seito Kaichou! 2nd Season" => "+",
+    ];
+    $okusamagaseitokaichou2->save();
+
+    $showbyrock2 = ShowFlag::findOrNew(32038);
+    $showbyrock2->mal_id = 32038;
+    $showbyrock2->alt_rules = [
+      "Show By Rock!! 2nd Season" => "+",
+    ];
+    $showbyrock2->save();
+
+    $utanoprincesama4 = ShowFlag::findOrNew(31178);
+    $utanoprincesama4->mal_id = 31178;
+    $utanoprincesama4->alt_rules = [
+      "Uta no Prince Sama 4" => "+",
+    ];
+    $utanoprincesama4->save();
+
+    $sidonianokishimovie = ShowFlag::findOrNew(28495);
+    $sidonianokishimovie->mal_id = 28495;
+    $sidonianokishimovie->alt_rules = [
+      "Knights of Sidonia Movie" => "+",
+    ];
+    $sidonianokishimovie->save();
   }
 }
