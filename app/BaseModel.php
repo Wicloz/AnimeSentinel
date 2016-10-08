@@ -13,8 +13,14 @@ abstract class BaseModel extends Model
 
   // NOTE: must not be followed by ->where()
   public function scopeDistinctOn($query, $columns, $orderBy = []) {
-    if (!is_array($columns)) {
+    if ($columns instanceof \Illuminate\Support\Collection) {
+      $columns = $columns->all();
+    }
+    elseif (!is_array($columns)) {
       $columns = [$columns];
+    }
+    if ($orderBy instanceof \Illuminate\Support\Collection) {
+      $orderBy = $orderBy->all();
     }
     foreach ($orderBy as $column => $direction) {
       $orderBy[$column] = strtolower($direction) == 'asc' ? 'asc' : 'desc';
