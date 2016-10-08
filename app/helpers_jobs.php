@@ -51,12 +51,14 @@ function handleJobFunction($job_task, $show_id, $job_data, $fromJob) {
     ['show_id', '=', $show_id],
     ['job_data', '=', json_encode($job_data)],
   ];
+
   // Remove any lower queued jobs
   \App\Job::deleteLowerThan($job_task, $show_id);
   // If this is queued as a job, remove it from the queue
   \App\Job::where(array_merge($job_dbdata, [['reserved_at', '=', null]]))->delete();
-  // Hovever, if that job is in progress, wait for it to complete instead of running this function,
-  // but only if this function isn't started from the job
+
+  // Hovever, if that job is in progress, wait for it to complete instead of running the function,
+  // but only if the function isn't started from that job
   if (!$fromJob && count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
     while (count(\App\Job::where(array_merge($job_dbdata, [['reserved_at', '!=', null]]))->get()) > 0) {
       sleep(1);
