@@ -102,6 +102,22 @@
 @endsection
 
 @section('content-right')
+  <div class="content-header">
+    Administration
+  </div>
+  <div class="content-generic">
+    <form action="{{ fullUrl('/anime/reprocess') }}" method="POST">
+      {{ csrf_field() }}
+      <input type="hidden" name="video_id" value="{{ $video->id }}"></input>
+      <button type="submit" class="btn">Reprocess this Episode</button>
+    </form>
+    <p></p>
+    <p>
+      Note: This can take up to 30 seconds. During this time the page will be loading.
+    </p>
+    <div class="content-close"></div>
+  </div>
+
   @if(isset($show->mal_url))
     <div class="content-header">
       <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>

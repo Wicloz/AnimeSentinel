@@ -15,6 +15,7 @@ Auth::routes();
 
 // Post Controller
 Route::post('/anime/add', 'PostController@showAdd');
+Route::post('/anime/reprocess', 'PostController@animeReprocessEpisodes');
 
 // Welcome Page
 Route::get('/', 'AnimeController@home');
