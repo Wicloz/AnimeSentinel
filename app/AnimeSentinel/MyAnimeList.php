@@ -218,9 +218,9 @@ class MyAnimeList
       $description = trim(str_replace_last('</span>', '', $description));
     }
 
-    $type = strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Type:</span>', '</a>'), '>')));
+    $type = strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Type:</span>', '</div>'), '>', '</a>')));
 
-    $season = strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Premiered:</span>', '</a>'), '>')));
+    $season = strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Premiered:</span>', '</div>'), '>', '</a>')));
 
     return [
       'mal_id' => $mal_id,
