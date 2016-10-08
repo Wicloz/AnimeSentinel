@@ -24,6 +24,12 @@
   <div class="content-generic">
     <h2 style="margin-top:5px;">Subbed</h2>
     <ul class="list-group episode-list">
+
+      @if($show->printNextUploadSub() !== 'NA')
+        <li class="list-group-item">
+          Next Episode ETA: {{ $show->printNextUploadSub() }}
+        </li>
+      @endif
       @if(count($show->episodes('sub')) > 0)
         @foreach($show->episodes('sub')->load('show') as $episode)
           <li class="list-group-item">
@@ -68,11 +74,17 @@
           </li>
         @endif
       @endif
-      <!-- TODO: add next episode prediction -->
+
     </ul>
     <div class="content-close"></div>
     <h2>Dubbed</h2>
     <ul class="list-group episode-list">
+
+      @if($show->printNextUploadDub() !== 'NA')
+        <li class="list-group-item">
+          Next Episode ETA: {{ $show->printNextUploadDub() }}
+        </li>
+      @endif
       @if(count($show->episodes('dub')) > 0)
         @foreach($show->episodes('dub')->load('show') as $episode)
           <li class="list-group-item">
@@ -117,7 +129,7 @@
           </li>
         @endif
       @endif
-      <!-- TODO: add next episode prediction -->
+
     </ul>
     <div class="content-close"></div>
   </div>

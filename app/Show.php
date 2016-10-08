@@ -234,6 +234,32 @@ class Show extends BaseModel
       return 'Unknown';
     }
   }
+  public function printNextUploadSub() {
+    if (!empty($this->mal) || $this->nextUploadEstimate('sub') === null) {
+      return 'NA';
+    }
+    else {
+      $date = $this->nextUploadEstimate('sub');
+      $dateString = $date->format('l j F, Y');
+      if ($date->hour !== 12 || $date->minute !== 0 || $date->second !== 0) {
+        $dateString .= ' at '.$date->format('H:i');
+      }
+      return $dateString;
+    }
+  }
+  public function printNextUploadDub() {
+    if (!empty($this->mal) || $this->nextUploadEstimate('dub') === null) {
+      return 'NA';
+    }
+    else {
+      $date = $this->nextUploadEstimate('dub');
+      $dateString = $date->format('l j F, Y');
+      if ($date->hour !== 12 || $date->minute !== 0 || $date->second !== 0) {
+        $dateString .= ' at '.$date->format('H:i');
+      }
+      return $dateString;
+    }
+  }
 
   /**
    * Include show's where the requested title matches any alt.
@@ -414,9 +440,46 @@ class Show extends BaseModel
   }
 
   /**
+  * Get the estimated date and time of the next uploaded episode.
+  *
+  * @return Carbon\Carbon
+  */
+  public function nextUploadEstimate($translation_type) {
+    if ($this->isAiring($translation_type)) {
+      $uploadtimes = $this->episodes($translation_type, 'asc')->pluck('uploadtime');
+      if ($uploadtimes->count() === 1) {
+        return $uploadtimes[0]->addDays(7);
+      }
+
+      $differences = collect([]);
+      $lastUploadtime = null;
+      foreach ($uploadtimes as $uploadtime) {
+        if (isset($lastUploadtime)) {
+          $differences->put($lastUploadtime->diffInDays($uploadtime), $differences->get($lastUploadtime->diffInDays($uploadtime)) + 1);
+        }
+        $lastUploadtime = $uploadtime;
+      }
+
+      $max = $differences->max();
+      $differencesMax = collect([]);
+      while ($differences->search($max) !== false) {
+        $differencesMax[] = $differences->search($max);
+        $differences->forget($differences->search($max));
+      }
+
+      return $uploadtimes->last()->addDays($differencesMax->max());
+    }
+
+    elseif (!$this->finishedAiring($translation_type) && $translation_type === 'sub') {
+      return $this->airing_start->hour(12);
+    }
+    return null;
+  }
+
+  /**
   * Get the latest subbed episode for this show.
   *
-  * @return integer
+  * @return App\Show
   */
   public function getLatestSubAttribute() {
     return $this->videos()
@@ -430,7 +493,7 @@ class Show extends BaseModel
   /**
   * Get the latest dubbed episode for this show.
   *
-  * @return integer
+  * @return App\Show
   */
   public function getLatestDubAttribute() {
     return $this->videos()
@@ -444,7 +507,7 @@ class Show extends BaseModel
   /**
   * Get the first uploaded video.
   *
-  * @return Video
+  * @return App\Video
   */
   public function getFirstVideoAttribute() {
     return $this->videos()->orderBy('uploadtime', 'asc')->orderBy('id', 'asc')->first();
@@ -453,7 +516,7 @@ class Show extends BaseModel
   /**
   * Get the last uploaded video.
   *
-  * @return Video
+  * @return App\Video
   */
   public function getLastVideoAttribute() {
     return $this->videos()->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')->first();
@@ -463,7 +526,7 @@ class Show extends BaseModel
   /**
   * Get a list of episodes of the requested type.
   *
-  * @return array
+  * @return Illuminate\Database\Eloquent\Collection
   */
   public function episodes($translation_type, $order = 'desc', $episode_num_min = null) {
     $query = $this->videos()->where('translation_type', $translation_type);
