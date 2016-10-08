@@ -53,31 +53,31 @@
         <label for="option-distinct">Show One Entry Per:</label>
         <div class="radio">
           <label>
-            <input type="radio" name="distinct" value="show_id" {{ $distinct === 'show_id' ? 'checked' : '' }}>
+            <input type="radio" name="distinct" value="show_id" {{ request()->distincts->keys()->last() === 'show_id' ? 'checked' : '' }}>
             Show
           </label>
         </div>
         <div class="radio">
           <label>
-            <input type="radio" name="distinct" value="translation_type" {{ $distinct === 'translation_type' ? 'checked' : '' }}>
+            <input type="radio" name="distinct" value="translation_type" {{ request()->distincts->keys()->last() === 'translation_type' ? 'checked' : '' }}>
             Translation Type
           </label>
         </div>
         <div class="radio">
           <label>
-            <input type="radio" name="distinct" value="episode_num" {{ $distinct === 'episode_num' ? 'checked' : '' }}>
+            <input type="radio" name="distinct" value="episode_num" {{ request()->distincts->keys()->last() === 'episode_num' ? 'checked' : '' }}>
             Episode
           </label>
         </div>
         <div class="radio">
           <label>
-            <input type="radio" name="distinct" value="streamer_id" {{ $distinct === 'streamer_id' ? 'checked' : '' }}>
+            <input type="radio" name="distinct" value="streamer_id" {{ request()->distincts->keys()->last() === 'streamer_id' ? 'checked' : '' }}>
             Streamer
           </label>
         </div>
         <div class="radio">
           <label>
-            <input type="radio" name="distinct" value="mirror" {{ $distinct === 'mirror' ? 'checked' : '' }}>
+            <input type="radio" name="distinct" value="mirror" {{ request()->distincts->keys()->last() === 'mirror' ? 'checked' : '' }}>
             Mirror
           </label>
         </div>
