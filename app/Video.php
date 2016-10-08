@@ -263,9 +263,6 @@ class Video extends BaseModel
       elseif ($this->encoding === 'broken' || $this->encoding === 'embed' || $this->encoding === null) {
         $this->setVideoMetaData();
       }
-      if ($this->encoding === 'broken') {
-        queueJob(new \App\Jobs\AnimeReprocessEpisodes($this->show, [$this->translation_type], $this->episode_num, $this->streamer_id));
-      }
     }
   }
 
