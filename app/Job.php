@@ -32,6 +32,15 @@ class Job extends BaseModel
   protected $dateFormat = 'U';
 
   /**
+   * The attributes that should be casted to native types.
+   *
+   * @var array
+   */
+  protected $casts = [
+    'job_data' => 'collection',
+  ];
+
+  /**
    * Override the create function to properly set timestamps.
    */
   public static function create(array $attributes = []) {
