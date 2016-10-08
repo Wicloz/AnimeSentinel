@@ -5,6 +5,7 @@ namespace App\AnimeSentinel\Actions;
 use App\Streamer;
 use App\Show;
 use App\Video;
+use Carbon\Carbon;
 
 class FindVideos
 {
@@ -39,10 +40,10 @@ class FindVideos
     // Remove all existing videos for this episode
     $query = Video::where('show_id', $show->id)->whereIn('translation_type', $translation_types);
     if ($episode_num !== null) {
-      $query = $query->where('episode_num', $episode_num);
+      $query->where('episode_num', $episode_num);
     }
     if ($streamer_id !== null) {
-      $query = $query->where('streamer_id', $streamer_id);
+      $query->where('streamer_id', $streamer_id);
     }
     $query->delete();
 
@@ -69,6 +70,22 @@ class FindVideos
           'Epsiode Number' => isset($episode_num) ? $episode_num : 'NA',
           'Ran From a Job' => $fromJob ? 'Yes' : 'No',
         ]);
+      }
+    }
+
+    // Reprocess episodes once a day for 4/5 days after they're uploaded to catch delayed uploads of HD videos and other changes
+    $query = Video::where('show_id', $show->id)->whereIn('translation_type', $translation_types);
+    if ($episode_num !== null) {
+      $query->where('episode_num', $episode_num);
+    }
+    if ($streamer_id !== null) {
+      $query->where('streamer_id', $streamer_id);
+    }
+    $videos = $query->distinctOn(['show_id', 'translation_type', 'episode_num', 'streamer_id'], ['uploadtime' => 'desc', 'id' => 'desc'])->get();
+
+    foreach ($videos as $video) {
+      if ($video->uploadtime->diffInDays(Carbon::now()) < 5) {
+        queueJob((new \App\Jobs\AnimeReprocessEpisodes($show, $video->translation_type, $video->episode_num, $video->streamer_id))->delay(Carbon::now()->addDays(1)));
       }
     }
 
