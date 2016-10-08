@@ -113,7 +113,7 @@
     </form>
     <p></p>
     <p>
-      Note: This can take up to 30 seconds. During this time the page will be loading.
+      Note: This can take up to 30 seconds.
     </p>
     <div class="content-close"></div>
   </div>
