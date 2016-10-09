@@ -1,26 +1,62 @@
 // main: app.scss
 @import 'vars';
 
-.text-muted {
-  color: $concol-muted_text;
+// Panels //
+
+.panel {
+  background-color: $background_colour-content_header;
 }
 
-.text-primary {
-  color: $concol-primary_text;
+.panel-default {
+  border-color: #444;
+  > .panel-heading {
+    color: $text_colour-content;
+    background-color: #444;
+    border-color: #444;
+  }
 }
 
-.text-success {
-  color: $concol-success_text;
+.panel-primary {
+  border-color: #235580;
+  > .panel-heading {
+    color: $text_colour-content;
+    background-color: #235580;
+    border-color: #235580;
+  }
 }
 
-.text-info {
-  color: $concol-info_text;
+.panel-succes {
+  border-color: $concol-success_background;
+  > .panel-heading {
+    color: $concol-success_text;
+    background-color: $concol-success_background;
+    border-color: $concol-success_background;
+  }
 }
 
-.text-warning {
-  color: $concol-warning_text;
+.panel-info {
+  border-color: $concol-info_background;
+  > .panel-heading {
+    color: $concol-info_text;
+    background-color: $concol-info_background;
+    border-color: $concol-info_background;
+  }
 }
 
-.text-danger {
-  color: $concol-danger_text;
+.panel-warning {
+  border-color: $concol-warning_background;
+  > .panel-heading {
+    color: $concol-warning_text;
+    background-color: $concol-warning_background;
+    border-color: $concol-warning_background;
+  }
+}
+
+.panel-danger {
+  border-color: $concol-danger_background;
+  > .panel-heading {
+    color: $concol-danger_text;
+    background-color: $concol-danger_background;
+    border-color: $concol-danger_background;
+  }
 }

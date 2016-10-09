@@ -30,7 +30,7 @@
           <li {{ request()->is('login') ? 'class=active' : '' }}><a href="{{ fullUrl('/login') }}">Login</a></li>
           <li {{ request()->is('register') ? 'class=active' : '' }}><a href="{{ fullUrl('/register') }}">Register</a></li>
         @else
-          <li class="dropdown">
+          <li class="dropdown {{ request()->is('anime/overview') || request()->is('user/settings') || request()->is('user/notifications/mail') || request()->is('user/settings/css') ? 'active' : '' }}">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
               {{ Auth::user()->username }} <span class="caret"></span>
             </a>

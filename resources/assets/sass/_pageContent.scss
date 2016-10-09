@@ -9,17 +9,6 @@
   margin-bottom: 20px;
 }
 
-// Fluid Layout Expansions //
-
-.hide-md {
-  display: none;
-}
-@media (min-width: 992px) {
-  .hide-md {
-    display: inherit;
-  }
-}
-
 // Jumbotrons //
 
 .jumbotron {

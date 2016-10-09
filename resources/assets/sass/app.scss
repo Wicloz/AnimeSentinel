@@ -1,6 +1,5 @@
 @import 'vars';
 @import 'navbar';
-@import 'panels';
 @import 'notifications';
 @import 'disqus';
 @import 'malwidgets';
@@ -35,22 +34,6 @@ a:focus, a:hover {
   color: $text_colour-navs;
 }
 
-#footer {
-
-}
-
-.align-left {
-  text-align: left;
-}
-
-.align-right {
-  text-align: right;
-}
-
-.align-center {
-  text-align: center;
-}
-
 // List Group Restyling //
 .list-group {
   > .list-group-item {
@@ -67,6 +50,18 @@ a:focus, a:hover {
 }
 
 // Specific Modules //
+.align-left {
+  text-align: left;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.align-center {
+  text-align: center;
+}
+
 .last-margin {
   margin-bottom: 0px !important;
 }

@@ -9,7 +9,7 @@
   .navbar-toggle {
     border-color: $text_colour-navs;
     > .icon-bar {
-      background-color: $text_colour-content;
+      background-color: $text_colour-navs;
     }
   }
 
@@ -18,7 +18,7 @@
       background-color: transparent;
       color: $text_colour-navs;
     }
-    > a:hover, a:focus {
+    > a:hover, > a:focus {
       background-color: transparent;
       color: $text_colour-content;
     }
@@ -28,19 +28,39 @@
     }
   }
 
-  .navbar-nav {
+  .nav {
     > li {
       > a {
         background-color: transparent;
         color: $text_colour-navs;
       }
-      > a:hover, a:focus {
+      > a:hover, > a:focus {
         background-color: transparent;
         color: $text_colour-content;
       }
     }
     > .active {
-      > a, a:hover, a:focus {
+      > a, > a:hover, > a:focus {
+        background-color: $border_colour-main;
+        color: $text_colour-content;
+      }
+    }
+  }
+
+  .dropdown-menu {
+    background-color: $background_colour-content_accent2;
+    > li {
+      > a {
+        background-color: transparent;
+        color: $text_colour-navs;
+      }
+      > a:hover, > a:focus {
+        background-color: transparent;
+        color: $text_colour-content;
+      }
+    }
+    > .active {
+      > a, > a:hover, > a:focus {
         background-color: $border_colour-main;
         color: $text_colour-content;
       }

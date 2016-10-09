@@ -3,11 +3,11 @@
 
 @section('content-left')
   <a href="{{ $show->details_url }}">
-    <img class="img-thumbnail details-thumbnail" src="{{ fullUrl('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
+    <img class="img-thumbnail details-thumbnail-wide hidden-xs hidden-sm" src="{{ fullUrl('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
   </a>
   @include('components.anime.details', ['details' => $show, 'link' => true])
   @if(isset($show->mal_url))
-    <div class="content-header hide-md">
+    <div class="content-header">
       <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
     </div>
   @endif
@@ -109,10 +109,10 @@
     <form action="{{ fullUrl('/anime/reprocess') }}" method="POST">
       {{ csrf_field() }}
       <input type="hidden" name="video_id" value="{{ $video->id }}"></input>
-      <button type="submit" class="btn">Reprocess this Episode</button>
+      <button type="submit" class="btn btn-default btn-block">Reprocess this Episode</button>
     </form>
     <p></p>
-    <p>
+    <p class="align-center">
       Note: This can take up to 30 seconds.
     </p>
     <div class="content-close"></div>

@@ -1,15 +1,15 @@
 // main: app.scss
 @import 'vars';
 
-.details-thumbnail {
-  display: none;
+.details-thumbnail-wide {
+  width: 100%;
+  margin-bottom: 15px;
 }
-@media (min-width: 992px) {
-  .details-thumbnail {
-    display: block;
-    width: 100%;
-    margin-bottom: 15px;
-  }
+
+.details-thumbnail-slim {
+  width: 16%;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .episode-list {
