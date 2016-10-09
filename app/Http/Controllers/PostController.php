@@ -43,7 +43,7 @@ class PostController extends Controller
     $video = Video::find($request->video_id);
 
     if (isset($video)) {
-      FindVideos::reprocessEpsiodes($video->show, [$video->translation_type], $video->episode_num, $video->streamer_id);
+      FindVideos::reprocessEpsiodes($video->show, [$video->translation_type], $video->episode_num);
       return redirect($video->episode_url);
     }
 
