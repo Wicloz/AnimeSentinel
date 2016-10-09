@@ -123,6 +123,7 @@ class User extends Authenticatable
       'status' => [true, '<td class="data status ', '">'],
       'thumbnail_id' => [false, '/images/anime', '?'],
       'partialUrl' => [false, '<a class="link sort" href="', '</a>'],
+      'score' => [false, '<td class="data score">', ''],
       'progress' => [false, '<div class="progress', '</div>'],
     ]));
 
@@ -137,14 +138,17 @@ class User extends Authenticatable
 
       $mal_show->thumbnail_id = $result['thumbnail_id'];
 
-      $eps_watched = str_get_between($result['progress'], '<a href="javascript: void(0);" class="link edit-disabled">', '</a>');
-      if ($eps_watched !== false) {
-        $mal_show->eps_watched = $eps_watched;
-      } else {
+      $mal_show->eps_watched = str_get_between($result['progress'], '<a href="javascript: void(0);" class="link edit-disabled">', '</a>');
+      if ($mal_show->eps_watched === false) {
         $mal_show->eps_watched = str_get_between($result['progress'], '<span>', '</span>', true);
       }
       if ($mal_show->eps_watched === '-') {
         $mal_show->eps_watched = 0;
+      }
+
+      $mal_show->score = trim(str_get_between($result['score'], '<a href="javascript: void(0);" class="link edit-disabled">', '</a>'));
+      if ($mal_show->score === '-') {
+        $mal_show->score = null;
       }
 
       $malIds_list[] = $mal_show->mal_id;

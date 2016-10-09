@@ -25,6 +25,7 @@ class MaluserField extends BaseModel
   protected $casts = [
     'nots_mail_notified_sub' => 'collection',
     'nots_mail_notified_dub' => 'collection',
+    'mal_show' => 'collection',
   ];
 
   /**
