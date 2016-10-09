@@ -85,7 +85,7 @@ class FindVideos
 
     foreach ($videos as $video) {
       if ($video->uploadtime->diffInDays(Carbon::now()) < 5) {
-        queueJob((new \App\Jobs\AnimeReprocessEpisodes($show, $video->translation_type, $video->episode_num, $video->streamer_id))->delay(Carbon::now()->addDays(1)));
+        queueJob((new \App\Jobs\AnimeReprocessEpisodes($show, [$video->translation_type], $video->episode_num, $video->streamer_id))->delay(Carbon::now()->addDays(1)));
       }
     }
 
