@@ -213,17 +213,20 @@ class AnimeController extends Controller
     $results = collect([]);
     $this->processRequest($request);
 
-    $shows = Show::search($request->search, $request->types, $request->genres);
+    $query = Video::where(function ($query) {
+                      $query->where('encoding', '!=', 'embed')->orWhere('encoding', null);
+                    })
+                  ->whereIn('streamer_id', $request->streamers)
+                  ->whereIn('translation_type', $request->ttypes);
 
-    $recents = Video::whereIn('show_id', $shows->pluck('id'))
-                    ->whereIn('streamer_id', $request->streamers)
-                    ->where(function ($query) {
-                        $query->where('encoding', '!=', 'embed')->orWhere('encoding', null);
-                      })
-                    ->whereIn('translation_type', $request->ttypes)
-                    ->distinctOn($request->distincts->keys(), array_merge($request->distincts->last(), ['uploadtime' => 'asc', 'id' => 'asc']))
-                    ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
-                    ->skip($request->pageZ * 50)->take(51)->with('show')->with('streamer')->get();
+    if (count($request->all()) > 0) {
+      $shows = Show::search($request->search, $request->types, $request->genres);
+      $query->whereIn('show_id', $shows->pluck('id'));
+    }
+
+    $recents = $query->distinctOn($request->distincts->keys(), array_merge($request->distincts->last(), ['uploadtime' => 'asc', 'id' => 'asc']))
+                     ->orderBy('uploadtime', 'desc')->orderBy('id', 'desc')
+                     ->skip($request->pageZ * 50)->take(51)->with('show')->with('streamer')->get();
 
     // Determine whether there is a next page
     if (count($recents) > 50) {
