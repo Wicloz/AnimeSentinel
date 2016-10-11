@@ -470,7 +470,7 @@ class Show extends BaseModel
       return $uploadtimes->last()->addDays($differencesMax->max());
     }
 
-    elseif (!$this->finishedAiring($translation_type) && $translation_type === 'sub') {
+    elseif (!$this->finishedAiring($translation_type) && $translation_type === 'sub' && isset($this->airing_start)) {
       return $this->airing_start->hour(12);
     }
     return null;
