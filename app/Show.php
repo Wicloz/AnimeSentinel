@@ -243,7 +243,7 @@ class Show extends BaseModel
       $date = $this->nextUploadEstimate($translation_type);
       $dateString = $date->format($dateFormat);
 
-      if (Carbon::now()->gt($date->endOfDay())) {
+      if (Carbon::now()->gt($date->copy()->endOfDay())) {
         $dateString = '<span class="text-danger">' . $dateString . '</span>';
       }
 
