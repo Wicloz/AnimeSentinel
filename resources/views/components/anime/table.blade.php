@@ -139,20 +139,20 @@
                           </a>
                         </li>
                       @elseif ($index === Auth::user()->viewsettings_overview->get('cutoff'))
-                        <li>
-                          ...
+                        <li class="text-warning">
+                          - And {{ $show->episodes('sub', 'asc', $show->mal_show->eps_watched)->count() - Auth::user()->viewsettings_overview->get('cutoff') }} more -
                         </li>
                       @endif
                     @empty
                       <li class="text-success">
                         - Up To Date -
                       </li>
-                      @if($show->printNextUploadSub() !== 'NA')
-                        <li>
-                          ETA: {{ $show->printNextUploadSub('M j, Y (l)') }}
-                        </li>
-                      @endif
                     @endforelse
+                    @if($show->printNextUpload('sub') !== 'NA')
+                      <li>
+                        ETA: {!! $show->printNextUpload('sub', 'M j, Y (l)') !!}
+                      </li>
+                    @endif
                   </ul>
                 @else
                   <form action="{{ fullUrl('/anime/add') }}" method="POST">

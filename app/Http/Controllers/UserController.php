@@ -43,18 +43,48 @@ class UserController extends Controller
 
     // Sort and flatten the shows
     foreach ($shows as $status => $items) {
-      $shows[$status] = $items->sortBy('title');
+      // Expand mal shows which are in our database
+      $dbShows = Show::whereIn('mal_id', $items->pluck('mal_id'))->get();
+      foreach ($items as $index => $show) {
+        if (!empty($dbShows->where('mal_id', $show->mal_id)->first())) {
+          $items[$index] = $dbShows->where('mal_id', $show->mal_id)->first();
+          $items[$index]->mal_show = $show->mal_show;
+        }
+      }
+
+      $shows[$status] = $items->sort(function ($a, $b) {
+        if ($a->mal && $b->mal) {
+          return $a->title <=> $b->title;
+        } else if ($a->mal) {
+          return 1;
+        } else if ($b->mal) {
+          return -1;
+        }
+
+        // $epsA = $a->episodes('sub', 'asc', $a->mal_show->eps_watched);
+        // $epsB = $b->episodes('sub', 'asc', $b->mal_show->eps_watched);
+        // if ($epsA->count() !== $epsB->count()) {
+        //   return $epsB->count() - $epsA->count();
+        // }
+
+        $nextA = $a->nextUploadEstimate('sub');
+        $nextB = $b->nextUploadEstimate('sub');
+        if ($nextA === null && $nextB === null) {
+          return $a->title <=> $b->title;
+        } else if ($nextA === null) {
+          return 1;
+        } else if ($nextB === null) {
+          return -1;
+        } else if ($nextA->gt($nextB)) {
+          return 1;
+        } else if ($nextA->lt($nextB)) {
+          return -1;
+        }
+
+        return 0;
+      });
     }
     $shows = $shows->flatten();
-
-    // Expand mal shows which are in our database
-    $dbShows = Show::whereIn('mal_id', $shows->pluck('mal_id'))->get();
-    foreach ($shows as $index => $show) {
-      if (!empty($dbShows->where('mal_id', $show->mal_id)->first())) {
-        $shows[$index] = $dbShows->where('mal_id', $show->mal_id)->first();
-        $shows[$index]->mal_show = $show->mal_show;
-      }
-    }
 
     // Find the columns that need to be shown
     $columns = collect([

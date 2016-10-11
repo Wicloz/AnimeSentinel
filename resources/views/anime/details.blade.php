@@ -28,9 +28,9 @@
     <h2 style="margin-top:5px;">Subbed</h2>
     <ul class="list-group episode-list">
 
-      @if($show->printNextUploadSub() !== 'NA')
+      @if($show->printNextUpload('sub') !== 'NA')
         <li class="list-group-item">
-          Next Episode ETA: {{ $show->printNextUploadSub() }}
+          Next Episode ETA: {!! $show->printNextUpload('sub') !!}
         </li>
       @endif
       @if(count($show->episodes('sub')) > 0)
@@ -83,9 +83,9 @@
     <h2>Dubbed</h2>
     <ul class="list-group episode-list">
 
-      @if($show->printNextUploadDub() !== 'NA')
+      @if($show->printNextUpload('dub') !== 'NA')
         <li class="list-group-item">
-          Next Episode ETA: {{ $show->printNextUploadDub() }}
+          Next Episode ETA: {!! $show->printNextUpload('dub') !!}
         </li>
       @endif
       @if(count($show->episodes('dub')) > 0)
