@@ -169,7 +169,7 @@ class UpdateSettingsController extends Controller
     });
 
     Auth::user()->viewsettings_overview = [
-      'states' => $states,
+      'states' => $states->values(),
       'thumbnails' => $request->option_thumbnails === 'on',
       'cutoff' => $request->option_cutoff,
     ];
