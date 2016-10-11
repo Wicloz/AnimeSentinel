@@ -104,9 +104,16 @@ class User extends Authenticatable
    * @return boolean
    */
   public function updateMalCache() {
+    // Stop if there is no mal username
+    if ($this->mal_user === '') {
+      $this->mal_canread = false;
+      $this->mal_canwrite = false;
+      $this->save();
+      return false;
+    }
     // Download the page
     $page = Downloaders::downloadPage('https://myanimelist.net/animelist/'.$this->mal_user);
-    // Check whether the page is valid, return false if it isn't
+    // Check whether the page is valid, stop if it isn't
     if (str_contains($page, 'Invalid Username Supplied') || str_contains($page, 'Access to this list has been restricted by the owner') || str_contains($page, '404 Not Found - MyAnimeList.net')) {
       $this->mal_canread = false;
       $this->save();
@@ -244,10 +251,6 @@ class User extends Authenticatable
    * Update the MAL caches and send notifications.
    */
   public function periodicTasks() {
-    if ($this->mal_user === '') {
-      return;
-    }
-
     // Update the MAL cache
     $this->updateMalCache();
 
