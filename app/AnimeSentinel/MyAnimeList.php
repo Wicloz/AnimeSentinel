@@ -195,6 +195,13 @@ class MyAnimeList
       }
     }
 
+    $airing_time = trim(str_get_between($page, '<span class="dark_text">Broadcast:</span>', '</div>'));
+    if ($airing_time !== 'Unknown' && !empty($airing_time)) {
+      $airing_time = str_get_between($airing_time, 'at ', ' (JST)');
+    } else {
+      $airing_time = null;
+    }
+
     $airing_start = null;
     $airing_end = null;
     $aired = trim(str_get_between($page, '<span class="dark_text">Aired:</span>', '</div>'));
@@ -219,8 +226,14 @@ class MyAnimeList
     }
 
     $type = strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Type:</span>', '</div>'), '>', '</a>')));
+    if (empty($type)) {
+      $type = null;
+    }
 
     $season = strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Premiered:</span>', '</div>'), '>', '</a>')));
+    if (empty($season)) {
+      $season = null;
+    }
 
     return [
       'mal_id' => $mal_id,
@@ -228,30 +241,35 @@ class MyAnimeList
       'title' => $title,
       'alts' => Helpers::mergeFlagAlts($alts, $mal_id),
       'description' => $description,
-      'type' => !empty($type) ? $type : null,
+      'type' => $type,
       'genres' => $genres,
       'episode_amount' => $episode_amount,
       'episode_duration' => $episode_duration,
       'airing_start' => $airing_start,
       'airing_end' => $airing_end,
-      'season' => !empty($season) ? $season : null,
+      'season' => $season,
     ];
   }
 
-  private static function convertDetailsAiringToCarbon($string) {
-    if (count(explode(' ', $string)) === 3) {
-      $carbon = Carbon::createFromFormat('M j, Y', $string);
-      return $carbon;
+  private static function convertDetailsAiringToCarbon($dateString, $timeString = null) {
+    $carbon = null;
+
+    if (count(explode(' ', $dateString)) === 3) {
+      $carbon = Carbon::createFromFormat('M j, Y', $dateString, 'JST');
     }
-    if (count(explode(' ', $string)) === 2) {
-      $carbon = Carbon::createFromFormat('M, Y', $string)->day(1);
-      return $carbon;
+    if (count(explode(' ', $dateString)) === 2) {
+      $carbon = Carbon::createFromFormat('M, Y', $dateString, 'JST')->day(1);
     }
-    if (count(explode(' ', $string)) === 1) {
-      $carbon = Carbon::createFromFormat('Y', $string)->day(1)->month(1);
-      return $carbon;
+    if (count(explode(' ', $dateString)) === 1) {
+      $carbon = Carbon::createFromFormat('Y', $dateString, 'JST')->day(1)->month(1);
     }
-    return null;
+
+    if ($carbon !== null && $timeString !== null) {
+      $time = Carbon::createFromFormat('H:i', $dateString, 'JST');
+      $carbon->setTime($time->hour, $time->minute, $time->second);
+    }
+
+    return $carbon;
   }
 
   private static function convertSearchAiringToCarbon($string) {
@@ -262,9 +280,8 @@ class MyAnimeList
           $bits[$index] = 1;
         }
       }
-      $carbon = new Carbon();
-      $year = Carbon::createFromFormat('y', $bits[2]);
-      $carbon->year($year->year)->month($bits[0])->day($bits[1]);
+      $year = Carbon::createFromFormat('y', $bits[2], 'JST');
+      $carbon = Carbon::createFromDate($year->year, $bits[0], $bits[1], 'JST')->setTime(0, 0, 0);
       return $carbon;
     }
     return null;
