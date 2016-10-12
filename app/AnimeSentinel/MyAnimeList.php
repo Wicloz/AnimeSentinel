@@ -196,9 +196,8 @@ class MyAnimeList
     }
 
     $airing_time = trim(str_get_between($page, '<span class="dark_text">Broadcast:</span>', '</div>'));
-    if ($airing_time !== 'Unknown' && !empty($airing_time)) {
-      $airing_time = str_get_between($airing_time, 'at ', ' (JST)');
-    } else {
+    $airing_time = str_get_between($airing_time, 'at ', ' (JST)');
+    if (empty($airing_time)) {
       $airing_time = null;
     }
 
