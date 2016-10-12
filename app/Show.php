@@ -247,7 +247,7 @@ class Show extends BaseModel
         $dateString = '<span class="text-danger">' . $dateString . '</span>';
       }
 
-      if ($date->hour !== 12 || $date->minute !== 0 || $date->second !== 0) {
+      if ($date->hour !== 0 || $date->minute !== 0 || $date->second !== 0) {
         $timeString = $date->format('H:i');
         if (Carbon::now()->gt($date)) {
           $timeString = '<span class="text-danger">' . $timeString . '</span>';
@@ -469,7 +469,7 @@ class Show extends BaseModel
     }
 
     elseif (!$this->finishedAiring($translation_type) && $translation_type === 'sub' && isset($this->airing_start)) {
-      return $this->airing_start->hour(12);
+      return $this->airing_start;
     }
     return null;
   }

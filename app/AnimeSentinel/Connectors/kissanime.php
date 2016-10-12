@@ -98,7 +98,7 @@ class kissanime extends BaseConnector
 
     $episode['uploadtime'] = Carbon::createFromFormat('n/j/Y', trim($episode['uploadtime']));
     if (!$episode['uploadtime']->isToday()) {
-      $episode['uploadtime'] = $episode['uploadtime']->setTime(12, 0, 0);
+      $episode['uploadtime'] = $episode['uploadtime']->setTime(0, 0, 0);
     }
 
     return $episode;

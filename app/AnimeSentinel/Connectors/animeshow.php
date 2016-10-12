@@ -39,7 +39,7 @@ class animeshow extends BaseConnector
   protected static function completeEpisodeData($episode) {
     $episode['uploadtime'] = Carbon::createFromFormat('d M Y', $episode['uploadtime']);
     if (!$episode['uploadtime']->isToday()) {
-      $episode['uploadtime'] = $episode['uploadtime']->setTime(12, 0, 0);
+      $episode['uploadtime'] = $episode['uploadtime']->setTime(0, 0, 0);
     }
     return $episode;
   }
