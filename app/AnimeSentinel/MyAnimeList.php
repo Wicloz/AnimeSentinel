@@ -208,10 +208,10 @@ class MyAnimeList
     if ($aired !== 'Not available') {
       $aired = explode(' to ', $aired);
       if ($aired[0] !== '?') {
-        $airing_start = Self::convertDetailsAiringToCarbon($aired[0]);
+        $airing_start = Self::convertDetailsAiringToCarbon($aired[0], $airing_time);
       }
       if ($aired[count($aired) - 1] !== '?') {
-        $airing_end = Self::convertDetailsAiringToCarbon($aired[count($aired) - 1]);
+        $airing_end = Self::convertDetailsAiringToCarbon($aired[count($aired) - 1], $airing_time);
       }
     }
 
@@ -265,7 +265,7 @@ class MyAnimeList
     }
 
     if ($carbon !== null && $timeString !== null) {
-      $time = Carbon::createFromFormat('H:i', $dateString, 'JST');
+      $time = Carbon::createFromFormat('H:i', $timeString, 'JST');
       $carbon->setTime($time->hour, $time->minute, $time->second);
     }
 
