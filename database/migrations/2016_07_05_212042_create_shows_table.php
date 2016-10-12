@@ -33,8 +33,8 @@ class CreateShowsTable extends Migration
             $table->string('genres', 512)->default('[]');
             $table->integer('episode_amount')->nullable()->default(null);
             $table->integer('episode_duration')->nullable()->default(null);
-            $table->date('airing_start')->nullable()->default(null);
-            $table->date('airing_end')->nullable()->default(null);
+            $table->dateTime('airing_start')->nullable()->default(null);
+            $table->dateTime('airing_end')->nullable()->default(null);
             $table->string('season')->nullable()->default(null);
 
             $table->bigInteger('hits')->default(0);

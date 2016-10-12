@@ -255,13 +255,13 @@ class MyAnimeList
     $carbon = null;
 
     if (count(explode(' ', $dateString)) === 3) {
-      $carbon = Carbon::createFromFormat('M j, Y', $dateString, 'JST');
+      $carbon = Carbon::createFromFormat('M j, Y', $dateString, 'JST')->setTime(0, 0, 0);
     }
     if (count(explode(' ', $dateString)) === 2) {
-      $carbon = Carbon::createFromFormat('M, Y', $dateString, 'JST')->day(1);
+      $carbon = Carbon::createFromFormat('M, Y', $dateString, 'JST')->day(1)->setTime(0, 0, 0);
     }
     if (count(explode(' ', $dateString)) === 1) {
-      $carbon = Carbon::createFromFormat('Y', $dateString, 'JST')->day(1)->month(1);
+      $carbon = Carbon::createFromFormat('Y', $dateString, 'JST')->day(1)->month(1)->setTime(0, 0, 0);
     }
 
     if ($carbon !== null && $timeString !== null) {
