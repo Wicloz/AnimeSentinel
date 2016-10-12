@@ -151,9 +151,9 @@ class Show extends BaseModel
     else {
       if (!empty($this->airing_start)) {
         if ($this->airing_start->hour !== 0 || $this->airing_start->minute !== 0 || $this->airing_start->second !== 0) {
-          $string = $this->airing_start->toDayDateTimeString();
+          $string = $this->airing_start->format('M jS, o, H:i');
         } else {
-          $string = $this->airing_start->format('D') .', '. $this->airing_start->toFormattedDateString();
+          $string = $this->airing_start->format('M jS, o');
         }
       } else {
         $string = '?';
@@ -161,9 +161,9 @@ class Show extends BaseModel
       $string .= ' to ';
       if (!empty($this->airing_end)) {
         if ($this->airing_end->hour !== 0 || $this->airing_end->minute !== 0 || $this->airing_end->second !== 0) {
-          $string .= $this->airing_end->toDayDateTimeString();
+          $string .= $this->airing_end->format('M jS, o, H:i');
         } else {
-          $string .= $this->airing_end->format('D') .', '. $this->airing_end->toFormattedDateString();
+          $string .= $this->airing_end->format('M jS, o');
         }
       } else {
         $string .= '?';

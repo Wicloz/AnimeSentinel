@@ -255,18 +255,20 @@ class MyAnimeList
     $carbon = null;
 
     if (count(explode(' ', $dateString)) === 3) {
-      $carbon = Carbon::createFromFormat('M j, Y', $dateString, 'JST')->setTime(0, 0, 0);
+      $carbon = Carbon::createFromFormat('M j, Y', $dateString, 'JST')->setTime(12, 0, 0);
     }
     if (count(explode(' ', $dateString)) === 2) {
-      $carbon = Carbon::createFromFormat('M, Y', $dateString, 'JST')->day(1)->setTime(0, 0, 0);
+      $carbon = Carbon::createFromFormat('M, Y', $dateString, 'JST')->day(1)->setTime(12, 0, 0);
     }
     if (count(explode(' ', $dateString)) === 1) {
-      $carbon = Carbon::createFromFormat('Y', $dateString, 'JST')->day(1)->month(1)->setTime(0, 0, 0);
+      $carbon = Carbon::createFromFormat('Y', $dateString, 'JST')->month(1)->day(1)->setTime(12, 0, 0);
     }
 
     if ($carbon !== null && $timeString !== null) {
       $time = Carbon::createFromFormat('H:i', $timeString, 'JST');
-      $carbon->setTime($time->hour, $time->minute, $time->second);
+      $carbon->setTime($time->hour, $time->minute, $time->second)->tz('UTC');
+    } else {
+      $carbon->tz('UTC')->setTime(0, 0, 0);
     }
 
     return $carbon;
@@ -281,8 +283,8 @@ class MyAnimeList
         }
       }
       $year = Carbon::createFromFormat('y', $bits[2], 'JST');
-      $carbon = Carbon::createFromDate($year->year, $bits[0], $bits[1], 'JST')->setTime(0, 0, 0);
-      return $carbon;
+      $carbon = Carbon::createFromDate($year->year, $bits[0], $bits[1], 'JST');
+      return $carbon->tz('UTC')->setTime(0, 0, 0);
     }
     return null;
   }
