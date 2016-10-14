@@ -56,7 +56,7 @@ return [
     */
 
     'from' => [
-        'address' => 'animesentinel@wilcodeboer.me',
+        'address' => 'noreply@animesentinel.tv',
         'name' => 'AnimeSentinel',
     ],
 
@@ -114,14 +114,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Admin Email Adresses
+    | Admin Email Addresses
     |--------------------------------------------------------------------------
     |
-    | These email adresses will be used for mails that need to be send to
+    | These email addresses will be used for mails that need to be send to
     | administrators.
     |
     */
 
-    'admin_adresses' => ['wfh@wilcodeboer.me'],
+    'admin_addresses' => [env('ADDRESS_ADMIN')],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Debug Email Addresses
+    |--------------------------------------------------------------------------
+    |
+    | These email addresses will be used to send debug reports to.
+    |
+    */
+
+    'debug_addresses' => [env('ADDRESS_DEBUG')],
 
 ];
