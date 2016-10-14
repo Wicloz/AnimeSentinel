@@ -112,9 +112,9 @@ class User extends Authenticatable
       return false;
     }
     // Download the page
-    $page = Downloaders::downloadPage('https://myanimelist.net/animelist/'.$this->mal_user);
+    $page = Downloaders::downloadPage('http://myanimelist.net/malappinfo.php?u='.$this->mal_user.'&status=all&type=anime');
     // Check whether the page is valid, stop if it isn't
-    if (str_contains($page, 'Invalid Username Supplied') || str_contains($page, 'Access to this list has been restricted by the owner') || str_contains($page, '404 Not Found - MyAnimeList.net')) {
+    if (str_contains($page, 'Invalid username')) {
       $this->mal_canread = false;
       $this->save();
       return false;
@@ -125,42 +125,48 @@ class User extends Authenticatable
     // Check write permissions
     $this->postToMal('validate', 0);
 
-    // Srape page for anime list
-    $results = collect(Helpers::scrape_page(str_get_between($page, '</tbody>', '</table>'), '</td>', [
-      'status' => [true, '<td class="data status ', '">'],
-      'thumbnail_id' => [false, '/images/anime', '?'],
-      'partialUrl' => [false, '<a class="link sort" href="', '</a>'],
-      'score' => [false, '<td class="data score">', ''],
-      'progress' => [false, '<div class="progress', '</div>'],
+    // Srape the xml to get the anime list
+    $results = collect(Helpers::scrape_page($page, '</anime>', [
+      'mal_id' => [true, '<series_animedb_id>', '</series_animedb_id>'],
+      'title' => [false, '<series_title>', '</series_title>'],
+      'status' => [false, '<my_status>', '</my_status>'],
+      'thumbnail_id' => [false, '/images/anime/', '</series_image>'],
+      'eps_watched' => [false, '<my_watched_episodes>', '</my_watched_episodes>'],
+      'score' => [false, '<my_score>', '</my_score>'],
     ]));
 
     $malIds_list = [];
     // Convert the results to more convenient objects and save them
     foreach ($results as $result) {
       $mal_show = new \stdClass();
-      $mal_show->status = $result['status'];
 
-      $mal_show->mal_id = str_get_between($result['partialUrl'], '/anime/', '/');
-      $mal_show->title = str_get_between($result['partialUrl'], '">');
+      $mal_show->mal_id = $result['mal_id'];
+      $mal_show->title = $result['title'];
+      $mal_show->thumbnail_id = trim($result['thumbnail_id']);
+      $mal_show->eps_watched = (int) $result['eps_watched'];
+      $mal_show->score = (int) $result['score'];
 
-      $mal_show->thumbnail_id = $result['thumbnail_id'];
-
-      $mal_show->eps_watched = str_get_between($result['progress'], '<a href="javascript: void(0);" class="link edit-disabled">', '</a>');
-      if ($mal_show->eps_watched === false) {
-        $mal_show->eps_watched = str_get_between($result['progress'], '<span>', '</span>', true);
-      }
-      if ($mal_show->eps_watched === '-') {
-        $mal_show->eps_watched = 0;
-      }
-
-      $mal_show->score = trim(str_get_between($result['score'], '<a href="javascript: void(0);" class="link edit-disabled">', '</a>'));
-      if ($mal_show->score === '-') {
-        $mal_show->score = null;
+      switch ((int) $result['status']) {
+        case 1:
+          $mal_show->status = 'watching';
+        break;
+        case 2:
+          $mal_show->status = 'completed';
+        break;
+        case 3:
+          $mal_show->status = 'onhold';
+        break;
+        case 4:
+          $mal_show->status = 'dropped';
+        break;
+        case 6:
+          $mal_show->status = 'plantowatch';
+        break;
       }
 
       $malIds_list[] = $mal_show->mal_id;
 
-      // Save or update the mal field
+      // Insert or update the mal field
       $mal_field = $this->malFields()->firstOrNew(['mal_id' => $mal_show->mal_id]);
       $mal_field->mal_show = $mal_show;
       $mal_field->save();
@@ -242,6 +248,20 @@ class User extends Authenticatable
       $this->postToMal('update', $mal_id, ['episode' => $eps_watched]);
       $temp = $mal_field->mal_show;
       $temp->eps_watched = $eps_watched;
+      $mal_field->mal_show = $temp;
+      $mal_field->save();
+    }
+  }
+
+  /**
+   * Change the amount of watched episodes for the requested show for this user.
+   */
+  public function changeShowScore($mal_id, $score) {
+    $mal_field = $this->malFields()->where('mal_id', $mal_id)->first();
+    if ($mal_field->mal_show->score != $score) {
+      $this->postToMal('update', $mal_id, ['score' => $score]);
+      $temp = $mal_field->mal_show;
+      $temp->score = $score;
       $mal_field->mal_show = $temp;
       $mal_field->save();
     }
