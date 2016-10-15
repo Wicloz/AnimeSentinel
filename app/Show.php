@@ -596,6 +596,19 @@ class Show extends BaseModel
   }
 
   /**
+  * Get the url to the MAL page to edit the user data for this show.
+  *
+  * @return string
+  */
+  public function getMalEditUrlAttribute() {
+    if (isset($this->mal_id)) {
+      return 'https://myanimelist.net/editlist.php?type=anime&id='.$this->mal_id;
+    } else {
+      return null;
+    }
+  }
+
+  /**
   * Get the url to this show's local thumbnail.
   *
   * @return string

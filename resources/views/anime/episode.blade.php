@@ -120,7 +120,7 @@
 
   @if(isset($show->mal_url))
     <div class="content-header">
-      <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
+      <a target="_blank" href="{{ $show->mal_edit_url }}">Edit MAL Details</a>
     </div>
     @if(Auth::check() && Auth::user()->mal_canwrite)
       @include('components.mal.editstatus', ['show' => $show])
