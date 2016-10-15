@@ -229,6 +229,8 @@ class User extends Authenticatable
 
   /**
    * Add the requested anime to this user's list.
+   *
+   * @return boolean
    */
   public function addAnime($mal_id, $status = 'watching', $eps_watched = 0, $score = 0) {
     $this->postToMal('add', $mal_id, [
@@ -237,50 +239,72 @@ class User extends Authenticatable
       'score' => $score,
     ]);
     $this->updateMalCache();
+    return true;
   }
 
   /**
    * Change the state of the requested show for this user.
+   *
+   * @return boolean
    */
   public function changeShowStatus($mal_id, $status) {
     $mal_field = $this->malFields()->where('mal_id', $mal_id)->first();
-    if ($mal_field->mal_show->status !== $status) {
+    if ($mal_field === null) {
+      flash_error('An anime with that id is not on your list.');
+      return false;
+    }
+    elseif ($mal_field->mal_show->status !== $status) {
       $this->postToMal('update', $mal_id, ['status' => $status]);
       $temp = $mal_field->mal_show;
       $temp->status = $status;
       $mal_field->mal_show = $temp;
       $mal_field->save();
     }
+    return true;
   }
 
   /**
    * Change the amount of watched episodes for the requested show for this user.
+   *
+   * @return boolean
    */
   public function changeShowEpsWatched($mal_id, $eps_watched) {
     $eps_watched = (int) $eps_watched;
     $mal_field = $this->malFields()->where('mal_id', $mal_id)->first();
-    if ($mal_field->mal_show->eps_watched !== $eps_watched) {
+    if ($mal_field === null) {
+      flash_error('An anime with that id is not on your list.');
+      return false;
+    }
+    elseif ($mal_field->mal_show->eps_watched !== $eps_watched) {
       $this->postToMal('update', $mal_id, ['episode' => $eps_watched]);
       $temp = $mal_field->mal_show;
       $temp->eps_watched = $eps_watched;
       $mal_field->mal_show = $temp;
       $mal_field->save();
     }
+    return true;
   }
 
   /**
    * Change the amount of watched episodes for the requested show for this user.
+   *
+   * @return boolean
    */
   public function changeShowScore($mal_id, $score) {
     $score = (int) $score;
     $mal_field = $this->malFields()->where('mal_id', $mal_id)->first();
-    if ($mal_field->mal_show->score !== $score) {
+    if ($mal_field === null) {
+      flash_error('An anime with that id is not on your list.');
+      return false;
+    }
+    elseif ($mal_field->mal_show->score !== $score) {
       $this->postToMal('update', $mal_id, ['score' => $score]);
       $temp = $mal_field->mal_show;
       $temp->score = $score;
       $mal_field->mal_show = $temp;
       $mal_field->save();
     }
+    return true;
   }
 
   /**
