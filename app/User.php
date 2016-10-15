@@ -133,6 +133,7 @@ class User extends Authenticatable
       'thumbnail_id' => [false, '/images/anime/', '</series_image>'],
       'eps_watched' => [false, '<my_watched_episodes>', '</my_watched_episodes>'],
       'score' => [false, '<my_score>', '</my_score>'],
+      'rewatching' => [false, '<my_rewatching>', '</my_rewatching>'],
     ]));
 
     $malIds_list = [];
@@ -145,6 +146,7 @@ class User extends Authenticatable
       $mal_show->thumbnail_id = trim($result['thumbnail_id']);
       $mal_show->eps_watched = (int) $result['eps_watched'];
       $mal_show->score = (int) $result['score'];
+      $mal_show->rewatching = $result['rewatching'] === '1';
 
       switch ((int) $result['status']) {
         case 1:
