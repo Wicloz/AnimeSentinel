@@ -18,7 +18,7 @@
       <label for="eps_watched">Episodes Watched:</label>
       <div class="input-group">
         <input type="number" class="form-control" id="eps_watched" name="eps_watched" value="{{ $errors->has('eps_watched') ? old('eps_watched') : (isset($show->mal_show) ? $show->mal_show->eps_watched : (isset($video) ? $video->episode_num : 0)) }}" min="0" max="{{ $show->episode_amount }}" required>
-        <div class="input-group-addon">/ {{ $show->episode_amount }}</div>
+        <div class="input-group-addon">/ {{ $show->episode_amount or '?' }}</div>
       </div>
       @if ($errors->has('eps_watched'))
         <span class="help-block">
