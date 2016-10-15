@@ -22,8 +22,8 @@
   @endforeach
 @endif
 
-@if (Session::has('alerts_error'))
-  @foreach (Session::pull('alerts_error') as $alert)
+@if (Session::has('alerts_danger'))
+  @foreach (Session::pull('alerts_danger') as $alert)
     <div class="alert {{$alert->type}}">
       {!! $alert->body !!}
     </div>

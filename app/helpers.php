@@ -45,7 +45,7 @@ function flash_warning($content) {
 }
 
 function flash_error($content) {
-  flash($content, 'error');
+  flash($content, 'danger');
 }
 
 function visitPage($id) {
