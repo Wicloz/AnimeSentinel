@@ -1,5 +1,5 @@
 <div class="content-generic">
-  <form action="{{ fullUrl('/user/malshow') }}" method="POST">
+  <form action="{{ fullUrl('/user/setmal') }}" method="POST">
     {{ csrf_field() }}
     <input type="hidden" name="mal_id" value="{{ $show->mal_id }}">
 
@@ -46,5 +46,4 @@
 
     <button type="submit" class="btn btn-default btn-block">Update</button>
   </form>
-  <div class="content-close"></div>
 </div>

@@ -228,7 +228,7 @@ class User extends Authenticatable
   /**
    * Change the state of the requested show for this user.
    */
-  public function changeShowState($mal_id, $status) {
+  public function changeShowStatus($mal_id, $status) {
     $mal_field = $this->malFields()->where('mal_id', $mal_id)->first();
     if ($mal_field->mal_show->status !== $status) {
       $this->postToMal('update', $mal_id, ['status' => $status]);
@@ -290,7 +290,7 @@ class User extends Authenticatable
         ) {
           $mal_field->auto_watching_changed = true;
           $mal_field->save();
-          $this->changeShowState($mal_field->mal_show->mal_id, 'watching');
+          $this->changeShowStatus($mal_field->mal_show->mal_id, 'watching');
         }
       }
     }

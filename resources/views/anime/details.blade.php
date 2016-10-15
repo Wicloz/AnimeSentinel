@@ -157,7 +157,7 @@
       <div class="content-header">
         <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
       </div>
-      @include('components.mal.editstatus', ['show' => $show, 'user' => Auth::user()])
+      @include('components.mal.editstatus', ['show' => $show])
     @endif
   @endif
 @endsection

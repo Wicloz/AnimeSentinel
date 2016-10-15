@@ -44,7 +44,10 @@ Route::post('/user/notifications/mail/specific', 'Auth\UpdateSettingsController@
 Route::post('/user/settings/overview', 'Auth\UpdateSettingsController@overview');
 
 // Updating MAL data
-Route::post('/user/malshow', 'Auth\UpdateMalController@update');
+Route::post('/user/setmal', 'Auth\UpdateMalController@update');
+Route::post('/user/setmal/progres', 'Auth\UpdateMalController@epsWatched');
+Route::post('/user/setmal/status', 'Auth\UpdateMalController@status');
+Route::post('/user/setmal/score', 'Auth\UpdateMalController@score');
 
 // CSS Routes
 Route::get('/user/settings/css', 'CssController@showUserSettings'); //TODO
