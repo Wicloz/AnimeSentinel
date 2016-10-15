@@ -157,7 +157,7 @@
       <div class="content-header">
         <a target="_blank" href="{{ $show->mal_edit_url }}">Edit MAL Details</a>
       </div>
-      @include('components.mal.editstatus', ['show' => $show])
+      @include('components.mal.editshow', ['show' => $show, 'new' => !isset($show->mal_show)])
     @endif
   @endif
 @endsection

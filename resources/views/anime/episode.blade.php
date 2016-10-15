@@ -123,15 +123,17 @@
       <a target="_blank" href="{{ $show->mal_edit_url }}">Edit MAL Details</a>
     </div>
     @if(Auth::check() && Auth::user()->mal_canwrite)
-      @include('components.mal.editstatus', ['show' => $show])
-      <div class="content-generic">
-        <form action="{{ fullUrl('/user/setmal/progres') }}" method="POST">
-          {{ csrf_field() }}
-          <input type="hidden" name="mal_id" value="{{ $show->mal_id }}">
-          <input type="hidden" name="eps_watched" value="{{ $video->episode_num }}">
-          <button type="submit" class="btn btn-default btn-block">Mark this Episode as Watched</button>
-        </form>
-      </div>
+      @include('components.mal.editshow', ['show' => $show, 'new' => !isset($show->mal_show)])
+      @if(isset($show->mal_show))
+        <div class="content-generic">
+          <form action="{{ fullUrl('/user/setmal/progres') }}" method="POST">
+            {{ csrf_field() }}
+            <input type="hidden" name="mal_id" value="{{ $show->mal_id }}">
+            <input type="hidden" name="eps_watched" value="{{ $video->episode_num }}">
+            <button type="submit" class="btn btn-default btn-block">Mark this Episode as Watched</button>
+          </form>
+        </div>
+      @endif
     @else
       @include('components.mal.widgets.sidebar', ['mal_url' => $show->mal_url])
     @endif

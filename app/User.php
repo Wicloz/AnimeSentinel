@@ -228,6 +228,18 @@ class User extends Authenticatable
   }
 
   /**
+   * Add the requested anime to this user's list.
+   */
+  public function addAnime($mal_id, $status = 'watching', $eps_watched = 0, $score = 0) {
+    $this->postToMal('add', $mal_id, [
+      'status' => $status,
+      'episode' => $eps_watched,
+      'score' => $score,
+    ]);
+    $this->updateMalCache();
+  }
+
+  /**
    * Change the state of the requested show for this user.
    */
   public function changeShowStatus($mal_id, $status) {
