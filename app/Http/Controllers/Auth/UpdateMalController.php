@@ -28,7 +28,7 @@ class UpdateMalController extends Controller
     $this->validate($request, [
       'mal_id' => ['required', 'integer', 'between:0,max'],
       'status' => ['required', 'in:watching,completed,onhold,dropped,plantowatch'],
-      'eps_watched' => ['required', 'integer', 'between:0,max'],
+      'eps_watched' => ['required', 'integer', 'between:0,2000'],
       'score' => ['required', 'integer', 'between:0,10'],
     ]);
     Auth::user()->addAnime($request->mal_id, $request->status, $request->eps_watched, $request->score);
@@ -69,7 +69,7 @@ class UpdateMalController extends Controller
   public function epsWatched(Request $request) {
     $this->validate($request, [
       'mal_id' => ['required', 'integer', 'between:0,max'],
-      'eps_watched' => ['required', 'integer', 'between:0,max'],
+      'eps_watched' => ['required', 'integer', 'between:0,2000'],
     ]);
     Auth::user()->changeShowEpsWatched($request->mal_id, $request->eps_watched);
     return back();
