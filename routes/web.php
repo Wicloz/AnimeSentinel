@@ -43,6 +43,9 @@ Route::post('/user/notifications/mail/general', 'Auth\UpdateSettingsController@n
 Route::post('/user/notifications/mail/specific', 'Auth\UpdateSettingsController@notifications_mail_specific');
 Route::post('/user/settings/overview', 'Auth\UpdateSettingsController@overview');
 
+// Updating MAL data
+Route::post('/user/malshow', 'Auth\UpdateMalController@update');
+
 // CSS Routes
 Route::get('/user/settings/css', 'CssController@showUserSettings'); //TODO
 Route::post('/user/settings/css', 'CssController@setUserSettings'); //TODO

@@ -230,7 +230,7 @@ class User extends Authenticatable
    */
   public function changeShowState($mal_id, $status) {
     $mal_field = $this->malFields()->where('mal_id', $mal_id)->first();
-    if ($mal_field->mal_show->status != $status) {
+    if ($mal_field->mal_show->status !== $status) {
       $this->postToMal('update', $mal_id, ['status' => $status]);
       $temp = $mal_field->mal_show;
       $temp->status = $status;
@@ -243,8 +243,9 @@ class User extends Authenticatable
    * Change the amount of watched episodes for the requested show for this user.
    */
   public function changeShowEpsWatched($mal_id, $eps_watched) {
+    $eps_watched = (int) $eps_watched;
     $mal_field = $this->malFields()->where('mal_id', $mal_id)->first();
-    if ($mal_field->mal_show->eps_watched != $eps_watched) {
+    if ($mal_field->mal_show->eps_watched !== $eps_watched) {
       $this->postToMal('update', $mal_id, ['episode' => $eps_watched]);
       $temp = $mal_field->mal_show;
       $temp->eps_watched = $eps_watched;
@@ -257,8 +258,9 @@ class User extends Authenticatable
    * Change the amount of watched episodes for the requested show for this user.
    */
   public function changeShowScore($mal_id, $score) {
+    $score = (int) $score;
     $mal_field = $this->malFields()->where('mal_id', $mal_id)->first();
-    if ($mal_field->mal_show->score != $score) {
+    if ($mal_field->mal_show->score !== $score) {
       $this->postToMal('update', $mal_id, ['score' => $score]);
       $temp = $mal_field->mal_show;
       $temp->score = $score;

@@ -150,3 +150,14 @@
     ])
   @endif
 @endsection
+
+@section('content-right')
+  @if(isset($show->mal_url))
+    @if(Auth::check() && Auth::user()->mal_canwrite)
+      <div class="content-header">
+        <a target="_blank" href="{{ $show->mal_url }}">View on MyAnimeList</a>
+      </div>
+      @include('components.mal.editstatus', ['show' => $show, 'user' => Auth::user()])
+    @endif
+  @endif
+@endsection
