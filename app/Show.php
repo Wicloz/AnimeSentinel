@@ -251,8 +251,12 @@ class Show extends BaseModel
     }
   }
   public function printNextUpload($translation_type, $dateFormat = 'l j F, Y') {
-    if (!empty($this->mal) || $this->nextUploadEstimate($translation_type) === null) {
+    if ($this->finishedAiring($translation_type)) {
       return 'NA';
+    }
+
+    elseif (!empty($this->mal) || $this->nextUploadEstimate($translation_type) === null) {
+      return 'Unknown';
     }
 
     else {
@@ -487,6 +491,7 @@ class Show extends BaseModel
     elseif (!$this->finishedAiring($translation_type) && $translation_type === 'sub' && isset($this->airing_start)) {
       return $this->airing_start;
     }
+
     return null;
   }
 
