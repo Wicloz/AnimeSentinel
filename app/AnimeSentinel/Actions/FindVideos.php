@@ -74,7 +74,7 @@ class FindVideos
     }
 
     // Reprocess episodes once a day for 4/5 days after they're uploaded to catch delayed uploads of HD videos and other changes
-    $delays = [1, 2, 4, 8];
+    $delays = [1, 2, 4, 8, 24];
 
     $query = Video::where('show_id', $show->id)->whereIn('translation_type', $translation_types);
     if ($episode_num !== null) {
