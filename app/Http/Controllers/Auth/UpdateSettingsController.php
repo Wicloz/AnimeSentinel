@@ -161,7 +161,7 @@ class UpdateSettingsController extends Controller
    */
   public function overview(Request $request) {
     $this->validate($request, [
-      'option_cutoff' => ['required', 'integer'],
+      'option_cutoff' => ['required', 'integer', 'between:1,max'],
     ]);
 
     $states = collect(['watching', 'completed', 'onhold', 'dropped', 'plantowatch']);
