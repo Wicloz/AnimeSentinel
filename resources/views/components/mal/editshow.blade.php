@@ -44,6 +44,6 @@
       </select>
     </div>
 
-    <button type="submit" class="btn btn-default btn-block">{{ $new ? 'Add to My List' : 'Update' }}</button>
+    <button type="submit" class="btn btn-default btn-block">{{ !isset($show->mal_show) ? 'Add to My List' : 'Update' }}</button>
   </form>
 </div>
