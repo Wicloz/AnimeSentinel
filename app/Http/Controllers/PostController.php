@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\AnimeSentinel\Actions\ShowManager;
 use App\AnimeSentinel\Actions\FindVideos;
 use App\Video;
+use App\Show;
 
 class PostController extends Controller
 {
@@ -28,6 +29,26 @@ class PostController extends Controller
     } else {
       return back();
     }
+  }
+
+  /**
+   * Refresh the cache for the requested show
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function showUpdate(Request $request) {
+    $this->validate($request, [
+      'show_id' => ['required', 'integer']
+    ]);
+
+    $show = Show::find($request->show_id);
+    if (isset($show)) {
+      $show->handleCaching(true);
+    } else {
+      flash_error('The requested show could not be found.');
+    }
+
+    return back();
   }
 
   /**
