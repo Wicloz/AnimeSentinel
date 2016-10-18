@@ -19,7 +19,7 @@ class ShowManager
     // Confirm this show isn't already in our databse
     $dbshow = Show::withTitle($title)->first();
     if (!empty($dbshow)) {
-      flash_error('The requested show has already been added to the database.');
+      flash_error('The requested anime has already been added to the database.');
       if (!$dbshow->videos_initialised) {
         queueJob(new \App\Jobs\AnimeFindVideos($dbshow), $queue);
       }
@@ -63,7 +63,7 @@ class ShowManager
     // Confirm this show isn't already in our databse
     $dbshow = Show::where('mal_id', $mal_id)->first();
     if (!empty($dbshow)) {
-      flash_error('The requested show has already been added to the database.');
+      flash_error('The requested anime has already been added to the database.');
       if (!$dbshow->videos_initialised) {
         queueJob(new \App\Jobs\AnimeFindVideos($dbshow), $queue);
       }

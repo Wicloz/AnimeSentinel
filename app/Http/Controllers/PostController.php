@@ -45,7 +45,7 @@ class PostController extends Controller
     if (isset($show)) {
       $show->handleCaching(true);
     } else {
-      flash_error('The requested show could not be found.');
+      flash_error('The requested anime could not be found.');
     }
 
     return back();
