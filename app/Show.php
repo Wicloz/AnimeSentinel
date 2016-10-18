@@ -33,18 +33,6 @@ class Show extends BaseModel
   ];
 
   /**
-   * Ensure both cache handling and decoding occurs.
-   */
-  public function getAltsAttribute($value) {
-    $this->handleCaching();
-    return collect(json_decode($value));
-  }
-  public function getGenresAttribute($value) {
-    $this->handleCaching();
-    return collect(json_decode($value));
-  }
-
-  /**
    * The attributes that should be mutated to dates.
    *
    * @var array
@@ -643,19 +631,28 @@ class Show extends BaseModel
   }
 
   /**
-  * Update this show's cached infomation when needed.
-  */
-  public function handleCaching($force = false) {
-    // TODO: smarter cache time
-    if ($force || (!$this->mal && Self::$cachesUpdated < 1 && $this->cache_updated_at->diffInHours(Carbon::now()) >= rand(168, 336))) {
+   * Update this show's cached infomation.
+   */
+  public function updateCache() {
+    if (empty($this->mal)) {
       Self::$cachesUpdated++;
       ShowManager::updateShowCache($this->id);
     }
   }
 
   /**
-  * Handle caching calls.
-  */
+   * Update this show's cached infomation only if the cache time has expired.
+   */
+  public function handleCaching() {
+    // TODO: smarter cache time
+    if (Self::$cachesUpdated < 1 && isset($this->cache_updated_at) && $this->cache_updated_at->diffInHours(Carbon::now()) >= rand(168, 336)) {
+      $this->updateCache();
+    }
+  }
+
+  /**
+   * Handle caching calls.
+   */
   public function getMalIdAttribute($value) {
     $this->handleCaching();
     return $value;
