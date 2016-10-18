@@ -8,12 +8,12 @@ use App\Show;
 class MyAnimeList
 {
   /**
-   * Does a search on MAL with the requested query.
-   * Returns all results.
+   * Does an API search on MAL with the requested query.
+   * Converts the results to an array of stdClass.
    *
-   * @return SimpleXMLElement
+   * @return array
    */
-  private static function searchApiXml($query) {
+  public static function searchApi($query) {
     // Preform curl request
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, 'https://myanimelist.net/api/anime/search.xml?q='.str_replace(' ', '+', $query));
@@ -22,19 +22,9 @@ class MyAnimeList
     curl_setopt($curl, CURLOPT_PASSWORD, config('animesentinel.mal_password'));
     $response = curl_exec($curl);
     curl_close($curl);
-    // Convert to and return xml
+    // Convert to xml
     $xml = simplexml_load_string($response);
-    return $xml;
-  }
-
-  /**
-   * Does an API search on MAL with the requested query.
-   * Converts the results to an array of stdClass.
-   *
-   * @return array
-   */
-  public static function searchApi($query) {
-    $xml = Self::searchApiXml($query);
+    // Convert xml to results
     if (empty($xml)) return [];
     $results = [];
     foreach ($xml as $entry) {
