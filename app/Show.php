@@ -6,6 +6,7 @@ use App\Scopes\CacheShowScope;
 use Carbon\Carbon;
 use App\AnimeSentinel\Actions\ShowManager;
 use Illuminate\Support\Facades\Auth;
+use App\AnimeSentinel\Downloaders;
 
 class Show extends BaseModel
 {
@@ -593,11 +594,23 @@ class Show extends BaseModel
   }
 
   /**
+  * Check whether MAL still has an anime with this MAL id.
+  *
+  * @return boolean
+  */
+  public function getMalLinkedAttribute() {
+    if (isset($this->mal_id)) {
+      $page = Downloaders::downloadPage();
+    }
+    return false;
+  }
+
+  /**
   * Update this show's cached infomation when needed.
   */
-  public function handleCaching() {
+  public function handleCaching($force = false) {
     // TODO: smarter cache time
-    if (!$this->mal && Self::$cachesUpdated < 1 && $this->cache_updated_at->diffInHours(Carbon::now()) >= rand(168, 336)) {
+    if ($force || (!$this->mal && Self::$cachesUpdated < 1 && $this->cache_updated_at->diffInHours(Carbon::now()) >= rand(168, 336))) {
       Self::$cachesUpdated++;
       ShowManager::updateShowCache($this->id);
     }
