@@ -634,7 +634,10 @@ class Show extends BaseModel
   */
   public function getMalLinkedAttribute() {
     if (isset($this->mal_id)) {
-      $page = Downloaders::downloadPage();
+      $page = Downloaders::downloadPage($this->mal_url);
+      if (!str_contains($page, '404 Not Found')) {
+        return true;
+      }
     }
     return false;
   }
@@ -653,6 +656,10 @@ class Show extends BaseModel
   /**
   * Handle caching calls.
   */
+  public function getMalIdAttribute($value) {
+    $this->handleCaching();
+    return $value;
+  }
   public function getTitleAttribute($value) {
     $this->handleCaching();
     return $value;
@@ -670,6 +677,10 @@ class Show extends BaseModel
     return $value;
   }
   public function getEpisodeDurationAttribute($value) {
+    $this->handleCaching();
+    return $value;
+  }
+  public function getSeasonAttribute($value) {
     $this->handleCaching();
     return $value;
   }

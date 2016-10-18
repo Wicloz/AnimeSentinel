@@ -101,6 +101,12 @@ class ShowManager
     $mode = $episodes ? 'true' : 'false';
     if (!handleJobFunction('ShowUpdate('.$mode.')', $jobShowId, null, $fromJob)) return Show::find($show_id);
 
+    // If this show has dissappeard from MAL, reset the MAL id
+    if (isset($show->mal_id) && !$show->mal_linked) {
+      $show->mal_id = null;
+      $show->save();
+    }
+
     // If the mal id is not known yet, try to find it first
     if (!isset($show->mal_id)) {
       $mal_id = MyAnimeList::getMalIdForTitle($show->title);
