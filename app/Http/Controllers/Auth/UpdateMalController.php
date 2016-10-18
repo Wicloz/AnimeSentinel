@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 
 use Illuminate\Support\Facades\Auth;
+use App\Show;
 
 class UpdateMalController extends Controller
 {
@@ -26,12 +27,26 @@ class UpdateMalController extends Controller
    */
   public function add(Request $request) {
     $this->validate($request, [
-      'mal_id' => ['required', 'integer', 'between:0,max'],
+      'show_id' => ['required', 'integer', 'between:0,max'],
       'status' => ['required', 'in:watching,completed,onhold,dropped,plantowatch'],
       'eps_watched' => ['required', 'integer', 'between:0,2000'],
       'score' => ['required', 'integer', 'between:0,10'],
     ]);
-    Auth::user()->addAnime($request->mal_id, $request->status, $request->eps_watched, $request->score);
+
+    $show = Show::find($request->show_id);
+    if (isset($show)) {
+      if (!isset($show->mal_id)) {
+        flash_error('The requested anime could not be found on MAL.');
+      } elseif (!$show->mal_linked) {
+        $show->handleCaching(true);
+        return $this->add($request);
+      } else {
+        Auth::user()->addAnime($show->mal_id, $request->status, $request->eps_watched, $request->score);
+      }
+    } else {
+      flash_error('The requested anime could not be found.');
+    }
+
     return back();
   }
 
@@ -42,7 +57,7 @@ class UpdateMalController extends Controller
    */
   public function full(Request $request) {
     $this->epsWatched($request);
-    $this->state($request);
+    $this->status($request);
     $this->score($request);
     return back();
   }
@@ -52,12 +67,19 @@ class UpdateMalController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function state(Request $request) {
+  public function status(Request $request) {
     $this->validate($request, [
-      'mal_id' => ['required', 'integer', 'between:0,max'],
+      'show_id' => ['required', 'integer', 'between:0,max'],
       'status' => ['required', 'in:watching,completed,onhold,dropped,plantowatch'],
     ]);
-    Auth::user()->changeShowStatus($request->mal_id, $request->status);
+
+    $show = Show::find($request->show_id);
+    if (isset($show)) {
+      Auth::user()->changeShowStatus($show->mal_id, $request->status);
+    } else {
+      flash_error('The requested anime could not be found.');
+    }
+
     return back();
   }
 
@@ -68,10 +90,17 @@ class UpdateMalController extends Controller
    */
   public function epsWatched(Request $request) {
     $this->validate($request, [
-      'mal_id' => ['required', 'integer', 'between:0,max'],
+      'show_id' => ['required', 'integer', 'between:0,max'],
       'eps_watched' => ['required', 'integer', 'between:0,2000'],
     ]);
-    Auth::user()->changeShowEpsWatched($request->mal_id, $request->eps_watched);
+
+    $show = Show::find($request->show_id);
+    if (isset($show)) {
+      Auth::user()->changeShowEpsWatched($show->mal_id, $request->eps_watched);
+    } else {
+      flash_error('The requested anime could not be found.');
+    }
+
     return back();
   }
 
@@ -82,10 +111,17 @@ class UpdateMalController extends Controller
    */
   public function score(Request $request) {
     $this->validate($request, [
-      'mal_id' => ['required', 'integer', 'between:0,max'],
+      'show_id' => ['required', 'integer', 'between:0,max'],
       'score' => ['required', 'integer', 'between:0,10'],
     ]);
-    Auth::user()->changeShowScore($request->mal_id, $request->score);
+
+    $show = Show::find($request->show_id);
+    if (isset($show)) {
+      Auth::user()->changeShowScore($show->mal_id, $request->score);
+    } else {
+      flash_error('The requested anime could not be found.');
+    }
+
     return back();
   }
 }

@@ -233,13 +233,18 @@ class User extends Authenticatable
    * @return boolean
    */
   public function addAnime($mal_id, $status = 'watching', $eps_watched = 0, $score = 0) {
-    $this->postToMal('add', $mal_id, [
-      'status' => $status,
-      'episode' => $eps_watched,
-      'score' => $score,
-    ]);
-    $this->updateMalCache();
-    return true;
+    if ($this->malFields()->where('mal_id', $mal_id)->first() === null) {
+      $this->postToMal('add', $mal_id, [
+        'status' => $status,
+        'episode' => $eps_watched,
+        'score' => $score,
+      ]);
+      $this->updateMalCache();
+      return true;
+    } else {
+      flash_error('An anime with that id is already on your list.');
+      return false;
+    }
   }
 
   /**

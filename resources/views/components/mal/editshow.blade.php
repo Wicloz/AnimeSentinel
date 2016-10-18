@@ -1,7 +1,7 @@
 <div class="content-generic">
-  <form action="{{ $new ? fullUrl('/user/setmal/add') : fullUrl('/user/setmal/full') }}" method="POST">
+  <form action="{{ !isset($show->mal_show) ? fullUrl('/user/setmal/add') : fullUrl('/user/setmal/full') }}" method="POST">
     {{ csrf_field() }}
-    <input type="hidden" name="mal_id" value="{{ $show->mal_id }}">
+    <input type="hidden" name="show_id" value="{{ $show->id }}">
 
     <div class="form-group">
       <label for="status">Status:</label>
