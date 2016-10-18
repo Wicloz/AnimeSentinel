@@ -150,9 +150,25 @@ class Show extends BaseModel
       return 'Unknown';
     }
     else {
-      $string = !empty($this->airing_start) ? $this->airing_start->toFormattedDateString() : '?';
+      if (!empty($this->airing_start)) {
+        if ($this->airing_start->hour !== 0 || $this->airing_start->minute !== 0 || $this->airing_start->second !== 0) {
+          $string = $this->airing_start->format('M jS, o, H:i');
+        } else {
+          $string = $this->airing_start->format('M jS, o');
+        }
+      } else {
+        $string = '?';
+      }
       $string .= ' to ';
-      $string .= !empty($this->airing_end) ? $this->airing_end->toFormattedDateString() : '?';
+      if (!empty($this->airing_end)) {
+        if ($this->airing_end->hour !== 0 || $this->airing_end->minute !== 0 || $this->airing_end->second !== 0) {
+          $string .= $this->airing_end->format('M jS, o, H:i');
+        } else {
+          $string .= $this->airing_end->format('M jS, o');
+        }
+      } else {
+        $string .= '?';
+      }
       return $string;
     }
   }
@@ -236,8 +252,12 @@ class Show extends BaseModel
     }
   }
   public function printNextUpload($translation_type, $dateFormat = 'l j F, Y') {
-    if (!empty($this->mal) || $this->nextUploadEstimate($translation_type) === null) {
+    if ($this->finishedAiring($translation_type)) {
       return 'NA';
+    }
+
+    elseif (!empty($this->mal) || $this->nextUploadEstimate($translation_type) === null) {
+      return 'Unknown';
     }
 
     else {
@@ -472,6 +492,7 @@ class Show extends BaseModel
     elseif (!$this->finishedAiring($translation_type) && $translation_type === 'sub' && isset($this->airing_start)) {
       return $this->airing_start;
     }
+
     return null;
   }
 
@@ -575,6 +596,19 @@ class Show extends BaseModel
   public function getMalUrlAttribute() {
     if (isset($this->mal_id)) {
       return 'https://myanimelist.net/anime/'.$this->mal_id;
+    } else {
+      return null;
+    }
+  }
+
+  /**
+  * Get the url to the MAL page to edit the user data for this show.
+  *
+  * @return string
+  */
+  public function getMalEditUrlAttribute() {
+    if (isset($this->mal_id)) {
+      return 'https://myanimelist.net/editlist.php?type=anime&id='.$this->mal_id;
     } else {
       return null;
     }

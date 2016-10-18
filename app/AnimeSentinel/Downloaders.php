@@ -48,7 +48,7 @@ class Downloaders
         ]], function ($m) {
           $m->subject('AnimeSentinel Detected ReCaptcha');
           $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
-          $m->to('animesentinel@wilcodeboer.me');
+          $m->to(array_merge(config('mail.debug_addresses'), config('mail.admin_addresses')));
         });
       }
       elseif (str_contains($url, 'kissanime.to')) {

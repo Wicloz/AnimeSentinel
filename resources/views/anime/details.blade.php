@@ -150,3 +150,14 @@
     ])
   @endif
 @endsection
+
+@section('content-right')
+  @if(isset($show->mal_url))
+    @if(Auth::check() && Auth::user()->mal_canwrite)
+      <div class="content-header">
+        <a target="_blank" href="{{ $show->mal_edit_url }}">Edit MAL Details</a>
+      </div>
+      @include('components.mal.editshow', ['show' => $show, 'new' => !isset($show->mal_show)])
+    @endif
+  @endif
+@endsection

@@ -74,6 +74,8 @@ class FindVideos
     }
 
     // Reprocess episodes once a day for 4/5 days after they're uploaded to catch delayed uploads of HD videos and other changes
+    $delays = [1, 2, 4, 8, 24];
+
     $query = Video::where('show_id', $show->id)->whereIn('translation_type', $translation_types);
     if ($episode_num !== null) {
       $query->where('episode_num', $episode_num);
@@ -84,8 +86,11 @@ class FindVideos
     $videos = $query->distinctOn(['show_id', 'translation_type', 'episode_num', 'streamer_id'], ['uploadtime' => 'desc', 'id' => 'desc'])->get();
 
     foreach ($videos as $video) {
-      if ($video->uploadtime->diffInDays(Carbon::now()) < 5) {
-        queueJob((new \App\Jobs\AnimeReprocessEpisodes($show, [$video->translation_type], $video->episode_num, $video->streamer_id))->delay(Carbon::now()->addDays(1)));
+      foreach ($delays as $delay) {
+        if ($video->uploadtime->diffInHours(Carbon::now(), false) < $delay) {
+          queueJob((new \App\Jobs\AnimeReprocessEpisodes($show, [$video->translation_type], $video->episode_num, $video->streamer_id))->delay($video->uploadtime->addHours($delay)->addMinutes(2)));
+          break;
+        }
       }
     }
 

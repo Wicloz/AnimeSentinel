@@ -1,10 +1,15 @@
 <?php
 
 function mailAnomaly($show, $description, $vars = []) {
-  \Mail::send('emails.reports.show', ['show' => $show, 'description' => $description, 'vars' => $vars], function ($m) {
+  $tos = config('mail.debug_addresses');
+  if (str_replace('.', '', mb_strtolower($description)) === 'could not find show on mal') {
+    $tos = array_merge($tos, config('mail.admin_addresses'));
+  }
+
+  \Mail::send('emails.reports.show', ['show' => $show, 'description' => $description, 'vars' => $vars], function ($m) use ($tos) {
     $m->subject('AnimeSentinel Anomaly Report');
     $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
-    $m->to('animesentinel@wilcodeboer.me');
+    $m->to($tos);
   });
 }
 
@@ -13,7 +18,7 @@ function mailException($description, $exception, $vars = []) {
   \Mail::send('emails.reports.general', ['description' => $description, 'vars' => $vars], function ($m) {
     $m->subject('AnimeSentinel Exception Report');
     $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
-    $m->to('animesentinel@wilcodeboer.me');
+    $m->to(config('mail.debug_addresses'));
   });
 }
 
@@ -40,7 +45,7 @@ function flash_warning($content) {
 }
 
 function flash_error($content) {
-  flash($content, 'error');
+  flash($content, 'danger');
 }
 
 function visitPage($id) {

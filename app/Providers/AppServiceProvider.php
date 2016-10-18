@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
       ]], function ($m) {
         $m->subject('AnimeSentinel Job Fail Report');
         $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
-        $m->to('animesentinel@wilcodeboer.me');
+        $m->to(config('mail.debug_addresses'));
       });
 
       if (!str_ends_with($event->job->payload()['data']['commandName'], 'FindRecentVideos') && !str_ends_with($event->job->payload()['data']['commandName'], 'UserPeriodicTasks')) {
