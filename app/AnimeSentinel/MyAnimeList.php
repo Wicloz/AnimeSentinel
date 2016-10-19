@@ -62,46 +62,44 @@ class MyAnimeList
 
     $results = collect([]);
     foreach ($shows as $show) {
-      if (trim($show['type']) !== 'Music') {
-        $result = new Show();
-        $result->mal = true;
+      $result = new Show();
+      $result->mal = true;
 
-        $result->mal_id = $show['mal_id'];
-        $result->title = $show['title'];
+      $result->mal_id = $show['mal_id'];
+      $result->title = $show['title'];
 
-        $result->type = strtolower(trim($show['type']));
-        if ($result->type === '-') {
-          $result->type = null;
-        }
-
-        $result->episode_amount = trim($show['episode_amount']);
-        if ($result->episode_amount === '-') {
-          $result->episode_amount = null;
-        }
-
-        if (str_contains($show['description'], '</a>')) {
-          $result->description = str_get_between($show['description'], '', '<a');
-        } else {
-          $result->description = $show['description'];
-        }
-
-        $airing = explode('</td>', $show['airing']);
-        $result->airing_start = Self::convertSearchAiringToCarbon(trim($airing[0]));
-        $result->airing_end = Self::convertSearchAiringToCarbon(trim(str_get_between($airing[1], 'width="80">')));
-
-        $result->rating = trim($show['rating']);
-        if ($result->rating === '-') {
-          $result->rating = null;
-        }
-
-        if (!empty($show['thumbnail_id'])) {
-          $result->thumbnail_id = $show['thumbnail_id'];
-        } else {
-          $result->thumbnail_id = null;
-        }
-
-        $results[] = $result;
+      $result->type = strtolower(trim($show['type']));
+      if ($result->type === '-') {
+        $result->type = null;
       }
+
+      $result->episode_amount = trim($show['episode_amount']);
+      if ($result->episode_amount === '-') {
+        $result->episode_amount = null;
+      }
+
+      if (str_contains($show['description'], '</a>')) {
+        $result->description = str_get_between($show['description'], '', '<a');
+      } else {
+        $result->description = $show['description'];
+      }
+
+      $airing = explode('</td>', $show['airing']);
+      $result->airing_start = Self::convertSearchAiringToCarbon(trim($airing[0]));
+      $result->airing_end = Self::convertSearchAiringToCarbon(trim(str_get_between($airing[1], 'width="80">')));
+
+      $result->rating = trim($show['rating']);
+      if ($result->rating === '-') {
+        $result->rating = null;
+      }
+
+      if (!empty($show['thumbnail_id'])) {
+        $result->thumbnail_id = $show['thumbnail_id'];
+      } else {
+        $result->thumbnail_id = null;
+      }
+
+      $results[] = $result;
     }
     return $results;
   }
@@ -135,14 +133,12 @@ class MyAnimeList
       'type' => [false, 'width="45">', '</td>'],
     ]), 0, 8);
     foreach ($shows as $show) {
-      if (trim($show['type']) !== 'Music') {
-        // Get MAL data
-        $data = Self::getAnimeData($show['mal_id']);
-        // Check for a title match
-        foreach ($data['alts'] as $alt) {
-          if (match_fuzzy($alt, $title)) {
-            return $show['mal_id'];
-          }
+      // Get MAL data
+      $data = Self::getAnimeData($show['mal_id']);
+      // Check for a title match
+      foreach ($data['alts'] as $alt) {
+        if (match_fuzzy($alt, $title)) {
+          return $show['mal_id'];
         }
       }
     }

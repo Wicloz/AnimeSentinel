@@ -24,6 +24,7 @@ class CreateShowsTable extends Migration
             $table->text('description')->default('');
 
             $table->enum('type', [
+              'music',
               'tv',
               'ova',
               'ona',
