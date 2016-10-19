@@ -68,7 +68,7 @@
                         @else
                           <p class="episode-info-bad"><strong>HTML5 Player:</strong> No</p>
                         @endif
-                        <p><strong>Duration:</strong> {{ isset($mirror->duration) ? fancyDuration($mirror->duration) : 'Unknown'}}</p>
+                        <p><strong>Duration:</strong> {{ isset($mirror->duration) ? fancyDuration($mirror->duration) : 'Unknown' }}</p>
                       </div>
                       <div class="col-xs-4 align-center">
                         @if(!empty($mirror->notes))
