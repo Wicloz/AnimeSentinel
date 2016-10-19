@@ -292,11 +292,19 @@ class Video extends BaseModel
       foreach ($data->streams as $stream) {
         if ($stream->codec_type === 'video') {
           $this->resolution = $stream->width.'x'.$stream->height;
+          if (isset($stream->tags->creation_time) && $this->uploadtime->hour === 0 && $this->uploadtime->minute === 0 && $this->uploadtime->second === 0) {
+            $time = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
+            $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
+          }
           break;
         }
       }
       $this->duration = $data->format->duration;
       $this->encoding = 'video/'.explode(',', $data->format->format_name)[0];
+      if (isset($data->format->tags->creation_time) && $this->uploadtime->hour === 0 && $this->uploadtime->minute === 0 && $this->uploadtime->second === 0) {
+        $time = Carbon::createFromFormat('Y-m-d H:i:s', $data->format->tags->creation_time);
+        $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
+      }
     }
 
     else {

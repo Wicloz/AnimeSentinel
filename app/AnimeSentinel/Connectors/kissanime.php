@@ -95,11 +95,7 @@ class kissanime extends BaseConnector
 
     $episode['notes'] = trim(str_replace('[', '(', str_replace(']', ')', $episode['notes'])));
     $episode['link_episode'] = Static::$page_main.$episode['link_episode'];
-
-    $episode['uploadtime'] = Carbon::createFromFormat('n/j/Y', trim($episode['uploadtime']));
-    if (!$episode['uploadtime']->isToday()) {
-      $episode['uploadtime'] = $episode['uploadtime']->setTime(0, 0, 0);
-    }
+    $episode['uploadtime'] = Carbon::createFromFormat('n/j/Y', trim($episode['uploadtime']))->setTime(0, 0, 0);
 
     return $episode;
   }
