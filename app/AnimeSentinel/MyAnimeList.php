@@ -48,7 +48,7 @@ class MyAnimeList
    * @return array
    */
   public static function search($query) {
-    $page = Downloaders::downloadPage('https://myanimelist.net/anime.php?q='.str_replace(' ', '+', $query).'&type=0&score=0&status=0&p=0&r=0&sm=0&sd=0&sy=0&em=0&ed=0&ey=0&c[]=a&c[]=b&c[]=d&c[]=e&gx=1&genre[]=12');
+    $page = Downloaders::downloadPage('https://myanimelist.net/anime.php?q='.str_replace(' ', '+', $query).'&type=0&score=0&status=0&p=0&r=0&sm=0&sd=0&sy=0&em=0&ed=0&ey=0&c[]=a&c[]=b&c[]=d&c[]=e&c[]=g&gx=1&genre[]=12');
     $shows = array_slice(Helpers::scrape_page(str_get_between($page, '</div>Search Results</div>', '</table>'), '</tr>', [
       'mal_id' => [true, 'https://myanimelist.net/anime/', '/'],
       'thumbnail_id' => [false, '/images/anime/', '?'],
@@ -56,7 +56,8 @@ class MyAnimeList
       'description' => [false, '<div class="pt4">', '</div>'],
       'type' => [false, 'width="45">', '</td>'],
       'episode_amount' => [false, 'width="40">', '</td>'],
-      'airing' => [false, 'width="80">', ''],
+      'airing' => [false, 'width="80">', 'width="75">'],
+      'rating' => [false, 'width="75">', '</td>'],
     ]), 0, 128);
 
     $results = collect([]);
@@ -87,6 +88,11 @@ class MyAnimeList
         $airing = explode('</td>', $show['airing']);
         $result->airing_start = Self::convertSearchAiringToCarbon(trim($airing[0]));
         $result->airing_end = Self::convertSearchAiringToCarbon(trim(str_get_between($airing[1], 'width="80">')));
+
+        $result->rating = trim($show['rating']);
+        if ($result->rating === '-') {
+          $result->rating = null;
+        }
 
         if (!empty($show['thumbnail_id'])) {
           $result->thumbnail_id = $show['thumbnail_id'];
