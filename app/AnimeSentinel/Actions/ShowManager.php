@@ -8,7 +8,7 @@ use App\AnimeSentinel\MyAnimeList;
 
 class ShowManager
 {
-  private static function handleExistingShow($show) {
+  private static function handleExistingShow($show, $queue) {
     if ($show !== null) {
       flash_error('The requested anime has already been added to the database.');
       if (!$show->videos_initialised) {
@@ -55,7 +55,7 @@ class ShowManager
 
     // Confirm this show isn't already in our databse
     $dbshow = Show::withTitle($title)->first();
-    if (Self::handleExistingShow($dbshow)) return $dbshow;
+    if (Self::handleExistingShow($dbshow, $queue)) return $dbshow;
 
     // Try to find this show on MAL and get it's id
     $mal_id = MyAnimeList::getMalIdForTitle($title);
@@ -95,7 +95,7 @@ class ShowManager
 
     // Confirm this show isn't already in our databse
     $dbshow = Show::where('mal_id', $mal_id)->first();
-    if (Self::handleExistingShow($dbshow)) return $dbshow;
+    if (Self::handleExistingShow($dbshow, $queue)) return $dbshow;
 
     // Create a new show with the proper data
     $show = Self::updateShowData(null, MyAnimeList::getAnimeData($mal_id), true, $queue);
