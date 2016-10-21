@@ -274,7 +274,7 @@ class MyAnimeList
         }
       }
       $year = Carbon::createFromFormat('y', $bits[2], 'JST');
-      $carbon = Carbon::createFromDate($year->year, $bits[0], $bits[1], 'JST');
+      $carbon = Carbon::createFromDate($year->year, $bits[0], $bits[1], 'JST')->setTime(12, 0, 0);
       return $carbon->tz('UTC')->setTime(0, 0, 0);
     }
     return null;
