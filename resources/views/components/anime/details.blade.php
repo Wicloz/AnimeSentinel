@@ -43,31 +43,23 @@
 <div class="content-generic">
   <p>
     <strong>Status (Sub):</strong>
-    {{ $details->printStatusSub() }}
+    {{ $details->printStatus('sub') }}
   </p>
   <p>
     <strong>Status (Dub):</strong>
-    {{ $details->printStatusDub() }}
+    {{ $details->printStatus('dub') }}
   </p>
   <p>
     <strong>Latest Episode (Sub):</strong>
-    {{ $details->printLatestSub() }}
+    {{ $details->printLatest('sub') }}
   </p>
   <p>
     <strong>Latest Episode (Dub):</strong>
-    {{ $details->printLatestDub() }}
+    {{ $details->printLatest('dub') }}
   </p>
   <p>
     <strong>Average Duration:</strong>
     {{ $details->printAvarageDuration(false) }}
-  </p>
-  <p>
-    <strong>First Upload:</strong>
-    {{ isset($details->first_video) ? $details->first_video->uploadtime->toDayDateTimeString() : 'NA'}}
-  </p>
-  <p>
-    <strong>Last Upload:</strong>
-    {{ isset($details->last_video) ? $details->last_video->uploadtime->toDayDateTimeString() : 'NA' }}
   </p>
   <div class="content-close"></div>
 </div>

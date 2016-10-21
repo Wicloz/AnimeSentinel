@@ -165,19 +165,19 @@ class Show extends BaseModel
   public function printSeason() {
     return isset($this->season) ? ucwords($this->season) : 'Unknown';
   }
-  public function printStatusSub() {
+  public function printStatus($translation_type) {
     if (empty($this->mal)) {
-      if ($this->isAiring('sub')) {
+      if ($this->isAiring($translation_type)) {
         return 'Currently Airing';
       }
-      elseif ($this->finishedAiring('sub')) {
+      elseif ($this->finishedAiring($translation_type)) {
         return 'Completed';
       }
       else {
         return 'Upcoming';
       }
     }
-    else {
+    elseif ($translation_type === 'sub') {
       if (!isset($this->airing_start) || Carbon::now()->endOfDay()->lt($this->airing_start)) {
         return 'Upcoming';
       }
@@ -188,26 +188,14 @@ class Show extends BaseModel
         return 'Completed';
       }
     }
-  }
-  public function printStatusDub() {
-    if (empty($this->mal)) {
-      if ($this->isAiring('dub')) {
-        return 'Currently Airing';
-      }
-      elseif ($this->finishedAiring('dub')) {
-        return 'Completed';
-      }
-      else {
-        return 'Upcoming';
-      }
-    }
     else {
       return 'Unknown';
     }
   }
-  public function printLatestSub() {
+  public function printLatest($translation_type) {
+    $latest = 'latest_'.$translation_type;
     if (empty($this->mal)) {
-      if (!isset($this->latest_sub)) {
+      if (!isset($this->$latest)) {
         if (!$this->videos_initialised) {
           return 'Searching for Episodes ...';
         }
@@ -216,25 +204,7 @@ class Show extends BaseModel
         }
       }
       else {
-        return 'Episode ' . $this->latest_sub->episode_num;
-      }
-    }
-    else {
-      return 'Unknown';
-    }
-  }
-  public function printLatestDub() {
-    if (empty($this->mal)) {
-      if (!isset($this->latest_dub)) {
-        if (!$this->videos_initialised) {
-          return 'Searching for Episodes ...';
-        }
-        else {
-          return 'No Episodes Available';
-        }
-      }
-      else {
-        return 'Episode ' . $this->latest_dub->episode_num;
+        return 'Episode ' . $this->$latest->episode_num;
       }
     }
     else {

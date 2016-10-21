@@ -107,23 +107,23 @@
                   <p>
                     @if(isset($show->latest_sub))
                       <a href="{{ $show->latest_sub->episode_url }}">
-                        <strong>Latest Subbed:</strong> {{ $show->printLatestSub() }}
+                        <strong>Latest Subbed:</strong> {{ $show->printLatest('sub') }}
                       </a>
                     </p><p>
                       <strong>Uploaded On:</strong> {{ $show->latest_sub->uploadtime->format('M j, Y (l)') }}
                     @else
-                      <strong>Latest Subbed:</strong> {{ $show->printLatestSub() }}
+                      <strong>Latest Subbed:</strong> {{ $show->printLatest('sub') }}
                     @endif
                   </p>
                   <p>
                     @if(isset($show->latest_dub))
                       <a href="{{ $show->latest_dub->episode_url }}">
-                        <strong>Latest Dubbed:</strong> {{ $show->printLatestDub() }}
+                        <strong>Latest Dubbed:</strong> {{ $show->printLatest('dub') }}
                       </a>
                     </p><p>
                       <strong>Uploaded On:</strong> {{ $show->latest_dub->uploadtime->format('M j, Y (l)') }}
                     @else
-                      <strong>Latest Dubbed:</strong> {{ $show->printLatestDub() }}
+                      <strong>Latest Dubbed:</strong> {{ $show->printLatest('dub') }}
                     @endif
                   </p>
                 @endif
