@@ -94,9 +94,7 @@ class MyAnimeList
       }
 
       if (!empty($show['thumbnail_id'])) {
-        $result->thumbnail_id = $show['thumbnail_id'];
-      } else {
-        $result->thumbnail_id = null;
+        $result->remote_thumbnail_urls = ['https://myanimelist.cdn-dena.com/images/anime/'.$show['thumbnail_id']];
       }
 
       $results[] = $result;
@@ -153,6 +151,7 @@ class MyAnimeList
    */
   public static function getAnimeData($mal_id) {
     $page = Downloaders::downloadPage('https://myanimelist.net/anime/'.$mal_id);
+    $pictures = Downloaders::downloadPage('https://myanimelist.net/anime/'.$mal_id.'/text/pics');
 
     $title = trim(str_get_between($page, '<span itemprop="name">', '</span>'));
 
@@ -206,11 +205,6 @@ class MyAnimeList
       }
     }
 
-    $thumbnail_id = str_replace('/', '-', str_get_between($page, 'src="https://myanimelist.cdn-dena.com/images/anime/', '"'));
-    if (empty($thumbnail_id)) {
-      $thumbnail_id = null;
-    }
-
     $description = trim(str_get_between($page, '<span itemprop="description">', '<h2 style="margin-top: 15px;">'));
     if (str_ends_with($description, '</span>')) {
       $description = trim(str_replace_last('</span>', '', $description));
@@ -226,9 +220,21 @@ class MyAnimeList
       $season = null;
     }
 
+    $primary_thumbnail_id = str_get_between($page, '/images/anime/', '"');
+    $secondary_thumbnails = Helpers::scrape_page(str_get_between($pictures, '<table border="0" cellpadding="0" cellspacing="10" align="center">', '</table>'), '</td>', [
+      'thumbnail_id' => [true, '/images/anime/', '"'],
+    ]);
+    $remote_thumbnail_urls = collect(['https://myanimelist.cdn-dena.com/images/anime/'.$primary_thumbnail_id]);
+    foreach ($secondary_thumbnails as $thumbnail) {
+      $thumbnail_url = 'https://myanimelist.cdn-dena.com/images/anime/'.$thumbnail['thumbnail_id'];
+      if (!$remote_thumbnail_urls->contains($thumbnail_url)) {
+        $remote_thumbnail_urls[] = $thumbnail_url;
+      }
+    }
+
     return [
       'mal_id' => $mal_id,
-      'thumbnail_id' => $thumbnail_id,
+      'remote_thumbnail_urls' => $remote_thumbnail_urls,
       'title' => $title,
       'alts' => Helpers::mergeFlagAlts($alts, $mal_id),
       'description' => $description,

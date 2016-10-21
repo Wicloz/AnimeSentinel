@@ -143,7 +143,7 @@ class User extends Authenticatable
 
       $mal_show->mal_id = $result['mal_id'];
       $mal_show->title = $result['title'];
-      $mal_show->thumbnail_id = trim($result['thumbnail_id']);
+      $mal_show->remote_thumbnail_urls = ['https://myanimelist.cdn-dena.com/images/anime/'.trim($result['thumbnail_id'])];
       $mal_show->eps_watched = (int) $result['eps_watched'];
       $mal_show->score = (int) $result['score'];
       $mal_show->rewatching = $result['rewatching'] === '1';

@@ -2,7 +2,7 @@
 @section('title', $show->title)
 
 @section('content-left')
-  <img class="img-thumbnail details-thumbnail-wide hidden-xs hidden-sm" src="{{ fullUrl('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
+  <img class="img-thumbnail details-thumbnail-wide hidden-xs hidden-sm" src="{{ $show->thumbnail_url }}" alt="{{ $show->title }} - Thumbnail">
   @include('components.anime.details', ['details' => $show])
   @if(isset($show->mal_url))
     <div class="content-header">
@@ -13,7 +13,7 @@
 
 @section('content-center')
   <div class="content-header">
-    <img class="img-thumbnail details-thumbnail-slim hidden-md hidden-lg" src="{{ fullUrl('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
+    <img class="img-thumbnail details-thumbnail-slim hidden-md hidden-lg" src="{{ $show->thumbnail_url }}" alt="{{ $show->title }} - Thumbnail">
     {{ $show->title }}
   </div>
   <div class="content-generic">

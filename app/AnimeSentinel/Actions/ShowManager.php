@@ -26,11 +26,10 @@ class ShowManager
     } else {
       $show->update($data);
     }
+    $show = $show->fresh();
 
-    // Update the thumbnail if possible
-    if (isset($show->thumbnail_id)) {
-      Self::updateThumbnail($show);
-    }
+    // Update the thumbnails
+    Self::updateThumbnails($show);
 
     // Set the cache updated time
     $show->cache_updated_at = Carbon::now();
@@ -142,13 +141,27 @@ class ShowManager
   }
 
   /**
-   * Downloads the show's thumbnail from MAL.
+   * Delete old thumbnails for this show and download new ones.
    */
-  private static function updateThumbnail($show) {
-    if (!empty($show->thumbnail_id)) {
-      $remote = 'https://myanimelist.cdn-dena.com/images/anime/'.str_replace('-', '/', $show->thumbnail_id);
-      $local = public_path('media/thumbnails/'.$show->thumbnail_id);
-      copy($remote, $local);
+  private static function updateThumbnails($show) {
+    // Delete current thumbnails
+    foreach ($show->local_thumbnail_ids as $thumbnail_id) {
+      try {
+        unlink(public_path('media/thumbnails/'.$thumbnail_id));
+      } catch (\Exception $e) {}
     }
+
+    // Download new thumbnails
+    $thumbnail_ids = [];
+    foreach ($show->remote_thumbnail_urls as $index => $remote) {
+      $thumbnail_id = $show->id.'-'.($index+1);
+      $local = public_path('media/thumbnails/'.$thumbnail_id);
+      copy($remote, $local);
+      $thumbnail_ids[] = $thumbnail_id;
+    }
+
+    // Save new thumbnail ids
+    $show->local_thumbnail_ids = $thumbnail_ids;
+    $show->save();
   }
 }

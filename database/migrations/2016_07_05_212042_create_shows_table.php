@@ -17,7 +17,8 @@ class CreateShowsTable extends Migration
             $table->increments('id');
             $table->integer('mal_id')->unsigned()->nullable()->default(null)->unique();
 
-            $table->string('thumbnail_id')->nullable()->default(null);
+            $table->text('remote_thumbnail_urls')->default('[]');
+            $table->text('local_thumbnail_ids')->default('[]');
 
             $table->string('title');
             $table->string('alts', 4096)->default('[]');

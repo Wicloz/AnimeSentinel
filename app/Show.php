@@ -19,7 +19,7 @@ class Show extends BaseModel
    * @var array
    */
   protected $fillable = [
-    'mal_id', 'thumbnail_id', 'title', 'alts', 'description', 'type', 'genres', 'episode_amount', 'episode_duration', 'airing_start', 'airing_end', 'season', 'hits',
+    'mal_id', 'remote_thumbnail_urls', 'local_thumbnail_ids', 'title', 'alts', 'description', 'type', 'genres', 'episode_amount', 'episode_duration', 'airing_start', 'airing_end', 'season', 'hits',
   ];
 
   /**
@@ -28,6 +28,8 @@ class Show extends BaseModel
    * @var array
    */
   protected $casts = [
+    'remote_thumbnail_urls' => 'collection',
+    'local_thumbnail_ids' => 'collection',
     'alts' => 'collection',
     'genres' => 'collection',
   ];
@@ -603,15 +605,17 @@ class Show extends BaseModel
   }
 
   /**
-  * Get the url to this show's local thumbnail.
+  * Get the url to this show's primary local thumbnail.
   *
   * @return string
   */
   public function getThumbnailUrlAttribute() {
-    if (empty($this->mal)) {
-      return fullUrl('/media/thumbnails/'.$this->thumbnail_id);
+    if (count($this->local_thumbnail_ids) > 0) {
+      return fullUrl('/media/thumbnails/'.$this->local_thumbnail_ids[0]);
+    } elseif (count($this->remote_thumbnail_urls) > 0) {
+      return $this->remote_thumbnail_urls[0];
     } else {
-      return 'https://myanimelist.cdn-dena.com/images/anime/'.$this->thumbnail_id;
+      return fullUrl('/media/no_thumbnail.png');
     }
   }
 
