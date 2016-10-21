@@ -120,16 +120,16 @@ class Show extends BaseModel
     if (isset($this->episode_duration)) {
       return fancyDuration($this->episode_duration * 60, false) . ($withEp ? ' per ep.' : '');
     }
-    elseif (empty($this->mal) && $this->videos()->avg('duration') !== null) {
-      return fancyDuration($this->videos()->avg('duration'), false) . ($withEp ? ' per ep.' : '');
+    elseif (empty($this->mal) && $this->videos()->where('episode_num', '>=', 0)->avg('duration') !== null) {
+      return fancyDuration($this->videos()->where('episode_num', '>=', 0)->avg('duration'), false) . ($withEp ? ' per ep.' : '');
     }
     else {
       return 'Unknown';
     }
   }
   public function printAvarageDuration($withEp = true) {
-    if (empty($this->mal) && $this->videos()->avg('duration') !== null) {
-      return fancyDuration($this->videos()->avg('duration')) . ($withEp ? ' per ep.' : '');
+    if (empty($this->mal) && $this->videos()->where('episode_num', '>=', 0)->avg('duration') !== null) {
+      return fancyDuration($this->videos()->where('episode_num', '>=', 0)->avg('duration')) . ($withEp ? ' per ep.' : '');
     }
     else {
       return 'NA';
