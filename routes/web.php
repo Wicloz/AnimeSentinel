@@ -25,6 +25,8 @@ Route::get('/', 'AnimeController@home');
 Route::get('/about', 'PagesController@about');
 Route::get('/about/mal', 'PagesController@about_mal'); //TODO
 Route::get('/about/broken', 'PagesController@about_broken'); //TODO
+Route::get('/about/donators', 'PagesController@about_donators'); //TODO
+Route::get('/about/dmca', 'PagesController@about_dmca'); //TODO
 Route::get('/news', 'PagesController@news'); //TODO
 
 // Streamers Pages
