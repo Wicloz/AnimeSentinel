@@ -15,7 +15,7 @@ class CreateMalcacheSearchTable extends Migration
     {
         Schema::create('malcache_search', function (Blueprint $table) {
             $table->string('query');
-            $table->text('results')->nullable();
+            $table->text('results')->nullable()->default(null);
             $table->dateTime('cache_updated_at')->nullable()->default(null);
             $table->timestamps();
             $table->primary('query');

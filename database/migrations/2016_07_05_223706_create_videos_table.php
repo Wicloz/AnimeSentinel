@@ -36,6 +36,9 @@ class CreateVideosTable extends Migration
             $table->float('duration')->nullable()->default(null);               // video
             $table->string('encoding')->nullable()->default(null);              // video
 
+            $table->dateTime('test1')->nullable()->default(null);
+            $table->dateTime('test2')->nullable()->default(null);
+
             $table->timestamps();
 
             $table->unique(['show_id', 'translation_type', 'episode_num', 'streamer_id', 'mirror'], 'videos_video_identifier');
