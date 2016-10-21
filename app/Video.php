@@ -21,7 +21,7 @@ class Video extends BaseModel
    *
    * @var array
    */
-  protected $dates = ['uploadtime', 'created_at', 'updated_at'];
+  protected $dates = ['uploadtime', 'created_at', 'updated_at', 'test1', 'test2'];
 
   /**
    * Overwrite the save method to properly handle the compound key.
@@ -296,6 +296,12 @@ class Video extends BaseModel
             $time = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
             $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
           }
+          // TEST //
+          if (isset($stream->tags->creation_time)) {
+            $time = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
+            $this->test1 = $time;
+          }
+          // TEST //
           break;
         }
       }
@@ -305,6 +311,12 @@ class Video extends BaseModel
         $time = Carbon::createFromFormat('Y-m-d H:i:s', $data->format->tags->creation_time);
         $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
       }
+      // TEST //
+      if (isset($data->format->tags->creation_time)) {
+        $time = Carbon::createFromFormat('Y-m-d H:i:s', $data->format->tags->creation_time);
+        $this->test2 = $time;
+      }
+      // TEST //
     }
 
     else {
