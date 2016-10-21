@@ -8,6 +8,43 @@ use App\AnimeSentinel\MyAnimeList;
 
 class ShowManager
 {
+  private static function handleExistingShow($show) {
+    if ($show !== null) {
+      flash_error('The requested anime has already been added to the database.');
+      if (!$show->videos_initialised) {
+        queueJob(new \App\Jobs\AnimeFindVideos($show), $queue);
+      }
+      return true;
+    }
+    return false;
+  }
+
+  private static function updateShowData($show, $data, $episodes = false, $queue = 'default') {
+    // Update the show
+    if ($show === null) {
+      $show = Show::create($data);
+    } else {
+      $show->update($data);
+    }
+
+    // Update the thumbnail if possible
+    if (isset($show->thumbnail_id)) {
+      Self::updateThumbnail($show);
+    }
+
+    // Set the cache updated time
+    $show->cache_updated_at = Carbon::now();
+    $show->save();
+
+    // Queue the finding of videos if requested
+    if ($episodes) {
+      queueJob(new \App\Jobs\AnimeFindVideos($show), $queue);
+    }
+
+    // Return the show object
+    return $show;
+  }
+
   /**
    * Adds the show with the requested title to the database.
    * Will also add any currently existing episodes.
@@ -18,13 +55,7 @@ class ShowManager
 
     // Confirm this show isn't already in our databse
     $dbshow = Show::withTitle($title)->first();
-    if (!empty($dbshow)) {
-      flash_error('The requested anime has already been added to the database.');
-      if (!$dbshow->videos_initialised) {
-        queueJob(new \App\Jobs\AnimeFindVideos($dbshow), $queue);
-      }
-      return $dbshow;
-    }
+    if (Self::handleExistingShow($dbshow)) return $dbshow;
 
     // Try to find this show on MAL and get it's id
     $mal_id = MyAnimeList::getMalIdForTitle($title);
@@ -32,22 +63,24 @@ class ShowManager
     if (isset($mal_id)) {
       // Create and return a new show with the proper data
       return Self::addShowWithMalId($mal_id, $queue, $fromJob);
-    } elseif($allowNonMal) {
+    }
+
+    elseif ($allowNonMal) {
       // Create a mostly empty show because we don't have MAL data
-      $show = Show::create([
+      $show = Self::updateShowData(null, [
         'title' => $title,
         'alts' => [$title],
         'description' => 'No Description Available',
-      ]);
-      // Finalize the show
-      $show = Self::finalizeShowAdding($show, $queue);
+      ], true, $queue);
       // Mail an anomaly report
       mailAnomaly($show, 'Could not find show on MAL.', [
         'Ran From a Job' => $fromJob ? 'Yes' : 'No',
       ]);
       // Return the show
       return $show;
-    } else {
+    }
+
+    else {
       return null;
     }
   }
@@ -62,31 +95,12 @@ class ShowManager
 
     // Confirm this show isn't already in our databse
     $dbshow = Show::where('mal_id', $mal_id)->first();
-    if (!empty($dbshow)) {
-      flash_error('The requested anime has already been added to the database.');
-      if (!$dbshow->videos_initialised) {
-        queueJob(new \App\Jobs\AnimeFindVideos($dbshow), $queue);
-      }
-      return $dbshow;
-    }
+    if (Self::handleExistingShow($dbshow)) return $dbshow;
 
     // Create a new show with the proper data
-    $show = Show::create(MyAnimeList::getAnimeData($mal_id));
-    Self::updateThumbnail($show);
+    $show = Self::updateShowData(null, MyAnimeList::getAnimeData($mal_id), true, $queue);
 
-    // Finalize and return the show
-    return Self::finalizeShowAdding($show, $queue);
-  }
-
-  private static function finalizeShowAdding($show, $queue) {
-    // Set the cache updated time
-    $show->cache_updated_at = Carbon::now();
-    $show->save();
-
-    // Queue the finding of videos
-    queueJob(new \App\Jobs\AnimeFindVideos($show), $queue);
-
-    // Return the show object
+    // Return the show
     return $show;
   }
 
@@ -114,25 +128,13 @@ class ShowManager
         // Remove all other shows with this mal id
         Show::where('id', '!=', $show->id)->where('mal_id', $mal_id)->delete();
         // Update this show
-        $show->update(MyAnimeList::getAnimeData($mal_id));
-        Self::updateThumbnail($show);
-        $episodes = true;
+        Self::updateShowData($show, MyAnimeList::getAnimeData($mal_id), true, $queue);
       }
     }
 
     // Otherwise just update the cache
     else {
-      $show->update(MyAnimeList::getAnimeData($show->mal_id));
-      Self::updateThumbnail($show);
-    }
-
-    // Set the cache updated time
-    $show->cache_updated_at = Carbon::now();
-    $show->save();
-
-    // Queue the finding of videos if requested
-    if ($episodes) {
-      queueJob(new \App\Jobs\AnimeFindVideos($show), $queue);
+      Self::updateShowData($show, MyAnimeList::getAnimeData($show->mal_id), $episodes, $queue);
     }
 
     // Return the show object

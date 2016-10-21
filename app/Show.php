@@ -416,7 +416,7 @@ class Show extends BaseModel
       if (isset($show)) {
         return $show;
       } else {
-        $show = ShowManager::addShowWithTitle($title, false, 'default');
+        $show = ShowManager::addShowWithTitle($title, false);
         return $show;
       }
     }
