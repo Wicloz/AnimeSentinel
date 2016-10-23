@@ -161,9 +161,9 @@ class MyAnimeList
 
     $alts[] = $title;
     $set = explode('</div>', str_get_between($page, '<h2>Alternative Titles</h2>', '<br />'));
-    foreach ($set as $line) {
-      if (trim($line) !== '' && !str_contains($line, '<span class="dark_text">Japanese:</span>')) {
-        $list = trim(str_get_between($line, '</span>'));
+    foreach ($set as $item) {
+      if (trim($item) !== '' && !str_contains($item, '<span class="dark_text">Japanese:</span>')) {
+        $list = trim(str_get_between($item, '</span>'));
         $alts = array_merge($alts, explode(', ', $list));
       }
     }
@@ -248,6 +248,45 @@ class MyAnimeList
       $airing_time->tz('UTC');
     }
 
+    $prequels = [];
+    $sequels = [];
+    $summaries = [];
+    $specials = [];
+    $alternatives = [];
+
+    $set = explode('<tr>', str_get_between($page, '<table class="anime_detail_related_anime" style="border-spacing:0px;">', '</table>'));
+    foreach ($set as $item) {
+      if ($item !== '') {
+        $kind = mb_strtolower(str_get_between($item, '<td nowrap="" valign="top" class="ar fw-n borderClass">', '</td>'));
+        $links = explode('</a>', str_get_between($item, '<td width="100%" class="borderClass">', '</td>'));
+        foreach ($links as $link) {
+          if ($link !== '') {
+            $data = [
+              'mal_id' => str_get_between($link, '/anime/', '/'),
+              'title' => str_get_between($link, '>', ''),
+            ];
+            switch ($kind) {
+              case 'prequel:':
+                $prequels[] = $data;
+              break;
+              case 'sequel:':
+                $sequels[] = $data;
+              break;
+              case 'summary:':
+                $summaries[] = $data;
+              break;
+              case 'side story:': case 'other:':
+                $specials[] = $data;
+              break;
+              case 'alternative version:':
+                $alternatives[] = $data;
+              break;
+            }
+          }
+        }
+      }
+    }
+
     $primary_thumbnail_id = str_get_between($page, '/images/anime/', '"');
     $secondary_thumbnails = Helpers::scrape_page(str_get_between($pictures, '<table border="0" cellpadding="0" cellspacing="10" align="center">', '</table>'), '</td>', [
       'thumbnail_id' => [true, '/images/anime/', '"'],
@@ -266,6 +305,11 @@ class MyAnimeList
       'title' => $title,
       'alts' => Helpers::mergeFlagAlts($alts, $mal_id),
       'description' => $description,
+      'prequels' => $prequels,
+      'sequels' => $sequels,
+      'summaries' => $summaries,
+      'specials' => $specials,
+      'alternatives' => $alternatives,
       'type' => $type,
       'genres' => $genres,
       'episode_amount' => $episode_amount,

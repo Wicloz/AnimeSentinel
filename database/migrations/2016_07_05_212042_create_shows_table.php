@@ -24,6 +24,12 @@ class CreateShowsTable extends Migration
             $table->string('alts', 4096)->default('[]');
             $table->text('description')->default('');
 
+            $table->string('prequels', 4096)->default('[]');
+            $table->string('sequels', 4096)->default('[]');
+            $table->string('summaries', 4096)->default('[]');
+            $table->string('specials', 4096)->default('[]');
+            $table->string('alternatives', 4096)->default('[]');
+
             $table->enum('type', [
               'tv',
               'ova',

@@ -19,7 +19,7 @@ class Show extends BaseModel
    * @var array
    */
   protected $fillable = [
-    'mal_id', 'remote_thumbnail_urls', 'local_thumbnail_ids', 'title', 'alts', 'description', 'type', 'genres', 'season', 'rating', 'episode_amount', 'episode_duration', 'airing_start', 'airing_end', 'airing_time', 'airing_type',
+    'mal_id', 'remote_thumbnail_urls', 'local_thumbnail_ids', 'title', 'alts', 'description', 'prequels', 'sequels', 'summaries', 'specials', 'alternatives', 'type', 'genres', 'season', 'rating', 'episode_amount', 'episode_duration', 'airing_start', 'airing_end', 'airing_time', 'airing_type',
   ];
 
   /**
@@ -30,6 +30,11 @@ class Show extends BaseModel
   protected $casts = [
     'remote_thumbnail_urls' => 'collection',
     'local_thumbnail_ids' => 'collection',
+    'prequels' => 'collection',
+    'sequels' => 'collection',
+    'summaries' => 'collection',
+    'specials' => 'collection',
+    'alternatives' => 'collection',
     'alts' => 'collection',
     'genres' => 'collection',
   ];
