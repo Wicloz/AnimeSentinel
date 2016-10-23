@@ -78,6 +78,10 @@ class MyAnimeList
         $result->episode_amount = null;
       }
 
+      if ($result->episode_amount === '1') {
+        $result->airing_type = 'once';
+      }
+
       if (str_contains($show['description'], '</a>')) {
         $result->description = str_get_between($show['description'], '', '<a');
       } else {
