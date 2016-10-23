@@ -40,6 +40,12 @@ class Show extends BaseModel
    * @var array
    */
   protected $dates = ['airing_start', 'airing_end', 'airing_time', 'cache_updated_at', 'created_at', 'updated_at'];
+  public function getAiringTimeAttribute($value) {
+    if ($value !== null) {
+      return Carbon::createFromFormat('H:i:s', $value);
+    }
+    return $value;
+  }
 
   /**
   * Get all videos related to this show.
@@ -243,16 +249,25 @@ class Show extends BaseModel
     }
   }
   public function printBroadcasts() {
-    switch ($this->airing_type) {
-      case 'weekly':
-        return $this->airing_start->format('l').'s at '.$this->airing_time->format('H:i');
-      case 'irregular':
-        return 'No regular schedule';
-      case 'once':
-        return 'NA';
-      default:
-        return 'Unknown';
+    if ($this->airing_type === 'irregular') {
+      return 'No regular schedule';
     }
+    elseif ($this->airing_type === 'once') {
+      return 'NA';
+    }
+    elseif ($this->episodeDelayEstimate('sub') === 7 && $this->broadcastDayEstimate('sub') !== null) {
+      $broadcast = ucwords($this->broadcastDayEstimate('sub')).'s';
+      if ($this->latest_sub !== null && ($this->latest_sub->uploadtime->hour !== 0 || $this->latest_sub->uploadtime->minute !== 0 || $this->latest_sub->uploadtime->second !== 0)) {
+        $broadcast .= ' at '.$this->latest_sub->uploadtime->format('H:i');
+      } elseif ($this->airing_time !== null) {
+        $broadcast .= ' at '.$this->airing_time->format('H:i');
+      }
+      return $broadcast;
+    }
+    elseif ($this->episodeDelayEstimate('sub') !== null) {
+      return 'Every '.$this->episodeDelayEstimate('sub').' days';
+    }
+    return 'Unknown';
   }
 
   /**
@@ -440,34 +455,77 @@ class Show extends BaseModel
   */
   public function nextUploadEstimate($translation_type) {
     if ($this->isAiring($translation_type)) {
-      $uploadtimes = $this->episodes($translation_type, 'asc')->pluck('uploadtime');
-      if ($uploadtimes->count() === 1) {
-        return $uploadtimes[0]->addDays(7);
+      $difference = $this->episodeDelayEstimate($translation_type);
+      if ($difference !== null) {
+        return $this->{'latest_'.$translation_type}->uploadtime->addDays($difference);
       }
-
-      $differences = collect([]);
-      $lastUploadtime = null;
-      foreach ($uploadtimes as $uploadtime) {
-        if (isset($lastUploadtime)) {
-          $differences->put($lastUploadtime->diffInDays($uploadtime), $differences->get($lastUploadtime->diffInDays($uploadtime)) + 1);
-        }
-        $lastUploadtime = $uploadtime;
-      }
-
-      $max = $differences->max();
-      $differencesMax = collect([]);
-      while ($differences->search($max) !== false) {
-        $differencesMax[] = $differences->search($max);
-        $differences->forget($differences->search($max));
-      }
-
-      return $uploadtimes->last()->addDays($differencesMax->max());
     }
 
     elseif (!$this->finishedAiring($translation_type) && $translation_type === 'sub' && isset($this->airing_start)) {
       return $this->airing_start;
     }
 
+    return null;
+  }
+
+  /**
+  * Get the estimated delay between episodes, in days.
+  *
+  * @return integer
+  */
+  public function episodeDelayEstimate($translation_type) {
+    if ($this->airing_type === 'weekly') {
+      return 7;
+    }
+    elseif ($this->airing_type === 'once') {
+      return 0;
+    }
+
+    elseif ($this->airing_start !== null && $this->airing_end !== null && $this->episode_amount !== null && $translation_type === 'sub') {
+      return (int) round($this->airing_start->diffInDays($this->airing_end) / ($this->episode_amount - 1));
+    }
+
+    else {
+      $uploadtimes = $this->episodes($translation_type, 'asc')->pluck('uploadtime');
+      if ($uploadtimes->count() > 1) {
+        $differences = collect([]);
+        $lastUploadtime = null;
+        foreach ($uploadtimes as $uploadtime) {
+          if (isset($lastUploadtime)) {
+            $differences->put($lastUploadtime->diffInDays($uploadtime), $differences->get($lastUploadtime->diffInDays($uploadtime)) + 1);
+          }
+          $lastUploadtime = $uploadtime;
+        }
+        $max = $differences->max();
+        $differencesMax = collect([]);
+        while ($differences->search($max) !== false) {
+          $differencesMax[] = $differences->search($max);
+          $differences->forget($differences->search($max));
+        }
+        return $differencesMax->max();
+      }
+    }
+
+    return null;
+  }
+
+  /**
+  * Get the estimated day of broadcasts if this show broadcasts weekly.
+  *
+  * @return string
+  */
+  public function broadcastDayEstimate($translation_type) {
+    if ($this->airing_type === 'irregular') {
+      return 'irregular';
+    } elseif ($this->airing_type === 'once') {
+      return 'once';
+    } elseif ($this->episodeDelayEstimate($translation_type) === 7) {
+      if ($this->{'latest_'.$translation_type} !== null) {
+        return mb_strtolower($this->{'latest_'.$translation_type}->uploadtime->format('l'));
+      } elseif ($this->airing_start !== null && $translation_type === 'sub') {
+        return mb_strtolower($this->airing_start->format('l'));
+      }
+    }
     return null;
   }
 

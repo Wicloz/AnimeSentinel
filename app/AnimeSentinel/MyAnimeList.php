@@ -211,6 +211,8 @@ class MyAnimeList
       $airing_type = 'weekly';
     } elseif (mb_strtolower($broadcast) === 'not scheduled once per week') {
       $airing_type = 'irregular';
+    } elseif ($episode_amount === 1) {
+      $airing_type = 'once';
     } else {
       $airing_type = null;
     }
