@@ -25,21 +25,35 @@ class CreateShowsTable extends Migration
             $table->text('description')->default('');
 
             $table->enum('type', [
-              'music',
               'tv',
               'ova',
               'ona',
               'movie',
               'special',
+              'music',
             ])->nullable()->default(null);
             $table->string('genres', 512)->default('[]');
             $table->integer('episode_amount')->nullable()->default(null);
             $table->integer('episode_duration')->nullable()->default(null);
+            $table->string('season')->nullable()->default(null);
+            $table->enum('rating', [
+              'G',
+              'PG',
+              'PG-13',
+              'R',
+              'R+',
+            ])->nullable()->default(null);
+
             $table->dateTime('airing_start')->nullable()->default(null);
             $table->dateTime('airing_end')->nullable()->default(null);
-            $table->string('season')->nullable()->default(null);
+            $table->time('airing_time')->nullable()->default(null);
+            $table->enum('airing_type', [
+              'weekly',
+              'irregular',
+              'once',
+            ])->nullable()->default(null);
 
-            $table->bigInteger('hits')->default(0);
+            $table->bigInteger('hits')->unsigned()->default(0);
             $table->boolean('videos_initialised')->default(false);
             $table->dateTime('cache_updated_at')->nullable()->default(null);
 

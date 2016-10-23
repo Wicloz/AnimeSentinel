@@ -31,12 +31,22 @@
     <strong>Expected Airing:</strong>
     {{ $details->printExpectedAiring() }}
   </p>
+  @if($details->printBroadcasts() !== 'NA')
+    <p>
+      <strong>Broadcasts:</strong>
+      {{ $details->printBroadcasts() }}
+    </p>
+  @endif
   @if(!empty($details->season))
     <p>
       <strong>Season:</strong>
       {{ $details->printSeason() }}
     </p>
   @endif
+  <p>
+    <strong>Rating:</strong>
+    {{ $details->printRating() }}
+  </p>
   <div class="content-close"></div>
 </div>
 

@@ -186,25 +186,6 @@ class MyAnimeList
       }
     }
 
-    $airing_time = trim(str_get_between($page, '<span class="dark_text">Broadcast:</span>', '</div>'));
-    $airing_time = str_get_between($airing_time, 'at ', ' (JST)');
-    if (empty($airing_time)) {
-      $airing_time = null;
-    }
-
-    $airing_start = null;
-    $airing_end = null;
-    $aired = trim(str_get_between($page, '<span class="dark_text">Aired:</span>', '</div>'));
-    if ($aired !== 'Not available') {
-      $aired = explode(' to ', $aired);
-      if ($aired[0] !== '?') {
-        $airing_start = Self::convertDetailsAiringToCarbon($aired[0], $airing_time);
-      }
-      if ($aired[count($aired) - 1] !== '?') {
-        $airing_end = Self::convertDetailsAiringToCarbon($aired[count($aired) - 1], $airing_time);
-      }
-    }
-
     $description = trim(str_get_between($page, '<span itemprop="description">', '<h2 style="margin-top: 15px;">'));
     if (str_ends_with($description, '</span>')) {
       $description = trim(str_replace_last('</span>', '', $description));
@@ -218,6 +199,47 @@ class MyAnimeList
     $season = strtolower(trim(str_get_between(str_get_between($page, '<span class="dark_text">Premiered:</span>', '</div>'), '>', '</a>')));
     if (empty($season)) {
       $season = null;
+    }
+
+    $rating = trim(str_get_between(str_get_between($page, '<span class="dark_text">Rating:</span>', '</div>'), '', ' - '));
+    if (empty($rating)) {
+      $rating = null;
+    }
+
+    $broadcast = trim(str_get_between($page, '<span class="dark_text">Broadcast:</span>', '</div>'));
+    if (str_contains($broadcast, ' at ')) {
+      $airing_type = 'weekly';
+    } elseif (mb_strtolower($broadcast) === 'not scheduled once per week') {
+      $airing_type = 'irregular';
+    } else {
+      $airing_type = null;
+    }
+
+    $airing_time = str_get_between($broadcast, 'at ', ' (JST)');
+    if (empty($airing_time)) {
+      $airing_time = null;
+    } else {
+      $airing_time = Carbon::createFromFormat('H:i', $airing_time, 'JST');
+    }
+
+    $airing_start = null;
+    $airing_end = null;
+    $aired = trim(str_get_between($page, '<span class="dark_text">Aired:</span>', '</div>'));
+    if ($aired !== 'Not available') {
+      $aired = explode(' to ', $aired);
+      if ($aired[0] !== '?') {
+        $airing_start = Self::convertDetailsAiringToCarbon($aired[0], $airing_time);
+      }
+      if (count($aired) === 1) {
+        $airing_end = $airing_start;
+        $airing_type = 'once';
+      } elseif ($aired[1] !== '?') {
+        $airing_end = Self::convertDetailsAiringToCarbon($aired[1], $airing_time);
+      }
+    }
+
+    if ($airing_time !== null) {
+      $airing_time->tz('UTC');
     }
 
     $primary_thumbnail_id = str_get_between($page, '/images/anime/', '"');
@@ -242,13 +264,16 @@ class MyAnimeList
       'genres' => $genres,
       'episode_amount' => $episode_amount,
       'episode_duration' => $episode_duration,
+      'season' => $season,
+      'rating' => $rating,
       'airing_start' => $airing_start,
       'airing_end' => $airing_end,
-      'season' => $season,
+      'airing_time' => $airing_time,
+      'airing_type' => $airing_type,
     ];
   }
 
-  private static function convertDetailsAiringToCarbon($dateString, $timeString = null) {
+  private static function convertDetailsAiringToCarbon($dateString, $time) {
     $carbon = null;
 
     if (count(explode(' ', $dateString)) === 3) {
@@ -261,8 +286,7 @@ class MyAnimeList
       $carbon = Carbon::createFromFormat('Y', $dateString, 'JST')->month(1)->day(1)->setTime(12, 0, 0);
     }
 
-    if ($carbon !== null && $timeString !== null) {
-      $time = Carbon::createFromFormat('H:i', $timeString, 'JST');
+    if ($carbon !== null && $time !== null) {
       $carbon->setTime($time->hour, $time->minute, $time->second)->tz('UTC');
     } else {
       $carbon->tz('UTC')->setTime(0, 0, 0);

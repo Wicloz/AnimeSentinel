@@ -19,7 +19,7 @@ class Show extends BaseModel
    * @var array
    */
   protected $fillable = [
-    'mal_id', 'remote_thumbnail_urls', 'local_thumbnail_ids', 'title', 'alts', 'description', 'type', 'genres', 'episode_amount', 'episode_duration', 'airing_start', 'airing_end', 'season',
+    'mal_id', 'remote_thumbnail_urls', 'local_thumbnail_ids', 'title', 'alts', 'description', 'type', 'genres', 'episode_amount', 'episode_duration', 'season', 'rating', 'airing_start', 'airing_end', 'airing_time', 'airing_type',
   ];
 
   /**
@@ -39,7 +39,7 @@ class Show extends BaseModel
    *
    * @var array
    */
-  protected $dates = ['airing_start', 'airing_end', 'cache_updated_at', 'created_at', 'updated_at'];
+  protected $dates = ['airing_start', 'airing_end', 'airing_time', 'cache_updated_at', 'created_at', 'updated_at'];
 
   /**
   * Get all videos related to this show.
@@ -165,6 +165,9 @@ class Show extends BaseModel
   public function printSeason() {
     return isset($this->season) ? ucwords($this->season) : 'Unknown';
   }
+  public function printRating() {
+    return isset($this->rating) ? $this->rating : 'Unknown';
+  }
   public function printStatus($translation_type) {
     if (empty($this->mal)) {
       if ($this->isAiring($translation_type)) {
@@ -237,6 +240,18 @@ class Show extends BaseModel
       }
 
       return $dateString;
+    }
+  }
+  public function printBroadcasts() {
+    switch ($this->airing_type) {
+      case 'weekly':
+        return $this->airing_start->format('l').'s at '.$this->airing_time->format('H:i');
+      case 'irregular':
+        return 'No regular schedule';
+      case 'once':
+        return 'NA';
+      default:
+        return 'Unknown';
     }
   }
 
