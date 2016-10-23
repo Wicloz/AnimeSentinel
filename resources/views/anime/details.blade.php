@@ -34,6 +34,11 @@
         </li>
       @endif
       @if(count($show->episodes('sub')) > 0)
+        @if(!$show->videos_initialised)
+          <li class="list-group-item">
+            Searching for more episodes ...
+          </li>
+        @endif
         @foreach($show->episodes('sub')->load('show') as $episode)
           <li class="list-group-item">
             <div class="row">
@@ -61,11 +66,6 @@
             </div>
           </li>
         @endforeach
-        @if(!$show->videos_initialised)
-          <li class="list-group-item">
-            Searching for more episodes ...
-          </li>
-        @endif
       @else
         @if($show->videos_initialised)
           <li class="list-group-item">
@@ -89,6 +89,11 @@
         </li>
       @endif
       @if(count($show->episodes('dub')) > 0)
+        @if(!$show->videos_initialised)
+          <li class="list-group-item">
+            Searching for more episodes ...
+          </li>
+        @endif
         @foreach($show->episodes('dub')->load('show') as $episode)
           <li class="list-group-item">
             <div class="row">
@@ -116,11 +121,6 @@
             </div>
           </li>
         @endforeach
-        @if(!$show->videos_initialised)
-          <li class="list-group-item">
-            Searching for more episodes ...
-          </li>
-        @endif
       @else
         @if($show->videos_initialised)
           <li class="list-group-item">
