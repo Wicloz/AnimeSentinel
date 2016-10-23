@@ -46,6 +46,28 @@ class Show extends BaseModel
     }
     return $value;
   }
+  public function getAiringStartAttribute($value) {
+    if ($value !== null) {
+      $value = Carbon::createFromFormat('Y-m-d', str_get_between($value, '', ' '));
+      if ($this->airing_time !== null) {
+        $value->setTime($this->airing_time->hour, $this->airing_time->minute, $this->airing_time->second);
+      } else {
+        $value->setTime(0, 0, 0);
+      }
+    }
+    return $value;
+  }
+  public function getAiringEndAttribute($value) {
+    if ($value !== null) {
+      $value = Carbon::createFromFormat('Y-m-d', str_get_between($value, '', ' '));
+      if ($this->airing_time !== null) {
+        $value->setTime($this->airing_time->hour, $this->airing_time->minute, $this->airing_time->second);
+      } else {
+        $value->setTime(0, 0, 0);
+      }
+    }
+    return $value;
+  }
 
   /**
   * Get all videos related to this show.

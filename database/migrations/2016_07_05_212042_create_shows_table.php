@@ -44,8 +44,8 @@ class CreateShowsTable extends Migration
               'R+',
             ])->nullable()->default(null);
 
-            $table->dateTime('airing_start')->nullable()->default(null);
-            $table->dateTime('airing_end')->nullable()->default(null);
+            $table->date('airing_start')->nullable()->default(null);
+            $table->date('airing_end')->nullable()->default(null);
             $table->time('airing_time')->nullable()->default(null);
             $table->enum('airing_type', [
               'weekly',
