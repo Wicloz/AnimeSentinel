@@ -110,6 +110,7 @@
             'episode_amount',
             'episode_duration',
             'videos',
+            'broadcasts',
           ],
         ])
         <div class="content-close"></div>

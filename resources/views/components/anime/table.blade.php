@@ -24,6 +24,8 @@
             Videos
           @elseif ($column === 'watchable')
             Watchable
+          @elseif ($column === 'broadcasts')
+            Broadcasts
           @endif
           </th>
         @endforeach
@@ -131,27 +133,33 @@
               @elseif ($column === 'watchable')
                 @if (!$show->mal)
                   <ul class="list-unstyled">
-                    @forelse ($show->episodes('sub', 'asc', $show->mal_show->eps_watched) as $index => $episode)
-                      @if ($index < Auth::user()->viewsettings_overview->get('cutoff'))
-                        <li class="text-warning">
-                          <a href="{{ $episode->episode_url }}">
-                            Episode {{ $episode->episode_num }}
-                          </a>
+                    @if (!$show->videos_initialised)
+                      <li class="text-info">
+                        - Searching for Episodes -
+                      </li>
+                    @else
+                      @forelse ($show->episodes('sub', 'asc', $show->mal_show->eps_watched) as $index => $episode)
+                        @if ($index < Auth::user()->viewsettings_overview->get('cutoff'))
+                          <li class="text-warning">
+                            <a href="{{ $episode->episode_url }}">
+                              Episode {{ $episode->episode_num }}
+                            </a>
+                          </li>
+                        @elseif ($index === Auth::user()->viewsettings_overview->get('cutoff'))
+                          <li class="text-warning">
+                            - And {{ $show->episodes('sub', 'asc', $show->mal_show->eps_watched)->count() - Auth::user()->viewsettings_overview->get('cutoff') }} more -
+                          </li>
+                        @endif
+                      @empty
+                        <li class="text-success">
+                          - Up To Date -
                         </li>
-                      @elseif ($index === Auth::user()->viewsettings_overview->get('cutoff'))
-                        <li class="text-warning">
-                          - And {{ $show->episodes('sub', 'asc', $show->mal_show->eps_watched)->count() - Auth::user()->viewsettings_overview->get('cutoff') }} more -
+                      @endforelse
+                      @if($show->printNextUpload('sub') !== 'NA')
+                        <li>
+                          ETA: {!! $show->printNextUpload('sub', 'M j, Y (l)') !!}
                         </li>
                       @endif
-                    @empty
-                      <li class="text-success">
-                        - Up To Date -
-                      </li>
-                    @endforelse
-                    @if($show->printNextUpload('sub') !== 'NA')
-                      <li>
-                        ETA: {!! $show->printNextUpload('sub', 'M j, Y (l)') !!}
-                      </li>
                     @endif
                   </ul>
                 @else
@@ -168,6 +176,9 @@
                     <button type="submit" class="btn btn-default last-margin">Add and go to the Details Page</button>
                   </form>
                 @endif
+
+              @elseif ($column === 'broadcasts')
+                {{ $show->printBroadcasts() }}
 
               @endif
             </td>
