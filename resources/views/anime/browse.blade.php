@@ -106,6 +106,7 @@
             'description',
             'type',
             'genres',
+            'rating',
             'season',
             'episode_amount',
             'episode_duration',

@@ -19,7 +19,7 @@ class Show extends BaseModel
    * @var array
    */
   protected $fillable = [
-    'mal_id', 'remote_thumbnail_urls', 'local_thumbnail_ids', 'title', 'alts', 'description', 'type', 'genres', 'episode_amount', 'episode_duration', 'season', 'rating', 'airing_start', 'airing_end', 'airing_time', 'airing_type',
+    'mal_id', 'remote_thumbnail_urls', 'local_thumbnail_ids', 'title', 'alts', 'description', 'type', 'genres', 'season', 'rating', 'episode_amount', 'episode_duration', 'airing_start', 'airing_end', 'airing_time', 'airing_type',
   ];
 
   /**

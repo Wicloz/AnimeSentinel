@@ -33,8 +33,6 @@ class CreateShowsTable extends Migration
               'music',
             ])->nullable()->default(null);
             $table->string('genres', 512)->default('[]');
-            $table->integer('episode_amount')->nullable()->default(null);
-            $table->integer('episode_duration')->nullable()->default(null);
             $table->string('season')->nullable()->default(null);
             $table->enum('rating', [
               'G',
@@ -43,6 +41,8 @@ class CreateShowsTable extends Migration
               'R',
               'R+',
             ])->nullable()->default(null);
+            $table->integer('episode_amount')->nullable()->default(null);
+            $table->integer('episode_duration')->nullable()->default(null);
 
             $table->date('airing_start')->nullable()->default(null);
             $table->date('airing_end')->nullable()->default(null);

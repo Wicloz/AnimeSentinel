@@ -16,6 +16,8 @@
             Genres
           @elseif ($column === 'season')
             Season
+          @elseif ($column === 'rating')
+            Rating
           @elseif ($column === 'episode_amount')
             Total Episodes
           @elseif ($column === 'episode_duration')
@@ -60,6 +62,9 @@
 
               @elseif ($column === 'season')
                 {{ $show->printSeason() }}
+
+              @elseif ($column === 'rating')
+                {{ $show->printRating() }}
 
               @elseif ($column === 'episode_amount')
                 {{ $show->printTotalEpisodes() }}
