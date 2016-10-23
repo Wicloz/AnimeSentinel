@@ -48,7 +48,7 @@ class Show extends BaseModel
   }
   public function getAiringStartAttribute($value) {
     if ($value !== null) {
-      $value = Carbon::createFromFormat('Y-m-d', str_get_between($value, '', ' '));
+      $value = Carbon::createFromFormat('Y-m-d', str_get_between($value, '', ' ') ? str_get_between($value, '', ' ') : $value);
       if ($this->airing_time !== null) {
         $value->setTime($this->airing_time->hour, $this->airing_time->minute, $this->airing_time->second);
       } else {
@@ -59,7 +59,7 @@ class Show extends BaseModel
   }
   public function getAiringEndAttribute($value) {
     if ($value !== null) {
-      $value = Carbon::createFromFormat('Y-m-d', str_get_between($value, '', ' '));
+      $value = Carbon::createFromFormat('Y-m-d', str_get_between($value, '', ' ') ? str_get_between($value, '', ' ') : $value);
       if ($this->airing_time !== null) {
         $value->setTime($this->airing_time->hour, $this->airing_time->minute, $this->airing_time->second);
       } else {
