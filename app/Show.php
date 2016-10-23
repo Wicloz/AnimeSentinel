@@ -322,7 +322,7 @@ class Show extends BaseModel
    *
    * @return array
    */
-  public static function search($search, $types, $genres, $start = 0, $amount = null, $fill = false) {
+  public static function search($search, $types, $genres, $ratings, $start = 0, $amount = null, $fill = false) {
     $results = [];
     $query = Self::skip($start)->take($amount)->orderBy('title');
 
@@ -346,6 +346,14 @@ class Show extends BaseModel
         else {
           $query->orWhere('genres', '[]');
         }
+      }
+    });
+
+    // searching by ratings
+    $query->where(function ($query) use ($ratings) {
+      $query->whereIn('rating', $ratings);
+      if ($ratings->contains('Unknown')) {
+        $query->orWhere('rating', null);
       }
     });
 

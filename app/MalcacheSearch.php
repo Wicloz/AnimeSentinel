@@ -60,7 +60,7 @@ class MalcacheSearch extends BaseModel
    *
    * TODO: add filters
    */
-  public static function search($query, $types, $genres, $start = 0, $amount = null) {
+  public static function search($query, $types, $genres, $ratings, $start = 0, $amount = null) {
     if ($query !== '') {
       while (strlen($query) < 3) {
         $query .= ' ';
@@ -94,6 +94,13 @@ class MalcacheSearch extends BaseModel
         }
         return false;
       });
+
+      // Searching by ratings
+      $thisResults = $results->whereIn('rating', $ratings);
+      if ($ratings->contains('Unknown')) {
+        $thisResults->merge($results->where('rating', null));
+      }
+      $results = $thisResults;
 
       return $results->slice($start, $amount);
     }
