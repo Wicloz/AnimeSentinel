@@ -501,6 +501,47 @@ class Show extends BaseModel
   }
 
   /**
+  * Convert the series this show belongs to to a directed graph in DOT notation.
+  *
+  * @return string
+  */
+  public function seriesDot() {
+    $string = 'digraph '.$this->mal_id.' {\n';
+    $collection = collect([]);
+    $this->seriesDotRecursive($string, $collection);
+    $string .= '}\n';
+    return $string;
+  }
+  private function seriesDotRecursive(& $string, & $added, & $counter = 1) {
+    // Visit this node if it has not been added yet
+    if (!$added->has($this->mal_id)) {
+      $string .= '  '.$counter.' [label="'.$this->title.'"]\n';
+      $added[$this->mal_id] = $counter;
+      $counter++;
+
+      $this->seriesDotRelation($string, $added, $counter, 'prequels', 'Prequel');
+      $this->seriesDotRelation($string, $added, $counter, 'sequels', 'Sequel');
+      $this->seriesDotRelation($string, $added, $counter, 'summaries', 'Summary');
+      $this->seriesDotRelation($string, $added, $counter, 'specials', 'Special');
+      $this->seriesDotRelation($string, $added, $counter, 'alternatives', 'Alternative');
+    }
+  }
+  private function seriesDotRelation(& $string, & $added, & $counter, $relation, $relationFancy) {
+    // For all related nodes
+    foreach ($this->$relation as $show) {
+      // Make sure they are added to the database
+      $show = Self::relatedToShow($show);
+      if ($show->mal) {
+        $show = ShowManager::addShowWithMalId($show->mal_id);
+      }
+      // Call function on those nodes
+      $show->seriesDotRecursive($string, $added, $counter);
+      // Add edges to those nodes
+      $string .= '  '.$added[$this->mal_id].' -> '.$added[$show->mal_id].' [label="'.$relationFancy.'"]\n';
+    }
+  }
+
+  /**
   * Get an array of this series prequels and sequels in order.
   *
   * @return array
