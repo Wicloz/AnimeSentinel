@@ -15,8 +15,6 @@ https://sharex.wilcodeboer.me/?id=nFxQ1CXvBayp61S
 
 Guide for development servers (WIP):
 - Required software:
--- firefox
--- xvfb
 -- ffmpeg
 - Included in Homestead:
 -- composer

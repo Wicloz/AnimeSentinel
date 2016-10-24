@@ -1,8 +1,8 @@
 #!/bin/bash
-composer install
+composer create-project
 npm install
 
-pip install cfscrape --upgrade
-pip install selenium --upgrade
+pip install cfscrape
+pip install selenium
 
 npm install phantomjs
