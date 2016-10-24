@@ -15,7 +15,8 @@
       Copy and paste the above code to <a target="_blank" href="http://sandbox.kidstrythisathome.com/erdos/">this page</a>.
     </p>
     <p>
-      TODO: Use google graphs to just put a picture here.
+      TODO: Directly put a picture here.
+      Preferably with clickable titles.
     </p>
   </div>
 @endsection
