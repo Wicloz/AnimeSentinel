@@ -143,14 +143,14 @@
                         - Searching for Episodes -
                       </li>
                     @else
-                      @forelse ($show->episodes('sub', 'asc', $show->mal_show->eps_watched) as $index => $episode)
-                        @if ($index < Auth::user()->viewsettings_overview->get('cutoff'))
+                      @forelse ($show->episodes('sub', 'asc', $show->mal_show->eps_watched) as $episode)
+                        @if ($loop->index < Auth::user()->viewsettings_overview->get('cutoff'))
                           <li class="text-warning">
                             <a href="{{ $episode->episode_url }}">
                               Episode {{ $episode->episode_num }}
                             </a>
                           </li>
-                        @elseif ($index === Auth::user()->viewsettings_overview->get('cutoff'))
+                        @elseif ($loop->index === Auth::user()->viewsettings_overview->get('cutoff'))
                           <li class="text-warning">
                             - And {{ $show->episodes('sub', 'asc', $show->mal_show->eps_watched)->count() - Auth::user()->viewsettings_overview->get('cutoff') }} more -
                           </li>
