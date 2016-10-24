@@ -489,6 +489,67 @@ class Show extends BaseModel
     return null;
   }
 
+  private static function addQuelToArray($quel, $array, $direction) {
+    $quelShow = Self::relatedToShow($quel);
+    if (!$quelShow->mal) {
+      $array = array_merge($array, $quelShow->seriesMap($direction));
+    } else {
+      $array[] = $quelShow;
+    }
+    return $array;
+  }
+
+  private static function relatedToShow($related) {
+    $show = Show::where('mal_id', $related['mal_id'])->first();
+    if ($show === null) {
+      $show = new Show();
+      $show->mal = true;
+      $show->mal_id = $related['mal_id'];
+      $show->title = $related['title'];
+    }
+    return $show;
+  }
+
+  /**
+  * Get an array of this series prequels and sequels in order.
+  *
+  * @return array
+  */
+  public function seriesMap($direction = 'both') {
+    $shows = [];
+    if ($direction === 'both' || $direction === 'prequels') {
+      foreach ($this->prequels as $prequel) {
+        $shows = Self::addQuelToArray($prequel, $shows, 'prequels');
+      }
+    }
+    $shows[] = $this;
+    if ($direction === 'both' || $direction === 'sequels') {
+      foreach ($this->sequels as $sequel) {
+        $shows = Self::addQuelToArray($sequel, $shows, 'sequels');
+      }
+    }
+    return $shows;
+  }
+
+  /**
+  * Get all the related shows by type, excluding prequels and sequels.
+  *
+  * @return array
+  */
+  public function getRelatedAttribute() {
+    $relatedShows = [];
+    foreach ($this->alternatives as $related) {
+      $relatedShows['Alternatives'][] = Self::relatedToShow($related);
+    }
+    foreach ($this->summaries as $related) {
+      $relatedShows['Summaries'][] = Self::relatedToShow($related);
+    }
+    foreach ($this->specials as $related) {
+      $relatedShows['Specials'][] = Self::relatedToShow($related);
+    }
+    return $relatedShows;
+  }
+
   /**
   * Get whether the show is currently airing for the requested translation type.
   *

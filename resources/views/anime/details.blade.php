@@ -153,6 +153,57 @@
 
 @section('content-right')
   <div class="content-header">
+    Series Map
+  </div>
+  <div class="content-generic">
+    <ul class="list-group">
+      @foreach ($show->seriesMap() as $subShow)
+        <li class="list-group-item">
+          @if (!$subShow->mal)
+            <p class="list-header">
+              <a href="{{ $subShow->details_url }}">{{ $subShow->title }}</a>
+            </p>
+            <dl class="last-margin">
+              @foreach ($subShow->related as $type => $subShows)
+                <dt>{{ $type }}:</dt>
+                <dd><ul>
+                  @foreach ($subShows as $subShow)
+                    <li>
+                      @if (!$subShow->mal)
+                        <a href="{{ $subShow->details_url }}">{{ $subShow->title }}</a>
+                      @else
+                        <a href="{{ $subShow->details_url_static }}">{{ $subShow->title }}</a>
+                      @endif
+                    </li>
+                  @endforeach
+                </ul></dd>
+              @endforeach
+            </dl>
+          @else
+            <p class="list-header">
+              {{ $subShow->title }}
+            </p>
+            <form action="{{ fullUrl('/anime/add') }}" method="POST">
+              {{ csrf_field() }}
+              <input type="hidden" name="mal_id" value="{{ $subShow->mal_id }}"></input>
+              <input type="hidden" name="gotodetails" value="0"></input>
+              <button type="submit" class="btn btn-default">Add and return Here</button>
+            </form>
+            <p></p>
+            <form action="{{ fullUrl('/anime/add') }}" method="POST">
+              {{ csrf_field() }}
+              <input type="hidden" name="mal_id" value="{{ $subShow->mal_id }}"></input>
+              <input type="hidden" name="gotodetails" value="1"></input>
+              <button type="submit" class="btn btn-default">Add and go to Details Page</button>
+            </form>
+          @endif
+        </li>
+      @endforeach
+    </ul>
+    <div class="content-close"></div>
+  </div>
+
+  <div class="content-header">
     Administration
   </div>
   <div class="content-generic">
