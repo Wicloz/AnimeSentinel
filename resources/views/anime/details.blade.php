@@ -153,7 +153,7 @@
 
 @section('content-right')
   <div class="content-header">
-    Series Map
+    <a href="{{ $show->series_url }}">Series Map</a>
   </div>
   <div class="content-generic">
     <ul class="list-group">

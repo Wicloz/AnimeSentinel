@@ -812,6 +812,19 @@ class Show extends BaseModel
   }
 
   /**
+  * Get the full url for this show's series overview page.
+  *
+  * @return string
+  */
+  public function getSeriesUrlAttribute() {
+    if (empty($this->mal)) {
+      return $this->details_url.'/series';
+    } else {
+      return null;
+    }
+  }
+
+  /**
   * Get the url to this show's MAL page.
   *
   * @return string
