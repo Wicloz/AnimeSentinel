@@ -246,6 +246,7 @@ class MyAnimeList
     $summaries = [];
     $specials = [];
     $alternatives = [];
+    $others = [];
 
     $set = explode('<tr>', str_get_between($page, '<table class="anime_detail_related_anime" style="border-spacing:0px;">', '</table>'));
     foreach ($set as $item) {
@@ -268,11 +269,14 @@ class MyAnimeList
               case 'summary:':
                 $summaries[] = $data;
               break;
-              case 'side story:': case 'other:':
+              case 'side story:':
                 $specials[] = $data;
               break;
               case 'alternative version:':
                 $alternatives[] = $data;
+              break;
+              case 'other:':
+                $others[] = $data;
               break;
             }
           }
@@ -303,6 +307,7 @@ class MyAnimeList
       'summaries' => $summaries,
       'specials' => $specials,
       'alternatives' => $alternatives,
+      'others' => $others,
       'type' => $type,
       'genres' => $genres,
       'episode_amount' => $episode_amount,

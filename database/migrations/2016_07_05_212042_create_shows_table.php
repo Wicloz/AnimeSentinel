@@ -29,6 +29,7 @@ class CreateShowsTable extends Migration
             $table->string('summaries', 4096)->default('[]');
             $table->string('specials', 4096)->default('[]');
             $table->string('alternatives', 4096)->default('[]');
+            $table->string('others', 4096)->default('[]');
 
             $table->enum('type', [
               'tv',

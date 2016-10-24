@@ -19,7 +19,7 @@ class Show extends BaseModel
    * @var array
    */
   protected $fillable = [
-    'mal_id', 'remote_thumbnail_urls', 'local_thumbnail_ids', 'title', 'alts', 'description', 'prequels', 'sequels', 'summaries', 'specials', 'alternatives', 'type', 'genres', 'season', 'rating', 'episode_amount', 'episode_duration', 'airing_start', 'airing_end', 'airing_time', 'airing_type',
+    'mal_id', 'remote_thumbnail_urls', 'local_thumbnail_ids', 'title', 'alts', 'description', 'prequels', 'sequels', 'summaries', 'specials', 'alternatives', 'others', 'type', 'genres', 'season', 'rating', 'episode_amount', 'episode_duration', 'airing_start', 'airing_end', 'airing_time', 'airing_type',
   ];
 
   /**
@@ -35,6 +35,7 @@ class Show extends BaseModel
     'summaries' => 'collection',
     'specials' => 'collection',
     'alternatives' => 'collection',
+    'others' => 'collection',
     'alts' => 'collection',
     'genres' => 'collection',
   ];
@@ -524,6 +525,7 @@ class Show extends BaseModel
       $this->seriesDotRelation($string, $added, $counter, 'summaries', 'Summary');
       $this->seriesDotRelation($string, $added, $counter, 'specials', 'Special');
       $this->seriesDotRelation($string, $added, $counter, 'alternatives', 'Alternative');
+      $this->seriesDotRelation($string, $added, $counter, 'others', 'Other');
     }
   }
   private function seriesDotRelation(& $string, & $added, & $counter, $relation, $relationFancy) {
@@ -612,6 +614,9 @@ class Show extends BaseModel
     }
     foreach ($this->specials as $related) {
       $relatedShows['Specials'][] = Self::relatedToShow($related);
+    }
+    foreach ($this->others as $related) {
+      $relatedShows['Others'][] = Self::relatedToShow($related);
     }
     return $relatedShows;
   }
