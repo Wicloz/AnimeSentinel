@@ -16,6 +16,8 @@
             Genres
           @elseif ($column === 'season')
             Season
+          @elseif ($column === 'rating')
+            Rating
           @elseif ($column === 'episode_amount')
             Total Episodes
           @elseif ($column === 'episode_duration')
@@ -24,6 +26,8 @@
             Videos
           @elseif ($column === 'watchable')
             Watchable
+          @elseif ($column === 'broadcasts')
+            Broadcasts
           @endif
           </th>
         @endforeach
@@ -33,7 +37,7 @@
     <tbody>
       @foreach ($shows as $index => $show)
         @if ($show->mal)
-          <tr onclick="window.open('{{ $show->details_url }}', '_blank');">
+          <tr>
         @else
           <tr onclick="window.open('{{ $show->details_url }}', '_self');">
         @endif
@@ -58,6 +62,9 @@
 
               @elseif ($column === 'season')
                 {{ $show->printSeason() }}
+
+              @elseif ($column === 'rating')
+                {{ $show->printRating() }}
 
               @elseif ($column === 'episode_amount')
                 {{ $show->printTotalEpisodes() }}
@@ -95,35 +102,35 @@
                     {{ csrf_field() }}
                     <input type="hidden" name="mal_id" value="{{ $show->mal_id }}"></input>
                     <input type="hidden" name="gotodetails" value="0"></input>
-                    <button type="submit" class="btn btn-default">Add and return to Search Results</button>
+                    <button type="submit" class="btn btn-default btn-sm">Add and return to Search Results</button>
                   </form>
                   <form action="{{ fullUrl('/anime/add') }}" method="POST">
                     {{ csrf_field() }}
                     <input type="hidden" name="mal_id" value="{{ $show->mal_id }}"></input>
                     <input type="hidden" name="gotodetails" value="1"></input>
-                    <button type="submit" class="btn btn-default">Add and go to Details Page</button>
+                    <button type="submit" class="btn btn-default btn-sm last-margin">Add and go to Details Page</button>
                   </form>
                 @else
                   <p>
                     @if(isset($show->latest_sub))
                       <a href="{{ $show->latest_sub->episode_url }}">
-                        <strong>Latest Subbed:</strong> {{ $show->printLatestSub() }}
+                        <strong>Latest Subbed:</strong> {{ $show->printLatest('sub') }}
                       </a>
                     </p><p>
                       <strong>Uploaded On:</strong> {{ $show->latest_sub->uploadtime->format('M j, Y (l)') }}
                     @else
-                      <strong>Latest Subbed:</strong> {{ $show->printLatestSub() }}
+                      <strong>Latest Subbed:</strong> {{ $show->printLatest('sub') }}
                     @endif
                   </p>
                   <p>
                     @if(isset($show->latest_dub))
                       <a href="{{ $show->latest_dub->episode_url }}">
-                        <strong>Latest Dubbed:</strong> {{ $show->printLatestDub() }}
+                        <strong>Latest Dubbed:</strong> {{ $show->printLatest('dub') }}
                       </a>
                     </p><p>
                       <strong>Uploaded On:</strong> {{ $show->latest_dub->uploadtime->format('M j, Y (l)') }}
                     @else
-                      <strong>Latest Dubbed:</strong> {{ $show->printLatestDub() }}
+                      <strong>Latest Dubbed:</strong> {{ $show->printLatest('dub') }}
                     @endif
                   </p>
                 @endif
@@ -131,27 +138,33 @@
               @elseif ($column === 'watchable')
                 @if (!$show->mal)
                   <ul class="list-unstyled">
-                    @forelse ($show->episodes('sub', 'asc', $show->mal_show->eps_watched) as $index => $episode)
-                      @if ($index < Auth::user()->viewsettings_overview->get('cutoff'))
-                        <li class="text-warning">
-                          <a href="{{ $episode->episode_url }}">
-                            Episode {{ $episode->episode_num }}
-                          </a>
+                    @if (!$show->videos_initialised)
+                      <li class="text-info">
+                        - Searching for Episodes -
+                      </li>
+                    @else
+                      @forelse ($show->episodes('sub', 'asc', $show->mal_show->eps_watched) as $episode)
+                        @if ($loop->index < Auth::user()->viewsettings_overview->get('cutoff'))
+                          <li class="text-warning">
+                            <a href="{{ $episode->episode_url }}">
+                              Episode {{ $episode->episode_num }}
+                            </a>
+                          </li>
+                        @elseif ($loop->index === Auth::user()->viewsettings_overview->get('cutoff'))
+                          <li class="text-warning">
+                            - And {{ $show->episodes('sub', 'asc', $show->mal_show->eps_watched)->count() - Auth::user()->viewsettings_overview->get('cutoff') }} more -
+                          </li>
+                        @endif
+                      @empty
+                        <li class="text-success">
+                          - Up To Date -
                         </li>
-                      @elseif ($index === Auth::user()->viewsettings_overview->get('cutoff'))
-                        <li class="text-warning">
-                          - And {{ $show->episodes('sub', 'asc', $show->mal_show->eps_watched)->count() - Auth::user()->viewsettings_overview->get('cutoff') }} more -
+                      @endforelse
+                      @if($show->printNextUpload('sub') !== 'NA')
+                        <li>
+                          ETA: {!! $show->printNextUpload('sub', 'M j, Y (l)') !!}
                         </li>
                       @endif
-                    @empty
-                      <li class="text-success">
-                        - Up To Date -
-                      </li>
-                    @endforelse
-                    @if($show->printNextUpload('sub') !== 'NA')
-                      <li>
-                        ETA: {!! $show->printNextUpload('sub', 'M j, Y (l)') !!}
-                      </li>
                     @endif
                   </ul>
                 @else
@@ -159,15 +172,18 @@
                     {{ csrf_field() }}
                     <input type="hidden" name="mal_id" value="{{ $show->mal_id }}"></input>
                     <input type="hidden" name="gotodetails" value="0"></input>
-                    <button type="submit" class="btn btn-default">Add and return to the Overview</button>
+                    <button type="submit" class="btn btn-default btn-sm">Add and return to the Overview</button>
                   </form>
                   <form action="{{ fullUrl('/anime/add') }}" method="POST">
                     {{ csrf_field() }}
                     <input type="hidden" name="mal_id" value="{{ $show->mal_id }}"></input>
                     <input type="hidden" name="gotodetails" value="1"></input>
-                    <button type="submit" class="btn btn-default last-margin">Add and go to the Details Page</button>
+                    <button type="submit" class="btn btn-default btn-sm last-margin">Add and go to the Details Page</button>
                   </form>
                 @endif
+
+              @elseif ($column === 'broadcasts')
+                {{ $show->printBroadcasts() }}
 
               @endif
             </td>

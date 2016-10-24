@@ -66,6 +66,7 @@ Route::post('/anime/recent/setttype', 'AnimeController@setTtype');
 
 // Anime Details
 Route::get('/anime/{show}/{title?}', 'ShowController@details');
+Route::get('/anime/{show}/{title?}/series', 'ShowController@series');
 
 // Stream Pages
 Route::get('/anime/{show}/{title}/{translation_type}/episode-{episode_num}', 'EpisodeController@gotoEpisode');

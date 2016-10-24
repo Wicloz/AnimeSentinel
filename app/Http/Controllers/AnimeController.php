@@ -8,14 +8,12 @@ use App\Http\Requests;
 use App\Show;
 use App\MalcacheSearch;
 use App\Video;
+use App\Streamer;
 
 class AnimeController extends Controller
 {
   private $allowedDisplays = ['smallrow', 'bigrow', 'table'];
   private $checkboxes = [
-    'streamers' => [
-      'animeshow', 'kissanime',
-    ],
     'types' => [
       'tv', 'ona', 'ova', 'movie', 'special', 'unknown',
     ],
@@ -27,7 +25,19 @@ class AnimeController extends Controller
       'Shounen', 'Shounen Ai', 'Slice of Life', 'Space', 'Sports', 'Super Power', 'Supernatural', 'Thriller',
       'Vampire', 'Yaoi', 'Yuri', 'Unknown',
     ],
+    'ratings' => [
+      'G', 'PG', 'PG-13', 'R', 'R+', 'Unknown',
+    ],
   ];
+
+  /**
+   * Instantiate a new controller instance.
+   *
+   * @return void
+   */
+  public function __construct() {
+    $this->checkboxes['streamers'] = Streamer::pluck('id')->all();
+  }
 
   /**
    * Show the home page.
@@ -153,16 +163,16 @@ class AnimeController extends Controller
     $this->processRequest($request);
 
     if ($request->source === 'mal') {
-      $shows = MalcacheSearch::search($request->search, $request->types, $request->genres, $request->pageZ * 50, 51);
+      $shows = MalcacheSearch::search($request->search, $request->types, $request->genres, $request->ratings, $request->pageZ * 50, 51);
     }
 
     elseif ($request->source === 'as' || $request->search === '') {
-      $shows = Show::search($request->search, $request->types, $request->genres, $request->pageZ * 50, 51, true);
+      $shows = Show::search($request->search, $request->types, $request->genres, $request->ratings, $request->pageZ * 50, 51, true);
     }
 
     else {
-      $dbShows = Show::search($request->search, $request->types, $request->genres);
-      $malShows = MalcacheSearch::search($request->search, $request->types, $request->genres);
+      $dbShows = Show::search($request->search, $request->types, $request->genres, $request->ratings);
+      $malShows = MalcacheSearch::search($request->search, $request->types, $request->genres, $request->ratings);
       $malIds = $dbShows->pluck('mal_id');
 
       $shows = $dbShows->slice($request->pageZ * 50, 51);
@@ -220,7 +230,7 @@ class AnimeController extends Controller
                   ->whereIn('translation_type', $request->ttypes);
 
     if (count($request->all()) > 0) {
-      $shows = Show::search($request->search, $request->types, $request->genres);
+      $shows = Show::search($request->search, $request->types, $request->genres, $request->ratings);
       $query->whereIn('show_id', $shows->pluck('id'));
     }
 

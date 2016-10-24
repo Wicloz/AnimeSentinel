@@ -17,28 +17,49 @@ class CreateShowsTable extends Migration
             $table->increments('id');
             $table->integer('mal_id')->unsigned()->nullable()->default(null)->unique();
 
-            $table->string('thumbnail_id')->nullable()->default(null);
+            $table->text('remote_thumbnail_urls')->default('[]');
+            $table->text('local_thumbnail_ids')->default('[]');
 
             $table->string('title');
             $table->string('alts', 4096)->default('[]');
             $table->text('description')->default('');
 
+            $table->string('prequels', 4096)->default('[]');
+            $table->string('sequels', 4096)->default('[]');
+            $table->string('summaries', 4096)->default('[]');
+            $table->string('specials', 4096)->default('[]');
+            $table->string('alternatives', 4096)->default('[]');
+            $table->string('others', 4096)->default('[]');
+
             $table->enum('type', [
-              'music',
               'tv',
               'ova',
               'ona',
               'movie',
               'special',
+              'music',
             ])->nullable()->default(null);
             $table->string('genres', 512)->default('[]');
+            $table->string('season')->nullable()->default(null);
+            $table->enum('rating', [
+              'G',
+              'PG',
+              'PG-13',
+              'R',
+              'R+',
+            ])->nullable()->default(null);
             $table->integer('episode_amount')->nullable()->default(null);
             $table->integer('episode_duration')->nullable()->default(null);
-            $table->dateTime('airing_start')->nullable()->default(null);
-            $table->dateTime('airing_end')->nullable()->default(null);
-            $table->string('season')->nullable()->default(null);
 
-            $table->bigInteger('hits')->default(0);
+            $table->date('airing_start')->nullable()->default(null);
+            $table->date('airing_end')->nullable()->default(null);
+            $table->time('airing_time')->nullable()->default(null);
+            $table->enum('airing_type', [
+              'weekly',
+              'irregular',
+            ])->nullable()->default(null);
+
+            $table->bigInteger('hits')->unsigned()->default(0);
             $table->boolean('videos_initialised')->default(false);
             $table->dateTime('cache_updated_at')->nullable()->default(null);
 

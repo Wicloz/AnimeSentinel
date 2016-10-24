@@ -54,6 +54,7 @@ class UserController extends Controller
       }
 
       $shows[$status] = $items->sort(function ($a, $b) {
+        // Move shows not in our database to the bottom
         if ($a->mal && $b->mal) {
           return $a->title <=> $b->title;
         } else if ($a->mal) {
@@ -62,12 +63,23 @@ class UserController extends Controller
           return -1;
         }
 
+        // Move shows still searching for videos to the top
+        if (!$a->videos_initialised && !$b->videos_initialised) {
+          return $a->title <=> $b->title;
+        } else if (!$a->videos_initialised) {
+          return -1;
+        } else if (!$b->videos_initialised) {
+          return 1;
+        }
+
+        // Sort shows by amount of unwatched episodes
         // $epsA = $a->episodes('sub', 'asc', $a->mal_show->eps_watched);
         // $epsB = $b->episodes('sub', 'asc', $b->mal_show->eps_watched);
         // if ($epsA->count() !== $epsB->count()) {
         //   return $epsB->count() - $epsA->count();
         // }
 
+        // Sort shows by next upload estimate, where finished shows are at the bottom
         $nextA = $a->nextUploadEstimate('sub');
         $nextB = $b->nextUploadEstimate('sub');
         if ($nextA === null && $nextB === null) {
@@ -92,6 +104,7 @@ class UserController extends Controller
       'title',
       'episode_duration',
       'watchable',
+      'broadcasts',
     ]);
     if (Auth::user()->viewsettings_overview->get('thumbnails')) {
       $columns->prepend('thumbnail');

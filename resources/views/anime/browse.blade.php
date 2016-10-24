@@ -61,6 +61,23 @@
     </div>
 
     <div class="content-generic content-dark">
+      <div class="form-group" id="search-ratings">
+        <label for="search-ratings">Ratings:</label>
+        @foreach ($checkboxes['ratings'] as $rating)
+          <input type="hidden" name="rating_{{ $rating }}" value="off">
+        @endforeach
+        @foreach ($checkboxes['ratings'] as $rating)
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="rating_{{ $rating }}" {{ request('rating_'.$rating) !== 'off' ? 'checked' : '' }}>
+              {{ $rating }}
+            </label>
+          </div>
+        @endforeach
+      </div>
+    </div>
+
+    <div class="content-generic content-dark">
       <button type="submit" class="btn btn-primary">Search</button>
       <button type="reset" class="btn btn-default">Reset</button>
     </div>
@@ -106,10 +123,12 @@
             'description',
             'type',
             'genres',
+            'rating',
             'season',
             'episode_amount',
             'episode_duration',
             'videos',
+            'broadcasts',
           ],
         ])
         <div class="content-close"></div>

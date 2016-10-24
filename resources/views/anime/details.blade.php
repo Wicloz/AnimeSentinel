@@ -2,7 +2,7 @@
 @section('title', $show->title)
 
 @section('content-left')
-  <img class="img-thumbnail details-thumbnail-wide hidden-xs hidden-sm" src="{{ fullUrl('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
+  <img class="img-thumbnail details-thumbnail-wide hidden-xs hidden-sm" src="{{ $show->thumbnail_url }}" alt="{{ $show->title }} - Thumbnail">
   @include('components.anime.details', ['details' => $show])
   @if(isset($show->mal_url))
     <div class="content-header">
@@ -13,7 +13,7 @@
 
 @section('content-center')
   <div class="content-header">
-    <img class="img-thumbnail details-thumbnail-slim hidden-md hidden-lg" src="{{ fullUrl('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
+    <img class="img-thumbnail details-thumbnail-slim hidden-md hidden-lg" src="{{ $show->thumbnail_url }}" alt="{{ $show->title }} - Thumbnail">
     {{ $show->title }}
   </div>
   <div class="content-generic">
@@ -34,6 +34,11 @@
         </li>
       @endif
       @if(count($show->episodes('sub')) > 0)
+        @if(!$show->videos_initialised)
+          <li class="list-group-item">
+            Searching for more episodes ...
+          </li>
+        @endif
         @foreach($show->episodes('sub')->load('show') as $episode)
           <li class="list-group-item">
             <div class="row">
@@ -61,11 +66,6 @@
             </div>
           </li>
         @endforeach
-        @if(!$show->videos_initialised)
-          <li class="list-group-item">
-            Searching for more episodes ...
-          </li>
-        @endif
       @else
         @if($show->videos_initialised)
           <li class="list-group-item">
@@ -89,6 +89,11 @@
         </li>
       @endif
       @if(count($show->episodes('dub')) > 0)
+        @if(!$show->videos_initialised)
+          <li class="list-group-item">
+            Searching for more episodes ...
+          </li>
+        @endif
         @foreach($show->episodes('dub')->load('show') as $episode)
           <li class="list-group-item">
             <div class="row">
@@ -116,11 +121,6 @@
             </div>
           </li>
         @endforeach
-        @if(!$show->videos_initialised)
-          <li class="list-group-item">
-            Searching for more episodes ...
-          </li>
-        @endif
       @else
         @if($show->videos_initialised)
           <li class="list-group-item">
@@ -152,6 +152,57 @@
 @endsection
 
 @section('content-right')
+  <div class="content-header">
+    <a href="{{ $show->series_url }}">Series Map</a>
+  </div>
+  <div class="content-generic">
+    <ul class="list-group">
+      @foreach ($show->seriesMap() as $subShow)
+        <li class="list-group-item">
+          @if (!$subShow->mal)
+            <p class="list-header">
+              <a href="{{ $subShow->details_url }}">{{ $subShow->title }}</a>
+            </p>
+            <dl class="last-margin">
+              @foreach ($subShow->related as $type => $subShows)
+                <dt>{{ $type }}:</dt>
+                <dd><ul>
+                  @foreach ($subShows as $subShow)
+                    <li>
+                      @if (!$subShow->mal)
+                        <a href="{{ $subShow->details_url }}">{{ $subShow->title }}</a>
+                      @else
+                        <a href="{{ $subShow->details_url_static }}">{{ $subShow->title }}</a>
+                      @endif
+                    </li>
+                  @endforeach
+                </ul></dd>
+              @endforeach
+            </dl>
+          @else
+            <p class="list-header">
+              {{ $subShow->title }}
+            </p>
+            <form action="{{ fullUrl('/anime/add') }}" method="POST">
+              {{ csrf_field() }}
+              <input type="hidden" name="mal_id" value="{{ $subShow->mal_id }}"></input>
+              <input type="hidden" name="gotodetails" value="0"></input>
+              <button type="submit" class="btn btn-default">Add and return Here</button>
+            </form>
+            <p></p>
+            <form action="{{ fullUrl('/anime/add') }}" method="POST">
+              {{ csrf_field() }}
+              <input type="hidden" name="mal_id" value="{{ $subShow->mal_id }}"></input>
+              <input type="hidden" name="gotodetails" value="1"></input>
+              <button type="submit" class="btn btn-default">Add and go to Details Page</button>
+            </form>
+          @endif
+        </li>
+      @endforeach
+    </ul>
+    <div class="content-close"></div>
+  </div>
+
   <div class="content-header">
     Administration
   </div>

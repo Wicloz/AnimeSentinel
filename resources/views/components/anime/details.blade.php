@@ -31,43 +31,45 @@
     <strong>Expected Airing:</strong>
     {{ $details->printExpectedAiring() }}
   </p>
+  @if($details->printBroadcasts() !== 'NA')
+    <p>
+      <strong>Broadcasts:</strong>
+      {{ $details->printBroadcasts() }}
+    </p>
+  @endif
   @if(!empty($details->season))
     <p>
       <strong>Season:</strong>
       {{ $details->printSeason() }}
     </p>
   @endif
+  <p>
+    <strong>Rating:</strong>
+    {{ $details->printRating() }}
+  </p>
   <div class="content-close"></div>
 </div>
 
 <div class="content-generic">
   <p>
     <strong>Status (Sub):</strong>
-    {{ $details->printStatusSub() }}
+    {{ $details->printStatus('sub') }}
   </p>
   <p>
     <strong>Status (Dub):</strong>
-    {{ $details->printStatusDub() }}
+    {{ $details->printStatus('dub') }}
   </p>
   <p>
     <strong>Latest Episode (Sub):</strong>
-    {{ $details->printLatestSub() }}
+    {{ $details->printLatest('sub') }}
   </p>
   <p>
     <strong>Latest Episode (Dub):</strong>
-    {{ $details->printLatestDub() }}
+    {{ $details->printLatest('dub') }}
   </p>
   <p>
     <strong>Average Duration:</strong>
     {{ $details->printAvarageDuration(false) }}
-  </p>
-  <p>
-    <strong>First Upload:</strong>
-    {{ isset($details->first_video) ? $details->first_video->uploadtime->toDayDateTimeString() : 'NA'}}
-  </p>
-  <p>
-    <strong>Last Upload:</strong>
-    {{ isset($details->last_video) ? $details->last_video->uploadtime->toDayDateTimeString() : 'NA' }}
   </p>
   <div class="content-close"></div>
 </div>

@@ -2,24 +2,38 @@
   <div class="row">
 
     <div class="col-sm-1">
-      <a {{ $isMal ? 'target="_blank"' : '' }} href="{{ $show->details_url }}">
+      @if($isMal)
+        <a>
+      @else
+        <a href="{{ $show->details_url }}">
+      @endif
         <img class="img-thumbnail smallrow-thumbnail-wide" src="{{ $show->thumbnail_url }}" alt="{{ $show->title }} - Thumbnail">
       </a>
     </div>
 
     <div class="col-sm-8">
       <div class="smallrow-title">
-        <a {{ $isMal ? 'target="_blank"' : '' }} href="{{ $show->details_url }}">
+        @if($isMal)
+          <a>
+        @else
+          <a href="{{ $show->details_url }}">
+        @endif
           <img class="img-thumbnail smallrow-thumbnail-slim" src="{{ $show->thumbnail_url }}" alt="{{ $show->title }} - Thumbnail">
         </a>
-        <a {{ $isMal ? 'target="_blank"' : '' }} href="{{ $show->details_url }}">{{ $show->title }}</a>
+        @if($isMal)
+          <a>
+        @else
+          <a href="{{ $show->details_url }}">
+        @endif
+          {{ $show->title }}
+        </a>
         <span class="pull-right">
           @if (isset($video))
             <a href="{{ $video->episode_url }}">
               Episode {{ $video->episode_num }} {{ $video->translation_type === 'sub' ? '(Sub)' : '' }}{{ $video->translation_type === 'dub' ? '(Dub)' : ''}}
             </a>
           @else
-            {{ $show->printStatusSub() }}
+            {{ $show->printStatus('sub') }}
           @endif
         </span>
       </div>
@@ -100,23 +114,23 @@
           <p>
             @if(isset($show->latest_sub))
               <a href="{{ $show->latest_sub->episode_url }}">
-                <strong>Latest Subbed:</strong> {{ $show->printLatestSub() }}
+                <strong>Latest Subbed:</strong> {{ $show->printLatest('sub') }}
               </a>
             </p><p>
               <strong>Uploaded On:</strong> {{ $show->latest_sub->uploadtime->format('M j, Y (l)') }}
             @else
-              <strong>Latest Subbed:</strong> {{ $show->printLatestSub() }}
+              <strong>Latest Subbed:</strong> {{ $show->printLatest('sub') }}
             @endif
           </p>
           <p>
             @if(isset($show->latest_dub))
               <a href="{{ $show->latest_dub->episode_url }}">
-                <strong>Latest Dubbed:</strong> {{ $show->printLatestDub() }}
+                <strong>Latest Dubbed:</strong> {{ $show->printLatest('dub') }}
               </a>
             </p><p>
               <strong>Uploaded On:</strong> {{ $show->latest_dub->uploadtime->format('M j, Y (l)') }}
             @else
-              <strong>Latest Dubbed:</strong> {{ $show->printLatestDub() }}
+              <strong>Latest Dubbed:</strong> {{ $show->printLatest('dub') }}
             @endif
           </p>
         @endif

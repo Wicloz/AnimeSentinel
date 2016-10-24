@@ -27,7 +27,7 @@ class CreateVideosTable extends Migration
             $table->string('link_episode', 1024)->default('');                  // video
 
             $table->string('notes')->default('');                               // video
-            $table->bigInteger('hits')->default(0);                             // video
+            $table->bigInteger('hits')->unsigned()->default(0);                 // video
             $table->string('link_video', 2048)->default('');                    // video
             $table->string('mirror_id')->nullable()->default(null);             // video
 

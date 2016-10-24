@@ -94,9 +94,7 @@ class MyAnimeList
       }
 
       if (!empty($show['thumbnail_id'])) {
-        $result->thumbnail_id = $show['thumbnail_id'];
-      } else {
-        $result->thumbnail_id = null;
+        $result->remote_thumbnail_urls = ['https://myanimelist.cdn-dena.com/images/anime/'.$show['thumbnail_id']];
       }
 
       $results[] = $result;
@@ -153,14 +151,15 @@ class MyAnimeList
    */
   public static function getAnimeData($mal_id) {
     $page = Downloaders::downloadPage('https://myanimelist.net/anime/'.$mal_id);
+    $pictures = Downloaders::downloadPage('https://myanimelist.net/anime/'.$mal_id.'/text/pics');
 
     $title = trim(str_get_between($page, '<span itemprop="name">', '</span>'));
 
     $alts[] = $title;
     $set = explode('</div>', str_get_between($page, '<h2>Alternative Titles</h2>', '<br />'));
-    foreach ($set as $line) {
-      if (trim($line) !== '' && !str_contains($line, '<span class="dark_text">Japanese:</span>')) {
-        $list = trim(str_get_between($line, '</span>'));
+    foreach ($set as $item) {
+      if (trim($item) !== '' && !str_contains($item, '<span class="dark_text">Japanese:</span>')) {
+        $list = trim(str_get_between($item, '</span>'));
         $alts = array_merge($alts, explode(', ', $list));
       }
     }
@@ -187,30 +186,6 @@ class MyAnimeList
       }
     }
 
-    $airing_time = trim(str_get_between($page, '<span class="dark_text">Broadcast:</span>', '</div>'));
-    $airing_time = str_get_between($airing_time, 'at ', ' (JST)');
-    if (empty($airing_time)) {
-      $airing_time = null;
-    }
-
-    $airing_start = null;
-    $airing_end = null;
-    $aired = trim(str_get_between($page, '<span class="dark_text">Aired:</span>', '</div>'));
-    if ($aired !== 'Not available') {
-      $aired = explode(' to ', $aired);
-      if ($aired[0] !== '?') {
-        $airing_start = Self::convertDetailsAiringToCarbon($aired[0], $airing_time);
-      }
-      if ($aired[count($aired) - 1] !== '?') {
-        $airing_end = Self::convertDetailsAiringToCarbon($aired[count($aired) - 1], $airing_time);
-      }
-    }
-
-    $thumbnail_id = str_replace('/', '-', str_get_between($page, 'src="https://myanimelist.cdn-dena.com/images/anime/', '"'));
-    if (empty($thumbnail_id)) {
-      $thumbnail_id = null;
-    }
-
     $description = trim(str_get_between($page, '<span itemprop="description">', '<h2 style="margin-top: 15px;">'));
     if (str_ends_with($description, '</span>')) {
       $description = trim(str_replace_last('</span>', '', $description));
@@ -226,23 +201,127 @@ class MyAnimeList
       $season = null;
     }
 
+    $rating = trim(str_get_between(str_get_between($page, '<span class="dark_text">Rating:</span>', '</div>'), '', ' - '));
+    if (empty($rating)) {
+      $rating = null;
+    }
+
+    $broadcast = trim(str_get_between($page, '<span class="dark_text">Broadcast:</span>', '</div>'));
+    if (str_contains($broadcast, ' at ')) {
+      $airing_type = 'weekly';
+    } elseif (mb_strtolower($broadcast) === 'not scheduled once per week') {
+      $airing_type = 'irregular';
+    } else {
+      $airing_type = null;
+    }
+
+    $airing_time = str_get_between($broadcast, 'at ', ' (JST)');
+    if (empty($airing_time)) {
+      $airing_time = null;
+    } else {
+      $airing_time = Carbon::createFromFormat('H:i', $airing_time, 'JST');
+    }
+
+    $airing_start = null;
+    $airing_end = null;
+    $aired = trim(str_get_between($page, '<span class="dark_text">Aired:</span>', '</div>'));
+    if ($aired !== 'Not available') {
+      $aired = explode(' to ', $aired);
+      if ($aired[0] !== '?') {
+        $airing_start = Self::convertDetailsAiringToCarbon($aired[0], $airing_time);
+      }
+      if (count($aired) === 1) {
+        $airing_end = $airing_start;
+      } elseif ($aired[1] !== '?') {
+        $airing_end = Self::convertDetailsAiringToCarbon($aired[1], $airing_time);
+      }
+    }
+
+    if ($airing_time !== null) {
+      $airing_time->tz('UTC');
+    }
+
+    $prequels = [];
+    $sequels = [];
+    $summaries = [];
+    $specials = [];
+    $alternatives = [];
+    $others = [];
+
+    $set = explode('<tr>', str_get_between($page, '<table class="anime_detail_related_anime" style="border-spacing:0px;">', '</table>'));
+    foreach ($set as $item) {
+      if ($item !== '') {
+        $kind = mb_strtolower(str_get_between($item, '<td nowrap="" valign="top" class="ar fw-n borderClass">', '</td>'));
+        $links = explode('</a>', str_get_between($item, '<td width="100%" class="borderClass">', '</td>'));
+        foreach ($links as $link) {
+          if ($link !== '') {
+            $data = [
+              'mal_id' => str_get_between($link, '/anime/', '/'),
+              'title' => str_get_between($link, '>', ''),
+            ];
+            switch ($kind) {
+              case 'prequel:':
+                $prequels[] = $data;
+              break;
+              case 'sequel:':
+                $sequels[] = $data;
+              break;
+              case 'summary:':
+                $summaries[] = $data;
+              break;
+              case 'side story:':
+                $specials[] = $data;
+              break;
+              case 'alternative version:':
+                $alternatives[] = $data;
+              break;
+              case 'other:':
+                $others[] = $data;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    $primary_thumbnail_id = str_get_between($page, '/images/anime/', '"');
+    $secondary_thumbnails = Helpers::scrape_page(str_get_between($pictures, '<table border="0" cellpadding="0" cellspacing="10" align="center">', '</table>'), '</td>', [
+      'thumbnail_id' => [true, '/images/anime/', '"'],
+    ]);
+    $remote_thumbnail_urls = collect(['https://myanimelist.cdn-dena.com/images/anime/'.$primary_thumbnail_id]);
+    foreach ($secondary_thumbnails as $thumbnail) {
+      $thumbnail_url = 'https://myanimelist.cdn-dena.com/images/anime/'.$thumbnail['thumbnail_id'];
+      if (!$remote_thumbnail_urls->contains($thumbnail_url)) {
+        $remote_thumbnail_urls[] = $thumbnail_url;
+      }
+    }
+
     return [
       'mal_id' => $mal_id,
-      'thumbnail_id' => $thumbnail_id,
+      'remote_thumbnail_urls' => $remote_thumbnail_urls,
       'title' => $title,
       'alts' => Helpers::mergeFlagAlts($alts, $mal_id),
       'description' => $description,
+      'prequels' => $prequels,
+      'sequels' => $sequels,
+      'summaries' => $summaries,
+      'specials' => $specials,
+      'alternatives' => $alternatives,
+      'others' => $others,
       'type' => $type,
       'genres' => $genres,
       'episode_amount' => $episode_amount,
       'episode_duration' => $episode_duration,
+      'season' => $season,
+      'rating' => $rating,
       'airing_start' => $airing_start,
       'airing_end' => $airing_end,
-      'season' => $season,
+      'airing_time' => $airing_time,
+      'airing_type' => $airing_type,
     ];
   }
 
-  private static function convertDetailsAiringToCarbon($dateString, $timeString = null) {
+  private static function convertDetailsAiringToCarbon($dateString, $time) {
     $carbon = null;
 
     if (count(explode(' ', $dateString)) === 3) {
@@ -255,8 +334,7 @@ class MyAnimeList
       $carbon = Carbon::createFromFormat('Y', $dateString, 'JST')->month(1)->day(1)->setTime(12, 0, 0);
     }
 
-    if ($carbon !== null && $timeString !== null) {
-      $time = Carbon::createFromFormat('H:i', $timeString, 'JST');
+    if ($carbon !== null && $time !== null) {
       $carbon->setTime($time->hour, $time->minute, $time->second)->tz('UTC');
     } else {
       $carbon->tz('UTC')->setTime(0, 0, 0);

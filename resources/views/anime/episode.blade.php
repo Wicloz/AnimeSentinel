@@ -3,7 +3,7 @@
 
 @section('content-left')
   <a href="{{ $show->details_url }}">
-    <img class="img-thumbnail details-thumbnail-wide hidden-xs hidden-sm" src="{{ fullUrl('/media/thumbnails/'.$show->thumbnail_id) }}" alt="{{ $show->title }} - Thumbnail">
+    <img class="img-thumbnail details-thumbnail-wide hidden-xs hidden-sm" src="{{ $show->thumbnail_url }}" alt="{{ $show->title }} - Thumbnail">
   </a>
   @include('components.anime.details', ['details' => $show, 'link' => true])
   @if(isset($show->mal_url))
@@ -69,6 +69,8 @@
                           <p class="episode-info-bad"><strong>HTML5 Player:</strong> No</p>
                         @endif
                         <p><strong>Duration:</strong> {{ isset($mirror->duration) ? fancyDuration($mirror->duration) : 'Unknown' }}</p>
+                        <p><strong>Time 1:</strong> {{ isset($mirror->test1) ? $mirror->test1->toDateTimeString() : 'Unknown' }}</p>
+                        <p><strong>Time 2:</strong> {{ isset($mirror->test2) ? $mirror->test2->toDateTimeString() : 'Unknown' }}</p>
                       </div>
                       <div class="col-xs-4 align-center">
                         @if(!empty($mirror->notes))

@@ -49,6 +49,15 @@ a:focus, a:hover {
 }
 
 // Specific Modules //
+.list-header {
+  padding: 5px 10px;
+  background-color: $background_colour-content_header;
+  font-size: 20px;
+  border-radius: 4px;
+  margin-left: -2px;
+  margin-right: -2px;
+}
+
 .align-left {
   text-align: left;
 }
