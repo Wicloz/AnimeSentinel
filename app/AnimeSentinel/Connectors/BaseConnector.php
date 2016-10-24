@@ -88,6 +88,7 @@ class BaseConnector
 
     // Find all stream pages
     $streamPages = Static::findStreamPages($show);
+    // dd($streamPages);
 
     foreach ($streamPages as $streamPage) {
       // If the stream page has the requested translation type
@@ -95,6 +96,7 @@ class BaseConnector
 
         // Find all episodes
         $episodes = Static::findEpisodes($streamPage['page']);
+        // dd($episodes);
 
         foreach (array_reverse($episodes) as $episode) {
           // If this is the requested episode and it has the correct translation type
@@ -103,6 +105,7 @@ class BaseConnector
 
             // Find all mirrors
             $mirrors = Static::findMirrors($episode['link_episode']);
+            // dd($mirrors);
 
             foreach ($mirrors as $mirror) {
               // If this mirror has the correct translation type

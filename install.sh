@@ -2,7 +2,7 @@
 composer create-project
 npm install
 
-pip install cfscrape
-pip install selenium
+sudo pip install cfscrape
+sudo pip install selenium
 
-npm install phantomjs
+npm install phantomjs-prebuilt

@@ -5,6 +5,12 @@ php:
   - hhvm
   - nightly
 install:
-  - sudo apt-get install --upgrade python-pip ffmpeg nodejs openssl
+  - sudo apt-get purge node nodejs npm
+  - sudo apt-get install python-pip ffmpeg nodejs python-openssl
   - ./install.sh
-  - nodejs ./node_modules/gulp/bin/gulp.js --production
+  - node ./node_modules/gulp/bin/gulp.js --production
+cache:
+  pip: true
+  directories:
+  - vendor
+  - node_modules

@@ -1,8 +1,8 @@
 #!/bin/bash
 composer install
-npm install
+npm update
 
-pip install cfscrape --upgrade
-pip install selenium --upgrade
+sudo pip install cfscrape --upgrade
+sudo pip install selenium --upgrade
 
-npm update phantomjs
+npm update phantomjs-prebuilt
