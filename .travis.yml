@@ -6,12 +6,11 @@ php:
   - nightly
 
 before_install:
-  - sudo apt-get -qq update
+  - sudo apt-get update
   - sudo apt-get -y install python-pip ffmpeg
 install:
   - ./install.sh
-  - nvm use node
-  - node ./node_modules/gulp/bin/gulp.js --production
+  - nvm run node ./node_modules/gulp/bin/gulp.js --production
 before_script:
   - cat .env
 
