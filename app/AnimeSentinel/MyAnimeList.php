@@ -78,10 +78,6 @@ class MyAnimeList
         $result->episode_amount = null;
       }
 
-      if ($result->episode_amount === '1') {
-        $result->airing_type = 'once';
-      }
-
       if (str_contains($show['description'], '</a>')) {
         $result->description = str_get_between($show['description'], '', '<a');
       } else {
@@ -215,8 +211,6 @@ class MyAnimeList
       $airing_type = 'weekly';
     } elseif (mb_strtolower($broadcast) === 'not scheduled once per week') {
       $airing_type = 'irregular';
-    } elseif ($episode_amount === 1) {
-      $airing_type = 'once';
     } else {
       $airing_type = null;
     }
@@ -238,7 +232,6 @@ class MyAnimeList
       }
       if (count($aired) === 1) {
         $airing_end = $airing_start;
-        $airing_type = 'once';
       } elseif ($aired[1] !== '?') {
         $airing_end = Self::convertDetailsAiringToCarbon($aired[1], $airing_time);
       }

@@ -56,7 +56,6 @@ class CreateShowsTable extends Migration
             $table->enum('airing_type', [
               'weekly',
               'irregular',
-              'once',
             ])->nullable()->default(null);
 
             $table->bigInteger('hits')->unsigned()->default(0);

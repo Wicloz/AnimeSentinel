@@ -102,6 +102,34 @@ class Show extends BaseModel
   }
 
   /**
+  * Get the calculated airing type for this show and the requested translation type.
+  *
+  * @return string
+  */
+  public function expandedAiringType($translation_type) {
+    if (isset($this->airing_type)) {
+      return $this->airing_type;
+    } elseif ($this->episodeDelayEstimate($translation_type) === 7) {
+      return 'weekly';
+    }
+    return null;
+  }
+
+  /**
+  * Get the calculated airing type for this show without taking the episode delay into account.
+  *
+  * @return string
+  */
+  protected function getAiringTypeAttribute() {
+    if (isset($this->attributes['airing_type'])) {
+      return $this->attributes['airing_type'];
+    } elseif ($this->episode_amount === 1 || (isset($this->airing_start) && isset($this->airing_end) && $this->airing_start->eq($this->airing_end))) {
+      return 'once';
+    }
+    return null;
+  }
+
+  /**
   * Get the mal data for this show for the logged in user.
   *
   * @return \Illuminate\Database\Eloquent\Collection
@@ -276,13 +304,13 @@ class Show extends BaseModel
     }
   }
   public function printBroadcasts() {
-    if ($this->airing_type === 'irregular') {
+    if ($this->expandedAiringType('sub') === 'irregular') {
       return 'No regular schedule';
     }
-    elseif ($this->airing_type === 'once') {
+    elseif ($this->expandedAiringType('sub') === 'once') {
       return 'NA';
     }
-    elseif ($this->episodeDelayEstimate('sub') === 7 && $this->broadcastDayEstimate('sub') !== null) {
+    elseif ($this->expandedAiringType('sub') === 'weekly' && $this->broadcastDayEstimate('sub') !== null) {
       $broadcast = ucwords($this->broadcastDayEstimate('sub')).'s';
       if ($this->latest_sub !== null && ($this->latest_sub->uploadtime->hour !== 0 || $this->latest_sub->uploadtime->minute !== 0 || $this->latest_sub->uploadtime->second !== 0)) {
         $broadcast .= ' at '.$this->latest_sub->uploadtime->format('H:i');
@@ -550,16 +578,20 @@ class Show extends BaseModel
   * @return string
   */
   public function broadcastDayEstimate($translation_type) {
-    if ($this->airing_type === 'irregular') {
-      return 'irregular';
-    } elseif ($this->airing_type === 'once') {
-      return 'once';
-    } elseif ($this->episodeDelayEstimate($translation_type) === 7) {
-      if ($this->{'latest_'.$translation_type} !== null) {
-        return mb_strtolower($this->{'latest_'.$translation_type}->uploadtime->format('l'));
-      } elseif ($this->airing_start !== null && $translation_type === 'sub') {
-        return mb_strtolower($this->airing_start->format('l'));
-      }
+    switch ($this->expandedAiringType($translation_type)) {
+      case 'irregular':
+        return 'irregular';
+      break;
+      case 'once':
+        return 'once';
+      break;
+      case 'weekly':
+        if ($this->{'latest_'.$translation_type} !== null) {
+          return mb_strtolower($this->{'latest_'.$translation_type}->uploadtime->format('l'));
+        } elseif ($this->airing_start !== null && $translation_type === 'sub') {
+          return mb_strtolower($this->airing_start->format('l'));
+        }
+      break;
     }
     return null;
   }
