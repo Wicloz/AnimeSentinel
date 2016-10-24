@@ -5,7 +5,6 @@ php:
   - hhvm
   - nightly
 install:
-  - apt-get install python python-pip
-  - composer install
-  - sudo npm install
+  - sudo apt-get install python-pip ffmpeg
+  - ./install.sh
   - nodejs ./node_modules/gulp/bin/gulp.js --production
