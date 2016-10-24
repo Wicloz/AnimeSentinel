@@ -12,7 +12,7 @@
   </div>
   <div class="content-generic">
     <p>
-      Copy and paste the above code to <a target="_blank" href="http://sandbox.kidstrythisathome.com/erdos/">this page</a>.
+      Copy and paste the above code to <a target="_blank" href="http://www.webgraphviz.com/">this page</a>.
     </p>
     <p>
       TODO: Directly put a picture here.
