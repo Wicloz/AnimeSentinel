@@ -37,7 +37,7 @@
     <tbody>
       @foreach ($shows as $index => $show)
         @if ($show->mal)
-          <tr onclick="window.open('{{ $show->details_url }}', '_blank');">
+          <tr>
         @else
           <tr onclick="window.open('{{ $show->details_url }}', '_self');">
         @endif

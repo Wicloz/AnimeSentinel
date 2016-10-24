@@ -2,17 +2,31 @@
   <div class="row">
 
     <div class="col-sm-1">
-      <a {{ $isMal ? 'target="_blank"' : '' }} href="{{ $show->details_url }}">
+      @if($isMal)
+        <a>
+      @else
+        <a href="{{ $show->details_url }}">
+      @endif
         <img class="img-thumbnail smallrow-thumbnail-wide" src="{{ $show->thumbnail_url }}" alt="{{ $show->title }} - Thumbnail">
       </a>
     </div>
 
     <div class="col-sm-8">
       <div class="smallrow-title">
-        <a {{ $isMal ? 'target="_blank"' : '' }} href="{{ $show->details_url }}">
+        @if($isMal)
+          <a>
+        @else
+          <a href="{{ $show->details_url }}">
+        @endif
           <img class="img-thumbnail smallrow-thumbnail-slim" src="{{ $show->thumbnail_url }}" alt="{{ $show->title }} - Thumbnail">
         </a>
-        <a {{ $isMal ? 'target="_blank"' : '' }} href="{{ $show->details_url }}">{{ $show->title }}</a>
+        @if($isMal)
+          <a>
+        @else
+          <a href="{{ $show->details_url }}">
+        @endif
+          {{ $show->title }}
+        </a>
         <span class="pull-right">
           @if (isset($video))
             <a href="{{ $video->episode_url }}">
