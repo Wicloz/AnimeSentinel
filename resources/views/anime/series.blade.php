@@ -12,7 +12,7 @@
   </div>
   <div class="content-generic">
     <p>
-      Copy and paste the above code to <a target="_blank" href="http://www.webgraphviz.com/">this page</a>.
+      Copy and paste the above code to <u><a target="_blank" href="http://www.webgraphviz.com/">this page</a></u>.
     </p>
     <p>
       TODO: Directly put a picture here.
