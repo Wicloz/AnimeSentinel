@@ -6,9 +6,8 @@
     DOT code for this series:
   </div>
   <div class="content-generic">
-    <p>
-      {!! str_replace('\n', '<br>', $show->seriesDot()) !!}
-    </p>
+    <pre>{!! str_replace('\n', '<br>', $show->seriesDot()) !!}</pre>
+    <div class="content-close"></div>
   </div>
   <div class="content-generic">
     <p>
@@ -18,5 +17,6 @@
       TODO: Directly put a picture here.
       Preferably with clickable titles.
     </p>
+    <div class="content-close"></div>
   </div>
 @endsection
