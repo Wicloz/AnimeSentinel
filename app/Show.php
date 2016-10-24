@@ -54,7 +54,7 @@ class Show extends BaseModel
   public function getAiringStartAttribute($value) {
     if ($value !== null) {
       $value = Carbon::createFromFormat('Y-m-d', str_get_between($value, '', ' ') ? str_get_between($value, '', ' ') : $value);
-      if ($this->airing_time !== null) {
+      if (isset($this->airing_time)) {
         $value->setTime($this->airing_time->hour, $this->airing_time->minute, $this->airing_time->second);
       } else {
         $value->setTime(0, 0, 0);
@@ -65,7 +65,7 @@ class Show extends BaseModel
   public function getAiringEndAttribute($value) {
     if ($value !== null) {
       $value = Carbon::createFromFormat('Y-m-d', str_get_between($value, '', ' ') ? str_get_between($value, '', ' ') : $value);
-      if ($this->airing_time !== null) {
+      if (isset($this->airing_time)) {
         $value->setTime($this->airing_time->hour, $this->airing_time->minute, $this->airing_time->second);
       } else {
         $value->setTime(0, 0, 0);
@@ -516,7 +516,7 @@ class Show extends BaseModel
       return 0;
     }
 
-    elseif ($this->airing_start !== null && $this->airing_end !== null && $this->episode_amount !== null && $translation_type === 'sub') {
+    elseif ($this->airing_start !== null && $this->airing_end !== null && $this->episode_amount !== null && $this->episode_amount > 1 && $translation_type === 'sub') {
       return (int) round($this->airing_start->diffInDays($this->airing_end) / ($this->episode_amount - 1));
     }
 
