@@ -489,16 +489,6 @@ class Show extends BaseModel
     return null;
   }
 
-  private static function addQuelToArray($quel, $array, $direction) {
-    $quelShow = Self::relatedToShow($quel);
-    if (!$quelShow->mal) {
-      $array = array_merge($array, $quelShow->seriesMap($direction));
-    } else {
-      $array[] = $quelShow;
-    }
-    return $array;
-  }
-
   private static function relatedToShow($related) {
     $show = Show::where('mal_id', $related['mal_id'])->first();
     if ($show === null) {
@@ -515,19 +505,54 @@ class Show extends BaseModel
   *
   * @return array
   */
-  public function seriesMap($direction = 'both') {
-    $shows = [];
-    if ($direction === 'both' || $direction === 'prequels') {
-      foreach ($this->prequels as $prequel) {
-        $shows = Self::addQuelToArray($prequel, $shows, 'prequels');
+  public function seriesMap($shows = []) {
+    foreach ($this->prequels as $prequel) {
+      $done = false;
+      foreach ($shows as $show) {
+        if ($show->mal_id == $prequel['mal_id']) {
+          $done = true;
+          break;
+        }
+      }
+      if (!$done) {
+        $quelShow = Self::relatedToShow($prequel);
+        if (!$quelShow->mal) {
+          $shows = $quelShow->seriesMap($shows);
+        } else {
+          $shows[] = $quelShow;
+        }
       }
     }
-    $shows[] = $this;
-    if ($direction === 'both' || $direction === 'sequels') {
-      foreach ($this->sequels as $sequel) {
-        $shows = Self::addQuelToArray($sequel, $shows, 'sequels');
+
+    $done = false;
+    foreach ($shows as $show) {
+      if ($show->mal_id == $this->mal_id) {
+        $done = true;
+        break;
       }
     }
+    if (!$done) {
+      $shows[] = $this;
+    }
+
+    foreach ($this->sequels as $sequel) {
+      $done = false;
+      foreach ($shows as $show) {
+        if ($show->mal_id == $sequel['mal_id']) {
+          $done = true;
+          break;
+        }
+      }
+      if (!$done) {
+        $quelShow = Self::relatedToShow($sequel);
+        if (!$quelShow->mal) {
+          $shows = $quelShow->seriesMap($shows);
+        } else {
+          $shows[] = $quelShow;
+        }
+      }
+    }
+
     return $shows;
   }
 
