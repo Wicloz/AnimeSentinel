@@ -5,4 +5,4 @@ npm update
 sudo pip install cfscrape --upgrade
 sudo pip install selenium --upgrade
 
-npm update phantomjs-prebuilt
+sudo npm update -g phantomjs-prebuilt
