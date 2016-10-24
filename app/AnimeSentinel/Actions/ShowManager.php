@@ -156,6 +156,9 @@ class ShowManager
     foreach ($show->remote_thumbnail_urls as $index => $remote) {
       $thumbnail_id = $show->id.'-'.($index+1);
       $local = public_path('media/thumbnails/'.$thumbnail_id);
+      try {
+        unlink($local);
+      } catch (\Exception $e) {}
       copy($remote, $local);
       $thumbnail_ids[] = $thumbnail_id;
     }
