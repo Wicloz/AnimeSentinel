@@ -8,7 +8,8 @@ install:
   - sudo apt-get install python-pip ffmpeg nodejs nodejs-legacy
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.32.1/install.sh | bash
   - export NVM_DIR="$HOME/.nvm"
-  - [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+  - [ -s "$NVM_DIR/nvm.sh" ]
+  - . "$NVM_DIR/nvm.sh"
   - nvm install node
   - ./install.sh
   - node ./node_modules/gulp/bin/gulp.js --production
