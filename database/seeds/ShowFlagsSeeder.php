@@ -227,5 +227,12 @@ class ShowFlagsSeeder extends Seeder
       "Knights of Sidonia Movie" => "+",
     ];
     $sidonianokishimovie->save();
+
+    $aoharukikanjuuspecial = ShowFlag::findOrNew(31754);
+    $aoharukikanjuuspecial->mal_id = 31754;
+    $aoharukikanjuuspecial->alt_rules = [
+      "Aoharu x Kikanjuu Special" => "+",
+    ];
+    $aoharukikanjuuspecial->save();
   }
 }
