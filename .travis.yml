@@ -36,7 +36,7 @@ before_script:
   - node -v
   - python -V
 after_script:
-  - cat ./storage/app/cookies/kissanime
+  - python ./app/AnimeSentinel/Python/CloudFlare.py "http://kissanime.to/"
 
 cache:
   pip: true

@@ -8,6 +8,10 @@ use App\AnimeSentinel\Downloaders;
 
 class DownloadTest extends TestCase
 {
+  public function testRegular() {
+    $this->assertContains('Example Domain', Downloaders::downloadPage('http://example.com/'));
+  }
+
   public function testCloudflare() {
     $this->assertContains('KissAnime - Watch anime online in high quality', Downloaders::downloadPage('http://kissanime.to/'));
   }
@@ -16,7 +20,7 @@ class DownloadTest extends TestCase
   //   $this->assertContains('Your Anime community entertainment center.', Downloaders::downloadPage('https://htvanime.com/'));
   // }
 
-  public function testScrolled() {
-    $this->assertContains('Zoku Natsume Yuujinchou: 3D Nyanko-sensei Gekijou', Downloaders::downloadPage('https://myanimelist.net/animelist/Wicloz'));
-  }
+  // public function testScrolled() {
+  //   $this->assertContains('Zoku Natsume Yuujinchou: 3D Nyanko-sensei Gekijou', Downloaders::downloadPage('https://myanimelist.net/animelist/Wicloz'));
+  // }
 }
