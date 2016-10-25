@@ -16,6 +16,7 @@ matrix:
     - hhvm
     - nightly
   - env:
+    - DB=sqlite
     - DB=mysql
 
 services:
@@ -30,7 +31,7 @@ addons:
 
 before_install:
   - nvm install 6
-  - mysql -e 'SET sql_mode = \'\';'
+  - mysql -e 'SET sql_mode = '';'
   - mysql -e 'create database travis_ci_test;'
   - psql -c 'create database travis_ci_test;' -U postgres
   - openssl aes-256-cbc -K $encrypted_5f496bf5950e_key -iv $encrypted_5f496bf5950e_iv -in .env.travis.tar.enc -out .env.travis.tar -d
