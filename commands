@@ -5,4 +5,6 @@
 nodejs ./node_modules/gulp/bin/gulp.js watch
 
 // Encrypt the super secret .env file for travis
-travis encrypt-file .env.travis -f
+travis encrypt-file .env.travis.sqlite -f
+travis encrypt-file .env.travis.mysql -f
+travis encrypt-file .env.travis.pgsql -f

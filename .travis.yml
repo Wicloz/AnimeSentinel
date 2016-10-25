@@ -4,16 +4,33 @@ php:
   - '7.0'
   - hhvm
   - nightly
+env:
+  - DB=sqlite
+  - DB=mysql
+  - DB=postgres
 matrix:
   allow_failures:
-  - php: '5.6'
+  - php:
+    - '5.6'
+    - hhvm
+    - nightly
+  - env:
+    - mysql
+
+services:
+  - mysql
+  - postgresql
 
 before_install:
   - sudo apt-get update
   - sudo apt-get install python-pip ffmpeg
   - nvm install 6
 install:
-  - openssl aes-256-cbc -K $encrypted_5f496bf5950e_key -iv $encrypted_5f496bf5950e_iv -in .env.travis.enc -out .env -d
+  - mysql -e 'create database travis_ci_test;'
+  - psql -c 'create database travis_ci_test;' -U postgres
+  - sh -c "if [ '$DB' = 'sqlite' ]; then openssl aes-256-cbc -K $encrypted_5f496bf5950e_key -iv $encrypted_5f496bf5950e_iv -in .env.travis.sqlite.enc -out .env -d; fi"
+  - sh -c "if [ '$DB' = 'mysql' ]; then openssl aes-256-cbc -K $encrypted_5f496bf5950e_key -iv $encrypted_5f496bf5950e_iv -in .env.travis.mysql.enc -out .env -d; fi"
+  - sh -c "if [ '$DB' = 'pgsql' ]; then openssl aes-256-cbc -K $encrypted_5f496bf5950e_key -iv $encrypted_5f496bf5950e_iv -in .env.travis.pgsql.enc -out .env -d; fi"
   - composer create-project
   - npm install
   - sudo pip install cfscrape
