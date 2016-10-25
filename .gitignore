@@ -5,4 +5,5 @@
 Homestead.json
 Homestead.yaml
 .env
+.env.travis
 ghostdriver.log
