@@ -5,8 +5,5 @@
 Homestead.json
 Homestead.yaml
 .env
-.env.travis.sqlite
-.env.travis.mysql
-.env.travis.pgsql
-.env.travis.tar
+.env.travis
 ghostdriver.log

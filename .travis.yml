@@ -5,19 +5,12 @@ php:
   - '7.0'
   - hhvm
   - nightly
-env:
-  - DB=sqlite
-  - DB=mysql
-  - DB=pgsql
 matrix:
   allow_failures:
   - php: '5.6'
   - php: hhvm
-  - env: sqlite
-  - env: mysql
 
 services:
-  - mysql
   - postgresql
 
 addons:
@@ -28,14 +21,8 @@ addons:
 
 before_install:
   - nvm install 6
-  - mysql -e 'SET @@sql_mode='';'
-  - mysql -e 'create database travis_ci_test;'
   - psql -c 'create database travis_ci_test;' -U postgres
-  - openssl aes-256-cbc -K $encrypted_5f496bf5950e_key -iv $encrypted_5f496bf5950e_iv -in .env.travis.tar.enc -out .env.travis.tar -d
-  - tar xvf .env.travis.tar
-  - sh -c "if [ '$DB' = 'sqlite' ]; then cp .env.travis.sqlite .env; fi"
-  - sh -c "if [ '$DB' = 'mysql' ]; then cp .env.travis.mysql .env; fi"
-  - sh -c "if [ '$DB' = 'pgsql' ]; then cp .env.travis.pgsql .env; fi"
+  - openssl aes-256-cbc -K $encrypted_5f496bf5950e_key -iv $encrypted_5f496bf5950e_iv -in .env.travis.enc -out .env -d
 install:
   - composer create-project
   - npm install
