@@ -13,10 +13,17 @@ before_install:
   - sudo apt-get install python-pip ffmpeg
   - nvm install 6
 install:
-  - ./install.sh
+  - composer create-project
+  - npm install
+  - sudo pip install cfscrape
+  - sudo pip install selenium
   - nodejs ./node_modules/gulp/bin/gulp.js --production
 before_script:
   - cat .env
+  - php -v
+  - npm -v
+  - nodejs -v
+  - python -V
 
 cache:
   pip: true
