@@ -22,7 +22,7 @@ before_script:
   - cat .env
   - php -v
   - npm -v
-  - nodejs -v
+  - node -v
   - python -V
 
 cache:
