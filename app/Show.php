@@ -513,22 +513,21 @@ class Show extends BaseModel
     $string .= '}\n';
     return $string;
   }
-  private function seriesDotRecursive(& $string, & $added, & $counter = 1) {
+  private function seriesDotRecursive(& $string, & $visited) {
     // Visit this node if it has not been added yet
-    if (!$added->has($this->mal_id)) {
-      $string .= '  '.$counter.' [label="'.$this->title.'"]\n';
-      $added[$this->mal_id] = $counter;
-      $counter++;
+    if (!$visited->has($this->mal_id)) {
+      $visited[$this->mal_id] = $visited->count() + 1;
+      $string .= '  '.$visited[$this->mal_id].' [label="'.$this->title.'"]\n';
 
-      $this->seriesDotRelation($string, $added, $counter, 'prequels', 'Prequel');
-      $this->seriesDotRelation($string, $added, $counter, 'sequels', 'Sequel');
-      $this->seriesDotRelation($string, $added, $counter, 'summaries', 'Summary');
-      $this->seriesDotRelation($string, $added, $counter, 'specials', 'Special');
-      $this->seriesDotRelation($string, $added, $counter, 'alternatives', 'Alternative');
-      $this->seriesDotRelation($string, $added, $counter, 'others', 'Other');
+      $this->seriesDotRelation($string, $visited, 'prequels', 'Prequel');
+      $this->seriesDotRelation($string, $visited, 'sequels', 'Sequel');
+      $this->seriesDotRelation($string, $visited, 'summaries', 'Summary');
+      $this->seriesDotRelation($string, $visited, 'specials', 'Special');
+      $this->seriesDotRelation($string, $visited, 'alternatives', 'Alternative');
+      $this->seriesDotRelation($string, $visited, 'others', 'Other');
     }
   }
-  private function seriesDotRelation(& $string, & $added, & $counter, $relation, $relationFancy) {
+  private function seriesDotRelation(& $string, & $visited, $relation, $relationFancy) {
     // For all related nodes
     foreach ($this->$relation as $show) {
       // Make sure they are added to the database
@@ -537,9 +536,9 @@ class Show extends BaseModel
         $show = ShowManager::addShowWithMalId($show->mal_id);
       }
       // Call function on those nodes
-      $show->seriesDotRecursive($string, $added, $counter);
+      $show->seriesDotRecursive($string, $visited);
       // Add edges to those nodes
-      $string .= '  '.$added[$this->mal_id].' -> '.$added[$show->mal_id].' [label="'.$relationFancy.'"]\n';
+      $string .= '  '.$visited[$this->mal_id].' -> '.$visited[$show->mal_id].' [label="'.$relationFancy.'"]\n';
     }
   }
 
