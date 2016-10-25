@@ -13,7 +13,7 @@ class DownloadTest extends TestCase
   }
 
   public function testCloudflare() {
-    $this->assertContains('KissAnime - Watch anime online in high quality', Downloaders::downloadPage('http://kissanime.to/'));
+    $this->assertContains('Watch anime online, English anime online - Gogoanime', Downloaders::downloadPage('http://gogoanime.in/'));
   }
 
   // public function testJavascript() {

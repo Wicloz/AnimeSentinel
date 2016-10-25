@@ -35,9 +35,6 @@ before_script:
   - npm -v
   - node -v
   - python -V
-after_script:
-  - python ./app/AnimeSentinel/Python/CloudFlare.py "http://kissanime.to/"
-  - curl kissanime.to
 
 cache:
   pip: true
