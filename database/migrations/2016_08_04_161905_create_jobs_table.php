@@ -31,8 +31,11 @@ class CreateJobsTable extends Migration
             $table->unique(['show_id', 'job_task', 'job_data', 'reserved_at']);
         });
 
-        queueJob(new \App\Jobs\FindRecentVideos(), 'periodic_low');
-        queueJob(new \App\Jobs\UserPeriodicTasks(), 'periodic_low');
+        if (config('queue.default') === 'database')
+        {
+          queueJob(new \App\Jobs\FindRecentVideos(), 'periodic_low');
+          queueJob(new \App\Jobs\UserPeriodicTasks(), 'periodic_low');
+        }
     }
 
     /**

@@ -1,6 +1,11 @@
 <?php
 
 function queueJob($job, $queue = 'default') {
+  if (config('queue.default') !== 'database') {
+    dispatch($job->onQueue($queue));
+    return;
+  }
+
   // Prepare job data
   $job_data = $job->db_data;
 
@@ -44,6 +49,10 @@ function queueJob($job, $queue = 'default') {
 }
 
 function handleJobFunction($job_task, $show_id, $job_data, $fromJob) {
+  if (config('queue.default') !== 'database') {
+    return true;
+  }
+
   // Set job values
   $job_dbdata = [
     ['job_task', '=', $job_task],
