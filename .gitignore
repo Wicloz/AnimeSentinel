@@ -8,4 +8,5 @@ Homestead.yaml
 .env.travis.sqlite
 .env.travis.mysql
 .env.travis.pgsql
+.env.travis.tar
 ghostdriver.log
