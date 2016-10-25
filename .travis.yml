@@ -12,7 +12,7 @@ before_install:
   - sudo apt-get install -y python-pip ffmpeg
 install:
   - ./install.sh
-  - node ./node_modules/gulp/bin/gulp.js --production
+  - nodejs ./node_modules/gulp/bin/gulp.js --production
 before_script:
   - cat .env
 
