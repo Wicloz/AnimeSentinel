@@ -31,11 +31,12 @@ install:
   - php artisan migrate --seed
   - node ./node_modules/gulp/bin/gulp.js --production
 before_script:
-  - cat .env
   - php -v
   - npm -v
   - node -v
   - python -V
+after_script:
+  - cat ./storage/app/cookies/kissanime
 
 cache:
   pip: true
