@@ -16,7 +16,7 @@ services:
 addons:
   apt:
     sources:
-    - sourceline: 'ppa:jon-severinsson/ffmpeg'
+    - sourceline: 'ppa:mc3man/trusty-media'
     packages:
     - python-pip
     - ffmpeg
