@@ -23,7 +23,6 @@ before_install:
   - wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz -O ~/.ffmpeg/ffmpeg.tar.xz
   - tar -xf ~/.ffmpeg/ffmpeg.tar.xz -C ~/.ffmpeg --strip=1
   - export PATH=~/.ffmpeg:$PATH
-  - ffprobe -print_format json -show_streams -show_format "http://www.w3schools.com/html/mov_bbb.mp4"
   - nvm install 6
   - psql -c 'create database travis_ci_test;' -U postgres
   - openssl aes-256-cbc -K $encrypted_5f496bf5950e_key -iv $encrypted_5f496bf5950e_iv -in .env.travis.enc -out .env -d
@@ -39,6 +38,7 @@ before_script:
   - npm -v
   - node -v
   - python -V
+  - ffmpeg -version
 
 cache:
   pip: true

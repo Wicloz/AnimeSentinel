@@ -17,7 +17,6 @@ class AppServiceProvider extends ServiceProvider
    * @return void
    */
   public function boot() {
-    putenv('PATH=/bin:/usr/bin:/usr/local/bin');
     setlocale(LC_ALL, 'en_US.UTF-8');
     putenv('LC_ALL=en_US.UTF-8');
     putenv('PYTHONIOENCODING=UTF-8');
