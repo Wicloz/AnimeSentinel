@@ -35,6 +35,7 @@ before_script:
   - npm -v
   - node -v
   - python -V
+  - ffprobe -v quiet -print_format json -show_streams -show_format "http://www.w3schools.com/html/mov_bbb.mp4"
 
 cache:
   pip: true
