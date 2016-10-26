@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
         $m->to(config('mail.debug_addresses'));
       });
 
-      if (config('queue.default') === 'database' && !str_ends_with($event->job->payload()['data']['commandName'], 'FindRecentVideos') && !str_ends_with($event->job->payload()['data']['commandName'], 'UserPeriodicTasks')) {
+      if (config('queue.default') !== 'sync' && !str_ends_with($event->job->payload()['data']['commandName'], 'FindRecentVideos') && !str_ends_with($event->job->payload()['data']['commandName'], 'UserPeriodicTasks')) {
         $job = unserialize($event->job->payload()['data']['command']);
         queueJob($job, $job->queue);
       }

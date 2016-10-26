@@ -61,7 +61,9 @@ class FindVideos
       try {
         $videosFound += $class::findVideosForShow($show, $translation_types, $episode_num);
       } catch (\Exception $e) {
-        queueJob(new \App\Jobs\AnimeReprocessEpisodes($show, $translation_types, $episode_num, $streamer->id));
+        if (config('queue.default') !== 'sync') {
+          queueJob(new \App\Jobs\AnimeReprocessEpisodes($show, $translation_types, $episode_num, $streamer->id));
+        }
         mailException('Failed to find videos for show episode', $e, [
           'Show Title' => $show->title,
           'Show Id' => $show->id,
@@ -74,22 +76,24 @@ class FindVideos
     }
 
     // Reprocess episodes once a day for 4/5 days after they're uploaded to catch delayed uploads of HD videos and other changes
-    $delays = [1, 2, 4, 8, 24];
+    if (config('queue.default') !== 'sync') {
+      $delays = [1, 2, 4, 8, 24];
 
-    $query = Video::where('show_id', $show->id)->whereIn('translation_type', $translation_types);
-    if ($episode_num !== null) {
-      $query->where('episode_num', $episode_num);
-    }
-    if ($streamer_id !== null) {
-      $query->where('streamer_id', $streamer_id);
-    }
-    $videos = $query->distinctOn(['show_id', 'translation_type', 'episode_num', 'streamer_id'], ['uploadtime' => 'desc', 'id' => 'desc'])->get();
+      $query = Video::where('show_id', $show->id)->whereIn('translation_type', $translation_types);
+      if ($episode_num !== null) {
+        $query->where('episode_num', $episode_num);
+      }
+      if ($streamer_id !== null) {
+        $query->where('streamer_id', $streamer_id);
+      }
+      $videos = $query->distinctOn(['show_id', 'translation_type', 'episode_num', 'streamer_id'], ['uploadtime' => 'desc', 'id' => 'desc'])->get();
 
-    foreach ($videos as $video) {
-      foreach ($delays as $delay) {
-        if ($video->uploadtime->diffInHours(Carbon::now(), false) < $delay) {
-          queueJob((new \App\Jobs\AnimeReprocessEpisodes($show, [$video->translation_type], $video->episode_num, $video->streamer_id))->delay($video->uploadtime->addHours($delay)->addMinutes(2)));
-          break;
+      foreach ($videos as $video) {
+        foreach ($delays as $delay) {
+          if ($video->uploadtime->diffInHours(Carbon::now(), false) < $delay) {
+            queueJob((new \App\Jobs\AnimeReprocessEpisodes($show, [$video->translation_type], $video->episode_num, $video->streamer_id))->delay($video->uploadtime->addHours($delay)->addMinutes(2)));
+            break;
+          }
         }
       }
     }
