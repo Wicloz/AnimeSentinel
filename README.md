@@ -16,12 +16,12 @@ https://sharex.wilcodeboer.me/?id=nFxQ1CXvBayp61S
 Guide for development servers (WIP):
 - Required software:
   - ffmpeg
-- Included in Homestead:
-  - composer
-  - python >= 2.5
   - pip
     - cfscrape
     - selenium
+- Included in Homestead:
+  - composer
+  - python >= 2.5
   - a recent version of nodejs and npm
     - phantomjs
   - a webserver
