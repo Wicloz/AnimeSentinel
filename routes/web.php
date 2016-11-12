@@ -1,5 +1,13 @@
 <?php
 
+// \App\AnimeSentinel\Actions\ShowManager::addShowWithTitle('a234sdasd', true);
+// queueJob((new \App\Jobs\AnimeFindVideos(\App\Show::withTitle('Drifters')->first()))->delay(\Carbon\Carbon::now()->addDays(2)), 'default');
+// queueJob(new \App\Jobs\AnimeReprocessEpisodes(\App\Show::withTitle('Drifters')->first(), ['sub', 'dub'], null, null), 'high');
+// \App\AnimeSentinel\Actions\FindVideos::findVideosForShow(\App\Show::withTitle('Drifters')->first());
+// \App\AnimeSentinel\Actions\FindVideos::reprocessEpsiodes(\App\Show::withTitle('Drifters')->first(), ['sub', 'dub'], null, null);
+// dd(\App\AnimeSentinel\Connectors\kissanime::findRecentlyAired());
+// dd(str_slugify('Yu-Gi-Oh! Arc-V'));
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
