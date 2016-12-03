@@ -896,14 +896,6 @@ class Show extends BaseModel
   /**
    * Handle caching calls.
    */
-  public function getMalIdAttribute($value) {
-    $this->handleCaching();
-    return $value;
-  }
-  public function getTitleAttribute($value) {
-    $this->handleCaching();
-    return $value;
-  }
   public function getDescriptionAttribute($value) {
     $this->handleCaching();
     return $value;
