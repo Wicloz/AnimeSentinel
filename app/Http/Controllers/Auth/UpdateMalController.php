@@ -8,6 +8,7 @@ use App\Http\Requests;
 
 use Illuminate\Support\Facades\Auth;
 use App\Show;
+use App\AnimeSentinel\ShowManager;
 
 class UpdateMalController extends Controller
 {
@@ -38,7 +39,7 @@ class UpdateMalController extends Controller
       if (!isset($show->mal_id)) {
         flash_error('The requested anime could not be found on MAL.');
       } elseif (!$show->mal_linked) {
-        $show->updateCache();
+        ShowManager::updateShowCache($show->id);
         return $this->add($request);
       } else {
         Auth::user()->addAnime($show->mal_id, $request->status, $request->eps_watched, $request->score);

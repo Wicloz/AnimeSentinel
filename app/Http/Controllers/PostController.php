@@ -43,7 +43,7 @@ class PostController extends Controller
 
     $show = Show::find($request->show_id);
     if (isset($show)) {
-      $show->updateCache();
+      ShowManager::updateShowCache($show->id);
     } else {
       flash_error('The requested anime could not be found.');
     }

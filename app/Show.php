@@ -10,7 +10,6 @@ use App\AnimeSentinel\Downloaders;
 
 class Show extends BaseModel
 {
-  protected static $cachesUpdated = 0;
   private $malShow = null;
 
   /**
@@ -885,22 +884,12 @@ class Show extends BaseModel
   }
 
   /**
-   * Update this show's cached infomation.
-   */
-  public function updateCache() {
-    if (empty($this->mal)) {
-      Self::$cachesUpdated++;
-      ShowManager::updateShowCache($this->id);
-    }
-  }
-
-  /**
    * Update this show's cached infomation only if the cache time has expired.
    */
   public function handleCaching() {
     // TODO: smarter cache time
-    if (Self::$cachesUpdated < 1 && isset($this->cache_updated_at) && $this->cache_updated_at->diffInHours(Carbon::now()) >= rand(168, 336)) {
-      $this->updateCache();
+    if (isset($this->cache_updated_at) && $this->cache_updated_at->diffInHours(Carbon::now()) >= rand(168, 336)) {
+      queueJob(new \App\Jobs\ShowUpdate($this->id), 'high');
     }
   }
 
