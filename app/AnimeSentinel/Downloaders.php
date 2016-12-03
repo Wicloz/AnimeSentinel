@@ -43,13 +43,15 @@ class Downloaders
 
     if (str_contains($response, 'https://www.google.com/recaptcha/api.js')) {
       if ($tries === 0 && !str_contains($url, 'myanimelist.net')) {
-        \Mail::send('emails.reports.general', ['description' => 'ReCaptcha Detected', 'vars' => [
-          'Url' => $url,
-        ]], function ($m) {
-          $m->subject('AnimeSentinel Detected ReCaptcha');
-          $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
-          $m->to(array_merge(config('mail.debug_addresses'), config('mail.admin_addresses')));
-        });
+        try {
+          \Mail::send('emails.reports.general', ['description' => 'ReCaptcha Detected', 'vars' => [
+            'Url' => $url,
+          ]], function ($m) {
+            $m->subject('AnimeSentinel Detected ReCaptcha');
+            $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
+            $m->to(array_merge(config('mail.debug_addresses'), config('mail.admin_addresses')));
+          });
+        } catch (\Exception $e) {}
       }
       elseif (str_contains($url, 'kissanime.to')) {
         throw new \Exception('Download Failed: '.$url.' is locked by a ReCaptcha');

@@ -5,21 +5,24 @@ function mailAnomaly($show, $description, $vars = []) {
   if (str_replace('.', '', mb_strtolower($description)) === 'could not find show on mal') {
     $tos = array_merge($tos, config('mail.admin_addresses'));
   }
-
-  \Mail::send('emails.reports.show', ['show' => $show, 'description' => $description, 'vars' => $vars], function ($m) use ($tos) {
-    $m->subject('AnimeSentinel Anomaly Report');
-    $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
-    $m->to($tos);
-  });
+  try {
+    \Mail::send('emails.reports.show', ['show' => $show, 'description' => $description, 'vars' => $vars], function ($m) use ($tos) {
+      $m->subject('AnimeSentinel Anomaly Report');
+      $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
+      $m->to($tos);
+    });
+  } catch (\Exception $e) {}
 }
 
 function mailException($description, $exception, $vars = []) {
   $vars[] = $exception;
-  \Mail::send('emails.reports.general', ['description' => $description, 'vars' => $vars], function ($m) {
-    $m->subject('AnimeSentinel Exception Report');
-    $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
-    $m->to(config('mail.debug_addresses'));
-  });
+  try {
+    \Mail::send('emails.reports.general', ['description' => $description, 'vars' => $vars], function ($m) {
+      $m->subject('AnimeSentinel Exception Report');
+      $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
+      $m->to(config('mail.debug_addresses'));
+    });
+  } catch (\Exception $e) {}
 }
 
 function flash($content, $level) {

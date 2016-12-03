@@ -22,14 +22,16 @@ class AppServiceProvider extends ServiceProvider
     putenv('PYTHONIOENCODING=UTF-8');
 
     Queue::failing(function (JobFailed $event) {
-      \Mail::send('emails.reports.general', ['description' => 'Job Failed', 'vars' => [
-        'Data' => json_encode($event->job->payload()),
-        'Exception' => $event->exception,
-      ]], function ($m) {
-        $m->subject('AnimeSentinel Job Fail Report');
-        $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
-        $m->to(config('mail.debug_addresses'));
-      });
+      try {
+        \Mail::send('emails.reports.general', ['description' => 'Job Failed', 'vars' => [
+          'Data' => json_encode($event->job->payload()),
+          'Exception' => $event->exception,
+        ]], function ($m) {
+          $m->subject('AnimeSentinel Job Fail Report');
+          $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
+          $m->to(config('mail.debug_addresses'));
+        });
+      } catch (\Exception $e) {}
 
       if (config('queue.default') !== 'sync' && !str_ends_with($event->job->payload()['data']['commandName'], 'FindRecentVideos') && !str_ends_with($event->job->payload()['data']['commandName'], 'UserPeriodicTasks')) {
         $job = unserialize($event->job->payload()['data']['command']);
