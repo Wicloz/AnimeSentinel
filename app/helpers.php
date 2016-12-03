@@ -140,12 +140,14 @@ function slugify($string) {
   $replace = [
     '/' => '⧸',
     '\\' => '⧹',
+    '-' => '‑',
+    ' ' => '-',
   ];
   foreach ($replace as $from => $to) {
     $string = str_replace($from, $to, $string);
   }
 
-  return str_replace(' ', '‑', $string);
+  return $string;
 }
 
 function deslugify($string) {
@@ -154,12 +156,14 @@ function deslugify($string) {
   $replace = [
     '⧸' => '/',
     '⧹' => '\\',
+    '-' => ' ',
+    '‑' => '-',
   ];
   foreach ($replace as $from => $to) {
     $string = str_replace($from, $to, $string);
   }
 
-  return str_replace('‑', ' ', $string);
+  return $string;
 }
 
 // String Helpers //
