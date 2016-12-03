@@ -49,9 +49,9 @@ class FindVideos
 
     // Grab all streamers data
     if ($streamer_id === null) {
-      $streamers = Streamer::all();
+      $streamers = Streamer::where('enabled', true);
     } else {
-      $streamers = Streamer::where('id', $streamer_id)->get();
+      $streamers = Streamer::where('enabled', true)->where('id', $streamer_id)->get();
     }
 
     // Find and save videos for each streamer

@@ -13,7 +13,7 @@ class PeriodicTasks
    */
   public static function findRecentEpisodes() {
     // Grab all streamers data
-    $streamers = Streamer::where('id', '!=', 'youtube')->get();
+    $streamers = Streamer::where('enabled', true)->where('id', '!=', 'youtube')->get();
     $addedShows = [];
 
     // For all streamers, request required data

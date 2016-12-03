@@ -17,6 +17,7 @@ class CreateStreamersTable extends Migration
             $table->string('id');
             $table->string('name');
             $table->string('link_home', 1024)->default('');
+            $table->boolean('enabled')->default(true);
             $table->timestamps();
             $table->primary('id');
         });
