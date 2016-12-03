@@ -218,6 +218,18 @@
     </p>
     <div class="content-close"></div>
   </div>
+  <div class="content-generic">
+    <form action="{{ fullUrl('/anime/revideos') }}" method="POST">
+      {{ csrf_field() }}
+      <input type="hidden" name="show_id" value="{{ $show->id }}"></input>
+      <button type="submit" class="btn btn-default btn-block">Refresh videos for this Show</button>
+      <p></p>
+      <p class="align-center">
+        Note: Clicking the button will add this job to a queue. It may take some time before the videos are actually refreshed.
+      </p>
+      <div class="content-close"></div>
+    </form>
+  </div>
   @if(isset($show->mal_url))
     @if(Auth::check() && Auth::user()->mal_canwrite)
       <div class="content-header">

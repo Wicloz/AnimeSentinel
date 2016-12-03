@@ -52,6 +52,26 @@ class PostController extends Controller
   }
 
   /**
+   * Refresh all videos for the requested show
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function showRefreshVideos(Request $request) {
+    $this->validate($request, [
+      'show_id' => ['required', 'integer']
+    ]);
+
+    $show = Show::find($request->show_id);
+    if (isset($show)) {
+      queueJob(new \App\Jobs\AnimeFindVideos($show), 'high');
+    } else {
+      flash_error('The requested anime could not be found.');
+    }
+
+    return back();
+  }
+
+  /**
    * Reprocess the episode that the given video belongs to.
    *
    * @return \Illuminate\Http\Response
