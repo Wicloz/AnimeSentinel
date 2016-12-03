@@ -103,7 +103,7 @@ class Downloaders
     }
 
     if ($cookieid === 'kissanime') {
-      $cf_data->cookies .= '; password='.config('animesentinel.kissanime_password_cookie').'; username='.config('animesentinel.kissanime_username_cookie');
+      $cf_data->cookies .= '; passwordK='.config('animesentinel.kissanime_password_cookie').'; usernameK='.config('animesentinel.kissanime_username_cookie');
     }
 
     $curl = curl_init();
