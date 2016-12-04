@@ -155,6 +155,7 @@ class ShowFlagsSeeder extends Seeder
     $girlishnumber->mal_id = 32607;
     $girlishnumber->alt_rules = [
       "Girlish Number" => "+",
+      "Giarlish Number" => "+",
     ];
     $girlishnumber->save();
 
@@ -234,5 +235,40 @@ class ShowFlagsSeeder extends Seeder
       "Aoharu x Kikanjuu Special" => "+",
     ];
     $aoharukikanjuuspecial->save();
+
+    $zaregotoseries = ShowFlag::findOrNew(33263);
+    $zaregotoseries->mal_id = 33263;
+    $zaregotoseries->alt_rules = [
+      "Zaregoto Series" => "+",
+    ];
+    $zaregotoseries->save();
+
+    $magicaquartetxnisioisin = ShowFlag::findOrNew(23831);
+    $magicaquartetxnisioisin->mal_id = 23831;
+    $magicaquartetxnisioisin->alt_rules = [
+      "MAGICA QUARTET x NISIOISIN" => "+",
+    ];
+    $magicaquartetxnisioisin->save();
+
+    $ameirococoa3 = ShowFlag::findOrNew(33245);
+    $ameirococoa3->mal_id = 33245;
+    $ameirococoa3->alt_rules = [
+      "Ame-iro Cocoa 3" => "+",
+    ];
+    $ameirococoa3->save();
+
+    $tanoshiimuuminikka = ShowFlag::findOrNew(2150);
+    $tanoshiimuuminikka->mal_id = 2150;
+    $tanoshiimuuminikka->alt_rules = [
+      "Tanoshii Moomin Ikka" => "+",
+    ];
+    $tanoshiimuuminikka->save();
+
+    $koutetsutenshikurumizero = ShowFlag::findOrNew(556);
+    $koutetsutenshikurumizero->mal_id = 556;
+    $koutetsutenshikurumizero->alt_rules = [
+      "Steel Angel Kurumi Zero" => "+",
+    ];
+    $koutetsutenshikurumizero->save();
   }
 }
