@@ -18,7 +18,7 @@ class Downloaders
       throw new \Exception('Download Failed: '.$url.' after '.$tries.' tries');
     }
 
-    if (str_contains($url, 'kissanime.io')) {
+    if (str_contains($url, 'kissanime.to')) {
       $response = Self::downloadCloudFlare($url, 'kissanime', $tries);
     } elseif (str_contains($url, 'gogoanime.io')) {
       $response = Self::downloadCloudFlare($url, 'gogoanime', $tries);
@@ -53,12 +53,12 @@ class Downloaders
           });
         } catch (\Exception $e) {}
       }
-      elseif (str_contains($url, 'kissanime.io')) {
+      elseif (str_contains($url, 'kissanime.to')) {
         throw new \Exception('Download Failed: '.$url.' is locked by a ReCaptcha');
       }
     }
 
-    // if (str_contains($url, 'kissanime.io') && str_contains(preg_replace('/\s+/', '', $response), '<title>AreYouHuman</title>')) {
+    // if (str_contains($url, 'kissanime.to') && str_contains(preg_replace('/\s+/', '', $response), '<title>AreYouHuman</title>')) {
     //   exec('xvfb-run python "'. app_path('AnimeSentinel/Python/ReCaptcha.py') .'" "'. $url .'" "1" "3" "btnSubmit" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0" 2> /dev/null');
     //   $response = Self::downloadPage($url, $tries + 1);
     // }
@@ -103,7 +103,7 @@ class Downloaders
     }
 
     if ($cookieid === 'kissanime') {
-      $cf_data->cookies .= '; pwd='.config('animesentinel.kissanime_password_cookie').'; uname='.config('animesentinel.kissanime_username_cookie');
+      $cf_data->cookies .= '; passwordK='.config('animesentinel.kissanime_password_cookie').'; usernameK='.config('animesentinel.kissanime_username_cookie');
     }
 
     $curl = curl_init();
