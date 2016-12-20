@@ -9,8 +9,8 @@ use Carbon\Carbon;
 class kissanime extends BaseConnector
 {
   protected static $useDecrements = true;
-  protected static $page_main = 'http://kissanime.to';
-  protected static $page_recent = 'http://kissanime.to';
+  protected static $page_main = 'http://kissanime.ru';
+  protected static $page_recent = 'http://kissanime.ru';
   protected static $ide_invalidPage = '<meta name="description" content="Watch anime online in high quality. Free download high quality anime. Various formats from 240p to 720p HD (or even 1080p). HTML5 available for mobile devices" />';
 
   public static function findStreamPages($show) {

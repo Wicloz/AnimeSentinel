@@ -18,7 +18,7 @@ class Downloaders
       throw new \Exception('Download Failed: '.$url.' after '.$tries.' tries');
     }
 
-    if (str_contains($url, 'kissanime.to')) {
+    if (str_contains($url, 'kissanime.ru')) {
       $response = Self::downloadCloudFlare($url, 'kissanime', $tries);
     } elseif (str_contains($url, 'gogoanime.io')) {
       $response = Self::downloadCloudFlare($url, 'gogoanime', $tries);
@@ -53,12 +53,12 @@ class Downloaders
           });
         } catch (\Exception $e) {}
       }
-      elseif (str_contains($url, 'kissanime.to')) {
+      elseif (str_contains($url, 'kissanime.ru')) {
         throw new \Exception('Download Failed: '.$url.' is locked by a ReCaptcha');
       }
     }
 
-    // if (str_contains($url, 'kissanime.to') && str_contains(preg_replace('/\s+/', '', $response), '<title>AreYouHuman</title>')) {
+    // if (str_contains($url, 'kissanime.ru') && str_contains(preg_replace('/\s+/', '', $response), '<title>AreYouHuman</title>')) {
     //   exec('xvfb-run python "'. app_path('AnimeSentinel/Python/ReCaptcha.py') .'" "'. $url .'" "1" "3" "btnSubmit" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0" 2> /dev/null');
     //   $response = Self::downloadPage($url, $tries + 1);
     // }
