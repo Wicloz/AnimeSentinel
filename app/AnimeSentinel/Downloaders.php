@@ -20,12 +20,6 @@ class Downloaders
 
     if (str_contains($url, 'kissanime.ru')) {
       $response = Self::downloadCloudFlare($url, 'kissanime', $tries);
-    } elseif (str_contains($url, 'gogoanime.io')) {
-      $response = Self::downloadCloudFlare($url, 'gogoanime', $tries);
-    }
-
-    elseif (str_contains($url, 'htvanime.com')) {
-      $response = Self::downloadJavaScript($url, $tries);
     }
 
     elseif (str_contains($url, 'myanimelist.net/animelist/')) {
@@ -58,11 +52,6 @@ class Downloaders
       }
     }
 
-    // if (str_contains($url, 'kissanime.ru') && str_contains(preg_replace('/\s+/', '', $response), '<title>AreYouHuman</title>')) {
-    //   exec('xvfb-run python "'. app_path('AnimeSentinel/Python/ReCaptcha.py') .'" "'. $url .'" "1" "3" "btnSubmit" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0" 2> /dev/null');
-    //   $response = Self::downloadPage($url, $tries + 1);
-    // }
-
     if (empty($response) || $response === 'The service is unavailable.' || str_contains($response, '500 - Internal server error.')) {
       $response = Self::downloadPage($url, $tries + 1);
     }
@@ -77,15 +66,6 @@ class Downloaders
    */
   private static function downloadJavaScript($url, $tries) {
     return shell_exec('python "'. app_path('AnimeSentinel/Python/GetExpanded.py') .'" "'. $url .'" 2> /dev/null');
-  }
-
-  /**
-   * Returns a webpage after scrolling to the bottom.
-   *
-   * @return string
-   */
-  private static function downloadScrolled($url, $tries) {
-    return shell_exec('python "'. app_path('AnimeSentinel/Python/GetScrolled.py') .'" "'. $url .'" 2> /dev/null');
   }
 
   /**
