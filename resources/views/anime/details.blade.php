@@ -58,8 +58,8 @@
               </div>
               <div class="col-sm-8">
                 <ul class="streamer-pull-right">
-                  @foreach($episode->streamers as $streamer)
-                    <li><a href="{{ $streamer->details_url }}">{{ $streamer->name }}</a></li>
+                  @foreach($episode->source_episodes as $source)
+                    <li><a target="_blank" href="{{ $source->link_episode }}">{{ $source->streamer->name }} ({{ $source->show_title }})</a></li>
                   @endforeach
                 </ul>
               </div>

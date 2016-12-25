@@ -88,6 +88,28 @@ class Video extends BaseModel
   }
 
   /**
+   * Get a list of all videos for this episode unique on source pages.
+   */
+  public function getSourceEpisodesAttribute() {
+    return Self::where('show_id', $this->show_id)->where('translation_type', $this->translation_type)->where('episode_num', $this->episode_num)
+               ->distinctOn('link_episode')->get();
+  }
+
+  /**
+   * Get the original show title for this video.
+   */
+  public function getShowTitleAttribute() {
+    switch ($this->streamer_id) {
+      case 'kissanime':
+        return str_from_url(str_get_between($this->link_episode, '/Anime/', '/'));
+      case 'animeshow':
+        return str_from_url(str_get_between($this->link_episode, 'animeshow.tv/', '-episode'));
+      default:
+        return false;
+    }
+  }
+
+  /**
    * Scope a query to only include video's for this episode.
    *
    * @return \Illuminate\Database\Eloquent\Builder

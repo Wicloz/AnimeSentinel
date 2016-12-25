@@ -247,6 +247,13 @@ function str_to_url($string, $delim = '-', $preg = '/[^a-zA-Z0-9α-ωΑ-Ω\\-\\_
   return $string;
 }
 
+function str_from_url($url, $delims = ['-']) {
+  foreach ($delims as $delim) {
+    $url = str_replace($delim, ' ', $url);
+  }
+  return ucwords($url);
+}
+
 function str_slugify($string) {
   $slugify = new \Cocur\Slugify\Slugify();
   return $slugify->slugify($string);
