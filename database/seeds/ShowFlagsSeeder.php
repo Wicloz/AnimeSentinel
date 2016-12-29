@@ -277,6 +277,9 @@ class ShowFlagsSeeder extends Seeder
       "Now and Then" => "-",
       "Here and There" => "-",
       "Now and Then, Here and There" => "+",
+      "Ima" => "-",
+      "Soko ni Iru Boku" => "-",
+      "Ima, Soko ni Iru Boku" => "+",
     ];
     $imasokoniiruboku->save();
 
