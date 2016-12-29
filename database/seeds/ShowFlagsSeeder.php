@@ -270,5 +270,28 @@ class ShowFlagsSeeder extends Seeder
       "Steel Angel Kurumi Zero" => "+",
     ];
     $koutetsutenshikurumizero->save();
+
+    $imasokoniiruboku = ShowFlag::findOrNew(160);
+    $imasokoniiruboku->mal_id = 160;
+    $imasokoniiruboku->alt_rules = [
+      "Now and Then" => "-",
+      "Here and There" => "-",
+      "Now and Then, Here and There" => "+",
+    ];
+    $imasokoniiruboku->save();
+
+    $mahounostarmagicalemi = ShowFlag::findOrNew(2038);
+    $mahounostarmagicalemi->mal_id = 2038;
+    $mahounostarmagicalemi->alt_rules = [
+      "Magica Emi" => "+",
+    ];
+    $mahounostarmagicalemi->save();
+
+    $detectiveconanepisodeone = ShowFlag::findOrNew(34036);
+    $detectiveconanepisodeone->mal_id = 34036;
+    $detectiveconanepisodeone->alt_rules = [
+      "Detective Conan: Episode One" => "+",
+    ];
+    $detectiveconanepisodeone->save();
   }
 }
