@@ -296,5 +296,13 @@ class ShowFlagsSeeder extends Seeder
       "Detective Conan: Episode One" => "+",
     ];
     $detectiveconanepisodeone->save();
+
+    $talesofzestiriathex2017 = ShowFlag::findOrNew(34086);
+    $talesofzestiriathex2017->mal_id = 34086;
+    $talesofzestiriathex2017->alt_rules = [
+      "Tales of Zestiria the X 2" => "+",
+      "Tales of Zestiria the X S2" => "+",
+    ];
+    $talesofzestiriathex2017->save();
   }
 }
