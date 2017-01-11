@@ -304,5 +304,83 @@ class ShowFlagsSeeder extends Seeder
       "Tales of Zestiria the X S2" => "+",
     ];
     $talesofzestiriathex2017->save();
+
+    $shingekinokyojinseason2 = ShowFlag::findOrNew(25777);
+    $shingekinokyojinseason2->mal_id = 25777;
+    $shingekinokyojinseason2->alt_rules = [
+      "Shingeki no Kyojin 2nd Season" => "+",
+    ];
+    $shingekinokyojinseason2->save();
+
+    $kochinpa = ShowFlag::findOrNew(32400);
+    $kochinpa->mal_id = 32400;
+    $kochinpa->alt_rules = [
+      "Kochin Pa!" => "+",
+    ];
+    $kochinpa->save();
+
+    $aonoexorcistkyotofujououhen = ShowFlag::findOrNew(33506);
+    $aonoexorcistkyotofujououhen->mal_id = 33506;
+    $aonoexorcistkyotofujououhen->alt_rules = [
+      "Ao no Exorcist 2" => "+",
+    ];
+    $aonoexorcistkyotofujououhen->save();
+
+    $shouwagenrokurakugoshinjuusukerokufutatabihen = ShowFlag::findOrNew(33095);
+    $shouwagenrokurakugoshinjuusukerokufutatabihen->mal_id = 33095;
+    $shouwagenrokurakugoshinjuusukerokufutatabihen->alt_rules = [
+      "Shouwa Genroku Rakugo Shinjuu 2" => "+",
+    ];
+    $shouwagenrokurakugoshinjuusukerokufutatabihen->save();
+
+    $yowamushipedalnewgeneration = ShowFlag::findOrNew(31783);
+    $yowamushipedalnewgeneration->mal_id = 31783;
+    $yowamushipedalnewgeneration->alt_rules = [
+      "Yowamushi Pedal 3" => "+",
+    ];
+    $yowamushipedalnewgeneration->save();
+
+    $dragonballzplantoeradicatesupersaiyansovaremake = ShowFlag::findOrNew(10017);
+    $dragonballzplantoeradicatesupersaiyansovaremake->mal_id = 10017;
+    $dragonballzplantoeradicatesupersaiyansovaremake->alt_rules = [
+      "Dragon Ball Z: Plan to Eradicate Super Saiyans" => "+",
+    ];
+    $dragonballzplantoeradicatesupersaiyansovaremake->save();
+
+    $sidonianokishidaikyuuwakuseiseneki = ShowFlag::findOrNew(24893);
+    $sidonianokishidaikyuuwakuseiseneki->mal_id = 24893;
+    $sidonianokishidaikyuuwakuseiseneki->alt_rules = [
+      "Knights of Sidonia Season 2" => "+",
+    ];
+    $sidonianokishidaikyuuwakuseiseneki->save();
+
+    $macrossdsp = ShowFlag::findOrNew(33807);
+    $macrossdsp->mal_id = 33807;
+    $macrossdsp->alt_rules = [
+      "Macross Delta Special" => "+",
+    ];
+    $macrossdsp->save();
+
+    $gintama2017 = ShowFlag::findOrNew(34096);
+    $gintama2017->mal_id = 34096;
+    $gintama2017->alt_rules = [
+      "Gintama. (2017)" => "+",
+    ];
+    $gintama2017->save();
+
+    $aimaimiisurgicalfriends = ShowFlag::findOrNew(34295);
+    $aimaimiisurgicalfriends->mal_id = 34295;
+    $aimaimiisurgicalfriends->alt_rules = [
+      "Ai Mai Mii Third season" => "+",
+      "Ai Mai Mii: Surgical Friends" => "+",
+    ];
+    $aimaimiisurgicalfriends->save();
+
+    $aimaimiimousoucatastrophespecial = ShowFlag::findOrNew(25439);
+    $aimaimiimousoucatastrophespecial->mal_id = 25439;
+    $aimaimiimousoucatastrophespecial->alt_rules = [
+      "Ai Mai Mii: Mousou Catastrophe Special" => "+",
+    ];
+    $aimaimiimousoucatastrophespecial->save();
   }
 }
