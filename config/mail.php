@@ -56,7 +56,7 @@ return [
     */
 
     'from' => [
-        'address' => 'noreply@animesentinel.tv',
+        'address' => 'noreply.animesentinel@wilcodeboer.me',
         'name' => 'AnimeSentinel',
     ],
 

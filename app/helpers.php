@@ -8,7 +8,7 @@ function mailAnomaly($show, $description, $vars = []) {
   try {
     \Mail::send('emails.reports.show', ['show' => $show, 'description' => $description, 'vars' => $vars], function ($m) use ($tos) {
       $m->subject('AnimeSentinel Anomaly Report');
-      $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
+      $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Reports');
       $m->to($tos);
     });
   } catch (\Exception $e) {}
@@ -19,7 +19,7 @@ function mailException($description, $exception, $vars = []) {
   try {
     \Mail::send('emails.reports.general', ['description' => $description, 'vars' => $vars], function ($m) {
       $m->subject('AnimeSentinel Exception Report');
-      $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
+      $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Reports');
       $m->to(config('mail.debug_addresses'));
     });
   } catch (\Exception $e) {}

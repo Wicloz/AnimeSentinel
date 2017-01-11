@@ -42,7 +42,7 @@ class Downloaders
             'Url' => $url,
           ]], function ($m) {
             $m->subject('AnimeSentinel Detected ReCaptcha');
-            $m->from('reports@animesentinel.tv', 'AnimeSentinel Reports');
+            $m->from('reports.animesentinel@wilcodeboer.me', 'AnimeSentinel Reports');
             $m->to(array_merge(config('mail.debug_addresses'), config('mail.admin_addresses')));
           });
         } catch (\Exception $e) {}
