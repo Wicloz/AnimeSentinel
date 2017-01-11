@@ -1,4 +1,6 @@
 #!/bin/bash
+mkdir ./public/media/thumbnails
+
 composer create-project
 npm install
 
