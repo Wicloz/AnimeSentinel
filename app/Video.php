@@ -315,12 +315,20 @@ class Video extends BaseModel
         if ($stream->codec_type === 'video') {
           $this->resolution = $stream->width.'x'.$stream->height;
           if (isset($stream->tags->creation_time) && $this->uploadtime->hour === 0 && $this->uploadtime->minute === 0 && $this->uploadtime->second === 0) {
-            $time = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
+            try {
+              $time = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
+            } catch (\Exception $e) {
+              $time = Carbon::createFromFormat('Y-m-d H:i:s', str_replace('T', ' ', str_get_between($stream->tags->creation_time, '', '.')));
+            }
             $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
           }
           // TEST //
           if (isset($stream->tags->creation_time)) {
-            $time = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
+            try {
+              $time = Carbon::createFromFormat('Y-m-d H:i:s', $stream->tags->creation_time);
+            } catch (\Exception $e) {
+              $time = Carbon::createFromFormat('Y-m-d H:i:s', str_replace('T', ' ', str_get_between($stream->tags->creation_time, '', '.')));
+            }
             $this->test1 = $time;
           }
           // TEST //
@@ -330,12 +338,20 @@ class Video extends BaseModel
       $this->duration = $data->format->duration;
       $this->encoding = 'video/'.explode(',', $data->format->format_name)[0];
       if (isset($data->format->tags->creation_time) && $this->uploadtime->hour === 0 && $this->uploadtime->minute === 0 && $this->uploadtime->second === 0) {
-        $time = Carbon::createFromFormat('Y-m-d H:i:s', $data->format->tags->creation_time);
+        try {
+          $time = Carbon::createFromFormat('Y-m-d H:i:s', $data->format->tags->creation_time);
+        } catch (\Exception $e) {
+          $time = Carbon::createFromFormat('Y-m-d H:i:s', str_replace('T', ' ', str_get_between($data->format->tags->creation_time, '', '.')));
+        }
         $this->uploadtime = $this->uploadtime->setTime($time->hour, $time->minute, $time->second);
       }
       // TEST //
       if (isset($data->format->tags->creation_time)) {
-        $time = Carbon::createFromFormat('Y-m-d H:i:s', $data->format->tags->creation_time);
+        try {
+          $time = Carbon::createFromFormat('Y-m-d H:i:s', $data->format->tags->creation_time);
+        } catch (\Exception $e) {
+          $time = Carbon::createFromFormat('Y-m-d H:i:s', str_replace('T', ' ', str_get_between($data->format->tags->creation_time, '', '.')));
+        }
         $this->test2 = $time;
       }
       // TEST //
