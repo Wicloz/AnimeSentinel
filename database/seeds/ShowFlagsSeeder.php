@@ -382,5 +382,12 @@ class ShowFlagsSeeder extends Seeder
       "Ai Mai Mii: Mousou Catastrophe Special" => "+",
     ];
     $aimaimiimousoucatastrophespecial->save();
+
+    $chaoschild = ShowFlag::findOrNew(30485);
+    $chaoschild->mal_id = 30485;
+    $chaoschild->alt_rules = [
+      "Chaos;Child" => "+",
+    ];
+    $chaoschild->save();
   }
 }
