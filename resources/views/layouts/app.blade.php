@@ -5,8 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <meta name="description" content="">
-  <meta name="keywords" content="">
+  <meta name="description" content="AnimeSentinel is a new, open source, anime streaming site with MAL integration and dynamically obtained content.">
   <meta name="author" content="Wilco de Boer (Wicloz)">
   <title>AnimeSentinel - @yield('title', 'DEFINE')</title>
 
