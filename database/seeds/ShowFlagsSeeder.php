@@ -389,5 +389,12 @@ class ShowFlagsSeeder extends Seeder
       "Chaos;Child" => "+",
     ];
     $chaoschild->save();
+
+    $rewrite2 = ShowFlag::findOrNew(34126);
+    $rewrite2->mal_id = 34126;
+    $rewrite2->alt_rules = [
+      "Rewrite 2nd Season" => "+",
+    ];
+    $rewrite2->save();
   }
 }
