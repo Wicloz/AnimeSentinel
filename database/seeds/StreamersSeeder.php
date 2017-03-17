@@ -22,7 +22,7 @@ class StreamersSeeder extends Seeder
     $s2->id = 'kissanime';
     $s2->name = 'KissAnime';
     $s2->link_home = 'http://kissanime.ru';
-    $s2->enabled = true;
+    $s2->enabled = false;
     $s2->save();
   }
 }
