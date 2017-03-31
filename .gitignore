@@ -7,3 +7,4 @@ Homestead.yaml
 .env
 .env.travis
 ghostdriver.log
+.idea/

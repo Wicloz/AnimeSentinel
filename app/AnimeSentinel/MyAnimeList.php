@@ -171,10 +171,10 @@ class MyAnimeList
     $durations = explode('hr.', trim(str_get_between($page, '<span class="dark_text">Duration:</span>', '</div>')));
     $episode_duration = 0;
     if (count($durations) === 1) {
-      $episode_duration += $durations[0];
+      $episode_duration += (double) $durations[0];
     } else if (count($durations) === 2) {
-      $episode_duration += $durations[0] * 60;
-      $episode_duration += $durations[1];
+      $episode_duration += (double) $durations[0] * 60;
+      $episode_duration += (double) $durations[1];
     }
     if ($episode_duration === 0) $episode_duration = null;
 

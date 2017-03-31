@@ -5,7 +5,7 @@ namespace App\AnimeSentinel;
 class Downloaders
 {
   /**
-   * Downloads a webpage after determining whivh method to use.
+   * Downloads a webpage after determining which method to use.
    *
    * @return string
    */
@@ -22,8 +22,8 @@ class Downloaders
       $response = Self::downloadCloudFlare($url, 'kissanime', $tries);
     }
 
-    elseif (str_contains($url, 'myanimelist.net/animelist/')) {
-      $response = Self::downloadScrolled($url, $tries);
+    if (str_contains($url, '9anime.to')) {
+      $response = Self::downloadJavaScript($url, $tries);
     }
 
     else {

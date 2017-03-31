@@ -7,6 +7,7 @@
 // \App\AnimeSentinel\Actions\FindVideos::reprocessEpsiodes(\App\Show::withTitle('Drifters')->first(), ['sub', 'dub'], null, null);
 // dd(\App\AnimeSentinel\Connectors\kissanime::findRecentlyAired());
 // dd(str_slugify('Yu-Gi-Oh! Arc-V'));
+// dd(\App\AnimeSentinel\Downloaders::downloadPage("https://9anime.to/watch/tales-of-zestiria-the-x-dub.519j/756x6"));
 
 /*
 |--------------------------------------------------------------------------

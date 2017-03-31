@@ -25,8 +25,8 @@ class StreamersSeeder extends Seeder
     $s2->enabled = true;
     $s2->save();
 
-    $s3 = Streamer::findOrNew('9anime');
-    $s3->id = '9anime';
+    $s3 = Streamer::findOrNew('nineanime');
+    $s3->id = 'nineanime';
     $s3->name = '9ANIME';
     $s3->link_home = 'https://9anime.to';
     $s3->enabled = true;
