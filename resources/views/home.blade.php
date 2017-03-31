@@ -4,7 +4,7 @@
 @section('content-top')
   <div class="jumbotron jumbotron-welcome stick-to-nav">
     <div class="container">
-      <h1>Anime Sentinel</h1>
+      <h1>AnimeSentinel</h1>
       <p>
         Ever wanted to watch an older or lesser known anime but you can't find it on your favourite streaming site? Search our database to find out which sites do stream it.
         This site aims to index which anime is available on which streaming sites, making all this information accesible through a single service.
