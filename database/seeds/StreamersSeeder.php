@@ -22,14 +22,14 @@ class StreamersSeeder extends Seeder
     $s2->id = 'kissanime';
     $s2->name = 'KissAnime';
     $s2->link_home = 'http://kissanime.ru';
-    $s2->enabled = true;
+    $s2->enabled = false;
     $s2->save();
 
     $s3 = Streamer::findOrNew('nineanime');
     $s3->id = 'nineanime';
     $s3->name = '9ANIME';
     $s3->link_home = 'https://9anime.to';
-    $s3->enabled = true;
+    $s3->enabled = false;
     $s3->save();
   }
 }
