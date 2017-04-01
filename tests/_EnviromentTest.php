@@ -17,7 +17,7 @@ class EnviromentTest extends TestCase
   }
 
   public function testDownloadJavascript() {
-    $this->assertContains('<b>@9animeto</b>', Downloaders::downloadPage('https://9anime.to/'));
+    $this->assertContains('Mobile / Download (Save link as...)', Downloaders::downloadPage('http://kissanime.ru/Anime/Youjo-Senki-Dub/Episode-001?id=133866'));
   }
 
   public function testVideoMeta() {

@@ -26,10 +26,6 @@ class Downloaders
       $response = Self::downloadCloudFlare($url, 'kissanime', $tries);
     }
 
-    elseif (str_contains($url, '9anime.to')) {
-      $response = Self::downloadJavaScript($url, $tries);
-    }
-
     else {
       $curl = curl_init();
       curl_setopt($curl, CURLOPT_URL, $url);
