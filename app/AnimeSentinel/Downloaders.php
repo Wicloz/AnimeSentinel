@@ -69,7 +69,7 @@ class Downloaders
    * @return string
    */
   private static function downloadJavaScript($url, $tries, $cookies = '', $useragent = '') {
-    exec('Xvfb :99 -ac &> /dev/null');
+    exec('Xvfb :99 -ac 2> /dev/null');
     return shell_exec('python "'. app_path('AnimeSentinel/Python/GetExpanded.py') .'" "'. $url .'" "'. resource_path('binaries') .'" "'. $cookies .'" "'. $useragent .'" 2> /dev/null');
   }
 
