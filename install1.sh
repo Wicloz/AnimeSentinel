@@ -6,5 +6,3 @@ npm install
 
 sudo pip install cfscrape==1.7.1
 sudo pip install selenium
-
-sudo npm install -g phantomjs-prebuilt

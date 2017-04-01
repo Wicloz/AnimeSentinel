@@ -17,6 +17,8 @@ addons:
   apt:
     packages:
     - python-pip
+    - firefox
+    - xvfb
 
 before_install:
   - mkdir ~/.ffmpeg

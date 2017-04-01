@@ -19,11 +19,12 @@ Guide for development servers (WIP):
   - pip
     - cfscrape
     - selenium
+  - firefox
+  - xvfb
 - Included in Homestead:
   - composer
   - python >= 2.5
   - a recent version of nodejs and npm
-    - phantomjs
   - a webserver
   - a database
   - openssl

@@ -16,13 +16,9 @@ class EnviromentTest extends TestCase
     $this->assertContains('KissAnime - Watch anime online in high quality', Downloaders::downloadPage('http://kissanime.ru/'));
   }
 
-  // public function testDownloadJavascript() {
-  //   $this->assertContains('Your Anime community entertainment center.', Downloaders::downloadPage('https://htvanime.com/'));
-  // }
-
-  // public function testDownloadScrolled() {
-  //   $this->assertContains('Zoku Natsume Yuujinchou: 3D Nyanko-sensei Gekijou', Downloaders::downloadPage('https://myanimelist.net/animelist/Wicloz'));
-  // }
+  public function testDownloadJavascript() {
+    $this->assertContains('<b>@9animeto</b>', Downloaders::downloadPage('https://9anime.to/'));
+  }
 
   public function testVideoMeta() {
     $meta = preg_replace('[\\s]', '', shell_exec('ffprobe -v quiet -print_format json -show_streams -show_format "http://www.w3schools.com/html/mov_bbb.mp4"'));

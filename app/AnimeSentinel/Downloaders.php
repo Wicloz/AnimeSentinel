@@ -65,7 +65,8 @@ class Downloaders
    * @return string
    */
   private static function downloadJavaScript($url, $tries) {
-    return shell_exec('python "'. app_path('AnimeSentinel/Python/GetExpanded.py') .'" "'. $url .'" 2> /dev/null');
+    exec('Xvfb :99 -ac &> /dev/null');
+    return shell_exec('python "'. app_path('AnimeSentinel/Python/GetExpanded.py') .'" "'. $url .'" "'. resource_path('binaries') .'" 2> /dev/null');
   }
 
   /**
@@ -73,7 +74,7 @@ class Downloaders
    *
    * @return string
    */
-  private static function downloadCloudFlare($url, $cookieid = 'cloudflare', $tries = 0) {
+  private static function downloadCloudFlare($url, $cookieid = 'cloudflare', $tries) {
     if (file_exists(storage_path('app/cookies/'.$cookieid))) {
       $cf_data = json_decode(file_get_contents(storage_path('app/cookies/'.$cookieid)));
     }

@@ -20,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
     setlocale(LC_ALL, 'en_US.UTF-8');
     putenv('LC_ALL=en_US.UTF-8');
     putenv('PYTHONIOENCODING=UTF-8');
+    putenv('PATH='.resource_path('binaries').PATH_SEPARATOR.exec('echo $PATH'));
 
     Queue::failing(function (JobFailed $event) {
       try {

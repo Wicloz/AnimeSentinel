@@ -7,5 +7,6 @@ Homestead.yaml
 .env
 .env.travis
 ghostdriver.log
+geckodriver.log
 .idea/
 *.pyc
