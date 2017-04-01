@@ -109,10 +109,11 @@ class kissanime extends BaseConnector
 
   protected static function completeMirrorData($mirror) {
     if (str_starts_with($mirror['link_video'], 'https://openload.co/')) {
-      return null;
+      $mirror['mirror_id'] = 'openload';
+      $mirror['resolution'] = '1280×720';
+    } else {
+      $mirror['mirror_id'] = $mirror['resolution'];
     }
-
-    $mirror['mirror_id'] = $mirror['resolution'];
     return $mirror;
   }
 

@@ -40,7 +40,9 @@ before_script:
   - npm -v
   - node -v
   - python -V
+  - pip list
   - ffmpeg -version
+  - firefox -v
 
 cache:
   pip: true

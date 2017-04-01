@@ -18,7 +18,11 @@ class Downloaders
       throw new \Exception('Download Failed: '.$url.' after '.$tries.' tries');
     }
 
-    if (str_contains($url, 'kissanime.ru')) {
+    elseif (str_contains($url, 'kissanime.ru') && str_contains($url, '?id=')) {
+      $response = Self::downloadCloudFlare($url, 'kissanime', $tries, true);
+    }
+
+    elseif (str_contains($url, 'kissanime.ru')) {
       $response = Self::downloadCloudFlare($url, 'kissanime', $tries);
     }
 
@@ -64,9 +68,9 @@ class Downloaders
    *
    * @return string
    */
-  private static function downloadJavaScript($url, $tries) {
+  private static function downloadJavaScript($url, $tries, $cookies = '', $useragent = '') {
     exec('Xvfb :99 -ac &> /dev/null');
-    return shell_exec('python "'. app_path('AnimeSentinel/Python/GetExpanded.py') .'" "'. $url .'" "'. resource_path('binaries') .'" 2> /dev/null');
+    return shell_exec('python "'. app_path('AnimeSentinel/Python/GetExpanded.py') .'" "'. $url .'" "'. resource_path('binaries') .'" "'. $cookies .'" "'. $useragent .'" 2> /dev/null');
   }
 
   /**
@@ -74,7 +78,7 @@ class Downloaders
    *
    * @return string
    */
-  private static function downloadCloudFlare($url, $cookieid = 'cloudflare', $tries) {
+  private static function downloadCloudFlare($url, $cookieid = 'cloudflare', $tries, $javascript = false) {
     if (file_exists(storage_path('app/cookies/'.$cookieid))) {
       $cf_data = json_decode(file_get_contents(storage_path('app/cookies/'.$cookieid)));
     }
@@ -87,16 +91,20 @@ class Downloaders
       $cf_data->cookies .= '; passwordK='.config('animesentinel.kissanime_password_cookie').'; usernameK='.config('animesentinel.kissanime_username_cookie');
     }
 
-    $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL, $url);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, [
-      'Cookie: '.$cf_data->cookies,
-      'User-Agent: '.$cf_data->agent,
-    ]);
-    $response = htmlentities_decode(curl_exec($curl));
-    curl_close($curl);
+    if (!$javascript) {
+      $curl = curl_init();
+      curl_setopt($curl, CURLOPT_URL, $url);
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+      curl_setopt($curl, CURLOPT_HTTPHEADER, [
+        'Cookie: '.$cf_data->cookies,
+        'User-Agent: '.$cf_data->agent,
+      ]);
+      $response = htmlentities_decode(curl_exec($curl));
+      curl_close($curl);
+    } else {
+      $response = Self::downloadJavaScript($url, $tries, $cf_data->cookies, $cf_data->agent);
+    }
 
     if (str_contains($response, '<title>Please wait 5 seconds...</title>')) {
       Self::requestCloudFlareData($url, $cookieid);

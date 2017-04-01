@@ -12,7 +12,7 @@
 // dd($test1, $test2, $test3);
 // system('python --version &> log');
 // dd(exec('python "/home/vagrant/Projects/AnimeSentinel/app/AnimeSentinel/Python/CloudFlare.py" "http://kissanime.ru/" "/home/vagrant/Projects/AnimeSentinel/storage/app/cookies/kissanime"'));
-// dd(\App\AnimeSentinel\Downloaders::downloadPage("https://9anime.to/watch/tales-of-zestiria-the-x-dub.519j/756x6"));
+// dd(\App\AnimeSentinel\Downloaders::downloadPage("http://kissanime.ru/Anime/Tales-of-Zestiria-the-X-Cross/Episode-001?id=127417"));
 
 /*
 |--------------------------------------------------------------------------
