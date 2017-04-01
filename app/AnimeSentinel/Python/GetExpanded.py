@@ -4,6 +4,7 @@ from selenium import webdriver
 
 if __name__ == "__main__":
   os.environ["DISPLAY"] = ":99"
+  os.environ["PATH"] += ":" + sys.argv[2]
 
   profile = webdriver.FirefoxProfile()
   profile.add_extension(sys.argv[2] + '/addon-1865-latest.xpi')
