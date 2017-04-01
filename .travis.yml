@@ -29,7 +29,7 @@ before_install:
 install:
   - composer create-project
   - npm install
-  - pip install --user cfscrape=1.7.1
+  - pip install --user cfscrape==1.7.1
   - pip install --user selenium
   - php artisan migrate --seed
   - node ./node_modules/gulp/bin/gulp.js --production
