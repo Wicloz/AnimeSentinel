@@ -10,7 +10,7 @@ if __name__ == "__main__":
   if len(sys.argv) > 4 and len(sys.argv[4]) > 0:
     profile.set_preference("general.useragent.override", sys.argv[4])
   driver = webdriver.Firefox(profile)
-  driver.set_window_size(1920, 1080)
+  # driver.set_window_size(1920, 1080)
 
   driver.get(sys.argv[1])
   if len(sys.argv) > 3 and len(sys.argv[3]) > 0:
