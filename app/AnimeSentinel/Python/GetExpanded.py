@@ -2,6 +2,12 @@ import sys
 import os
 from selenium import webdriver
 
+def quitdriver(driver):
+  try:
+    driver.quit()
+  except:
+    pass
+
 if __name__ == "__main__":
   os.environ["DISPLAY"] = ":99"
   os.environ["PATH"] += os.pathsep + sys.argv[2]
@@ -25,8 +31,5 @@ if __name__ == "__main__":
     driver.quit()
 
   except:
-    try:
-      driver.quit()
-    except:
-      pass
+    quitdriver(driver)
     raise
