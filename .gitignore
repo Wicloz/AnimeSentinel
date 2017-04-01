@@ -8,3 +8,4 @@ Homestead.yaml
 .env.travis
 ghostdriver.log
 .idea/
+*.pyc
