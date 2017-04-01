@@ -3,11 +3,16 @@
 // \App\AnimeSentinel\Actions\ShowManager::addShowWithTitle('a234sdasd', true);
 // queueJob((new \App\Jobs\AnimeFindVideos(\App\Show::withTitle('Drifters')->first()))->delay(\Carbon\Carbon::now()->addDays(2)), 'default');
 // queueJob(new \App\Jobs\AnimeReprocessEpisodes(\App\Show::withTitle('Drifters')->first(), ['sub', 'dub'], null, null), 'high');
-// \App\AnimeSentinel\Actions\FindVideos::findVideosForShow(\App\Show::withTitle('Drifters')->first());
+// \App\AnimeSentinel\Actions\FindVideos::findVideosForShow(\App\Show::withTitle('Tales of Zestiria the X')->first());
 // \App\AnimeSentinel\Actions\FindVideos::reprocessEpsiodes(\App\Show::withTitle('Drifters')->first(), ['sub', 'dub'], null, null);
 // dd(\App\AnimeSentinel\Connectors\kissanime::findRecentlyAired());
 // dd(str_slugify('Yu-Gi-Oh! Arc-V'));
-// dd(\App\AnimeSentinel\Downloaders::downloadPage("https://9anime.to/watch/tales-of-zestiria-the-x-dub.519j/756x6"));
+// $test1; $test2;
+// $test3 = exec('python3 --version', $test1, $test2);
+// dd($test1, $test2, $test3);
+// system('python --version &> log');
+// dd(exec('python3 "/home/vagrant/Projects/AnimeSentinel/app/AnimeSentinel/Python/CloudFlare.py" "http://kissanime.ru/"'));
+// dd(\App\AnimeSentinel\Downloaders::downloadPage("http://kissanime.ru/Anime/Youjo-Senki/Episode-012?id=135259"));
 
 /*
 |--------------------------------------------------------------------------

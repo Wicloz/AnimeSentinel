@@ -22,7 +22,7 @@ class Downloaders
       $response = Self::downloadCloudFlare($url, 'kissanime', $tries);
     }
 
-    if (str_contains($url, '9anime.to')) {
+    elseif (str_contains($url, '9anime.to')) {
       $response = Self::downloadJavaScript($url, $tries);
     }
 
