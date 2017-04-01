@@ -22,10 +22,11 @@ if __name__ == "__main__":
       driver.get(sys.argv[1])
 
     print(driver.execute_script("return document.documentElement.outerHTML"))
-  except:
-    print()
-
-  try:
     driver.quit()
+
   except:
-    0
+    try:
+      driver.quit()
+    except:
+      pass
+    raise
