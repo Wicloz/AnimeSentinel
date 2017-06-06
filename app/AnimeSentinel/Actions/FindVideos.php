@@ -14,7 +14,8 @@ class FindVideos
    * Removes all existing episodes and videos for that show.
    * This is used when a new show is added or some shows videos are broken and need to be refreshed.
    */
-  public static function findVideosForShow($show, $fromJob = false) {
+  public static function findVideosForShow($show, $fromJob = false)
+  {
     // Handle job related tasks
     $jobShowId = $show->mal_id !== null ? $show->mal_id : $show->title;
     if (!handleJobFunction('AnimeFindVideos', $jobShowId, null, $fromJob)) return;
@@ -25,14 +26,16 @@ class FindVideos
   /**
    * Removes and adds all videos for the requested show, episode and streamer.
    */
-  public static function reprocessEpsiodes($show, $translation_types = ['sub', 'dub'], $episode_num = null, $streamer_id = null, $fromJob = false) {
+  public static function reprocessEpsiodes($show, $translation_types = ['sub', 'dub'], $episode_num = null, $streamer_id = null, $fromJob = false)
+  {
     // Handle job related tasks
     $jobShowId = $show->mal_id !== null ? $show->mal_id : $show->title;
     if (!handleJobFunction('AnimeReprocessEpisodes', $jobShowId, [
       'translation_types' => $translation_types,
       'episode_num' => $episode_num,
       'streamer_id' => $streamer_id,
-    ], $fromJob)) return;
+    ], $fromJob)
+    ) return;
 
     // Mark show as not initialised
     $show->videos_initialised = false;
@@ -49,15 +52,19 @@ class FindVideos
 
     // Grab all streamers data
     if ($streamer_id === null) {
-      $streamers = Streamer::all();
-    } else {
-      $streamers = Streamer::where('id', $streamer_id)->get();
+      $streamers = Streamer::where('enabled', true)->get();
+    }
+    else {
+      $streamers = Streamer::where('enabled', true)->where('id', $streamer_id)->get();
+    }
+    if (empty($streamers)) {
+      $streamers = [];
     }
 
     // Find and save videos for each streamer
     $videosFound = 0;
     foreach ($streamers as $streamer) {
-      $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
+      $class = '\\App\\AnimeSentinel\\Connectors\\' . $streamer->id;
       try {
         $videosFound += $class::findVideosForShow($show, $translation_types, $episode_num);
       } catch (\Exception $e) {
@@ -117,14 +124,15 @@ class FindVideos
    * Finds all video's for all existing shows on a specific streaming site.
    * This is used when a new streaming site is added.
    */
-  public static function findVideosForStreamer($streamer, $fromJob = false) {
+  public static function findVideosForStreamer($streamer, $fromJob = false)
+  {
     // Handle job related tasks
     if (!handleJobFunction('StreamerFindVideos', null, ['streamer_id' => $streamer->id], $fromJob)) return;
 
-    $class = '\\App\\AnimeSentinel\\Connectors\\'.$streamer->id;
+    $class = '\\App\\AnimeSentinel\\Connectors\\' . $streamer->id;
 
     // Process all shows in chunks of 8
-    Show::orderBy('id')->chunk(8, function ($shows) use ($streamer) {
+    Show::orderBy('id')->chunk(8, function ($shows) use ($streamer, $class) {
       foreach ($shows as $show) {
         // Mark show as not initialised
         $show->videos_initialised = false;

@@ -303,7 +303,7 @@ class Video extends BaseModel
       $data = json_decode(shell_exec('ffprobe -v quiet -print_format json -show_streams -show_format "'. $this->link_video .'"'));
 
       if (!isset($data->streams) || !isset($data->format)) {
-        if ($tries >= 9) {
+        if ($tries >= 8) {
           $this->encoding = 'broken';
           return false;
         } else {
