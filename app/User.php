@@ -186,44 +186,50 @@ class User extends Authenticatable
    * @return string
    */
   private function postToMal($task, $id, $data = []) {
-    if ($task === 'validate') {
-      $url = 'https://myanimelist.net/api/account/verify_credentials.xml';
-    } else {
-      $url = 'https://myanimelist.net/api/animelist/'.$task.'/'.$id.'.xml';
-    }
-
-    $dataString = '<?xml version="1.0" encoding="UTF-8"?><entry>';
-    foreach ($data as $key => $value) {
-      $dataString .= '<'.$key.'>'.$value.'</'.$key.'>';
-    }
-    $dataString .= '</entry>';
-
-    $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL, $url);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_USERNAME, $this->mal_user);
-    curl_setopt($curl, CURLOPT_PASSWORD, $this->mal_pass);
-
-    if ($task !== 'validate') {
-      curl_setopt($curl, CURLOPT_POST, 1);
-      curl_setopt($curl, CURLOPT_POSTFIELDS, 'data='.$dataString);
-    }
-
-    $response = curl_exec($curl);
-    curl_close($curl);
-
-    if ($response === 'Invalid credentials') {
-      if ($this->mal_canwrite) {
-        $this->mal_canwrite = false;
-        $this->save();
+    if ($task === 'validate' || $this->mal_canwrite) {
+      if ($task === 'validate') {
+        $url = 'https://myanimelist.net/api/account/verify_credentials.xml';
+      } else {
+        $url = 'https://myanimelist.net/api/animelist/'.$task.'/'.$id.'.xml';
       }
+
+      $dataString = '<?xml version="1.0" encoding="UTF-8"?><entry>';
+      foreach ($data as $key => $value) {
+        $dataString .= '<'.$key.'>'.$value.'</'.$key.'>';
+      }
+      $dataString .= '</entry>';
+
+      $curl = curl_init();
+      curl_setopt($curl, CURLOPT_URL, $url);
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($curl, CURLOPT_USERNAME, $this->mal_user);
+      curl_setopt($curl, CURLOPT_PASSWORD, $this->mal_pass);
+
+      if ($task !== 'validate') {
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, 'data='.$dataString);
+      }
+
+      $response = curl_exec($curl);
+      curl_close($curl);
+
+      if ($response === 'Invalid credentials') {
+        if ($this->mal_canwrite) {
+          $this->mal_canwrite = false;
+          $this->save();
+        }
+        return false;
+      } else {
+        if (!$this->mal_canwrite) {
+          $this->mal_canwrite = true;
+          $this->save();
+        }
+        return $response;
+      }
+    }
+
+    else {
       return false;
-    } else {
-      if (!$this->mal_canwrite) {
-        $this->mal_canwrite = true;
-        $this->save();
-      }
-      return $response;
     }
   }
 
