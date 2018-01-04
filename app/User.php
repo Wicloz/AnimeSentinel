@@ -103,7 +103,7 @@ class User extends Authenticatable
    *
    * @return boolean
    */
-  public function updateMalCache() {
+  public function updateMalCache($force = false) {
     // Stop if there is no mal username
     if ($this->mal_user === '') {
       $this->mal_canread = false;
@@ -111,6 +111,7 @@ class User extends Authenticatable
       $this->save();
       return false;
     }
+
     // Download the page
     $page = Downloaders::downloadPage('http://myanimelist.net/malappinfo.php?u='.$this->mal_user.'&status=all&type=anime');
     // Check whether the page is valid, stop if it isn't
@@ -123,7 +124,9 @@ class User extends Authenticatable
       $this->save();
     }
     // Check write permissions
-    $this->postToMal('validate', 0);
+    if ($this->mal_canwrite || $force) {
+      $this->postToMal('validate', 0);
+    }
 
     // Srape the xml to get the anime list
     $results = collect(Helpers::scrape_page($page, '</anime>', [

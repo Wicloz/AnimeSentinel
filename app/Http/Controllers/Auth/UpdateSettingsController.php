@@ -85,7 +85,7 @@ class UpdateSettingsController extends Controller
     Auth::user()->save();
 
     if ($mustUpdateMalCache || $request->update_mal_cache) {
-      Auth::user()->updateMalCache();
+      Auth::user()->updateMalCache(true);
     }
 
     return back();
