@@ -52,7 +52,7 @@ class Downloaders
       }
     }
 
-    if (empty($response) || $response === 'The service is unavailable.' || str_contains($response, '500 - Internal server error.')) {
+    if (empty($response) || $response === 'Too Many Requests' || $response === 'The service is unavailable.' || str_contains($response, '500 - Internal server error.')) {
       $response = Self::downloadPage($url, $tries + 1);
     }
 
