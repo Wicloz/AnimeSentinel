@@ -16,9 +16,9 @@ class EnviromentTest extends TestCase
     $this->assertContains('KissAnime - Watch anime online in high quality', Downloaders::downloadPage('http://kissanime.ru/'));
   }
 
-  public function testDownloadJavascript() {
-    $this->assertContains('Mobile / Download (Save link as...)', Downloaders::downloadPage('http://kissanime.ru/Anime/Youjo-Senki-Dub/Episode-001?id=133866'));
-  }
+  // public function testDownloadJavascript() {
+  //   $this->assertContains('Mobile / Download (Save link as...)', Downloaders::downloadPage('http://kissanime.ru/Anime/Youjo-Senki-Dub/Episode-001?id=133866'));
+  // }
 
   public function testVideoMeta() {
     $meta = preg_replace('[\\s]', '', shell_exec('ffprobe -v quiet -print_format json -show_streams -show_format "http://www.w3schools.com/html/mov_bbb.mp4"'));
