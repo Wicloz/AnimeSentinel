@@ -1,8 +1,0 @@
-// Process the queue in the background
-(sudo --user=www-data --group=www-data) php artisan queue:work --queue=periodic_high,periodic_low,high,default,low --timeout=0 --tries=1
-
-// Compile CSS and JS during development
-nodejs ./node_modules/gulp/bin/gulp.js watch
-
-// Encrypt the super secret .env file for travis
-travis encrypt-file .env.travis -f
