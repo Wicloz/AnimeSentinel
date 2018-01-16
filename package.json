@@ -5,7 +5,18 @@
     "start": "meteor run"
   },
   "dependencies": {
+    "autoprefixer": "^7.2.5",
     "babel-runtime": "^6.26.0",
+    "materialize-css": "^0.100.2",
     "meteor-node-stubs": "^0.3.2"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {
+        "browsers": [
+          "last 2 versions"
+        ]
+      }
+    }
   }
 }

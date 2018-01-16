@@ -1,0 +1,24 @@
+@charset "UTF-8";
+@import "../node_modules/materialize-css/sass/components/color";
+
+////////////////////////////
+// Custom Variables Start //
+////////////////////////////
+
+// Built in colors
+$primary-color: #272b30 !default;
+$primary-color-light: #3a3f44 !default;
+$primary-color-dark: #1c1e22 !default;
+$secondary-color: #e9ecef !default;
+$success-color: #62c462 !default;
+$error-color: #ee5f5b !default;
+$link-color: $primary-color-light !default;
+
+// Spacing
+$spacer: 15px !default;
+
+//////////////////////////
+// Custom Variables End //
+//////////////////////////
+
+@import "../node_modules/materialize-css/sass/components/variables";
