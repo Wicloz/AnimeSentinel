@@ -9,10 +9,17 @@
 $primary-color: #272b30 !default;
 $primary-color-light: #3a3f44 !default;
 $primary-color-dark: #1c1e22 !default;
-$secondary-color: #e9ecef !default;
+$secondary-color: #9d9d9d !default;
+
 $success-color: #62c462 !default;
 $error-color: #ee5f5b !default;
-$link-color: $primary-color-light !default;
+
+$link-color: #9d9d9d !default;
+
+$collection-bg-color: $primary-color-light !default;
+
+// Other colors
+$text-color: #eeeeee !default;
 
 // Spacing
 $spacer: 15px !default;
