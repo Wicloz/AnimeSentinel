@@ -1,5 +1,8 @@
 <template name="pages_search">
-  <div class="container">
+  {{#autoForm schema=schemaSearch id='searchForm'}}
+    {{> afQuickField name='query' id='searchFormInput'}}
+  {{/autoForm}}
 
+  <div class="container">
   </div>
 </template>

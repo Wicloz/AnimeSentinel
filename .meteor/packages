@@ -25,3 +25,6 @@ arillo:flow-router-helpers
 session
 mozfet:materialize-icons
 spiderable
+mozfet:autoform-materialize
+aldeed:autoform
+aldeed:collection2-core

@@ -11,3 +11,13 @@ Template.components_nav_main.helpers({
     return Session.get('PageTitle');
   }
 });
+
+Template.components_nav_main.events({
+  'submit #navMainSearchForm'(event) {
+    event.preventDefault();
+    FlowRouter.go('search');
+    document.getElementById('searchFormInput').value = event.target.navMainSearchFormInput.value;
+    event.target.navMainSearchFormInput.value = '';
+    document.getElementById('searchFormInput').focus();
+  }
+});

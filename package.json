@@ -8,7 +8,8 @@
     "autoprefixer": "^7.2.5",
     "babel-runtime": "^6.26.0",
     "materialize-css": "^0.100.2",
-    "meteor-node-stubs": "^0.3.2"
+    "meteor-node-stubs": "^0.3.2",
+    "simpl-schema": "^1.4.1"
   },
   "postcss": {
     "plugins": {
