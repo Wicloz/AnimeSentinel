@@ -35,6 +35,16 @@ Shows.helpers({
 
 });
 
+Shows.startSearch = function(query) {
+  Session.set('LoadingBackground', true);
+  Meteor.call('shows.startSearch', query, (err) => {
+    Session.set('LoadingBackground', false);
+    if (err) {
+      alert(err);
+    }
+  });
+};
+
 // Methods
 Meteor.methods({
   'shows.startSearch'(query) {
