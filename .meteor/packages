@@ -18,3 +18,10 @@ shell-server@0.3.0            # Server-side component of the `meteor shell` comm
 fourseven:scss
 juliancwirko:postcss
 blaze-html-templates
+kadira:flow-router
+kadira:blaze-layout
+zimme:active-route
+arillo:flow-router-helpers
+session
+mozfet:materialize-icons
+spiderable

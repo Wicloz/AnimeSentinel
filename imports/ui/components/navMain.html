@@ -1,0 +1,29 @@
+<template name="components_nav_main">
+  <div class="navbar-fixed">
+    <nav>
+      <div class="nav-wrapper">
+        <span class="brand-logo center">{{pageTitle}}</span>
+        <a data-activates="navMainSide" class="button-collapse pointer">
+          {{> tooltippedIcon icon="menu"}}
+        </a>
+        <ul class="left hide-on-med-and-down">
+          {{> components_sidenav_linksPublic}}
+        </ul>
+        <ul class="side-nav" id="navMainSide">
+          {{> components_sidenav_linksPublic}}
+        </ul>
+      </div>
+    </nav>
+  </div>
+</template>
+
+<template name="components_sidenav_linksPublic">
+  {{> components_nav_main_link routeName='welcome' routeTitle='Home'}}
+  {{> components_nav_main_link routeName='search' routeTitle='Anime'}}
+</template>
+
+<template name="components_nav_main_link">
+  <li class="{{isActiveRoute routeName}}">
+    <a href="{{pathFor routeName}}">{{routeTitle}}</a>
+  </li>
+</template>
