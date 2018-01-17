@@ -35,6 +35,16 @@ Shows.helpers({
 
 });
 
+// Methods
+Meteor.methods({
+  'shows.startSearch'(query) {
+    Schemas.animeSearch.validate({query});
+    if (query) {
+      console.log(query);
+    }
+  }
+});
+
 // Queries
 Shows.querySearch = function(query) {
   Schemas.animeSearch.validate({query});
@@ -63,13 +73,3 @@ Shows.querySearch = function(query) {
     });
   }
 };
-
-// Methods
-Meteor.methods({
-  'shows.startSearch'(query) {
-    Schemas.animeSearch.validate({query});
-    if (query) {
-      console.log(query);
-    }
-  }
-});
