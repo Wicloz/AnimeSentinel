@@ -63,3 +63,13 @@ Shows.querySearch = function(query) {
     });
   }
 };
+
+// Methods
+Meteor.methods({
+  'shows.startSearch'(query) {
+    Schemas.animeSearch.validate({query});
+    if (query) {
+      console.log(query);
+    }
+  }
+});

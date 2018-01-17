@@ -4,5 +4,10 @@
   </header>
   <main>
     {{> Template.dynamic template=content}}
+    {{#if loadingBackground}}
+      <div class="loading-indicator-background ">
+        <img src="images/loading.gif">
+      </div>
+    {{/if}}
   </main>
 </template>
