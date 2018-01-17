@@ -5,7 +5,7 @@ Schemas = {};
 Schemas.animeSearch = new SimpleSchema({
   query: {
     type: String,
-    min: 3,
+    optional: true,
     autoform: {
       icon: 'search',
       label: 'Search Anime',

@@ -28,3 +28,4 @@ spiderable
 mozfet:autoform-materialize
 aldeed:autoform
 aldeed:collection2-core
+dburles:collection-helpers
