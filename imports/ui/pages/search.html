@@ -1,6 +1,6 @@
 <template name="pages_search">
-  {{#autoForm schema=schemaSearch id='searchForm'}}
-    {{> afQuickField name='query' id='searchFormInput'}}
+  {{#autoForm schema='Schemas.animeSearch' id='animeSearchForm' resetOnSuccess=false}}
+    {{> afQuickField name='query'}}
   {{/autoForm}}
 
   <div class="container">

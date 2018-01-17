@@ -2,7 +2,7 @@ import SimpleSchema from "simpl-schema";
 
 Schemas = {};
 
-Schemas.search = new SimpleSchema({
+Schemas.animeSearch = new SimpleSchema({
   query: {
     type: String,
     min: 3,

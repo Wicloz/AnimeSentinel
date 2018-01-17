@@ -12,12 +12,16 @@ Template.components_nav_main.helpers({
   }
 });
 
-Template.components_nav_main.events({
-  'submit #navMainSearchForm'(event) {
-    event.preventDefault();
-    FlowRouter.go('search');
-    document.getElementById('searchFormInput').value = event.target.navMainSearchFormInput.value;
-    event.target.navMainSearchFormInput.value = '';
-    document.getElementById('searchFormInput').focus();
+AutoForm.hooks({
+  navMainSearchForm: {
+    onSubmit(insertDoc) {
+      FlowRouter.go('search');
+      let animeSearchFormQueryField = $('#animeSearchForm').find('input[name="query"]');
+      animeSearchFormQueryField.val(insertDoc.query);
+      animeSearchFormQueryField.focus();
+      animeSearchFormQueryField.submit();
+      this.done();
+      return false;
+    }
   }
 });

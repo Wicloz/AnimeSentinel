@@ -1,5 +1,9 @@
 @import "../../../client/_vars.scss";
 
 #navMainSearchForm {
-  width: 30%;
+  width: 33%;
+  .red-text {
+    margin-top: -90px;
+    padding-left: 45px;
+  }
 }

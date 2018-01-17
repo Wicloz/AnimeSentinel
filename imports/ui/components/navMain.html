@@ -14,13 +14,9 @@
           {{> components_sidenav_linksPublic}}
         </ul>
 
-        <form class="right hide-on-med-and-down" id="navMainSearchForm">
-          <div class="input-field">
-            <input id="navMainSearchFormInput" type="search" autocomplete="off" placeholder="Search Anime" required>
-            <label class="label-icon" for="navMainSearchFormInput"><i class="material-icons">search</i></label>
-            <i class="material-icons">close</i>
-          </div>
-        </form>
+        {{#autoForm schema='Schemas.animeSearch' id='navMainSearchForm' class='right hide-on-med-and-down'}}
+          {{> afQuickField name='query'}}
+        {{/autoForm}}
       </div>
     </nav>
   </div>
