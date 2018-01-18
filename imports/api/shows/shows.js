@@ -122,37 +122,52 @@ Meteor.methods({
 });
 
 // Queries
-Shows.querySearch = function(query) {
+Shows.querySearch = function(query, limit) {
+  // Validate
   Schemas.animeSearch.validate({query});
+  new SimpleSchema({
+    limit: {
+      type: Number
+    }
+  }).validate({limit});
 
-  // TODO: Improve search query
+  // Setup initial options
+  let selector = {};
+  let options = {
+    limit: limit
+  };
 
-  if (Meteor.isServer && query) {
-    return Shows.find({
-        $text: {
-          $search: query
+  // Do text search if query is specified
+  if (query) {
+    if (Meteor.isServer) {
+      selector.$text = {
+        $search: '"' + query.replace('-', ' ') + '"',
+        $language: 'english',
+      };
+      options.fields = {
+        score: {
+          $meta: 'textScore'
         }
-      }, {
-        fields: {
-          score: {
-            $meta: 'textScore'
-          }
-        }
-      }
-    );
+      };
+    }
+    options.sort = {
+      textScore: -1
+    };
   }
 
+  // Otherwise sort by name
   else {
-    return Shows.find({}, {
-      sort: {
-        textScore: -1,
-        name: 1
-      }
-    });
+    options.sort = {
+      name: 1
+    };
   }
+
+  // Return results cursor
+  return Shows.find(selector, options);
 };
 
 Shows.queryMatchingAlts = function(names) {
+  // Validate
   new SimpleSchema({
     names: {
       type: Array,
@@ -163,7 +178,15 @@ Shows.queryMatchingAlts = function(names) {
     }
   }).validate({names});
 
-  // TODO: Proper fuzzy matching
+  // Process names to regex
+  names = names.map((name) => {
+    // allow matching of ' and ', ' to ', ' und ' and '&' to each other
+    // allow matching of ': ' to ' '
+    let regex = '^' + RegExp.escape(name).replace(/: | /g, '(: | )').replace(/ and | und | to |&/g, '( and | und | to |&)') + '$';
+    return new RegExp(regex, 'i');
+  });
+
+  // Return results cursor
   return Shows.find({
     altNames: {
       $in: names
