@@ -20,7 +20,7 @@ AutoForm.hooks({
   animeSearchForm: {
     onSubmit(insertDoc) {
       this.template.view.parentView.parentView._templateInstance.searchQuery.set(insertDoc.query);
-      Shows.startSearch(insertDoc.query);
+      Shows.remoteSearch(insertDoc.query);
       this.done();
       return false;
     }
