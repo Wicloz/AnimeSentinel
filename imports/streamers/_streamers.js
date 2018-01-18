@@ -50,13 +50,16 @@ export default class Streamers {
                   callback(result);
                 }
                 catch(err) {
-                  console.error(err); // Rows could be parsed but not converted to valid results
+                  console.error('Failed to process search page with query: \'' + query + '\' and streamer \'' + streamer.id + '\'.');
+                  console.error('Failed to process row number ' + index + '.');
+                  console.error(err);
                 }
               }
             });
           }
           catch(err) {
-            console.error(err); // Page downloaded but could not be processed
+            console.error('Failed to process search page with query: \'' + query + '\' and streamer \'' + streamer.id + '\'.');
+            console.error(err);
           }
         }
       });
