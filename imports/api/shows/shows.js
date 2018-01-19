@@ -103,7 +103,7 @@ Shows.remoteSearch = function(query, fromMethod=false) {
   if (Meteor.isServer || fromMethod) {
     Schemas.animeSearch.validate({query});
     if (query) {
-      Streamers.doSearch(query, Schemas.Show, (result) => {
+      Streamers.getSearchResults(query, (result) => {
         Shows.addSearchResult(result);
       });
     }
