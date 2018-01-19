@@ -22,7 +22,7 @@ export let myanimelist = {
   },
   searchSelectorDescription: 'td div.pt4',
   searchAttributeDescription: function(partial) {
-    return partial.text().replace(/\.\.\.read more\.$/, '...');
+    return partial.text().replace(/\.\.\.read more\.$/, descriptionCutoff);
   },
 
   // Show page data

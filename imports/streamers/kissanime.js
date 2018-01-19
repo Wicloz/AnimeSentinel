@@ -24,7 +24,7 @@ export let kissanime = {
   },
   searchSelectorDescription: 'td',
   searchAttributeDescription: function(partial) {
-    return Cheerio.load(partial.attr('title'))('div p').text();
+    return Cheerio.load(partial.attr('title'))('div p').text().replace(/ \.\.\.\n\s*$/, descriptionCutoff);
   },
 
   // Show page data

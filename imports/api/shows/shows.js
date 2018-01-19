@@ -60,9 +60,15 @@ Shows.mergeSearchResult = function(id, other) {
   let otherForUpdate = JSON.parse(JSON.stringify(other));
   delete otherForUpdate.streamerUrls;
   delete otherForUpdate.altNames;
+  delete otherForUpdate.description;
+
+  let show = Shows.findOne(id);
 
   Shows.update(id, {
     $max: otherForUpdate,
+    $set: {
+      description: !show.description || (show.description.endsWith(descriptionCutoff) && !other.description.endsWith(descriptionCutoff)) ? other.description : show.description
+    },
     $addToSet: {
       streamerUrls: {$each: other.streamerUrls},
       altNames: {$each: other.altNames}
