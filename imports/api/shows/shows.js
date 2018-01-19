@@ -83,19 +83,25 @@ Shows.helpers({
     };
 
     // Determine if the description should be replaced
-    if (this.description && other.description && this.description.endsWith(descriptionCutoff) && !other.description.endsWith(descriptionCutoff)) {
+    if (this.description && other.description && this.description.endsWith(descriptionCutoff) && other.description.length > this.description.length) {
       delete otherForUpdate.description;
       query.$set = {
         description: other.description
       };
     }
 
-    // Execute query
-    Shows.update(this._id, query);
+    try {
+      // Execute query
+      Shows.update(this._id, query);
 
-    // Remove other from database
-    if (other._id) {
-      other.remove();
+      // Remove other from database
+      if (other._id) {
+        other.remove();
+      }
+    }
+
+    catch(err) {
+      console.log(err);
     }
   }
 });

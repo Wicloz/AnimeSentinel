@@ -14,15 +14,15 @@ export let kissanime = {
   searchRowSkips: 2,
 
   // Search page attribute data
-  searchSelectorUrl: 'td a',
+  searchSelectorUrl: 'td:first-of-type a',
   searchAttributeUrl: function(partial) {
     return this.homepage + partial.attr('href');
   },
-  searchSelectorName: 'td a',
+  searchSelectorName: 'td:first-of-type a',
   searchAttributeName: function(partial) {
     return partial.text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
   },
-  searchSelectorDescription: 'td',
+  searchSelectorDescription: 'td:first-of-type',
   searchAttributeDescription: function(partial) {
     return Cheerio.load(partial.attr('title'))('div p').text().replace(/ \.\.\.\n\s*$/, descriptionCutoff);
   },
