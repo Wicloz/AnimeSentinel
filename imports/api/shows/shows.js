@@ -1,3 +1,4 @@
+import Cheerio from 'cheerio';
 import SimpleSchema from 'simpl-schema';
 import Streamers from '/imports/streamers/_streamers';
 
@@ -34,8 +35,13 @@ Schemas.Show = new SimpleSchema({
   },
   description: {
     type: String,
-    defaultValue: '',
-    optional: true
+    optional: true,
+    autoValue: function() {
+      if (!this.isSet) {
+        return undefined;
+      }
+      return Cheerio.load(this.value)('script').remove();
+    }
   }
 }, { tracker: Tracker });
 
@@ -56,7 +62,7 @@ Shows.helpers({
   }
 });
 
-Shows.mergeSearchResult = function(id, other) {
+Shows.mergeSearchResult = function(id, other) { // TODO: Improve merge function and general flow of search results
   let otherForUpdate = JSON.parse(JSON.stringify(other));
   delete otherForUpdate.streamerUrls;
   delete otherForUpdate.altNames;
@@ -128,7 +134,7 @@ Meteor.methods({
 });
 
 // Queries
-Shows.querySearch = function(query, limit) {
+Shows.querySearch = function(query, limit) { // TODO: Improve searching
   // Validate
   Schemas.animeSearch.validate({query});
   new SimpleSchema({
@@ -189,6 +195,7 @@ Shows.queryMatchingAlts = function(names) {
     // allow matching of ' and ', ' to ', ' und ' and '&' to each other
     // allow matching of ': ' to ' '
     let regex = '^' + RegExp.escape(name).replace(/: | /g, '(: | )').replace(/ and | und | to |&/g, '( and | und | to |&)') + '$';
+    // allow case insensitive matching
     return new RegExp(regex, 'i');
   });
 

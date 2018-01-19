@@ -29,7 +29,7 @@ export let kissanime = {
 
   // Show page data
   showCheckIfPage: function(page) {
-    return page('title').text().cleanEntersAndSpaces().match(/^.* anime \| Watch .* anime online in high quality$/);
+    return page('title').text().cleanWhitespace().match(/^.* anime \| Watch .* anime online in high quality$/);
   },
 
   // Show page attribute data
@@ -49,6 +49,6 @@ export let kissanime = {
   },
   showSelectorDescription: '.bigBarContainer .barContent div:nth-child(2) p:nth-child(7) span',
   showAttributeDescription: function(partial) {
-    return partial.text();
+    return partial.html();
   },
 };
