@@ -1,3 +1,5 @@
+import {Shows} from '/imports/api/shows/shows.js';
+
 export let myanimelist = {
   // General data
   id: 'myanimelist',
@@ -22,7 +24,7 @@ export let myanimelist = {
   },
   searchSelectorDescription: 'td div.pt4',
   searchAttributeDescription: function(partial) {
-    return partial.text().replace(/\.\.\.read more\.$/, descriptionCutoff);
+    return partial.text().replace(/\.\.\.read more\.$/, Shows.descriptionCutoff);
   },
 
   // Show page data

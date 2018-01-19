@@ -1,4 +1,5 @@
 import Cheerio from 'cheerio';
+import {Shows} from '/imports/api/shows/shows.js';
 
 export let kissanime = {
   // General data
@@ -24,7 +25,7 @@ export let kissanime = {
   },
   searchSelectorDescription: 'td:first-of-type',
   searchAttributeDescription: function(partial) {
-    return Cheerio.load(partial.attr('title'))('div p').text().replace(/ \.\.\.\n\s*$/, descriptionCutoff);
+    return Cheerio.load(partial.attr('title'))('div p').text().replace(/ \.\.\.\n\s*$/, Shows.descriptionCutoff);
   },
 
   // Show page data

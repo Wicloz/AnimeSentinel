@@ -61,6 +61,9 @@ if (Meteor.isServer) {
   });
 }
 
+// Constants
+Shows.descriptionCutoff = '&hellip; (read more)';
+
 // Helpers
 Shows.helpers({
   remove() {
