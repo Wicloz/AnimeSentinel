@@ -75,9 +75,17 @@ Shows.helpers({
     delete otherForUpdate.streamerUrls;
     delete otherForUpdate.altNames;
 
+    Object.keys(otherForUpdate).forEach((key) => {
+      if (this[key]) {
+        delete otherForUpdate[key];
+      } else {
+        this[key] = other[key];
+      }
+    });
+
     // Define initial query
     let query = {
-      $max: otherForUpdate,
+      $set: otherForUpdate,
       $addToSet: {
         streamerUrls: {$each: other.streamerUrls},
         altNames: {$each: other.altNames}
@@ -87,7 +95,7 @@ Shows.helpers({
     // Determine if the description should be replaced
     if (this.description && other.description && this.description.endsWith(Shows.descriptionCutoff) && other.description.length > this.description.length) {
       delete otherForUpdate.description;
-      query.$set = { // TODO: Move test to query
+      query.$set = {
         description: other.description
       };
     }
