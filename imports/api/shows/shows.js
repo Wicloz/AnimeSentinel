@@ -86,9 +86,9 @@ Shows.helpers({
     };
 
     // Determine if the description should be replaced
-    if (this.description && other.description && this.description.endsWith(descriptionCutoff) && other.description.length > this.description.length) {
+    if (this.description && other.description && this.description.endsWith(Shows.descriptionCutoff) && other.description.length > this.description.length) {
       delete otherForUpdate.description;
-      query.$set = {
+      query.$set = { // TODO: Move test to query
         description: other.description
       };
     }
