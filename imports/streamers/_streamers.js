@@ -128,15 +128,25 @@ export default class Streamers {
     return false;
   }
 
-  static getSearchResults(query, callback) {
+  static getSearchResults(query, resultCallback, doneCallback) {
+    let streamersDone = 0;
+
     // For each streamer
     streamers.forEach((streamer) => {
       // Download search results page
       downloadWithCallback(streamer.searchCreateUrl(query), (html) => {
+
         // Process page and return results
         this.processSearchPage(html, streamer, query).forEach((result) => {
-          callback(result);
+          resultCallback(result);
         });
+
+        // Check if done
+        streamersDone++;
+        if (streamersDone === streamers.length) {
+          doneCallback();
+        }
+
       });
     });
   }

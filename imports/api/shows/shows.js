@@ -1,6 +1,5 @@
 import Cheerio from 'cheerio';
 import SimpleSchema from 'simpl-schema';
-import Streamers from '/imports/streamers/_streamers';
 
 // Schema
 Schemas.Show = new SimpleSchema({
@@ -144,26 +143,9 @@ Shows.addPartialShow = function(show) {
   }
 };
 
-Shows.remoteSearch = function(query, fromMethod=false) {
-  if (Meteor.isServer || fromMethod) {
-    Schemas.animeSearch.validate({query});
-    if (query) {
-      Streamers.getSearchResults(query, (result) => {
-        Shows.addPartialShow(result);
-      });
-    }
-  }
-
-  else {
-    Meteor.call('shows.remoteSearch', query);
-  }
-};
-
 // Methods
 Meteor.methods({
-  'shows.remoteSearch'(query) {
-    Shows.remoteSearch(query, true);
-  }
+
 });
 
 // Queries
