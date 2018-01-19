@@ -4,9 +4,12 @@ import Streamers from '/imports/streamers/_streamers';
 
 // Schema
 Schemas.Show = new SimpleSchema({
-  isSearchResult: {
-    type: Boolean,
-    defaultValue: false,
+  lastFullUpdate: {
+    type: Date,
+    optional: true
+  },
+  lockFullUpdate: {
+    type: Date,
     optional: true
   },
   streamerUrls: {
@@ -37,10 +40,13 @@ Schemas.Show = new SimpleSchema({
     type: String,
     optional: true,
     autoValue: function() {
-      if (!this.isSet) {
+      if (!this.isSet || !this.value) {
+        this.unset();
         return undefined;
       }
-      return Cheerio.load(this.value)('script').remove();
+      let desc = Cheerio.load(this.value);
+      desc('script').remove();
+      return desc('body').html();
     }
   }
 }, { tracker: Tracker });
@@ -59,53 +65,71 @@ if (Meteor.isServer) {
 Shows.helpers({
   remove() {
     Shows.remove(this._id);
+  },
+
+  mergePartialShow(other) {
+    // Create and clean a clone
+    let otherForUpdate = JSON.parse(JSON.stringify(other));
+    delete otherForUpdate.streamerUrls;
+    delete otherForUpdate.altNames;
+
+    // Define initial query
+    let query = {
+      $max: otherForUpdate,
+      $addToSet: {
+        streamerUrls: {$each: other.streamerUrls},
+        altNames: {$each: other.altNames}
+      }
+    };
+
+    // Determine if the description should be replaced
+    if (this.description && other.description && this.description.endsWith(descriptionCutoff) && !other.description.endsWith(descriptionCutoff)) {
+      delete otherForUpdate.description;
+      query.$set = {
+        description: other.description
+      };
+    }
+
+    // Execute query
+    Shows.update(this._id, query);
+
+    // Remove other from database
+    if (other._id) {
+      other.remove();
+    }
   }
 });
 
-Shows.mergeSearchResult = function(id, other) { // TODO: Improve merge function and general flow of search results
-  let otherForUpdate = JSON.parse(JSON.stringify(other));
-  delete otherForUpdate.streamerUrls;
-  delete otherForUpdate.altNames;
-  delete otherForUpdate.description;
-
-  let show = Shows.findOne(id);
-
-  Shows.update(id, {
-    $max: otherForUpdate,
-    $set: {
-      description: !show.description || (show.description.endsWith(descriptionCutoff) && !other.description.endsWith(descriptionCutoff)) ? other.description : show.description
-    },
-    $addToSet: {
-      streamerUrls: {$each: other.streamerUrls},
-      altNames: {$each: other.altNames}
-    }
-  });
-
-  // Remove other from database
-  if (other._id) {
-    other.remove();
-  }
-};
-
-Shows.addSearchResult = function(show) {
+Shows.addPartialShow = function(show) {
+  // Grab matching shows from database
   let others = Shows.queryMatchingAlts(show.altNames);
 
+  // Merge if shows were found
   if (others.count()) {
-    let firstId;
+    let othersFull = [];
+    let othersPartial = [];
+
     others.forEach((other) => {
-      if (other.isSearchResult) {
-        if (!firstId) {
-          firstId = other._id;
-        } else {
-          Shows.mergeSearchResult(firstId, other);
-        }
+      if (other.lastFullUpdate || other.lockFullUpdate) {
+        othersFull.push(other);
+      } else {
+        othersPartial.push(other);
       }
     });
-    if (firstId) {
-      Shows.mergeSearchResult(firstId, show);
+
+    if (othersFull.empty()) {
+      othersFull.push(othersPartial.shift());
     }
+
+    othersFull.forEach((otherFull) => {
+      othersPartial.forEach((otherPartial) => {
+        otherFull.mergePartialShow(otherPartial);
+      });
+      otherFull.mergePartialShow(show);
+    });
   }
 
+  // Insert otherwise
   else {
     Shows.insert(show);
   }
@@ -116,7 +140,7 @@ Shows.remoteSearch = function(query, fromMethod=false) {
     Schemas.animeSearch.validate({query});
     if (query) {
       Streamers.getSearchResults(query, (result) => {
-        Shows.addSearchResult(result);
+        Shows.addPartialShow(result);
       });
     }
   }

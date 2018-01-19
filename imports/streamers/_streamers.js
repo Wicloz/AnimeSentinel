@@ -16,7 +16,6 @@ export default class Streamers {
         if (streamer.showCheckIfPage(page)) {
           let result = this.processShowPage(html, streamer, query);
           if (result) {
-            result['isSearchResult'] = true;
             results.push(result);
           }
         }
@@ -28,9 +27,7 @@ export default class Streamers {
             if (index >= streamer.searchRowSkips) { // Skip table headers if required
               try {
                 // Create empty result
-                let result = {
-                  isSearchResult: true
-                };
+                let result = {};
 
                 // Get the url
                 result['streamerUrls'] = [{
