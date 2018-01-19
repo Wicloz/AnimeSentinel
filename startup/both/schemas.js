@@ -13,3 +13,9 @@ Schemas.animeSearch = new SimpleSchema({
     }
   }
 }, { tracker: Tracker });
+
+Schemas.id = new SimpleSchema({
+  id: {
+    type: String
+  }
+});
