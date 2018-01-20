@@ -32,7 +32,8 @@ export default class Streamers {
                 // Get the url
                 result['streamerUrls'] = [{
                   id: streamer.id,
-                  url: streamer.searchAttributeUrl(page(element).find(streamer.searchSelectorUrl)).replace(/\/+/g, '/')
+                  url: streamer.searchAttributeUrl(page(element).find(streamer.searchSelectorUrl)),
+                  type: streamer.searchSelectorUrlType ? streamer.searchAttributeUrlType(page(element).find(streamer.searchSelectorUrlType)) : streamer.searchAttributeUrlType,
                 }];
 
                 // Get 'name'
@@ -91,7 +92,8 @@ export default class Streamers {
         // Get the url
         result['streamerUrls'] = [{
           id: streamer.id,
-          url: streamer.showAttributeUrl(page(streamer.showSelectorUrl)).replace(/\/+/g, '/')
+          url: streamer.showAttributeUrl(page(streamer.showSelectorUrl)),
+          type: streamer.showSelectorUrlType ? streamer.showAttributeUrlType(page(streamer.showSelectorUrlType)) : streamer.searchAttributeUrlType,
         }];
 
         // Get 'name'

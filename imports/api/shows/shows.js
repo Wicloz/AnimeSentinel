@@ -25,6 +25,10 @@ Schemas.Show = new SimpleSchema({
   'streamerUrls.$.url': {
     type: String
   },
+  'streamerUrls.$.type': {
+    type: String,
+    allowedValues: ['multi', 'sub', 'dub', 'raw']
+  },
   name: {
     type: String
   },

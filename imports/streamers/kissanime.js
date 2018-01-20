@@ -17,7 +17,11 @@ export let kissanime = {
   // Search page attribute data
   searchSelectorUrl: 'td:first-of-type a',
   searchAttributeUrl: function(partial) {
-    return this.homepage + partial.attr('href');
+    return this.homepage.replace(/\/$/, '') + partial.attr('href');
+  },
+  searchSelectorUrlType: 'td:first-of-type a',
+  searchAttributeUrlType: function(partial) {
+    return partial.text().match(/\(Dub\)$/) ? 'dub' : 'sub';
   },
   searchSelectorName: 'td:first-of-type a',
   searchAttributeName: function(partial) {
@@ -36,11 +40,15 @@ export let kissanime = {
   // Show page attribute data
   showSelectorUrl: 'a.bigChar',
   showAttributeUrl: function(partial) {
-    return this.homepage + partial.attr('href');
+    return this.homepage.replace(/\/$/, '') + partial.attr('href');
+  },
+  showSelectorUrlType: 'a.bigChar',
+  showAttributeUrlType: function(partial) {
+    return partial.text().match(/\(Dub\)$/) ? 'dub' : 'sub';
   },
   showSelectorName: 'a.bigChar',
   showAttributeName: function(partial) {
-    return partial.text();
+    return partial.text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
   },
   showSelectorAltNames: '.bigBarContainer .barContent div:nth-child(2) p:first-of-type',
   showAttributeAltNames: function(partial) {
