@@ -29,9 +29,8 @@ Searches.maxSearchTime = 30000; // 30 seconds
 Searches.helpers({
   expired() {
     let now = moment();
-    return !this.lastStart || // Never started
-      moment(this.lastEnd).add(Searches.timeUntilRecache) < now || // Cache expired
-      (this.busy() && moment(this.lastStart).add(Searches.maxSearchTime) < now); // Busy but took too long (probably terminated)
+    return (!this.busy() && (!this.lastStart || moment(this.lastEnd).add(Searches.timeUntilRecache) < now)) ||
+            (this.busy() && moment(this.lastStart).add(Searches.maxSearchTime) < now);
   },
 
   busy() {

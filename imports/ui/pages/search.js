@@ -1,6 +1,7 @@
 import './search.html';
 import { Shows } from '/imports/api/shows/shows.js';
 import {Searches} from "../../api/searches/searches";
+import '/imports/ui/components/loadingIndicatorBackground.js';
 
 Template.pages_search.onCreated(function() {
   Session.set('PageTitle', 'Browse Anime');
@@ -8,18 +9,15 @@ Template.pages_search.onCreated(function() {
   this.searchQuery = new ReactiveVar(undefined);
   this.searchLimit = new ReactiveVar(100);
 
-  this.remoteSearchDebounced = _.debounce(function(query) {
-    if (query) {
-      Meteor.call('searches.startSearch', query);
-    }
-  }, 1000);
-
   this.autorun(() => {
     this.subscribe('shows.search', this.searchQuery.get(), this.searchLimit.get());
   });
+
   this.autorun(() => {
-    this.remoteSearchDebounced(this.searchQuery.get());
     this.subscribe('searches.withQuery', this.searchQuery.get());
+    if (this.subscriptionsReady() && this.searchQuery.get()) {
+      Meteor.call('searches.startSearch', this.searchQuery.get());
+    }
   });
 });
 
