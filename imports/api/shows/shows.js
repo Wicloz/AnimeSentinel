@@ -3,11 +3,11 @@ import SimpleSchema from 'simpl-schema';
 
 // Schema
 Schemas.Show = new SimpleSchema({
-  lastFullUpdate: {
+  fullUpdateStart: {
     type: Date,
     optional: true
   },
-  lockFullUpdate: {
+  fullUpdateEnd: {
     type: Date,
     optional: true
   },
@@ -62,11 +62,23 @@ if (Meteor.isServer) {
 
 // Constants
 Shows.descriptionCutoff = '&hellip; (read more)';
+Shows.timeUntilRecache = 86400000; // 1 day
+Shows.maxUpdateTime = 600000; // 10 minutes
 
 // Helpers
 Shows.helpers({
   remove() {
     Shows.remove(this._id);
+  },
+
+  expired() {
+    let now = moment();
+    return (!this.locked() && (!this.fullUpdateStart || moment(this.fullUpdateEnd).add(Shows.timeUntilRecache) < now)) ||
+            (this.locked() && moment(this.fullUpdateStart).add(Shows.maxUpdateTime) < now);
+  },
+
+  locked() {
+    return this.fullUpdateStart && (!this.fullUpdateEnd || this.fullUpdateStart > this.fullUpdateEnd);
   },
 
   mergePartialShow(other) {
@@ -113,6 +125,22 @@ Shows.helpers({
     catch(err) {
       console.log(err);
     }
+  },
+
+  doUpdate() {
+    Shows.update(this._id, {
+      $set: {
+        fullUpdateStart: moment().toDate()
+      }
+    });
+
+    console.log('updating!');
+
+    Shows.update(this._id, {
+      $set: {
+        fullUpdateEnd: moment().toDate()
+      }
+    });
   }
 });
 
@@ -126,7 +154,7 @@ Shows.addPartialShow = function(show) {
     let othersPartial = [];
 
     others.forEach((other) => {
-      if (other.lastFullUpdate || other.lockFullUpdate) {
+      if (other.fullUpdateEnd || other.fullUpdateStart) {
         othersFull.push(other);
       } else {
         othersPartial.push(other);
@@ -151,9 +179,20 @@ Shows.addPartialShow = function(show) {
   }
 };
 
+Shows.attemptUpdate = function(id) {
+  Schemas.id.validate({id});
+
+  let show = Shows.findOne(id);
+  if (show.expired()) {
+    show.doUpdate();
+  }
+};
+
 // Methods
 Meteor.methods({
-
+  'shows.attemptUpdate'(id) {
+    Shows.attemptUpdate(id);
+  }
 });
 
 // Queries
