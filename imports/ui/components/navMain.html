@@ -23,12 +23,12 @@
 </template>
 
 <template name="components_sidenav_linksPublic">
-  {{> components_nav_main_link routeName='welcome' routeTitle='Home'}}
-  {{> components_nav_main_link routeName='search' routeTitle='Anime'}}
+  {{> components_nav_main_link routeName='welcome' routeTitle='Home' activeWhen='welcome'}}
+  {{> components_nav_main_link routeName='search' routeTitle='Anime' activeWhen='search|show'}}
 </template>
 
 <template name="components_nav_main_link">
-  <li class="{{isActiveRoute routeName}}">
+  <li class="{{isActiveRoute regex=activeWhen}}">
     <a href="{{pathFor routeName}}">{{routeTitle}}</a>
   </li>
 </template>
