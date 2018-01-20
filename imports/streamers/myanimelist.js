@@ -18,7 +18,7 @@ export let myanimelist = {
   searchAttributeUrl: function(partial) {
     return partial.attr('href').replace(/\/[^\/]*$/, '');
   },
-  searchAttributeUrlType: 'sub',
+  searchAttributeUrlType: 'multi',
   searchSelectorName: 'td a.hoverinfo_trigger strong',
   searchAttributeName: function(partial) {
     return partial.text();
