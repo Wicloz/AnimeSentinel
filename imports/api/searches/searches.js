@@ -38,19 +38,23 @@ Searches.helpers({
   },
 
   doSearch(query) {
+    this.lastStart = moment().toDate();
     Searches.update(this._id, {
       $set: {
-        lastStart: moment().toDate()
+        lastStart: this.lastStart
       }
     });
 
     if (Meteor.isServer) { // TODO: remove when downloads are fixed
       Streamers.getSearchResults(query, (result) => {
+        // For each search result
         Shows.addPartialShow(result);
       }, () => {
+        // When done
+        this.lastEnd = moment().toDate();
         Searches.update(this._id, {
           $set: {
-            lastEnd: moment().toDate()
+            lastEnd: this.lastEnd
           }
         });
       });

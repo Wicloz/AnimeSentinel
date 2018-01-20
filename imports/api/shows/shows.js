@@ -65,7 +65,7 @@ if (Meteor.isServer) {
 }
 
 // Constants
-Shows.descriptionCutoff = '&hellip; (read more)';
+Shows.descriptionCutoff = '&#x2026; (read more)';
 Shows.timeUntilRecache = 86400000; // 1 day
 Shows.maxUpdateTime = 600000; // 10 minutes
 
@@ -99,26 +99,26 @@ Shows.helpers({
       }
     });
 
-    // Define initial query
-    let query = {
-      $set: otherForUpdate,
-      $addToSet: {
-        streamerUrls: {$each: other.streamerUrls},
-        altNames: {$each: other.altNames}
-      }
-    };
-
     // Determine if the description should be replaced
     if (this.description && other.description && this.description.endsWith(Shows.descriptionCutoff) && other.description.length > this.description.length) {
-      delete otherForUpdate.description;
-      query.$set = {
-        description: other.description
-      };
+      this.description = other.description;
+      otherForUpdate.description = other.description;
     }
 
     try {
       // Execute query
-      Shows.update(this._id, query);
+      Shows.update(this._id, {
+        $set: otherForUpdate,
+        $addToSet: {
+          streamerUrls: {$each: other.streamerUrls},
+          altNames: {$each: other.altNames}
+        }
+      });
+
+      // Update this
+      let show = Shows.findOne(this._id);
+      this.streamerUrls = show.streamerUrls;
+      this.altNames = show.altNames;
 
       // Remove other from database
       if (other._id) {
@@ -132,9 +132,10 @@ Shows.helpers({
   },
 
   doUpdate() {
+    this.fullUpdateStart = moment().toDate();
     Shows.update(this._id, {
       $set: {
-        fullUpdateStart: moment().toDate()
+        fullUpdateStart: this.fullUpdateStart
       }
     });
 
