@@ -3,6 +3,10 @@ import SimpleSchema from 'simpl-schema';
 
 // Schema
 Schemas.Show = new SimpleSchema({
+  _id: {
+    type: String,
+    optional: true
+  },
   fullUpdateStart: {
     type: Date,
     optional: true

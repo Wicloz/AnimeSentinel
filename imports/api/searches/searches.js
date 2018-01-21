@@ -4,6 +4,10 @@ import {Shows} from "../shows/shows";
 
 // Schema
 Schemas.Search = new SimpleSchema({
+  _id: {
+    type: String,
+    optional: true
+  },
   query: {
     type: String
   },
