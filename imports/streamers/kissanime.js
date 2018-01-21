@@ -50,13 +50,16 @@ export let kissanime = {
   showAttributeName: function(partial) {
     return partial.text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
   },
-  showSelectorAltNames: '.bigBarContainer .barContent div:nth-child(2) p:first-of-type',
+  showSelectorAltNames: '.bigBarContainer .barContent div:nth-of-type(2) p:first-of-type',
   showAttributeAltNames: function(partial) {
+    if (partial.find('span.info').text() !== 'Other name:') {
+      return [];
+    }
     return partial.find('a').map((index, element) => {
       return Cheerio.load(element).text();
     }).get();
   },
-  showSelectorDescription: '.bigBarContainer .barContent div:nth-child(2) p:nth-child(7) span',
+  showSelectorDescription: '.bigBarContainer .barContent div:nth-of-type(2) p:nth-last-of-type(2)',
   showAttributeDescription: function(partial) {
     return partial.html();
   },
