@@ -5,16 +5,17 @@ import { kissanime } from './kissanime';
 let streamers = [myanimelist, kissanime];
 
 export default class Streamers {
-  static processSearchPage(html, streamer, query) {
+  static processSearchPage(html, streamer, logData) {
     let results = [];
 
     if (html) {
       try {
+        // Load page
         let page = Cheerio.load(html);
 
         // Check if we have a show page
         if (streamer.showCheckIfPage(page)) {
-          let result = this.processShowPage(html, streamer, query);
+          let result = this.processShowPage(html, streamer, logData);
           if (result) {
             results.push(result);
           }
@@ -62,7 +63,7 @@ export default class Streamers {
               }
 
               catch(err) {
-                console.error('Failed to process search page with query: \'' + query + '\' and streamer: \'' + streamer.id + '\'.');
+                console.error('Failed to process search page with query: \'' + logData + '\' and streamer: \'' + streamer.id + '\'.');
                 console.error('Failed to process row number ' + index + '.');
                 console.error(err);
               }
@@ -72,7 +73,7 @@ export default class Streamers {
       }
 
       catch(err) {
-        console.error('Failed to process search page with query: \'' + query + '\' and streamer: \'' + streamer.id + '\'.');
+        console.error('Failed to process search page with query: \'' + logData + '\' and streamer: \'' + streamer.id + '\'.');
         console.error(err);
       }
     }
@@ -80,7 +81,7 @@ export default class Streamers {
     return results;
   }
 
-  static processShowPage(html, streamer, name) {
+  static processShowPage(html, streamer, logData) {
     if (html) {
       try {
         // Load page
@@ -122,7 +123,7 @@ export default class Streamers {
       }
 
       catch(err) {
-        console.error('Failed to process show page for show: \'' + name + '\' and streamer: \'' + streamer.id + '\'.');
+        console.error('Failed to process show page for show: \'' + logData + '\' and streamer: \'' + streamer.id + '\'.');
         console.error(err);
       }
     }
@@ -130,16 +131,28 @@ export default class Streamers {
     return false;
   }
 
-  static getSearchResults(query, resultCallback, doneCallback) {
+  static getSearchResults(url, streamer, logData, resultCallback) {
+    downloadWithCallback(url, (html) => {
+      resultCallback(this.processSearchPage(html, streamer, logData));
+    });
+  }
+
+  static getShowResults(url, streamer, logData, resultCallback) {
+    downloadWithCallback(url, (html) => {
+      resultCallback(this.processShowPage(html, streamer, logData));
+    });
+  }
+
+  static doSearch(query, resultCallback, doneCallback) {
     let streamersDone = 0;
 
     // For each streamer
     streamers.forEach((streamer) => {
-      // Download search results page
-      downloadWithCallback(streamer.searchCreateUrl(query), (html) => {
+      // Download and process search results
+      this.getSearchResults(streamer.searchCreateUrl(query), streamer, query, (results) => {
 
-        // Process page and return results
-        this.processSearchPage(html, streamer, query).forEach((result) => {
+        // Return results
+        results.forEach((result) => {
           resultCallback(result);
         });
 

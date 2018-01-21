@@ -46,7 +46,7 @@ Searches.helpers({
     });
 
     if (Meteor.isServer) { // TODO: remove when downloads are fixed
-      Streamers.getSearchResults(query, (result) => {
+      Streamers.doSearch(query, (result) => {
         // For each search result
         Shows.addPartialShow(result);
       }, () => {
