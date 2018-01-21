@@ -45,9 +45,7 @@ export default class Streamers {
                 } else {
                   result['altNames'] = [];
                 }
-                if (!result['altNames'].includes(result['name'])) {
-                  result['altNames'].push(result['name']);
-                }
+                result['altNames'].push(result['name']);
 
                 // Get 'description'
                 if (streamer.searchSelectorDescription) {
@@ -105,9 +103,7 @@ export default class Streamers {
         } else {
           result['altNames'] = [];
         }
-        if (!result['altNames'].includes(result['name'])) {
-          result['altNames'].push(result['name']);
-        }
+        result['altNames'].push(result['name']);
 
         // Get 'description'
         if (streamer.showSelectorDescription) {
