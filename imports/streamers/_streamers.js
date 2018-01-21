@@ -161,4 +161,38 @@ export default class Streamers {
       });
     });
   }
+
+  static createFullShow(altNames, streamerUrls, resultCallback, partialCallback) {
+    let streamerUrlsDone = 0;
+    let finalResult = {};
+
+    // For each streamer
+    streamers.forEach((streamer) => {
+
+      // If the url is already known
+      if (streamerUrls.hasPartialObjects({id: streamer.id})) {
+        // For each different url
+        streamerUrls.getPartialObjects({id: streamer.id}).forEach((streamerUrl) => {
+          // Download and process show page
+          this.getShowResults(streamerUrl.url, streamer, altNames[0], (result) => {
+
+            // Merge show into final result
+            Object.keys(result).forEach((key) => {
+              if (streamer.id === 'myanimelist' || typeof finalResult[key] === 'undefined') {
+                finalResult[key] = result[key];
+              }
+            });
+
+            // Check if done
+            streamerUrlsDone++;
+            if (streamerUrlsDone === streamerUrls.length) {
+              resultCallback(finalResult);
+            }
+
+          });
+        });
+      }
+
+    });
+  }
 }
