@@ -1,4 +1,5 @@
 import Cheerio from 'cheerio';
+import { Shows } from '/imports/api/shows/shows.js';
 import { myanimelist } from './myanimelist';
 import { kissanime } from './kissanime';
 
@@ -176,9 +177,32 @@ export default class Streamers {
           // Download and process show page
           this.getShowResults(streamerUrl.url, streamer, altNames[0], (result) => {
 
+            // Merge altNames and streamerUrls into working set
+            if (result.altNames) {
+              result.altNames.forEach((altName) => {
+                if (!altNames.includes(altName)) {
+                  altNames.push(altName);
+                }
+              });
+            }
+            if (result.streamerUrls) {
+              result.streamerUrls.forEach((streamerUrl) => {
+                if (!streamerUrls.hasPartialObjects({id: streamerUrl.id, type: streamerUrl.type})) {
+                  streamerUrls.push(streamerUrl);
+                }
+              });
+            }
+
             // Merge show into final result
             Object.keys(result).forEach((key) => {
-              if (streamer.id === 'myanimelist' || typeof finalResult[key] === 'undefined') {
+              if (Shows.arrayKeys.includes(key)) {
+                if (typeof finalResult[key] === 'undefined') {
+                  finalResult[key] = result[key];
+                } else {
+                  finalResult[key] = finalResult[key].concat(result[key]);
+                }
+              }
+              else if (streamer.id === 'myanimelist' || typeof finalResult[key] === 'undefined') {
                 finalResult[key] = result[key];
               }
             });
