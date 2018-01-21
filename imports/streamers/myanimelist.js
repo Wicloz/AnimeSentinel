@@ -1,4 +1,5 @@
 import {Shows} from '/imports/api/shows/shows.js';
+import Cheerio from "cheerio";
 
 export let myanimelist = {
   // General data
@@ -31,5 +32,28 @@ export let myanimelist = {
   // Show page data
   showCheckIfPage: function(page) {
     return page('meta[property="og:url"]').attr('content').match(/^https*:\/\/myanimelist.net\/anime\/[0-9]+\/.*$/);
-  }
+  },
+
+  // Show page attribute data
+  showSelectorUrl: 'div.breadcrumb div:last-of-type a',
+  showAttributeUrl: function(partial) {
+    return partial.attr('href').replace(/\/[^\/]*$/, '');
+  },
+  showAttributeUrlType: 'multi',
+  showSelectorName: 'div#contentWrapper div:first-of-type h1 span',
+  showAttributeName: function(partial) {
+    return partial.text();
+  },
+  showSelectorAltNames: 'td.borderClass div.js-scrollfix-bottom',
+  showAttributeAltNames: function(partial) {
+    return partial.find('div.spaceit_pad').map((index, element) => {
+      let altNames = Cheerio.load(element);
+      altNames('span').remove();
+      return altNames.text().split(', ');
+    }).get();
+  },
+  showSelectorDescription: 'td span[itemprop=description]',
+  showAttributeDescription: function(partial) {
+    return partial.html();
+  },
 };
