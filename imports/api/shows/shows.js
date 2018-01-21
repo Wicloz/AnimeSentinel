@@ -13,8 +13,21 @@ Schemas.Show = new SimpleSchema({
   },
   streamerUrls: {
     type: Array,
-    defaultValue: [],
-    optional: true
+    optional: true,
+    autoValue: function() {
+      if (!this.isSet) {
+        return [];
+      }
+      return this.value.reduce((total, value) => {
+        if (!total.hasPartialObjects({
+            id: value.id,
+            type: value.type
+          })) {
+          total.push(value);
+        }
+        return total;
+      }, []);
+    }
   },
   'streamerUrls.$': {
     type: Object
@@ -34,7 +47,19 @@ Schemas.Show = new SimpleSchema({
   },
   altNames: {
     type: Array,
-    minCount: 1
+    minCount: 1,
+    autoValue: function() {
+      if (!this.isSet) {
+        return undefined;
+      }
+      return this.value.reduce((total, value) => {
+        value = value.trim();
+        if (!total.includes(value)) {
+          total.push(value);
+        }
+        return total;
+      }, []);
+    }
   },
   'altNames.$': {
     type: String
