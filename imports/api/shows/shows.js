@@ -95,6 +95,9 @@ if (Meteor.isServer) {
 }
 
 // Constants
+Shows.arrayKeys = Schemas.Show._schemaKeys.filter((key) => {
+  return !key.includes('.') && Schemas.Show._schema[key].type.definitions[0].type.toString().includes('Array()');
+});
 Shows.descriptionCutoff = '&#x2026; (read more)';
 Shows.timeUntilRecache = 86400000; // 1 day
 Shows.maxUpdateTime = 600000; // 10 minutes
@@ -118,8 +121,9 @@ Shows.helpers({
   mergePartialShow(other) {
     // Create and clean a clone
     let otherForUpdate = JSON.parse(JSON.stringify(other));
-    delete otherForUpdate.streamerUrls;
-    delete otherForUpdate.altNames;
+    Shows.arrayKeys.forEach((key) => {
+      delete otherForUpdate[key];
+    });
 
     Object.keys(otherForUpdate).forEach((key) => {
       if (this[key]) {
@@ -139,23 +143,28 @@ Shows.helpers({
       // Execute query
       Shows.update(this._id, {
         $set: otherForUpdate,
-        $addToSet: {
-          streamerUrls: {$each: other.streamerUrls},
-          altNames: {$each: other.altNames}
-        }
+        $addToSet: Shows.arrayKeys.reduce((total, key) => {
+          total[key] = {$each: other[key]};
+          return total;
+        }, {})
       });
 
       // Update this
       let show = Shows.findOne(this._id);
-      this.streamerUrls = show.streamerUrls;
-      this.altNames = show.altNames;
+      Shows.arrayKeys.forEach((key) => {
+        this[key] = show[key];
+      });
+    }
+    catch(err) {
+      console.log(err);
+    }
 
+    try {
       // Remove other from database
       if (other._id) {
         other.remove();
       }
     }
-
     catch(err) {
       console.log(err);
     }
@@ -201,7 +210,7 @@ Shows.addPartialShow = function(show) {
     let othersPartial = [];
 
     others.forEach((other) => {
-      if (other.fullUpdateEnd || other.fullUpdateStart) {
+      if (other.fullUpdateStart) {
         othersFull.push(other);
       } else {
         othersPartial.push(other);
