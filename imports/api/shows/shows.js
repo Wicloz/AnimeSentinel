@@ -202,6 +202,8 @@ Shows.helpers({
           $set: this
         });
 
+        // TODO: Merge and remove duplicate shows
+
       }, (partial) => {
         // Insert any partial results found in the process
         Shows.addPartialShow(partial);
