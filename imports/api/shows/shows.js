@@ -308,6 +308,13 @@ Shows.queryMatchingAlts = function(names) {
     }
   }).validate({names});
 
+  // Split names on commas
+  names.forEach((name) => {
+    if (name.includes(', ')) {
+      names = names.concat(name.split(', '));
+    }
+  });
+
   // Process names to regex
   names = names.map((name) => {
     // allow matching of ' and ', ' to ', ' und ' and '&' to each other
