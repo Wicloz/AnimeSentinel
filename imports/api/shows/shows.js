@@ -105,8 +105,8 @@ if (Meteor.isServer) {
 }
 
 // Constants
-Shows.arrayKeys = Schemas.Show._schemaKeys.filter((key) => {
-  return !key.includes('.') && Schemas.Show._schema[key].type.definitions[0].type.toString().includes('Array()');
+Shows.arrayKeys = Shows.simpleSchema()._schemaKeys.filter((key) => {
+  return !key.includes('.') && Shows.simpleSchema()._schema[key].type.definitions[0].type.toString().includes('Array()');
 });
 Shows.descriptionCutoff = '&#x2026; (read more)';
 Shows.timeUntilRecache = 86400000; // 1 day
@@ -129,54 +129,34 @@ Shows.helpers({
   },
 
   mergePartialShow(other) {
-    // Create and clean a clone
-    let otherForUpdate = JSON.parse(JSON.stringify(other));
-    Shows.arrayKeys.forEach((key) => {
-      delete otherForUpdate[key];
-    });
-
-    Object.keys(otherForUpdate).forEach((key) => {
-      if (this[key]) {
-        delete otherForUpdate[key];
-      } else {
+    // Copy and merge attributes
+    Object.keys(other).forEach((key) => {
+      if (typeof this[key] === 'undefined') {
         this[key] = other[key];
+      }
+      else if (Shows.arrayKeys.includes(key)) {
+        this[key] = this[key].concat(other[key]);
       }
     });
 
     // Determine if the description should be replaced
     if (this.description && other.description && this.description.endsWith(Shows.descriptionCutoff) && other.description.length > this.description.length) {
       this.description = other.description;
-      otherForUpdate.description = other.description;
     }
 
-    try {
-      // Execute query
-      Shows.update(this._id, {
-        $set: otherForUpdate,
-        $addToSet: Shows.arrayKeys.reduce((total, key) => {
-          total[key] = {$each: other[key]};
-          return total;
-        }, {})
-      });
+    // Update database
+    Shows.update({
+      _id: this._id,
+      fullUpdateStart: this.fullUpdateStart
+    }, {
+      $set: Shows.simpleSchema().clean(this, {
+        mutate: true
+      })
+    });
 
-      // Update this
-      let show = Shows.findOne(this._id);
-      Shows.arrayKeys.forEach((key) => {
-        this[key] = show[key];
-      });
-    }
-    catch(err) {
-      console.log(err);
-    }
-
-    try {
-      // Remove other from database
-      if (other._id) {
-        other.remove();
-      }
-    }
-    catch(err) {
-      console.log(err);
+    // Remove other from database
+    if (other._id) {
+      other.remove();
     }
   },
 
@@ -191,15 +171,20 @@ Shows.helpers({
     if (Meteor.isServer) { // TODO: remove when downloads are fixed
       Streamers.createFullShow(this.altNames, this.streamerUrls, (show) => {
 
-        // Copy existing fields
+        // Replace existing fields
         Object.keys(show).forEach((key) => {
           this[key] = show[key];
         });
 
-        // Insert result
+        // Update result
         this.fullUpdateEnd = moment().toDate();
-        Shows.upsert(this._id, {
-          $set: this
+        Shows.update({
+          _id: this._id,
+          fullUpdateStart: this.fullUpdateStart
+        }, {
+          $set: Shows.simpleSchema().clean(this, {
+            mutate: true
+          })
         });
 
         // TODO: Merge and remove duplicate shows

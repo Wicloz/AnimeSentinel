@@ -71,8 +71,10 @@ export default class Streamers {
                 }
 
                 // Clean and validate result
-                result = Schemas.Show.clean(result);
-                Schemas.Show.validate(result);
+                Shows.simpleSchema().clean(result, {
+                  mutate: true
+                });
+                Shows.simpleSchema().validate(result);
 
                 // Add results to array
                 results.push(result);
@@ -137,8 +139,10 @@ export default class Streamers {
               result['altNames'] = [result['name']];
 
               // Clean and validate result
-              result = Schemas.Show.clean(result);
-              Schemas.Show.validate(result);
+              Shows.simpleSchema().clean(result, {
+                mutate: true
+              });
+              Shows.simpleSchema().validate(result);
 
               // Add results to array
               results.partial.push(result);
@@ -194,8 +198,10 @@ export default class Streamers {
         }
 
         // Clean and validate result
-        result = Schemas.Show.clean(result);
-        Schemas.Show.validate(result);
+        Shows.simpleSchema().clean(result, {
+          mutate: true
+        });
+        Shows.simpleSchema().validate(result);
 
         // Store result
         results.full = result;
@@ -285,7 +291,9 @@ export default class Streamers {
             });
 
             // Clean the working result
-            finalResult = Schemas.Show.clean(finalResult);
+            Shows.simpleSchema().clean(finalResult, {
+              mutate: true
+            });
           }
 
           // Check if done
