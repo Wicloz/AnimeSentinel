@@ -271,7 +271,7 @@ Shows.querySearch = function(query, limit) { // TODO: Improve searching
   if (query) {
     if (Meteor.isServer) {
       selector.$text = {
-        $search: '"' + query.replace('-', ' ') + '"',
+        $search: '"' + query.replace(/\s-([^\s])/g, ' $1') + '"',
         $language: 'english',
       };
       options.fields = {
