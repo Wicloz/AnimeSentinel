@@ -164,59 +164,58 @@ export default class Streamers {
   }
 
   static createFullShow(altNames, streamerUrls, resultCallback, partialCallback) {
-    let streamerUrlsDone = 0;
-    let finalResult = {};
+    let streamerUrlsToDo = streamerUrls.length;
+    let finalResult = {
+      streamerUrls: streamerUrls
+    };
 
-    // For each streamer
-    streamers.forEach((streamer) => {
+    // For each streamer for which the url is known
+    streamers.filter((streamer) => {
+      return streamerUrls.hasPartialObjects({id: streamer.id});
+    }).forEach((streamer) => {
+      // For each different url
+      streamerUrls.getPartialObjects({id: streamer.id}).forEach((streamerUrl) => {
+        // Download and process show page
+        this.getShowResults(streamerUrl.url, streamer, altNames[0], (result) => {
 
-      // If the url is already known
-      if (streamerUrls.hasPartialObjects({id: streamer.id})) {
-        // For each different url
-        streamerUrls.getPartialObjects({id: streamer.id}).forEach((streamerUrl) => {
-          // Download and process show page
-          this.getShowResults(streamerUrl.url, streamer, altNames[0], (result) => {
-
-            // Merge altNames and streamerUrls into working set
-            if (result.altNames) {
-              result.altNames.forEach((altName) => {
-                if (!altNames.includes(altName)) {
-                  altNames.push(altName);
-                }
-              });
-            }
-            if (result.streamerUrls) {
-              result.streamerUrls.forEach((streamerUrl) => {
-                if (!streamerUrls.hasPartialObjects({id: streamerUrl.id, type: streamerUrl.type})) {
-                  streamerUrls.push(streamerUrl);
-                }
-              });
-            }
-
-            // Merge show into final result
-            Object.keys(result).forEach((key) => {
-              if (Shows.arrayKeys.includes(key)) {
-                if (typeof finalResult[key] === 'undefined') {
-                  finalResult[key] = result[key];
-                } else {
-                  finalResult[key] = finalResult[key].concat(result[key]);
-                }
-              }
-              else if (streamer.id === 'myanimelist' || typeof finalResult[key] === 'undefined') {
-                finalResult[key] = result[key];
+          // Merge altNames and streamerUrls into working set
+          if (result.altNames) {
+            result.altNames.forEach((altName) => {
+              if (!altNames.includes(altName)) {
+                altNames.push(altName);
               }
             });
+          }
+          if (result.streamerUrls) {
+            result.streamerUrls.forEach((streamerUrl) => {
+              if (!streamerUrls.hasPartialObjects({id: streamerUrl.id, type: streamerUrl.type})) {
+                streamerUrls.push(streamerUrl);
+              }
+            });
+          }
 
-            // Check if done
-            streamerUrlsDone++;
-            if (streamerUrlsDone === streamerUrls.length) {
-              resultCallback(finalResult);
+          // Merge show into final result
+          Object.keys(result).forEach((key) => {
+            if (Shows.arrayKeys.includes(key)) {
+              if (typeof finalResult[key] === 'undefined') {
+                finalResult[key] = result[key];
+              } else {
+                finalResult[key] = finalResult[key].concat(result[key]);
+              }
             }
-
+            else if (streamer.id === 'myanimelist' || typeof finalResult[key] === 'undefined') {
+              finalResult[key] = result[key];
+            }
           });
-        });
-      }
 
+          // Check if done
+          streamerUrlsToDo--;
+          if (streamerUrlsToDo === 0) {
+            resultCallback(finalResult);
+          }
+
+        });
+      });
     });
   }
 }
