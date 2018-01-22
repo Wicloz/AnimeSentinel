@@ -9,7 +9,7 @@ export let kissanime = {
 
   // Search page data
   searchCreateUrl: function(query) {
-    return 'http://kissanime.ru/Search/Anime?keyword=' + query.replace(/\s/g, '+');
+    return 'http://kissanime.ru/Search/Anime?keyword=' + encodeURIComponent(query).replace(/%20/g, '+');
   },
   searchRowSelector: 'table.listing tbody tr',
   searchRowSkips: 2,

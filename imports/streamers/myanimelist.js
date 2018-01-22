@@ -9,7 +9,7 @@ export let myanimelist = {
 
   // Search page data
   searchCreateUrl: function(query) {
-    return 'https://myanimelist.net/anime.php?q=' + query.replace(/\s/g, '+') + '&type=0&score=0&status=0&p=0&r=0&sm=0&sd=0&sy=0&em=0&ed=0&ey=0&c[]=a&c[]=b&c[]=c&c[]=d&c[]=e&c[]=f&c[]=g&gx=1&genre[]=12';
+    return 'https://myanimelist.net/anime.php?q=' + encodeURIComponent(query).replace(/%20/g, '+') + '&type=0&score=0&status=0&p=0&r=0&sm=0&sd=0&sy=0&em=0&ed=0&ey=0&c[]=a&c[]=b&c[]=c&c[]=d&c[]=e&c[]=f&c[]=g&gx=1&genre[]=12';
   },
   searchRowSelector: '.js-block-list.list table tbody tr',
   searchRowSkips: 1,
