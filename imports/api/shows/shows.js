@@ -16,6 +16,13 @@ Schemas.Show = new SimpleSchema({
     type: Date,
     optional: true
   },
+  malId: {
+    type: Number,
+    optional: true,
+    index: true,
+    unique: true,
+    sparse: true
+  },
   streamerUrls: {
     type: Array,
     minCount: 1,
@@ -57,6 +64,7 @@ Schemas.Show = new SimpleSchema({
   },
   altNames: {
     type: Array,
+    index: 'text',
     minCount: 1,
     autoValue: function() {
       if (!this.isSet) {
@@ -97,12 +105,6 @@ Schemas.Show = new SimpleSchema({
 // Collection
 export const Shows = new Mongo.Collection('shows');
 Shows.attachSchema(Schemas.Show);
-
-if (Meteor.isServer) {
-  Shows._ensureIndex({
-    altNames: 'text'
-  });
-}
 
 // Constants
 Shows.arrayKeys = Shows.simpleSchema()._schemaKeys.filter((key) => {
