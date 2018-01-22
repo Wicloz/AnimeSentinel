@@ -10,6 +10,13 @@
           <a href="{{pathFor 'show' showId=_id}}">{{name}}</a>
           <p>[{{altNames}}]</p>
           <p>{{{description}}}</p>
+          <p>
+            {{#each streamerUrls}}
+              {{#if hasShowInfo}}
+                <a href="{{url}}">{{id}}</a>;
+              {{/if}}
+            {{/each}}
+          </p>
         </li>
       {{/each}}
     </ul>

@@ -1,9 +1,45 @@
 <template name="pages_show">
   <div class="container">
     <ul class="collection">
-      <li class="collection-item">{{show.name}}</li>
-      <li class="collection-item">[{{show.altNames}}]</li>
-      <li class="collection-item">{{{show.description}}}</li>
+      <li class="collection-item">
+        <p>Name:</p>
+        <p>{{show.name}}</p>
+      </li>
+      <li class="collection-item">
+        <p>Alternative Names:</p>
+        <p>
+          <ul>
+            {{#each show.altNames}}
+              <li>{{this}}</li>
+            {{/each}}
+          </ul>
+        </p>
+      </li>
+      <li class="collection-item">
+        <p>Description:</p>
+        <p>{{{show.description}}}</p>
+      </li>
+      <li class="collection-item">
+        <p>Streamers:</p>
+        <p>
+          <ul>
+            {{#each show.streamerUrls}}
+              <li>
+                <a href="{{url}}">{{id}}</a>
+                ({{hasShowInfo}}, {{hasEpisodeInfo}})
+              </li>
+            {{/each}}
+          </ul>
+        </p>
+      </li>
+      <li class="collection-item">
+        <p>Update State:</p>
+        <p>
+          Last Start - {{show.fullUpdateStart}}
+          <br>
+          Last End - {{show.fullUpdateEnd}}
+        </p>
+      </li>
     </ul>
   </div>
 
