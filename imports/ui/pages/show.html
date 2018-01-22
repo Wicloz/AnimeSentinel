@@ -20,12 +20,16 @@
         <p>{{{show.description}}}</p>
       </li>
       <li class="collection-item">
+        <p>Type:</p>
+        <p>{{show.type}}</p>
+      </li>
+      <li class="collection-item">
         <p>Streamers:</p>
         <p>
           <ul>
             {{#each show.streamerUrls}}
               <li>
-                <a href="{{url}}">{{id}}</a>
+                <a target="_blank" href="{{url}}">{{id}}</a>
                 ({{hasShowInfo}}, {{hasEpisodeInfo}})
               </li>
             {{/each}}

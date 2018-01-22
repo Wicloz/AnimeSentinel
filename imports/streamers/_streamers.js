@@ -62,6 +62,13 @@ export default class Streamers {
                 if (streamer.searchSelectorDescription) {
                   result['description'] = streamer.searchAttributeDescription(page(element).find(streamer.searchSelectorDescription));
                 }
+                // Get 'type'
+                if (streamer.searchSelectorType) {
+                  result['type'] = streamer.searchAttributeType(page(element).find(streamer.searchSelectorType));
+                  if (result['type'] && result['type'].cleanWhitespace() === 'Music') {
+                    return;
+                  }
+                }
 
                 // Clean and validate result
                 result = Schemas.Show.clean(result);
@@ -100,47 +107,6 @@ export default class Streamers {
       try {
         // Load page
         let page = Cheerio.load(html);
-
-        // Create empty result
-        let result = {};
-
-        // Get the urls
-        result['streamerUrls'] = [];
-        if (streamer.showSelectorInformationUrl) {
-          result['streamerUrls'].push({
-            id: streamer.id,
-            hasShowInfo: true,
-            url: streamer.showAttributeInformationUrl(page(streamer.showSelectorInformationUrl)),
-          });
-        }
-        result['streamerUrls'].push({
-          id: streamer.id,
-          hasShowInfo: !streamer.showSelectorInformationUrl,
-          hasEpisodeInfo: streamer.showSelectorEpisodeUrlType ? streamer.showAttributeEpisodeUrlType(page(streamer.showSelectorEpisodeUrlType)) : streamer.showAttributeEpisodeUrlType,
-          url: streamer.showAttributeEpisodeUrl(page(streamer.showSelectorEpisodeUrl)),
-        });
-
-        // Get 'name'
-        result['name'] = streamer.showAttributeName(page(streamer.showSelectorName));
-        // Get 'altNames'
-        if (streamer.showSelectorAltNames) {
-          result['altNames'] = streamer.showAttributeAltNames(page(streamer.showSelectorAltNames));
-        } else {
-          result['altNames'] = [];
-        }
-        result['altNames'].push(result['name']);
-
-        // Get 'description'
-        if (streamer.showSelectorDescription) {
-          result['description'] = streamer.showAttributeDescription(page(streamer.showSelectorDescription));
-        }
-
-        // Clean and validate result
-        result = Schemas.Show.clean(result);
-        Schemas.Show.validate(result);
-
-        // Store result
-        results.full = result;
 
         // For each related show
         page(streamer.relatedRowSelector).each((index, element) => {
@@ -185,6 +151,54 @@ export default class Streamers {
             }
           }
         });
+
+        // Create empty result
+        let result = {};
+
+        // Get the urls
+        result['streamerUrls'] = [];
+        if (streamer.showSelectorInformationUrl) {
+          result['streamerUrls'].push({
+            id: streamer.id,
+            hasShowInfo: true,
+            url: streamer.showAttributeInformationUrl(page(streamer.showSelectorInformationUrl)),
+          });
+        }
+        result['streamerUrls'].push({
+          id: streamer.id,
+          hasShowInfo: !streamer.showSelectorInformationUrl,
+          hasEpisodeInfo: streamer.showSelectorEpisodeUrlType ? streamer.showAttributeEpisodeUrlType(page(streamer.showSelectorEpisodeUrlType)) : streamer.showAttributeEpisodeUrlType,
+          url: streamer.showAttributeEpisodeUrl(page(streamer.showSelectorEpisodeUrl)),
+        });
+
+        // Get 'name'
+        result['name'] = streamer.showAttributeName(page(streamer.showSelectorName));
+        // Get 'altNames'
+        if (streamer.showSelectorAltNames) {
+          result['altNames'] = streamer.showAttributeAltNames(page(streamer.showSelectorAltNames));
+        } else {
+          result['altNames'] = [];
+        }
+        result['altNames'].push(result['name']);
+
+        // Get 'description'
+        if (streamer.showSelectorDescription) {
+          result['description'] = streamer.showAttributeDescription(page(streamer.showSelectorDescription));
+        }
+        // Get 'type'
+        if (streamer.showSelectorType) {
+          result['type'] = streamer.showAttributeType(page(streamer.showSelectorType));
+          if (result['type'] && result['type'].cleanWhitespace() === 'Music') {
+            return results;
+          }
+        }
+
+        // Clean and validate result
+        result = Schemas.Show.clean(result);
+        Schemas.Show.validate(result);
+
+        // Store result
+        results.full = result;
       }
 
       catch(err) {

@@ -63,6 +63,16 @@ export let kissanime = {
   showAttributeDescription: function(partial) {
     return partial.html();
   },
+  showSelectorType: '.bigBarContainer .barContent div:nth-of-type(2) p:nth-last-of-type(6)',
+  showAttributeType: function(partial) {
+    let genres = partial.text().split(':')[1].cleanWhitespace().split(', ');
+    let types = ['OVA', 'Movie', 'Special', 'ONA'];
+    for (let i = 0; i < types.length; i++) {
+      if (genres.includes(types[i])) {
+        return types[i];
+      }
+    }
+  },
 
   // Show page related attribute data
   relatedRowSelector: 'div#rightside div:nth-of-type(3) div.barContent div:nth-of-type(2) a',

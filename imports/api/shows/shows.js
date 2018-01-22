@@ -86,6 +86,11 @@ Schemas.Show = new SimpleSchema({
       desc('script').remove();
       return desc('body').html();
     }
+  },
+  type: {
+    type: String,
+    optional: true,
+    allowedValues: ['TV', 'OVA', 'Movie', 'Special', 'ONA']
   }
 }, { tracker: Tracker });
 

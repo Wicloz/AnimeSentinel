@@ -32,6 +32,10 @@ export let myanimelist = {
   searchAttributeDescription: function(partial) {
     return partial.text().replace(/\.\.\.read more\.$/, Shows.descriptionCutoff);
   },
+  searchSelectorType: 'td[width=45]',
+  searchAttributeType: function(partial) {
+    return partial.text().replace(/Unknown/g, '');
+  },
 
   // Show page data
   showCheckIfPage: function(page) {
@@ -63,6 +67,10 @@ export let myanimelist = {
   showSelectorDescription: 'td span[itemprop=description]',
   showAttributeDescription: function(partial) {
     return partial.html();
+  },
+  showSelectorType: 'td.borderClass div.js-scrollfix-bottom div:nth-of-type(6)',
+  showAttributeType: function(partial) {
+    return partial.text().split(':')[1].replace(/Unknown/g, '');
   },
 
   // Show page related attribute data
