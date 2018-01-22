@@ -69,6 +69,10 @@ export default class Streamers {
                     return;
                   }
                 }
+                // Get 'malId'
+                if (streamer.searchSelectorMalId) {
+                  result['malId'] = streamer.searchAttributeMalId(page(element).find(streamer.searchSelectorMalId));
+                }
 
                 // Clean and validate result
                 Shows.simpleSchema().clean(result, {
@@ -137,6 +141,10 @@ export default class Streamers {
               result['name'] = streamer.relatedAttributeName(page(element));
               // Get 'altNames'
               result['altNames'] = [result['name']];
+              // Get 'malId'
+              if (streamer.relatedAttributeMalId) {
+                result['malId'] = streamer.relatedAttributeMalId(page(element));
+              }
 
               // Clean and validate result
               Shows.simpleSchema().clean(result, {
@@ -195,6 +203,10 @@ export default class Streamers {
           if (result['type'] && result['type'].cleanWhitespace() === 'Music') {
             return results;
           }
+        }
+        // Get 'malId'
+        if (streamer.showSelectorMalId) {
+          result['malId'] = streamer.showAttributeMalId(page(streamer.showSelectorMalId));
         }
 
         // Clean and validate result

@@ -36,6 +36,10 @@ export let myanimelist = {
   searchAttributeType: function(partial) {
     return partial.text().replace(/Unknown/g, '');
   },
+  searchSelectorMalId: 'td a.hoverinfo_trigger',
+  searchAttributeMalId: function(partial) {
+    return partial.attr('href').replace(/^.*\/([0-9]+)\/.*$/, '$1');
+  },
 
   // Show page data
   showCheckIfPage: function(page) {
@@ -72,6 +76,10 @@ export let myanimelist = {
   showAttributeType: function(partial) {
     return partial.text().split(':')[1].replace(/Unknown/g, '');
   },
+  showSelectorMalId: 'div.breadcrumb div:last-of-type a',
+  showAttributeMalId: function(partial) {
+    return partial.attr('href').replace(/^.*\/([0-9]+)\/.*$/, '$1');
+  },
 
   // Show page related attribute data
   relatedRowSelector: 'table.anime_detail_related_anime tbody a',
@@ -88,4 +96,7 @@ export let myanimelist = {
     return this.homepage.replace(/\/$/, '') + partial.attr('href').replace(/\/[^\/]*$/, '') + '/X/video';
   },
   relatedAttributeEpisodeUrlType: 'multi',
+  relatedAttributeMalId: function(partial) {
+    return partial.attr('href').replace(/^.*\/([0-9]+)\/.*$/, '$1');
+  },
 };
