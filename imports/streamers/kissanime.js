@@ -15,12 +15,12 @@ export let kissanime = {
   searchRowSkips: 2,
 
   // Search page attribute data
-  searchSelectorUrl: 'td:first-of-type a',
-  searchAttributeUrl: function(partial) {
+  searchSelectorEpisodeUrl: 'td:first-of-type a',
+  searchAttributeEpisodeUrl: function(partial) {
     return this.homepage.replace(/\/$/, '') + partial.attr('href');
   },
-  searchSelectorUrlType: 'td:first-of-type a',
-  searchAttributeUrlType: function(partial) {
+  searchSelectorEpisodeUrlType: 'td:first-of-type a',
+  searchAttributeEpisodeUrlType: function(partial) {
     return partial.text().match(/\(Dub\)$/) ? 'dub' : 'sub';
   },
   searchSelectorName: 'td:first-of-type a',
@@ -38,12 +38,12 @@ export let kissanime = {
   },
 
   // Show page attribute data
-  showSelectorUrl: 'a.bigChar',
-  showAttributeUrl: function(partial) {
+  showSelectorEpisodeUrl: 'a.bigChar',
+  showAttributeEpisodeUrl: function(partial) {
     return this.homepage.replace(/\/$/, '') + partial.attr('href');
   },
-  showSelectorUrlType: 'a.bigChar',
-  showAttributeUrlType: function(partial) {
+  showSelectorEpisodeUrlType: 'a.bigChar',
+  showAttributeEpisodeUrlType: function(partial) {
     return partial.text().match(/\(Dub\)$/) ? 'dub' : 'sub';
   },
   showSelectorName: 'a.bigChar',

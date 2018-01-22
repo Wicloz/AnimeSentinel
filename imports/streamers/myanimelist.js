@@ -15,11 +15,15 @@ export let myanimelist = {
   searchRowSkips: 1,
 
   // Search page attribute data
-  searchSelectorUrl: 'td a.hoverinfo_trigger',
-  searchAttributeUrl: function(partial) {
+  searchSelectorInformationUrl: 'td a.hoverinfo_trigger',
+  searchAttributeInformationUrl: function(partial) {
     return partial.attr('href').replace(/\/[^\/]*$/, '');
   },
-  searchAttributeUrlType: 'multi',
+  searchSelectorEpisodeUrl: 'td a.hoverinfo_trigger',
+  searchAttributeEpisodeUrl: function(partial) {
+    return partial.attr('href').replace(/\/[^\/]*$/, '') + '/X/video';
+  },
+  searchAttributeEpisodeUrlType: 'multi',
   searchSelectorName: 'td a.hoverinfo_trigger strong',
   searchAttributeName: function(partial) {
     return partial.text();
@@ -35,11 +39,15 @@ export let myanimelist = {
   },
 
   // Show page attribute data
-  showSelectorUrl: 'div.breadcrumb div:last-of-type a',
-  showAttributeUrl: function(partial) {
+  showSelectorInformationUrl: 'div.breadcrumb div:last-of-type a',
+  showAttributeInformationUrl: function(partial) {
     return partial.attr('href').replace(/\/[^\/]*$/, '');
   },
-  showAttributeUrlType: 'multi',
+  showSelectorEpisodeUrl: 'div.breadcrumb div:last-of-type a',
+  showAttributeEpisodeUrl: function(partial) {
+    return partial.attr('href').replace(/\/[^\/]*$/, '') + '/X/video';
+  },
+  showAttributeEpisodeUrlType: 'multi',
   showSelectorName: 'div#contentWrapper div:first-of-type h1 span',
   showAttributeName: function(partial) {
     return partial.text();

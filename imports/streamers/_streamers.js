@@ -31,12 +31,21 @@ export default class Streamers {
                 // Create empty result
                 let result = {};
 
-                // Get the url
-                result['streamerUrls'] = [{
+                // Get the urls
+                result['streamerUrls'] = [];
+                if (streamer.searchSelectorInformationUrl) {
+                  result['streamerUrls'].push({
+                    id: streamer.id,
+                    hasShowInfo: true,
+                    url: streamer.searchAttributeInformationUrl(page(element).find(streamer.searchSelectorInformationUrl)),
+                  });
+                }
+                result['streamerUrls'].push({
                   id: streamer.id,
-                  url: streamer.searchAttributeUrl(page(element).find(streamer.searchSelectorUrl)),
-                  type: streamer.searchSelectorUrlType ? streamer.searchAttributeUrlType(page(element).find(streamer.searchSelectorUrlType)) : streamer.searchAttributeUrlType,
-                }];
+                  hasShowInfo: !streamer.searchSelectorInformationUrl,
+                  hasEpisodeInfo: streamer.searchSelectorEpisodeUrlType ? streamer.searchAttributeEpisodeUrlType(page(element).find(streamer.searchSelectorEpisodeUrlType)) : streamer.searchAttributeEpisodeUrlType,
+                  url: streamer.searchAttributeEpisodeUrl(page(element).find(streamer.searchSelectorEpisodeUrl)),
+                });
 
                 // Get 'name'
                 result['name'] = streamer.searchAttributeName(page(element).find(streamer.searchSelectorName));
@@ -89,12 +98,21 @@ export default class Streamers {
         // Create empty result
         let result = {};
 
-        // Get the url
-        result['streamerUrls'] = [{
+        // Get the urls
+        result['streamerUrls'] = [];
+        if (streamer.showSelectorInformationUrl) {
+          result['streamerUrls'].push({
+            id: streamer.id,
+            hasShowInfo: true,
+            url: streamer.showAttributeInformationUrl(page(streamer.showSelectorInformationUrl)),
+          });
+        }
+        result['streamerUrls'].push({
           id: streamer.id,
-          url: streamer.showAttributeUrl(page(streamer.showSelectorUrl)),
-          type: streamer.showSelectorUrlType ? streamer.showAttributeUrlType(page(streamer.showSelectorUrlType)) : streamer.searchAttributeUrlType,
-        }];
+          hasShowInfo: !streamer.showSelectorInformationUrl,
+          hasEpisodeInfo: streamer.showSelectorEpisodeUrlType ? streamer.showAttributeEpisodeUrlType(page(streamer.showSelectorEpisodeUrlType)) : streamer.showAttributeEpisodeUrlType,
+          url: streamer.showAttributeEpisodeUrl(page(streamer.showSelectorEpisodeUrl)),
+        });
 
         // Get 'name'
         result['name'] = streamer.showAttributeName(page(streamer.showSelectorName));
@@ -164,32 +182,25 @@ export default class Streamers {
   }
 
   static createFullShow(altNames, streamerUrls, resultCallback, partialCallback) {
-    let streamerUrlsToDo = streamerUrls.length;
+    let streamerUrlsToDo = streamerUrls.getPartialObjects({hasShowInfo: true}).length;
     let finalResult = {
       streamerUrls: streamerUrls
     };
 
-    // For each streamer for which the url is known
+    // For each streamer for which the show info url is known
     streamers.filter((streamer) => {
-      return streamerUrls.hasPartialObjects({id: streamer.id});
+      return streamerUrls.hasPartialObjects({id: streamer.id, hasShowInfo: true});
     }).forEach((streamer) => {
-      // For each different url
-      streamerUrls.getPartialObjects({id: streamer.id}).forEach((streamerUrl) => {
+      // For each show info url
+      streamerUrls.getPartialObjects({id: streamer.id, hasShowInfo: true}).forEach((streamerUrl) => {
         // Download and process show page
         this.getShowResults(streamerUrl.url, streamer, altNames[0], (result) => {
 
-          // Merge altNames and streamerUrls into working set
+          // Merge altNames into working set
           if (result.altNames) {
             result.altNames.forEach((altName) => {
               if (!altNames.includes(altName)) {
                 altNames.push(altName);
-              }
-            });
-          }
-          if (result.streamerUrls) {
-            result.streamerUrls.forEach((streamerUrl) => {
-              if (!streamerUrls.hasPartialObjects({id: streamerUrl.id, type: streamerUrl.type})) {
-                streamerUrls.push(streamerUrl);
               }
             });
           }
@@ -207,6 +218,9 @@ export default class Streamers {
               finalResult[key] = result[key];
             }
           });
+
+          // Clean the working result
+          finalResult = Schemas.Show.clean(finalResult);
 
           // Check if done
           streamerUrlsToDo--;
