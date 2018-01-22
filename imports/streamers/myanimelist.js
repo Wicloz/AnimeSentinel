@@ -64,4 +64,20 @@ export let myanimelist = {
   showAttributeDescription: function(partial) {
     return partial.html();
   },
+
+  // Show page related attribute data
+  relatedRowSelector: 'table.anime_detail_related_anime tbody a',
+  relatedRowIgnore: function(partial) {
+    return partial.attr('href').startsWith('/manga/');
+  },
+  relatedAttributeName: function(partial) {
+    return partial.text();
+  },
+  relatedAttributeInformationUrl: function(partial) {
+    return this.homepage.replace(/\/$/, '') + partial.attr('href').replace(/\/[^\/]*$/, '');
+  },
+  relatedAttributeEpisodeUrl: function(partial) {
+    return this.homepage.replace(/\/$/, '') + partial.attr('href').replace(/\/[^\/]*$/, '') + '/X/video';
+  },
+  relatedAttributeEpisodeUrlType: 'multi',
 };

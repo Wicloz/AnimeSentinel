@@ -17,8 +17,9 @@ export default class Streamers {
         // Check if we have a show page
         if (streamer.showCheckIfPage(page)) {
           let result = this.processShowPage(html, streamer, logData);
-          if (result) {
-            results.push(result);
+          results.concat(result.partial);
+          if (result.full) {
+            results.push(result.full);
           }
         }
 
@@ -90,6 +91,11 @@ export default class Streamers {
   }
 
   static processShowPage(html, streamer, logData) {
+    let results = {
+      full: false,
+      partial: []
+    };
+
     if (html) {
       try {
         // Load page
@@ -133,8 +139,52 @@ export default class Streamers {
         result = Schemas.Show.clean(result);
         Schemas.Show.validate(result);
 
-        // Return result
-        return result;
+        // Store result
+        results.full = result;
+
+        // For each related show
+        page(streamer.relatedRowSelector).each((index, element) => {
+          if (!streamer.relatedRowIgnore(page(element))) {
+            try {
+              // Create empty result
+              let result = {};
+
+              // Get the urls
+              result['streamerUrls'] = [];
+              if (streamer.relatedAttributeInformationUrl) {
+                result['streamerUrls'].push({
+                  id: streamer.id,
+                  hasShowInfo: true,
+                  url: streamer.relatedAttributeInformationUrl(page(element)),
+                });
+              }
+              result['streamerUrls'].push({
+                id: streamer.id,
+                hasShowInfo: !streamer.relatedAttributeInformationUrl,
+                hasEpisodeInfo: typeof streamer.relatedAttributeEpisodeUrlType === 'function' ? streamer.relatedAttributeEpisodeUrlType(page(element).find(streamer)) : streamer.relatedAttributeEpisodeUrlType,
+                url: streamer.relatedAttributeEpisodeUrl(page(element)),
+              });
+
+              // Get 'name'
+              result['name'] = streamer.relatedAttributeName(page(element));
+              // Get 'altNames'
+              result['altNames'] = [result['name']];
+
+              // Clean and validate result
+              result = Schemas.Show.clean(result);
+              Schemas.Show.validate(result);
+
+              // Add results to array
+              results.partial.push(result);
+            }
+
+            catch(err) {
+              console.error('Failed to process show page for show: \'' + logData + '\' and streamer: \'' + streamer.id + '\'.');
+              console.error('Failed to process related row number ' + index + '.');
+              console.error(err);
+            }
+          }
+        });
       }
 
       catch(err) {
@@ -143,7 +193,7 @@ export default class Streamers {
       }
     }
 
-    return false;
+    return results;
   }
 
   static getSearchResults(url, streamer, logData, resultCallback) {
@@ -196,37 +246,44 @@ export default class Streamers {
         // Download and process show page
         this.getShowResults(streamerUrl.url, streamer, altNames[0], (result) => {
 
-          // Merge altNames into working set
-          if (result.altNames) {
-            result.altNames.forEach((altName) => {
-              if (!altNames.includes(altName)) {
-                altNames.push(altName);
+          if (result.full) {
+            // Merge altNames into working set
+            if (result.full.altNames) {
+              result.full.altNames.forEach((altName) => {
+                if (!altNames.includes(altName)) {
+                  altNames.push(altName);
+                }
+              });
+            }
+
+            // Merge show into final result
+            Object.keys(result.full).forEach((key) => {
+              if (Shows.arrayKeys.includes(key)) {
+                if (typeof finalResult[key] === 'undefined') {
+                  finalResult[key] = result.full[key];
+                } else {
+                  finalResult[key] = finalResult[key].concat(result.full[key]);
+                }
+              }
+              else if (streamer.id === 'myanimelist' || typeof finalResult[key] === 'undefined') {
+                finalResult[key] = result.full[key];
               }
             });
+
+            // Clean the working result
+            finalResult = Schemas.Show.clean(finalResult);
           }
-
-          // Merge show into final result
-          Object.keys(result).forEach((key) => {
-            if (Shows.arrayKeys.includes(key)) {
-              if (typeof finalResult[key] === 'undefined') {
-                finalResult[key] = result[key];
-              } else {
-                finalResult[key] = finalResult[key].concat(result[key]);
-              }
-            }
-            else if (streamer.id === 'myanimelist' || typeof finalResult[key] === 'undefined') {
-              finalResult[key] = result[key];
-            }
-          });
-
-          // Clean the working result
-          finalResult = Schemas.Show.clean(finalResult);
 
           // Check if done
           streamerUrlsToDo--;
           if (streamerUrlsToDo === 0) {
             resultCallback(finalResult);
           }
+
+          // Store partial results from show page
+          result.partial.forEach((partial) => {
+            partialCallback(partial);
+          })
 
         });
       });

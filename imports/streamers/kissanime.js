@@ -63,4 +63,19 @@ export let kissanime = {
   showAttributeDescription: function(partial) {
     return partial.html();
   },
+
+  // Show page related attribute data
+  relatedRowSelector: 'div#rightside div:nth-of-type(3) div.barContent div:nth-of-type(2) a',
+  relatedRowIgnore: function(partial) {
+    return partial.attr('href').count('/') > 2;
+  },
+  relatedAttributeName: function(partial) {
+    return partial.text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
+  },
+  relatedAttributeEpisodeUrl: function(partial) {
+    return this.homepage.replace(/\/$/, '') + partial.attr('href');
+  },
+  relatedAttributeEpisodeUrlType: function(partial) {
+    return partial.text().match(/\(Dub\)$/) ? 'dub' : 'sub';
+  },
 };
