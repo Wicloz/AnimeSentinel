@@ -8,16 +8,16 @@ Schemas.Show = new SimpleSchema({
     type: String,
     optional: true
   },
-  fullUpdateStart: {
+  lastUpdateStart: {
     type: Date,
     optional: true
   },
-  fullUpdateEnd: {
+  lastUpdateEnd: {
     type: Date,
     optional: true
   },
   malId: {
-    type: Number,
+    type: SimpleSchema.Integer,
     optional: true,
     index: true,
     unique: true,
@@ -122,12 +122,12 @@ Shows.helpers({
 
   expired() {
     let now = moment();
-    return (!this.locked() && (!this.fullUpdateStart || moment(this.fullUpdateEnd).add(Shows.timeUntilRecache) < now)) ||
-            (this.locked() && moment(this.fullUpdateStart).add(Shows.maxUpdateTime) < now);
+    return (!this.locked() && (!this.lastUpdateStart || moment(this.lastUpdateEnd).add(Shows.timeUntilRecache) < now)) ||
+            (this.locked() && moment(this.lastUpdateStart).add(Shows.maxUpdateTime) < now);
   },
 
   locked() {
-    return this.fullUpdateStart && (!this.fullUpdateEnd || this.fullUpdateStart > this.fullUpdateEnd);
+    return this.lastUpdateStart && (!this.lastUpdateEnd || this.lastUpdateStart > this.lastUpdateEnd);
   },
 
   mergePartialShow(other) {
@@ -149,7 +149,7 @@ Shows.helpers({
     // Update database
     Shows.update({
       _id: this._id,
-      fullUpdateStart: this.fullUpdateStart
+      lastUpdateStart: this.lastUpdateStart
     }, {
       $set: Shows.simpleSchema().clean(this, {
         mutate: true
@@ -163,10 +163,10 @@ Shows.helpers({
   },
 
   doUpdate() {
-    this.fullUpdateStart = moment().toDate();
+    this.lastUpdateStart = moment().toDate();
     Shows.update(this._id, {
       $set: {
-        fullUpdateStart: this.fullUpdateStart
+        lastUpdateStart: this.lastUpdateStart
       }
     });
 
@@ -179,10 +179,10 @@ Shows.helpers({
         });
 
         // Update result
-        this.fullUpdateEnd = moment().toDate();
+        this.lastUpdateEnd = moment().toDate();
         Shows.update({
           _id: this._id,
-          fullUpdateStart: this.fullUpdateStart
+          lastUpdateStart: this.lastUpdateStart
         }, {
           $set: Shows.simpleSchema().clean(this, {
             mutate: true
@@ -209,7 +209,7 @@ Shows.addPartialShow = function(show) {
     let othersPartial = [];
 
     others.forEach((other) => {
-      if (other.fullUpdateStart) {
+      if (other.lastUpdateStart) {
         othersFull.push(other);
       } else {
         othersPartial.push(other);

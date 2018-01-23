@@ -8,17 +8,17 @@ Schemas.Search = new SimpleSchema({
     type: String,
     optional: true
   },
+  lastSearchStart: {
+    type: Date,
+    optional: true
+  },
+  lastSearchEnd: {
+    type: Date,
+    optional: true
+  },
   query: {
     type: String,
     index: true
-  },
-  lastStart: {
-    type: Date,
-    optional: true
-  },
-  lastEnd: {
-    type: Date,
-    optional: true
   }
 }, { tracker: Tracker });
 
@@ -34,19 +34,19 @@ Searches.maxSearchTime = 30000; // 30 seconds
 Searches.helpers({
   expired() {
     let now = moment();
-    return (!this.busy() && (!this.lastStart || moment(this.lastEnd).add(Searches.timeUntilRecache) < now)) ||
-            (this.busy() && moment(this.lastStart).add(Searches.maxSearchTime) < now);
+    return (!this.busy() && (!this.lastSearchStart || moment(this.lastSearchEnd).add(Searches.timeUntilRecache) < now)) ||
+            (this.busy() && moment(this.lastSearchStart).add(Searches.maxSearchTime) < now);
   },
 
   busy() {
-    return this.lastStart && (!this.lastEnd || this.lastStart > this.lastEnd);
+    return this.lastSearchStart && (!this.lastSearchEnd || this.lastSearchStart > this.lastSearchEnd);
   },
 
   doSearch(query) {
-    this.lastStart = moment().toDate();
+    this.lastSearchStart = moment().toDate();
     Searches.update(this._id, {
       $set: {
-        lastStart: this.lastStart
+        lastSearchStart: this.lastSearchStart
       }
     });
 
@@ -56,10 +56,10 @@ Searches.helpers({
         Shows.addPartialShow(result);
       }, () => {
         // When done
-        this.lastEnd = moment().toDate();
+        this.lastSearchEnd = moment().toDate();
         Searches.update(this._id, {
           $set: {
-            lastEnd: this.lastEnd
+            lastSearchEnd: this.lastSearchEnd
           }
         });
       });
