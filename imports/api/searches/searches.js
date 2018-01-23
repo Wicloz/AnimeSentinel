@@ -9,7 +9,8 @@ Schemas.Search = new SimpleSchema({
     optional: true
   },
   query: {
-    type: String
+    type: String,
+    index: true
   },
   lastStart: {
     type: Date,
