@@ -22,6 +22,11 @@ Schemas.Episode = new SimpleSchema({
     type: Number,
     index: true
   },
+  translationType: {
+    type: String,
+    allowedValues: ['sub', 'dub', 'raw'],
+    index: true
+  },
   streamerId: {
     type: String
   },
