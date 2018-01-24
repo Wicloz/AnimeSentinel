@@ -63,9 +63,19 @@ export let kissanime = {
   showAttributeDescription: function(partial) {
     return partial.html();
   },
-  showSelectorType: '.bigBarContainer .barContent div:nth-of-type(2) p:nth-last-of-type(6)',
+  showSelectorType: '.bigBarContainer .barContent div:nth-of-type(2) p',
   showAttributeType: function(partial) {
-    let genres = partial.text().split(':')[1].cleanWhitespace().split(', ');
+    let genres = [];
+
+    partial.each((index, element) => {
+      let paragraph = Cheerio.load(element);
+      if (paragraph('span:first-of-type').text() === 'Genres:') {
+        genres = paragraph('a').map((index, element) => {
+          return Cheerio.load(element).text();
+        }).get();
+      }
+    });
+
     let types = ['OVA', 'Movie', 'Special', 'ONA'];
     for (let i = 0; i < types.length; i++) {
       if (genres.includes(types[i])) {
