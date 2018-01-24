@@ -1,5 +1,4 @@
 import SimpleSchema from 'simpl-schema';
-import {Shows} from "../shows/shows";
 
 // Schema
 Schemas.Episode = new SimpleSchema({
@@ -51,8 +50,8 @@ export const Episodes = new Mongo.Collection('episodes');
 Episodes.attachSchema(Schemas.Episode);
 
 // Constants
-Shows.timeUntilRecache = 86400000; // 1 day
-Shows.maxUpdateTime = 600000; // 10 minutes
+Episodes.timeUntilRecache = 86400000; // 1 day
+Episodes.maxUpdateTime = 600000; // 10 minutes
 
 // Helpers
 Episodes.helpers({
