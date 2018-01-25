@@ -123,27 +123,27 @@ export default class Streamers {
 
               // Get the urls
               result['streamerUrls'] = [];
-              if (streamer.related.attributes.informationUrl) {
+              if (streamer.show.related.attributes.informationUrl) {
                 result['streamerUrls'].push({
                   id: streamer.id,
                   hasShowInfo: true,
-                  url: streamer.related.attributes.informationUrl(page(element)),
+                  url: streamer.show.related.attributes.informationUrl(page(element)),
                 });
               }
               result['streamerUrls'].push({
                 id: streamer.id,
-                hasShowInfo: !streamer.related.attributes.informationUrl,
-                hasEpisodeInfo: streamer.related.attributes.episodeUrlType(page(element)),
-                url: streamer.related.attributes.episodeUrl(page(element)),
+                hasShowInfo: !streamer.show.related.attributes.informationUrl,
+                hasEpisodeInfo: streamer.show.related.attributes.episodeUrlType(page(element)),
+                url: streamer.show.related.attributes.episodeUrl(page(element)),
               });
 
               // Get 'name'
-              result['name'] = streamer.related.attributes.name(page(element));
+              result['name'] = streamer.show.related.attributes.name(page(element));
               // Get 'altNames'
               result['altNames'] = [result['name']];
               // Get 'malId'
-              if (streamer.related.attributes.malId) {
-                result['malId'] = streamer.related.attributes.malId(page(element));
+              if (streamer.show.related.attributes.malId) {
+                result['malId'] = streamer.show.related.attributes.malId(page(element));
               }
 
               // Clean and validate result
