@@ -54,7 +54,7 @@ export let kissanime = {
           return [];
         }
         return partial.find('.bigBarContainer .barContent div:nth-of-type(2) p:first-of-type').find('a').map((index, element) => {
-          return Cheerio.load(element).text();
+          return partial.find(element).text();
         }).get();
       },
       description: function(partial) {
@@ -64,10 +64,10 @@ export let kissanime = {
         let genres = [];
 
         partial.find('.bigBarContainer .barContent div:nth-of-type(2) p').each((index, element) => {
-          let paragraph = Cheerio.load(element);
-          if (paragraph('span:first-of-type').text() === 'Genres:') {
-            genres = paragraph('a').map((index, element) => {
-              return Cheerio.load(element).text();
+          let paragraph = partial.find(element);
+          if (paragraph.find('span:first-of-type').text() === 'Genres:') {
+            genres = paragraph.find('a').map((index, element) => {
+              return partial.find(element).text();
             }).get();
           }
         });

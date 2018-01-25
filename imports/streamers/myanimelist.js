@@ -1,5 +1,4 @@
 import {Shows} from '/imports/api/shows/shows.js';
-import Cheerio from "cheerio";
 
 export let myanimelist = {
   // General data
@@ -63,8 +62,8 @@ export let myanimelist = {
       },
       altNames: function(partial) {
         return partial.find('td.borderClass div.js-scrollfix-bottom').find('div.spaceit_pad').map((index, element) => {
-          let altNames = Cheerio.load(element);
-          altNames('span').remove();
+          let altNames = partial.find(element);
+          altNames.find('span').remove();
           return altNames.text().split(', ');
         }).get();
       },
