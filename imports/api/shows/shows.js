@@ -325,7 +325,7 @@ Shows.queryMatchingAltsOrMalId = function(names, malId) {
   names = names.map((name) => {
     // allow matching of ' and ', ' to ', ' und ' and '&' to each other
     // allow matching of ': ' to ' '
-    let regex = '^' + RegExp.escape(name).replace(/: | /g, '(: | )').replace(/\(: \| \)and\(: \| \)|\(: \| \)und\(: \| \)|\(: \| \)to\(: \| \)|&/g, '((: | )and(: | )|(: | )und(: | )|(: | )to(: | )|&)') + '$';
+    let regex = '^' + RegExp.escape(name).replace(/: | /g, '(: | )').replace(/\(: \| \)and\(: \| \)|\(: \| \)und\(: \| \)|\(: \| \)to\(: \| \)|&/g, '((: | )and(: | )|(: | )und(: | )|(: | )to(: | )|(: ?| ?)&(: ?| ?))') + '$';
     // allow case insensitive matching
     return new RegExp(regex, 'i');
   });
