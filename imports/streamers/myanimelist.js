@@ -72,37 +72,45 @@ export let myanimelist = {
         return partial.find('td span[itemprop=description]').html();
       },
       type: function(partial) {
-        return partial.find('td.borderClass div.js-scrollfix-bottom div:nth-of-type(6)').text().split(':')[1].replace(/Unknown/g, '');
+        let type = undefined;
+        partial.find('td.borderClass div.js-scrollfix-bottom div').each((index, element) => {
+          let row = partial.find(element);
+          if (row.find('span').text() === 'Type:') {
+            row.find('span').remove();
+            type = row.text().replace(/Unknown/g, '');
+          }
+        });
+        return type;
       },
       malId: function(partial) {
         return partial.find('div.breadcrumb div:last-of-type a').attr('href').replace(/^.*\/([0-9]+)\/.*$/, '$1');
       },
     },
+  },
 
-    // Related shows data
-    related: {
-      rowSelector: 'table.anime_detail_related_anime tbody a',
-      rowIgnore: function(partial) {
-        return partial.attr('href').startsWith('/manga/');
+  // Related shows data
+  related: {
+    rowSelector: 'table.anime_detail_related_anime tbody a',
+    rowIgnore: function(partial) {
+      return partial.attr('href').startsWith('/manga/');
+    },
+
+    // Related shows attribute data
+    attributes: {
+      name: function(partial) {
+        return partial.text();
       },
-
-      // Related shows attribute data
-      attributes: {
-        name: function(partial) {
-          return partial.text();
-        },
-        informationUrl: function(partial) {
-          return myanimelist.homepage.replace(/\/$/, '') + partial.attr('href').replace(/\/[^\/]*$/, '');
-        },
-        episodeUrl: function(partial) {
-          return myanimelist.homepage.replace(/\/$/, '') + partial.attr('href').replace(/\/[^\/]*$/, '') + '/X/video';
-        },
-        episodeUrlType: function(partial) {
-          return 'multi';
-        },
-        malId: function(partial) {
-          return partial.attr('href').replace(/^.*\/([0-9]+)\/.*$/, '$1');
-        },
+      informationUrl: function(partial) {
+        return myanimelist.homepage.replace(/\/$/, '') + partial.attr('href').replace(/\/[^\/]*$/, '');
+      },
+      episodeUrl: function(partial) {
+        return myanimelist.homepage.replace(/\/$/, '') + partial.attr('href').replace(/\/[^\/]*$/, '') + '/X/video';
+      },
+      episodeUrlType: function(partial) {
+        return 'multi';
+      },
+      malId: function(partial) {
+        return partial.attr('href').replace(/^.*\/([0-9]+)\/.*$/, '$1');
       },
     },
   },
