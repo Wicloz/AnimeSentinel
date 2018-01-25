@@ -6,6 +6,63 @@ import { kissanime } from './kissanime';
 let streamers = [myanimelist, kissanime];
 
 export default class Streamers {
+  static convertCheerioToShow(cheerio, streamer, type) {
+    // Create empty show
+    let show = {};
+
+    // Get 'type'
+    if (streamer[type].attributes.type) {
+      show.type = streamer[type].attributes.type(cheerio);
+      if (show.type && show.type.cleanWhitespace() === 'Music') {
+        return false; // Reject music videos
+      }
+    }
+
+    // Get the urls
+    show.streamerUrls = [];
+    if (streamer[type].attributes.informationUrl) {
+      show.streamerUrls.push({
+        id: streamer.id,
+        hasShowInfo: true,
+        url: streamer[type].attributes.informationUrl(cheerio),
+      });
+    }
+    show.streamerUrls.push({
+      id: streamer.id,
+      hasShowInfo: !streamer[type].attributes.informationUrl,
+      hasEpisodeInfo: streamer[type].attributes.episodeUrlType(cheerio),
+      url: streamer[type].attributes.episodeUrl(cheerio),
+    });
+
+    // Get 'name'
+    show.name = streamer[type].attributes.name(cheerio);
+    // Get 'altNames'
+    if (streamer[type].attributes.altNames) {
+      show.altNames = streamer[type].attributes.altNames(cheerio);
+    } else {
+      show.altNames = [];
+    }
+    show.altNames.push(show.name);
+
+    // Get 'description'
+    if (streamer[type].attributes.description) {
+      show.description = streamer[type].attributes.description(cheerio);
+    }
+    // Get 'malId'
+    if (streamer[type].attributes.malId) {
+      show.malId = streamer[type].attributes.malId(cheerio);
+    }
+
+    // Clean and validate show
+    Shows.simpleSchema().clean(show, {
+      mutate: true
+    });
+    Shows.simpleSchema().validate(show);
+
+    // Return the show
+    return show;
+  }
+
   static processSearchPage(html, streamer, logData) {
     let results = [];
 
@@ -28,60 +85,12 @@ export default class Streamers {
           // For each row of data
           page(streamer.search.rowSelector).each((index, element) => {
             try {
-              if (index >= streamer.search.rowSkips) { // Skip table headers if required
-                // Create empty result
-                let result = {};
-
-                // Get the urls
-                result['streamerUrls'] = [];
-                if (streamer.search.attributes.informationUrl) {
-                  result['streamerUrls'].push({
-                    id: streamer.id,
-                    hasShowInfo: true,
-                    url: streamer.search.attributes.informationUrl(page(element)),
-                  });
+              if (index >= streamer.search.rowSkips) {
+                // Create and add show
+                let result = this.convertCheerioToShow(page(element), streamer, 'search');
+                if (result) {
+                  results.push(result);
                 }
-                result['streamerUrls'].push({
-                  id: streamer.id,
-                  hasShowInfo: !streamer.search.attributes.informationUrl,
-                  hasEpisodeInfo: streamer.search.attributes.episodeUrlType(page(element)),
-                  url: streamer.search.attributes.episodeUrl(page(element)),
-                });
-
-                // Get 'name'
-                result['name'] = streamer.search.attributes.name(page(element));
-                // Get 'altNames'
-                if (streamer.search.attributes.altNames) {
-                  result['altNames'] = streamer.search.attributes.altNames(page(element));
-                } else {
-                  result['altNames'] = [];
-                }
-                result['altNames'].push(result['name']);
-
-                // Get 'description'
-                if (streamer.search.attributes.description) {
-                  result['description'] = streamer.search.attributes.description(page(element));
-                }
-                // Get 'type'
-                if (streamer.search.attributes.type) {
-                  result['type'] = streamer.search.attributes.type(page(element));
-                  if (result['type'] && result['type'].cleanWhitespace() === 'Music') {
-                    return;
-                  }
-                }
-                // Get 'malId'
-                if (streamer.search.attributes.malId) {
-                  result['malId'] = streamer.search.attributes.malId(page(element));
-                }
-
-                // Clean and validate result
-                Shows.simpleSchema().clean(result, {
-                  mutate: true
-                });
-                Shows.simpleSchema().validate(result);
-
-                // Add results to array
-                results.push(result);
               }
             }
 
@@ -115,45 +124,14 @@ export default class Streamers {
         let page = Cheerio.load(html);
 
         // For each related show
-        page(streamer.show.related.rowSelector).each((index, element) => {
+        page(streamer.related.rowSelector).each((index, element) => {
           try {
-            if (!streamer.show.related.rowIgnore(page(element))) {
-              // Create empty result
-              let result = {};
-
-              // Get the urls
-              result['streamerUrls'] = [];
-              if (streamer.show.related.attributes.informationUrl) {
-                result['streamerUrls'].push({
-                  id: streamer.id,
-                  hasShowInfo: true,
-                  url: streamer.show.related.attributes.informationUrl(page(element)),
-                });
+            if (!streamer.related.rowIgnore(page(element))) {
+              // Create and add related show
+              let result = this.convertCheerioToShow(page(element), streamer, 'related');
+              if (result) {
+                results.partial.push(result);
               }
-              result['streamerUrls'].push({
-                id: streamer.id,
-                hasShowInfo: !streamer.show.related.attributes.informationUrl,
-                hasEpisodeInfo: streamer.show.related.attributes.episodeUrlType(page(element)),
-                url: streamer.show.related.attributes.episodeUrl(page(element)),
-              });
-
-              // Get 'name'
-              result['name'] = streamer.show.related.attributes.name(page(element));
-              // Get 'altNames'
-              result['altNames'] = [result['name']];
-              // Get 'malId'
-              if (streamer.show.related.attributes.malId) {
-                result['malId'] = streamer.show.related.attributes.malId(page(element));
-              }
-
-              // Clean and validate result
-              Shows.simpleSchema().clean(result, {
-                mutate: true
-              });
-              Shows.simpleSchema().validate(result);
-
-              // Add results to array
-              results.partial.push(result);
             }
           }
 
@@ -164,59 +142,11 @@ export default class Streamers {
           }
         });
 
-        // Create empty result
-        let result = {};
-
-        // Get the urls
-        result['streamerUrls'] = [];
-        if (streamer.show.attributes.informationUrl) {
-          result['streamerUrls'].push({
-            id: streamer.id,
-            hasShowInfo: true,
-            url: streamer.show.attributes.informationUrl(page('body')),
-          });
+        // Create and store show
+        let result = this.convertCheerioToShow(page('html'), streamer, 'show');
+        if (result) {
+          results.full = result;
         }
-        result['streamerUrls'].push({
-          id: streamer.id,
-          hasShowInfo: !streamer.show.attributes.informationUrl,
-          hasEpisodeInfo: streamer.show.attributes.episodeUrlType(page('body')),
-          url: streamer.show.attributes.episodeUrl(page('body')),
-        });
-
-        // Get 'name'
-        result['name'] = streamer.show.attributes.name(page('body'));
-        // Get 'altNames'
-        if (streamer.show.attributes.altNames) {
-          result['altNames'] = streamer.show.attributes.altNames(page('body'));
-        } else {
-          result['altNames'] = [];
-        }
-        result['altNames'].push(result['name']);
-
-        // Get 'description'
-        if (streamer.show.attributes.description) {
-          result['description'] = streamer.show.attributes.description(page('body'));
-        }
-        // Get 'type'
-        if (streamer.show.attributes.type) {
-          result['type'] = streamer.show.attributes.type(page('body'));
-          if (result['type'] && result['type'].cleanWhitespace() === 'Music') {
-            return results;
-          }
-        }
-        // Get 'malId'
-        if (streamer.show.attributes.malId) {
-          result['malId'] = streamer.show.attributes.malId(page('body'));
-        }
-
-        // Clean and validate result
-        Shows.simpleSchema().clean(result, {
-          mutate: true
-        });
-        Shows.simpleSchema().validate(result);
-
-        // Store result
-        results.full = result;
       }
 
       catch(err) {

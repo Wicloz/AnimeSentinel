@@ -80,25 +80,25 @@ export let kissanime = {
         }
       },
     },
+  },
 
-    // Related shows data
-    related: {
-      rowSelector: 'div#rightside div:nth-of-type(3) div.barContent div:nth-of-type(2) a',
-      rowIgnore: function(partial) {
-        return partial.attr('href').count('/') > 2;
+  // Related shows data
+  related: {
+    rowSelector: 'div#rightside div:nth-of-type(3) div.barContent div:nth-of-type(2) a',
+    rowIgnore: function(partial) {
+      return partial.attr('href').count('/') > 2;
+    },
+
+    // Related shows attribute data
+    attributes: {
+      name: function(partial) {
+        return partial.text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
       },
-
-      // Related shows attribute data
-      attributes: {
-        name: function(partial) {
-          return partial.text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
-        },
-        episodeUrl: function(partial) {
-          return kissanime.homepage.replace(/\/$/, '') + partial.attr('href');
-        },
-        episodeUrlType: function(partial) {
-          return partial.text().match(/\(Dub\)$/) ? 'dub' : 'sub';
-        },
+      episodeUrl: function(partial) {
+        return kissanime.homepage.replace(/\/$/, '') + partial.attr('href');
+      },
+      episodeUrlType: function(partial) {
+        return partial.text().match(/\(Dub\)$/) ? 'dub' : 'sub';
       },
     },
   },
