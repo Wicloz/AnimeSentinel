@@ -201,7 +201,7 @@ Shows.helpers({
 
 Shows.addPartialShow = function(show) {
   // Grab matching shows from database
-  let others = Shows.queryMatchingAlts(show.altNames);
+  let others = Shows.queryMatchingAltsOrMalId(show.altNames, show.malId);
 
   // Merge if shows were found
   if (others.count()) {
@@ -295,7 +295,7 @@ Shows.querySearch = function(query, limit) { // TODO: Improve searching
   return Shows.find(selector, options);
 };
 
-Shows.queryMatchingAlts = function(names) {
+Shows.queryMatchingAltsOrMalId = function(names, malId) {
   // Validate
   new SimpleSchema({
     names: {
@@ -304,8 +304,15 @@ Shows.queryMatchingAlts = function(names) {
     },
     'names.$': {
       type: String
+    },
+    malId: {
+      type: SimpleSchema.Integer,
+      optional: true
     }
-  }).validate({names});
+  }).validate({
+    names: names,
+    malId: malId
+  });
 
   // Split names on commas
   names.forEach((name) => {
@@ -324,9 +331,21 @@ Shows.queryMatchingAlts = function(names) {
   });
 
   // Return results cursor
-  return Shows.find({
-    altNames: {
-      $in: names
-    }
-  });
+  if (typeof malId === 'undefined') {
+    return Shows.find({
+      altNames: {
+        $in: names
+      }
+    });
+  } else {
+    return Shows.find({
+      $or: [{
+        altNames: {
+          $in: names
+        }
+      }, {
+        malId: malId
+      }]
+    });
+  }
 };
