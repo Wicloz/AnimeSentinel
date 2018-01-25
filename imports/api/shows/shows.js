@@ -201,10 +201,19 @@ Shows.helpers({
 
 Shows.addPartialShow = function(show) {
   // Grab matching shows from database
-  let others = Shows.queryMatchingAlts(show.altNames);
+  let others = Shows.queryMatchingAlts(show.altNames).fetch();
+  Shows.find({
+    malId: show.malId
+  }).fetch().forEach((other) => {
+    if (!others.hasPartialObjects({
+        _id: other._id
+      })) {
+      others.push(other);
+    }
+  });
 
   // Merge if shows were found
-  if (others.count()) {
+  if (!others.empty()) {
     let othersFull = [];
     let othersPartial = [];
 
