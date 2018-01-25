@@ -15,7 +15,7 @@ export default class Streamers {
         let page = Cheerio.load(html);
 
         // Check if we have a show page
-        if (streamer.showCheckIfPage(page)) {
+        if (streamer.show.checkIfPage(page)) {
           let result = this.processShowPage(html, streamer, logData);
           results.concat(result.partial);
           if (result.full) {
@@ -26,52 +26,52 @@ export default class Streamers {
         // Otherwise we have a search page
         else {
           // For each row of data
-          page(streamer.searchRowSelector).each((index, element) => {
-            if (index >= streamer.searchRowSkips) { // Skip table headers if required
-              try {
+          page(streamer.search.rowSelector).each((index, element) => {
+            try {
+              if (index >= streamer.search.rowSkips) { // Skip table headers if required
                 // Create empty result
                 let result = {};
 
                 // Get the urls
                 result['streamerUrls'] = [];
-                if (streamer.searchSelectorInformationUrl) {
+                if (streamer.search.attributes.informationUrl) {
                   result['streamerUrls'].push({
                     id: streamer.id,
                     hasShowInfo: true,
-                    url: streamer.searchAttributeInformationUrl(page(element).find(streamer.searchSelectorInformationUrl)),
+                    url: streamer.search.attributes.informationUrl(page(element)),
                   });
                 }
                 result['streamerUrls'].push({
                   id: streamer.id,
-                  hasShowInfo: !streamer.searchSelectorInformationUrl,
-                  hasEpisodeInfo: streamer.searchSelectorEpisodeUrlType ? streamer.searchAttributeEpisodeUrlType(page(element).find(streamer.searchSelectorEpisodeUrlType)) : streamer.searchAttributeEpisodeUrlType,
-                  url: streamer.searchAttributeEpisodeUrl(page(element).find(streamer.searchSelectorEpisodeUrl)),
+                  hasShowInfo: !streamer.search.attributes.informationUrl,
+                  hasEpisodeInfo: streamer.search.attributes.episodeUrlType(page(element)),
+                  url: streamer.search.attributes.episodeUrl(page(element)),
                 });
 
                 // Get 'name'
-                result['name'] = streamer.searchAttributeName(page(element).find(streamer.searchSelectorName));
+                result['name'] = streamer.search.attributes.name(page(element));
                 // Get 'altNames'
-                if (streamer.searchSelectorAltNames) {
-                  result['altNames'] = streamer.searchAttributeAltNames(page(element).find(streamer.searchSelectorAltNames));
+                if (streamer.search.attributes.altNames) {
+                  result['altNames'] = streamer.search.attributes.altNames(page(element));
                 } else {
                   result['altNames'] = [];
                 }
                 result['altNames'].push(result['name']);
 
                 // Get 'description'
-                if (streamer.searchSelectorDescription) {
-                  result['description'] = streamer.searchAttributeDescription(page(element).find(streamer.searchSelectorDescription));
+                if (streamer.search.attributes.description) {
+                  result['description'] = streamer.search.attributes.description(page(element));
                 }
                 // Get 'type'
-                if (streamer.searchSelectorType) {
-                  result['type'] = streamer.searchAttributeType(page(element).find(streamer.searchSelectorType));
+                if (streamer.search.attributes.type) {
+                  result['type'] = streamer.search.attributes.type(page(element));
                   if (result['type'] && result['type'].cleanWhitespace() === 'Music') {
                     return;
                   }
                 }
                 // Get 'malId'
-                if (streamer.searchSelectorMalId) {
-                  result['malId'] = streamer.searchAttributeMalId(page(element).find(streamer.searchSelectorMalId));
+                if (streamer.search.attributes.malId) {
+                  result['malId'] = streamer.search.attributes.malId(page(element));
                 }
 
                 // Clean and validate result
@@ -83,12 +83,12 @@ export default class Streamers {
                 // Add results to array
                 results.push(result);
               }
+            }
 
-              catch(err) {
-                console.error('Failed to process search page with query: \'' + logData + '\' and streamer: \'' + streamer.id + '\'.');
-                console.error('Failed to process row number ' + index + '.');
-                console.error(err);
-              }
+            catch(err) {
+              console.error('Failed to process search page with query: \'' + logData + '\' and streamer: \'' + streamer.id + '\'.');
+              console.error('Failed to process row number ' + index + '.');
+              console.error(err);
             }
           });
         }
@@ -115,35 +115,35 @@ export default class Streamers {
         let page = Cheerio.load(html);
 
         // For each related show
-        page(streamer.relatedRowSelector).each((index, element) => {
-          if (!streamer.relatedRowIgnore(page(element))) {
-            try {
+        page(streamer.show.related.rowSelector).each((index, element) => {
+          try {
+            if (!streamer.show.related.rowIgnore(page(element))) {
               // Create empty result
               let result = {};
 
               // Get the urls
               result['streamerUrls'] = [];
-              if (streamer.relatedAttributeInformationUrl) {
+              if (streamer.related.attributes.informationUrl) {
                 result['streamerUrls'].push({
                   id: streamer.id,
                   hasShowInfo: true,
-                  url: streamer.relatedAttributeInformationUrl(page(element)),
+                  url: streamer.related.attributes.informationUrl(page(element)),
                 });
               }
               result['streamerUrls'].push({
                 id: streamer.id,
-                hasShowInfo: !streamer.relatedAttributeInformationUrl,
-                hasEpisodeInfo: typeof streamer.relatedAttributeEpisodeUrlType === 'function' ? streamer.relatedAttributeEpisodeUrlType(page(element).find(streamer)) : streamer.relatedAttributeEpisodeUrlType,
-                url: streamer.relatedAttributeEpisodeUrl(page(element)),
+                hasShowInfo: !streamer.related.attributes.informationUrl,
+                hasEpisodeInfo: streamer.related.attributes.episodeUrlType(page(element)),
+                url: streamer.related.attributes.episodeUrl(page(element)),
               });
 
               // Get 'name'
-              result['name'] = streamer.relatedAttributeName(page(element));
+              result['name'] = streamer.related.attributes.name(page(element));
               // Get 'altNames'
               result['altNames'] = [result['name']];
               // Get 'malId'
-              if (streamer.relatedAttributeMalId) {
-                result['malId'] = streamer.relatedAttributeMalId(page(element));
+              if (streamer.related.attributes.malId) {
+                result['malId'] = streamer.related.attributes.malId(page(element));
               }
 
               // Clean and validate result
@@ -155,12 +155,12 @@ export default class Streamers {
               // Add results to array
               results.partial.push(result);
             }
+          }
 
-            catch(err) {
-              console.error('Failed to process show page for show: \'' + logData + '\' and streamer: \'' + streamer.id + '\'.');
-              console.error('Failed to process related row number ' + index + '.');
-              console.error(err);
-            }
+          catch(err) {
+            console.error('Failed to process show page for show: \'' + logData + '\' and streamer: \'' + streamer.id + '\'.');
+            console.error('Failed to process related row number ' + index + '.');
+            console.error(err);
           }
         });
 
@@ -169,44 +169,44 @@ export default class Streamers {
 
         // Get the urls
         result['streamerUrls'] = [];
-        if (streamer.showSelectorInformationUrl) {
+        if (streamer.show.attributes.informationUrl) {
           result['streamerUrls'].push({
             id: streamer.id,
             hasShowInfo: true,
-            url: streamer.showAttributeInformationUrl(page(streamer.showSelectorInformationUrl)),
+            url: streamer.show.attributes.informationUrl(page('body')),
           });
         }
         result['streamerUrls'].push({
           id: streamer.id,
-          hasShowInfo: !streamer.showSelectorInformationUrl,
-          hasEpisodeInfo: streamer.showSelectorEpisodeUrlType ? streamer.showAttributeEpisodeUrlType(page(streamer.showSelectorEpisodeUrlType)) : streamer.showAttributeEpisodeUrlType,
-          url: streamer.showAttributeEpisodeUrl(page(streamer.showSelectorEpisodeUrl)),
+          hasShowInfo: !streamer.show.attributes.informationUrl,
+          hasEpisodeInfo: streamer.show.attributes.episodeUrlType(page('body')),
+          url: streamer.show.attributes.episodeUrl(page('body')),
         });
 
         // Get 'name'
-        result['name'] = streamer.showAttributeName(page(streamer.showSelectorName));
+        result['name'] = streamer.show.attributes.name(page('body'));
         // Get 'altNames'
-        if (streamer.showSelectorAltNames) {
-          result['altNames'] = streamer.showAttributeAltNames(page(streamer.showSelectorAltNames));
+        if (streamer.show.attributes.altNames) {
+          result['altNames'] = streamer.show.attributes.altNames(page('body'));
         } else {
           result['altNames'] = [];
         }
         result['altNames'].push(result['name']);
 
         // Get 'description'
-        if (streamer.showSelectorDescription) {
-          result['description'] = streamer.showAttributeDescription(page(streamer.showSelectorDescription));
+        if (streamer.show.attributes.description) {
+          result['description'] = streamer.show.attributes.description(page('body'));
         }
         // Get 'type'
-        if (streamer.showSelectorType) {
-          result['type'] = streamer.showAttributeType(page(streamer.showSelectorType));
+        if (streamer.show.attributes.type) {
+          result['type'] = streamer.show.attributes.type(page('body'));
           if (result['type'] && result['type'].cleanWhitespace() === 'Music') {
             return results;
           }
         }
         // Get 'malId'
-        if (streamer.showSelectorMalId) {
-          result['malId'] = streamer.showAttributeMalId(page(streamer.showSelectorMalId));
+        if (streamer.show.attributes.malId) {
+          result['malId'] = streamer.show.attributes.malId(page('body'));
         }
 
         // Clean and validate result
@@ -246,7 +246,7 @@ export default class Streamers {
     // For each streamer
     streamers.forEach((streamer) => {
       // Download and process search results
-      this.getSearchResults(streamer.searchCreateUrl(query), streamer, query, (results) => {
+      this.getSearchResults(streamer.search.createUrl(query), streamer, query, (results) => {
 
         // Return results
         results.forEach((result) => {

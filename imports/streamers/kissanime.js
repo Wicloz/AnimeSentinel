@@ -8,94 +8,98 @@ export let kissanime = {
   homepage: 'http://kissanime.ru/',
 
   // Search page data
-  searchCreateUrl: function(query) {
-    return 'http://kissanime.ru/Search/Anime?keyword=' + encodeURIComponent(query).replace(/%20/g, '+');
-  },
-  searchRowSelector: 'table.listing tbody tr',
-  searchRowSkips: 2,
+  search: {
+    createUrl: function(query) {
+      return 'http://kissanime.ru/Search/Anime?keyword=' + encodeURIComponentReplaceSpaces(query, '+');
+    },
+    rowSelector: 'table.listing tbody tr',
+    rowSkips: 2,
 
-  // Search page attribute data
-  searchSelectorEpisodeUrl: 'td:first-of-type a',
-  searchAttributeEpisodeUrl: function(partial) {
-    return this.homepage.replace(/\/$/, '') + partial.attr('href');
-  },
-  searchSelectorEpisodeUrlType: 'td:first-of-type a',
-  searchAttributeEpisodeUrlType: function(partial) {
-    return partial.text().match(/\(Dub\)$/) ? 'dub' : 'sub';
-  },
-  searchSelectorName: 'td:first-of-type a',
-  searchAttributeName: function(partial) {
-    return partial.text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
-  },
-  searchSelectorDescription: 'td:first-of-type',
-  searchAttributeDescription: function(partial) {
-    return Cheerio.load(partial.attr('title'))('div p').text().replace(/ \.\.\.\n\s*$/, Shows.descriptionCutoff);
+    // Search page attribute data
+    attributes: {
+      episodeUrl: function(partial) {
+        return kissanime.homepage.replace(/\/$/, '') + partial.find('td:first-of-type a').attr('href');
+      },
+      episodeUrlType: function(partial) {
+        return  partial.find('td:first-of-type a').text().match(/\(Dub\)$/) ? 'dub' : 'sub';
+      },
+      name: function(partial) {
+        return  partial.find('td:first-of-type a').text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
+      },
+      description: function(partial) {
+        return Cheerio.load(partial.find('td:first-of-type').attr('title'))('div p').text().replace(/ \.\.\.\n\s*$/, Shows.descriptionCutoff);
+      },
+    },
   },
 
   // Show page data
-  showCheckIfPage: function(page) {
-    return page('title').text().cleanWhitespace().match(/^.* anime \| Watch .* anime online in high quality$/);
-  },
+  show: {
+    checkIfPage: function(page) {
+      return page('title').text().cleanWhitespace().match(/^.* anime \| Watch .* anime online in high quality$/);
+    },
 
-  // Show page attribute data
-  showSelectorEpisodeUrl: 'a.bigChar',
-  showAttributeEpisodeUrl: function(partial) {
-    return this.homepage.replace(/\/$/, '') + partial.attr('href');
-  },
-  showSelectorEpisodeUrlType: 'a.bigChar',
-  showAttributeEpisodeUrlType: function(partial) {
-    return partial.text().match(/\(Dub\)$/) ? 'dub' : 'sub';
-  },
-  showSelectorName: 'a.bigChar',
-  showAttributeName: function(partial) {
-    return partial.text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
-  },
-  showSelectorAltNames: '.bigBarContainer .barContent div:nth-of-type(2) p:first-of-type',
-  showAttributeAltNames: function(partial) {
-    if (partial.find('span.info').text() !== 'Other name:') {
-      return [];
-    }
-    return partial.find('a').map((index, element) => {
-      return Cheerio.load(element).text();
-    }).get();
-  },
-  showSelectorDescription: '.bigBarContainer .barContent div:nth-of-type(2) p:nth-last-of-type(2)',
-  showAttributeDescription: function(partial) {
-    return partial.html();
-  },
-  showSelectorType: '.bigBarContainer .barContent div:nth-of-type(2) p',
-  showAttributeType: function(partial) {
-    let genres = [];
-
-    partial.each((index, element) => {
-      let paragraph = Cheerio.load(element);
-      if (paragraph('span:first-of-type').text() === 'Genres:') {
-        genres = paragraph('a').map((index, element) => {
+    // Show page attribute data
+    attributes: {
+      episodeUrl: function(partial) {
+        return kissanime.homepage.replace(/\/$/, '') + partial.find('a.bigChar').attr('href');
+      },
+      episodeUrlType: function(partial) {
+        return partial.find('a.bigChar').text().match(/\(Dub\)$/) ? 'dub' : 'sub';
+      },
+      name: function(partial) {
+        return partial.find('a.bigChar').text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
+      },
+      altNames: function(partial) {
+        if (partial.find('.bigBarContainer .barContent div:nth-of-type(2) p:first-of-type').find('span.info').text() !== 'Other name:') {
+          return [];
+        }
+        return partial.find('.bigBarContainer .barContent div:nth-of-type(2) p:first-of-type').find('a').map((index, element) => {
           return Cheerio.load(element).text();
         }).get();
-      }
-    });
+      },
+      description: function(partial) {
+        return partial.find('.bigBarContainer .barContent div:nth-of-type(2) p:nth-last-of-type(2)').html();
+      },
+      type: function(partial) {
+        let genres = [];
 
-    let types = ['OVA', 'Movie', 'Special', 'ONA'];
-    for (let i = 0; i < types.length; i++) {
-      if (genres.includes(types[i])) {
-        return types[i];
-      }
-    }
-  },
+        partial.find('.bigBarContainer .barContent div:nth-of-type(2) p').each((index, element) => {
+          let paragraph = Cheerio.load(element);
+          if (paragraph('span:first-of-type').text() === 'Genres:') {
+            genres = paragraph('a').map((index, element) => {
+              return Cheerio.load(element).text();
+            }).get();
+          }
+        });
 
-  // Show page related attribute data
-  relatedRowSelector: 'div#rightside div:nth-of-type(3) div.barContent div:nth-of-type(2) a',
-  relatedRowIgnore: function(partial) {
-    return partial.attr('href').count('/') > 2;
-  },
-  relatedAttributeName: function(partial) {
-    return partial.text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
-  },
-  relatedAttributeEpisodeUrl: function(partial) {
-    return this.homepage.replace(/\/$/, '') + partial.attr('href');
-  },
-  relatedAttributeEpisodeUrlType: function(partial) {
-    return partial.text().match(/\(Dub\)$/) ? 'dub' : 'sub';
+        let types = ['OVA', 'Movie', 'Special', 'ONA'];
+        for (let i = 0; i < types.length; i++) {
+          if (genres.includes(types[i])) {
+            return types[i];
+          }
+        }
+      },
+    },
+
+    // Related shows data
+    related: {
+      rowSelector: 'div#rightside div:nth-of-type(3) div.barContent div:nth-of-type(2) a',
+      rowIgnore: function(partial) {
+        return partial.attr('href').count('/') > 2;
+      },
+
+      // Related shows attribute data
+      attributes: {
+        name: function(partial) {
+          return partial.text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
+        },
+        episodeUrl: function(partial) {
+          return kissanime.homepage.replace(/\/$/, '') + partial.attr('href');
+        },
+        episodeUrlType: function(partial) {
+          return partial.text().match(/\(Dub\)$/) ? 'dub' : 'sub';
+        },
+      },
+    },
   },
 };
