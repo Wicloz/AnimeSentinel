@@ -19,13 +19,13 @@ export let myanimelist = {
       streamerUrls: function(partial) {
         return [{
           type: 'details',
-          url: partial.find('td a.hoverinfo_trigger').attr('href').replace(/\/[^\/]*$/, '')
+          url: partial.find('td a.hoverinfo_trigger').attr('href')
         }, {
-          type: 'videos',
-          url: partial.find('td a.hoverinfo_trigger').attr('href').replace(/\/[^\/]*$/, '') + '/X/video'
+          type: 'episodes-0',
+          url: partial.find('td a.hoverinfo_trigger').attr('href') + '/episode'
         }, {
           type: 'pictures',
-          url: partial.find('td a.hoverinfo_trigger').attr('href').replace(/\/[^\/]*$/, '') + '/X/pics'
+          url: partial.find('td a.hoverinfo_trigger').attr('href') + '/pics'
         }];
       },
       name: function(partial) {
@@ -52,16 +52,29 @@ export let myanimelist = {
     // Show page attribute data
     attributes: {
       streamerUrls: function(partial) {
-        return [{
+        let urls = [{
           type: 'details',
-          url: partial.find('div.breadcrumb div:last-of-type a').attr('href').replace(/\/[^\/]*$/, '')
+          url: partial.find('div#horiznav_nav ul li:first-of-type a').attr('href')
         }, {
-          type: 'videos',
-          url: partial.find('div.breadcrumb div:last-of-type a').attr('href').replace(/\/[^\/]*$/, '') + '/X/video'
+          type: 'episodes-0',
+          url: partial.find('div#horiznav_nav ul li:first-of-type a').attr('href') + '/episode'
         }, {
           type: 'pictures',
-          url: partial.find('div.breadcrumb div:last-of-type a').attr('href').replace(/\/[^\/]*$/, '') + '/X/pics'
+          url: partial.find('div#horiznav_nav ul li:first-of-type a').attr('href') + '/pics'
         }];
+
+        partial.find('div.pagination a.link').each((index, element) => {
+          let link = partial.find(element).attr('href');
+          let offset = link.replace(/^.*offset=/, '');
+          if (offset !== '0') {
+            urls.push({
+              type: 'episodes-' + offset,
+              url: link
+            });
+          }
+        });
+
+        return urls;
       },
       name: function(partial) {
         return partial.find('div#contentWrapper div:first-of-type h1 span').text();
@@ -88,7 +101,7 @@ export let myanimelist = {
         return type;
       },
       malId: function(partial) {
-        return partial.find('div.breadcrumb div:last-of-type a').attr('href').replace(/^.*\/([0-9]+)\/.*$/, '$1');
+        return partial.find('div#horiznav_nav ul li:first-of-type a').attr('href').replace(/^.*\/anime\/(\d+)\/.*$/, '$1');
       },
     },
   },
@@ -105,13 +118,13 @@ export let myanimelist = {
       streamerUrls: function(partial) {
         return [{
           type: 'details',
-          url: myanimelist.homepage + partial.attr('href').replace(/\/[^\/]*$/, '')
+          url: myanimelist.homepage + partial.attr('href')
         }, {
-          type: 'videos',
-          url: myanimelist.homepage + partial.attr('href').replace(/\/[^\/]*$/, '') + '/X/video'
+          type: 'episodes-0',
+          url: myanimelist.homepage + partial.attr('href') + '/episode'
         }, {
           type: 'pictures',
-          url: myanimelist.homepage + partial.attr('href').replace(/\/[^\/]*$/, '') + '/X/pics'
+          url: myanimelist.homepage + partial.attr('href') + '/pics'
         }];
       },
       name: function(partial) {
