@@ -18,7 +18,7 @@ Schemas.Episode = new SimpleSchema({
     type: String,
     index: true
   },
-  episode: {
+  episodeNum: {
     type: Number,
     index: true
   },
