@@ -4,7 +4,7 @@ export let myanimelist = {
   // General data
   id: 'myanimelist',
   name: 'MyAnimeList',
-  homepage: 'https://myanimelist.net/',
+  homepage: 'https://myanimelist.net',
 
   // Search page data
   search: {
@@ -16,14 +16,17 @@ export let myanimelist = {
 
     // Search page attribute data
     attributes: {
-      informationUrl: function(partial) {
-        return partial.find('td a.hoverinfo_trigger').attr('href').replace(/\/[^\/]*$/, '');
-      },
-      episodeUrl: function(partial) {
-        return partial.find('td a.hoverinfo_trigger').attr('href').replace(/\/[^\/]*$/, '') + '/X/video';
-      },
-      episodeUrlType: function(partial) {
-        return 'multi';
+      streamerUrls: function(partial) {
+        return [{
+          type: 'details',
+          url: partial.find('td a.hoverinfo_trigger').attr('href').replace(/\/[^\/]*$/, '')
+        }, {
+          type: 'videos',
+          url: partial.find('td a.hoverinfo_trigger').attr('href').replace(/\/[^\/]*$/, '') + '/X/video'
+        }, {
+          type: 'pictures',
+          url: partial.find('td a.hoverinfo_trigger').attr('href').replace(/\/[^\/]*$/, '') + '/X/pics'
+        }];
       },
       name: function(partial) {
         return partial.find('td a.hoverinfo_trigger strong').text();
@@ -48,14 +51,17 @@ export let myanimelist = {
 
     // Show page attribute data
     attributes: {
-      url: function(partial) {
-        return partial.find('div.breadcrumb div:last-of-type a').attr('href').replace(/\/[^\/]*$/, '');
-      },
-      episodeUrl: function(partial) {
-        return partial.find('div.breadcrumb div:last-of-type a').attr('href').replace(/\/[^\/]*$/, '') + '/X/video';
-      },
-      episodeUrlType: function(partial) {
-        return 'multi';
+      streamerUrls: function(partial) {
+        return [{
+          type: 'details',
+          url: partial.find('div.breadcrumb div:last-of-type a').attr('href').replace(/\/[^\/]*$/, '')
+        }, {
+          type: 'videos',
+          url: partial.find('div.breadcrumb div:last-of-type a').attr('href').replace(/\/[^\/]*$/, '') + '/X/video'
+        }, {
+          type: 'pictures',
+          url: partial.find('div.breadcrumb div:last-of-type a').attr('href').replace(/\/[^\/]*$/, '') + '/X/pics'
+        }];
       },
       name: function(partial) {
         return partial.find('div#contentWrapper div:first-of-type h1 span').text();
@@ -96,17 +102,20 @@ export let myanimelist = {
 
     // Related shows attribute data
     attributes: {
+      streamerUrls: function(partial) {
+        return [{
+          type: 'details',
+          url: myanimelist.homepage + partial.attr('href').replace(/\/[^\/]*$/, '')
+        }, {
+          type: 'videos',
+          url: myanimelist.homepage + partial.attr('href').replace(/\/[^\/]*$/, '') + '/X/video'
+        }, {
+          type: 'pictures',
+          url: myanimelist.homepage + partial.attr('href').replace(/\/[^\/]*$/, '') + '/X/pics'
+        }];
+      },
       name: function(partial) {
         return partial.text();
-      },
-      informationUrl: function(partial) {
-        return myanimelist.homepage.replace(/\/$/, '') + partial.attr('href').replace(/\/[^\/]*$/, '');
-      },
-      episodeUrl: function(partial) {
-        return myanimelist.homepage.replace(/\/$/, '') + partial.attr('href').replace(/\/[^\/]*$/, '') + '/X/video';
-      },
-      episodeUrlType: function(partial) {
-        return 'multi';
       },
       malId: function(partial) {
         return partial.attr('href').replace(/^.*\/([0-9]+)\/.*$/, '$1');

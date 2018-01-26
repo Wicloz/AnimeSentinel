@@ -5,7 +5,7 @@ export let kissanime = {
   // General data
   id: 'kissanime',
   name: 'KissAnime',
-  homepage: 'http://kissanime.ru/',
+  homepage: 'http://kissanime.ru',
 
   // Search page data
   search: {
@@ -17,11 +17,11 @@ export let kissanime = {
 
     // Search page attribute data
     attributes: {
-      episodeUrl: function(partial) {
-        return kissanime.homepage.replace(/\/$/, '') + partial.find('td:first-of-type a').attr('href');
-      },
-      episodeUrlType: function(partial) {
-        return  partial.find('td:first-of-type a').text().match(/\(Dub\)$/) ? 'dub' : 'sub';
+      streamerUrls: function(partial) {
+        return [{
+          type: partial.find('td:first-of-type a').text().match(/\(Dub\)$/) ? 'dub' : 'sub',
+          url: kissanime.homepage + partial.find('td:first-of-type a').attr('href')
+        }];
       },
       name: function(partial) {
         return  partial.find('td:first-of-type a').text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
@@ -40,11 +40,11 @@ export let kissanime = {
 
     // Show page attribute data
     attributes: {
-      episodeUrl: function(partial) {
-        return kissanime.homepage.replace(/\/$/, '') + partial.find('a.bigChar').attr('href');
-      },
-      episodeUrlType: function(partial) {
-        return partial.find('a.bigChar').text().match(/\(Dub\)$/) ? 'dub' : 'sub';
+      streamerUrls: function(partial) {
+        return [{
+          type: partial.find('a.bigChar').text().match(/\(Dub\)$/) ? 'dub' : 'sub',
+          url: kissanime.homepage + partial.find('a.bigChar').attr('href')
+        }];
       },
       name: function(partial) {
         return partial.find('a.bigChar').text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
@@ -91,14 +91,14 @@ export let kissanime = {
 
     // Related shows attribute data
     attributes: {
+      streamerUrls: function(partial) {
+        return [{
+          type: partial.text().match(/\(Dub\)$/) ? 'dub' : 'sub',
+          url: kissanime.homepage + partial.attr('href')
+        }];
+      },
       name: function(partial) {
         return partial.text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
-      },
-      episodeUrl: function(partial) {
-        return kissanime.homepage.replace(/\/$/, '') + partial.attr('href');
-      },
-      episodeUrlType: function(partial) {
-        return partial.text().match(/\(Dub\)$/) ? 'dub' : 'sub';
       },
     },
   },

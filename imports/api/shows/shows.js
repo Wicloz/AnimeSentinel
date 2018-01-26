@@ -32,9 +32,8 @@ Schemas.Show = new SimpleSchema({
       }
       return this.value.reduce((total, value) => {
         if (!total.hasPartialObjects({
-            id: value.id,
-            hasShowInfo: value.hasShowInfo,
-            hasEpisodeInfo: value.hasEpisodeInfo
+            streamer: value.streamer,
+            type: value.type
           })) {
           total.push(value);
         }
@@ -45,16 +44,11 @@ Schemas.Show = new SimpleSchema({
   'streamerUrls.$': {
     type: Object
   },
-  'streamerUrls.$.id': {
+  'streamerUrls.$.streamer': {
     type: String
   },
-  'streamerUrls.$.hasShowInfo': {
-    type: Boolean
-  },
-  'streamerUrls.$.hasEpisodeInfo': {
-    type: String,
-    optional: true,
-    allowedValues: ['multi', 'sub', 'dub', 'raw']
+  'streamerUrls.$.type': {
+    type: String
   },
   'streamerUrls.$.url': {
     type: String

@@ -18,20 +18,11 @@ export default class Streamers {
       }
     }
 
-    // Get the urls
-    show.streamerUrls = [];
-    if (streamer[type].attributes.informationUrl) {
-      show.streamerUrls.push({
-        id: streamer.id,
-        hasShowInfo: true,
-        url: streamer[type].attributes.informationUrl(cheerio),
-      });
-    }
-    show.streamerUrls.push({
-      id: streamer.id,
-      hasShowInfo: !streamer[type].attributes.informationUrl,
-      hasEpisodeInfo: streamer[type].attributes.episodeUrlType(cheerio),
-      url: streamer[type].attributes.episodeUrl(cheerio),
+    // Get 'streamerUrls'
+    show.streamerUrls = streamer[type].attributes.streamerUrls(cheerio);
+    show.streamerUrls = show.streamerUrls.map((streamerUrl) => {
+      streamerUrl.streamer = streamer.id;
+      return streamerUrl;
     });
 
     // Get 'name'
@@ -194,17 +185,13 @@ export default class Streamers {
   }
 
   static createFullShow(altNames, streamerUrls, resultCallback, partialCallback) {
-    let streamerUrlsToDo = streamerUrls.getPartialObjects({hasShowInfo: true}).length;
-    let finalResult = {
-      streamerUrls: streamerUrls
-    };
+    let streamerUrlsDone = 0;
+    let finalResult = {};
 
-    // For each streamer for which the show info url is known
-    streamers.filter((streamer) => {
-      return streamerUrls.hasPartialObjects({id: streamer.id, hasShowInfo: true});
-    }).forEach((streamer) => {
-      // For each show info url
-      streamerUrls.getPartialObjects({id: streamer.id, hasShowInfo: true}).forEach((streamerUrl) => {
+    // For each streamer
+    streamers.forEach((streamer) => {
+      // For each streamer url
+      streamerUrls.getPartialObjects({streamer: streamer.id}).forEach((streamerUrl) => {
         // Download and process show page
         this.getShowResults(streamerUrl.url, streamer, altNames[0], (result) => {
 
@@ -239,8 +226,9 @@ export default class Streamers {
           }
 
           // Check if done
-          streamerUrlsToDo--;
-          if (streamerUrlsToDo === 0) {
+          streamerUrlsDone++;
+          if (streamerUrlsDone === streamerUrls.length) {
+            finalResult.streamerUrls = finalResult.streamerUrls.concat(streamerUrls);
             resultCallback(finalResult);
           }
 

@@ -14,9 +14,7 @@
           <p>Type: {{type}}</p>
           <p>
             {{#each streamerUrls}}
-              {{#if hasShowInfo}}
-                <a target="_blank" href="{{url}}">{{id}}</a>;
-              {{/if}}
+              <a target="_blank" href="{{url}}">{{streamer}} ({{type}})</a>;
             {{/each}}
           </p>
         </li>
