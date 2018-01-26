@@ -201,7 +201,7 @@ Shows.helpers({
 
 Shows.addPartialShow = function(show) {
   // Grab matching shows from database
-  let others = Shows.queryMatchingAltsOrMalId(show.altNames, show.malId);
+  let others = Shows.queryMatchingAltsMalId(show.altNames, show.malId);
 
   // Merge if shows were found
   if (others.count()) {
@@ -295,7 +295,7 @@ Shows.querySearch = function(query, limit) { // TODO: Improve searching
   return Shows.find(selector, options);
 };
 
-Shows.queryMatchingAltsOrMalId = function(names, malId) {
+Shows.queryMatchingAltsMalId = function(names, malId) {
   // Validate
   new SimpleSchema({
     names: {
@@ -316,16 +316,17 @@ Shows.queryMatchingAltsOrMalId = function(names, malId) {
 
   // Split names on commas
   names.forEach((name) => {
-    if (name.includes(', ')) {
+    if (name.includes(', ')) { // TODO: Remove when alts are fixed
       names = names.concat(name.split(', '));
     }
   });
 
   // Process names to regex
   names = names.map((name) => {
-    // allow matching of ' and ', ' to ', ' und ' and '&' to each other
+    // allow matching of 'and', 'to' and 'und' to each other
+    // allow matching of '&' to synonymous words
     // allow matching of ': ' to ' '
-    let regex = '^' + RegExp.escape(name).replace(/: | /g, '(: | )').replace(/\(: \| \)and\(: \| \)|\(: \| \)und\(: \| \)|\(: \| \)to\(: \| \)|&/g, '((: | )and(: | )|(: | )und(: | )|(: | )to(: | )|(: ?| ?)&(: ?| ?))') + '$';
+    let regex = '^' + RegExp.escape(name).replace(/((?:\\:)? ?)\band\b((?:\\:)? ?)|((?:\\:)? ?)\bund\b((?:\\:)? ?)|((?:\\:)? ?)\bto\b((?:\\:)? ?)|((?:\\:)? ?)&((?:\\:)? ?)/g, '(?:$1$3$5$7 ?and ?$2$4$6$8|$1$3$5$7 ?und ?$2$4$6$8|$1$3$5$7 ?to ?$2$4$6$8|(?:$1$3$5$7)?&(?:$2$4$6$8)?)').replace(/\\: | /g, '(?:\\: | )') + '$';
     // allow case insensitive matching
     return new RegExp(regex, 'i');
   });
@@ -342,7 +343,8 @@ Shows.queryMatchingAltsOrMalId = function(names, malId) {
       $or: [{
         altNames: {
           $in: names
-        }
+        },
+        malId: undefined
       }, {
         malId: malId
       }]
