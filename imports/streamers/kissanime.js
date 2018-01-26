@@ -102,4 +102,24 @@ export let kissanime = {
       },
     },
   },
+
+  // Episode list data
+  showEpisodes: {
+    rowSelector: 'table.listing tbody tr',
+    rowSkips: 2,
+    cannotCount: true,
+
+    // Episode list attribute data
+    attributes: {
+      episodeNum: function(partial) {
+        return partial.find('td:first-of-type a').text().cleanWhitespace().replace(/^.*\s(\d+)$/, '$1');
+      },
+      translationType: function(partial) {
+        return partial.find('a.bigChar').text().match(/\(Dub\)$/) ? 'dub' : 'sub';
+      },
+      sourceUrl: function(partial) {
+        return kissanime.homepage + partial.find('td:first-of-type a').attr('href');
+      },
+    },
+  },
 };

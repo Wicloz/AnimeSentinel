@@ -1,6 +1,7 @@
 import Cheerio from 'cheerio';
 import SimpleSchema from 'simpl-schema';
 import Streamers from "../../streamers/_streamers";
+import {Episodes} from "../episodes/episodes";
 
 // Schema
 Schemas.Show = new SimpleSchema({
@@ -163,7 +164,7 @@ Shows.helpers({
     });
 
     if (Meteor.isServer) { // TODO: remove when downloads are fixed
-      Streamers.createFullShow(this.altNames, this.streamerUrls, (show) => {
+      Streamers.createFullShow(this.altNames, this.streamerUrls, this._id, (show) => {
 
         // Replace existing fields
         Object.keys(show).forEach((key) => {
@@ -186,6 +187,9 @@ Shows.helpers({
       }, (partial) => {
         // Insert any partial results found in the process
         Shows.addPartialShow(partial);
+      }, (episode) => {
+        // Add found episodes
+        Episodes.addEpisode(episode);
       });
     }
   }

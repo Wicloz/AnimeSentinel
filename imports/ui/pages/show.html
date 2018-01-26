@@ -48,6 +48,14 @@
         </p>
       </li>
     </ul>
+
+    <ul class="collection">
+      {{#each episodes}}
+        <li class="collection-item">
+          {{translationType}} - {{episodeNum}} - {{streamerId}}
+        </li>
+      {{/each}}
+    </ul>
   </div>
 
   {{> components_loading_indicator_background state=updating}}

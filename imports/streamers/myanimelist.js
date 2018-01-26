@@ -135,4 +135,24 @@ export let myanimelist = {
       },
     },
   },
+
+  // Episode list data
+  showEpisodes: {
+    rowSelector: 'table.episode_list.ascend tbody tr',
+    rowSkips: 1,
+    cannotCount: false,
+
+    // Episode list attribute data
+    attributes: {
+      episodeNum: function(partial) {
+        return partial.find('td.episode-number').text();
+      },
+      translationType: function(partial) {
+        return 'sub';
+      },
+      sourceUrl: function(partial) {
+        return partial.find('td.episode-title a').attr('href');
+      },
+    },
+  },
 };

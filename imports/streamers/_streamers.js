@@ -2,6 +2,7 @@ import Cheerio from 'cheerio';
 import { Shows } from '/imports/api/shows/shows.js';
 import { myanimelist } from './myanimelist';
 import { kissanime } from './kissanime';
+import {Episodes} from "../api/episodes/episodes";
 
 let streamers = [myanimelist, kissanime];
 
@@ -52,6 +53,31 @@ export default class Streamers {
 
     // Return the show
     return show;
+  }
+
+  static convertCheerioToEpisode(cheerio, streamer, type) {
+    // Create empty episode
+    let episode = {
+      showId: 'undefined',
+      streamerId: streamer.id
+    };
+
+    // Get 'episodeNum'
+    episode.episodeNum = streamer[type].attributes.episodeNum(cheerio);
+
+    // Get 'translationType'
+    episode.translationType = streamer[type].attributes.translationType(cheerio);
+    // Get 'sourceUrl'
+    episode.sourceUrl = streamer[type].attributes.sourceUrl(cheerio);
+
+    // Clean and validate episode
+    Episodes.simpleSchema().clean(episode, {
+      mutate: true
+    });
+    Episodes.simpleSchema().validate(episode);
+
+    // Return the episode
+    return episode;
   }
 
   static processSearchPage(html, streamer, logData) {
@@ -107,6 +133,7 @@ export default class Streamers {
     let results = {
       full: false,
       partials: [],
+      episodes: []
     };
 
     if (html) {
@@ -132,6 +159,36 @@ export default class Streamers {
             console.error(err);
           }
         });
+
+        // For each episode
+        page(streamer.showEpisodes.rowSelector).each((index, element) => {
+          try {
+            if (index >= streamer.showEpisodes.rowSkips) {
+              // Create and add episode
+              let result = this.convertCheerioToEpisode(page(element), streamer, 'showEpisodes');
+              if (result) {
+                results.episodes.push(result);
+              }
+            }
+          }
+
+          catch(err) {
+            console.error('Failed to process show page for show: \'' + logData + '\' and streamer: \'' + streamer.id + '\'.');
+            console.error('Failed to process episode row number ' + index + '.');
+            console.error(err);
+          }
+        });
+
+        // Fix episode numbers if required
+        if (streamer.showEpisodes.cannotCount && !results.episodes.empty()) {
+          let episodeCorrection = results.episodes.reduce((total, episode) => {
+            return Math.min(total, episode.episodeNum);
+          }, Infinity) - 1;
+          results.episodes = results.episodes.map((episode) => {
+            episode.episodeNum -= episodeCorrection;
+            return episode;
+          });
+        }
 
         // Create and store show
         let result = this.convertCheerioToShow(page('html'), streamer, 'show');
@@ -184,7 +241,7 @@ export default class Streamers {
     });
   }
 
-  static createFullShow(altNames, streamerUrls, resultCallback, partialCallback) {
+  static createFullShow(altNames, streamerUrls, showId, showCallback, partialCallback, episodeCallback) {
     let streamerUrlsDone = 0;
     let finalResult = {};
 
@@ -229,12 +286,18 @@ export default class Streamers {
           streamerUrlsDone++;
           if (streamerUrlsDone === streamerUrls.length) {
             finalResult.streamerUrls = finalResult.streamerUrls.concat(streamerUrls);
-            resultCallback(finalResult);
+            showCallback(finalResult);
           }
 
           // Store partial results from show page
           result.partials.forEach((partial) => {
             partialCallback(partial);
+          });
+
+          // Handle episodes
+          result.episodes.forEach((episode) => {
+            episode.showId = showId;
+            episodeCallback(episode);
           });
 
         });

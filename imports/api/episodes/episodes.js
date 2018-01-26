@@ -60,8 +60,24 @@ Episodes.maxUpdateTime = 600000; // 10 minutes
 
 // Helpers
 Episodes.helpers({
-
+  mergeEpisode(other) {
+    // console.log(other);
+  }
 });
+
+Episodes.addEpisode = function(episode) {
+  let others = Episodes.queryUnique(episode.showId, episode.episodeNum, episode.translationType, episode.streamerId);
+
+  if (others.count()) {
+    others.forEach((other) => {
+      other.mergeEpisode(episode);
+    });
+  }
+
+  else {
+    Episodes.insert(episode);
+  }
+};
 
 // Methods
 Meteor.methods({
@@ -69,3 +85,34 @@ Meteor.methods({
 });
 
 // Queries
+Episodes.queryUnique = function(showId, episodeNum, translationType, streamerId) {
+  // Validate
+  Episodes.simpleSchema().validate({
+    showId: showId,
+    episodeNum: episodeNum,
+    translationType: translationType,
+    streamerId: streamerId
+  }, {
+    keys: ['showId', 'episodeNum', 'translationType', 'streamerId']
+  });
+
+  // Return results cursor
+  return Episodes.find({
+    showId: showId,
+    episodeNum: episodeNum,
+    translationType: translationType,
+    streamerId: streamerId
+  });
+};
+
+Episodes.queryForShow = function(showId) {
+  // Validate
+  Schemas.id.validate({
+    id: showId
+  });
+
+  // Return results cursor
+  return Episodes.find({
+    showId: showId
+  });
+};
