@@ -21,6 +21,10 @@ Template.pages_search.onCreated(function() {
   });
 });
 
+Template.pages_search.onRendered(function() {
+  $('#load-more-results').appear();
+});
+
 Template.pages_search.helpers({
   shows() {
     return Shows.querySearch(Template.instance().searchQuery.get(), Template.instance().searchLimit.get());
