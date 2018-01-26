@@ -24,7 +24,7 @@ export let kissanime = {
         }];
       },
       name: function(partial) {
-        return  partial.find('td:first-of-type a').text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
+        return partial.find('td:first-of-type a').text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
       },
       description: function(partial) {
         return Cheerio.load(partial.find('td:first-of-type').attr('title'))('div p').text().replace(/ \.\.\.\n\s*$/, Shows.descriptionCutoff);
