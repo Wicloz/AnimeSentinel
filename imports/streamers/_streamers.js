@@ -115,11 +115,11 @@ export default class Streamers {
         let page = Cheerio.load(html);
 
         // For each related show
-        page(streamer.related.rowSelector).each((index, element) => {
+        page(streamer.showRelated.rowSelector).each((index, element) => {
           try {
-            if (!streamer.related.rowIgnore(page(element))) {
+            if (!streamer.showRelated.rowIgnore(page(element))) {
               // Create and add related show
-              let result = this.convertCheerioToShow(page(element), streamer, 'related');
+              let result = this.convertCheerioToShow(page(element), streamer, 'showRelated');
               if (result) {
                 results.partial.push(result);
               }

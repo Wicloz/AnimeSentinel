@@ -94,7 +94,7 @@ export let myanimelist = {
   },
 
   // Related shows data
-  related: {
+  showRelated: {
     rowSelector: 'table.anime_detail_related_anime tbody a',
     rowIgnore: function(partial) {
       return partial.attr('href').startsWith('/manga/');

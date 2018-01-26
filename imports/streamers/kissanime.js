@@ -83,7 +83,7 @@ export let kissanime = {
   },
 
   // Related shows data
-  related: {
+  showRelated: {
     rowSelector: 'div#rightside div:nth-of-type(3) div.barContent div:nth-of-type(2) a',
     rowIgnore: function(partial) {
       return partial.attr('href').count('/') > 2;
