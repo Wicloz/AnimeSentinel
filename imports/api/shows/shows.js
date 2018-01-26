@@ -19,9 +19,7 @@ Schemas.Show = new SimpleSchema({
   malId: {
     type: SimpleSchema.Integer,
     optional: true,
-    index: true,
-    unique: true,
-    sparse: true
+    index: true
   },
   streamerUrls: {
     type: Array,
