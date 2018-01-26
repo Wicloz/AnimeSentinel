@@ -65,7 +65,7 @@ export default class Streamers {
         // Check if we have a show page
         if (streamer.show.checkIfPage(page)) {
           let result = this.processShowPage(html, streamer, logData);
-          results.concat(result.partial);
+          results.concat(result.partials);
           if (result.full) {
             results.push(result.full);
           }
@@ -106,7 +106,7 @@ export default class Streamers {
   static processShowPage(html, streamer, logData) {
     let results = {
       full: false,
-      partial: []
+      partials: [],
     };
 
     if (html) {
@@ -121,7 +121,7 @@ export default class Streamers {
               // Create and add related show
               let result = this.convertCheerioToShow(page(element), streamer, 'showRelated');
               if (result) {
-                results.partial.push(result);
+                results.partials.push(result);
               }
             }
           }
@@ -233,9 +233,9 @@ export default class Streamers {
           }
 
           // Store partial results from show page
-          result.partial.forEach((partial) => {
+          result.partials.forEach((partial) => {
             partialCallback(partial);
-          })
+          });
 
         });
       });
