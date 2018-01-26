@@ -7,7 +7,7 @@ Template.pages_search.onCreated(function() {
   Session.set('PageTitle', 'Browse Anime');
 
   this.searchQuery = new ReactiveVar(undefined);
-  this.searchLimit = new ReactiveVar(100);
+  this.searchLimit = new ReactiveVar(10);
 
   this.autorun(() => {
     this.subscribe('shows.search', this.searchQuery.get(), this.searchLimit.get());
@@ -29,6 +29,12 @@ Template.pages_search.helpers({
   searching() {
     let currentSearch = Searches.queryWithQuery(Template.instance().searchQuery.get()).fetch()[0];
     return currentSearch && currentSearch.busy();
+  }
+});
+
+Template.pages_search.events({
+  'appear #load-more-results'(event) {
+    Template.instance().searchLimit.set(Template.instance().searchLimit.get() + 10);
   }
 });
 
