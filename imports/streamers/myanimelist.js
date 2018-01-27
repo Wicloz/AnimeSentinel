@@ -21,9 +21,6 @@ export let myanimelist = {
           type: 'details',
           url: partial.find('td a.hoverinfo_trigger').attr('href')
         }, {
-          type: 'episodes-0',
-          url: partial.find('td a.hoverinfo_trigger').attr('href') + '/episode'
-        }, {
           type: 'pictures',
           url: partial.find('td a.hoverinfo_trigger').attr('href') + '/pics'
         }];
@@ -56,23 +53,27 @@ export let myanimelist = {
           type: 'details',
           url: partial.find('div#horiznav_nav ul li:first-of-type a').attr('href')
         }, {
-          type: 'episodes-0',
-          url: partial.find('div#horiznav_nav ul li:first-of-type a').attr('href') + '/episode'
-        }, {
           type: 'pictures',
           url: partial.find('div#horiznav_nav ul li:first-of-type a').attr('href') + '/pics'
         }];
 
-        partial.find('div.pagination a.link').each((index, element) => {
-          let link = partial.find(element).attr('href');
-          let offset = link.replace(/^.*offset=/, '');
-          if (offset !== '0') {
-            urls.push({
-              type: 'episodes-' + offset,
-              url: link
-            });
-          }
-        });
+        if (partial.find('div#horiznav_nav ul li a').text().includes('Episodes')) {
+          urls.push({
+            type: 'episodes-0',
+            url: partial.find('div#horiznav_nav ul li:first-of-type a').attr('href') + '/episode'
+          });
+
+          partial.find('div.pagination a.link').each((index, element) => {
+            let link = partial.find(element).attr('href');
+            let offset = link.replace(/^.*offset=/, '');
+            if (offset !== '0') {
+              urls.push({
+                type: 'episodes-' + offset,
+                url: link
+              });
+            }
+          });
+        }
 
         return urls;
       },
@@ -119,9 +120,6 @@ export let myanimelist = {
         return [{
           type: 'details',
           url: myanimelist.homepage + partial.attr('href')
-        }, {
-          type: 'episodes-0',
-          url: myanimelist.homepage + partial.attr('href') + '/episode'
         }, {
           type: 'pictures',
           url: myanimelist.homepage + partial.attr('href') + '/pics'
