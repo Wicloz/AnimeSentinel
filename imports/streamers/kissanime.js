@@ -127,4 +127,25 @@ export let kissanime = {
       },
     },
   },
+
+  // Episode page data
+  episode: {
+    requiresDownload: false,
+
+    getSources: function(sourceUrl) {
+      return [{
+        name: 'Openload',
+        url: sourceUrl + '&s=openload'
+      }, {
+        name: 'RapidVideo',
+        url: sourceUrl + '&s=rapidvideo'
+      }, {
+        name: 'Streamango',
+        url: sourceUrl + '&s=streamango'
+      }, {
+        name: 'Beta Server',
+        url: sourceUrl + '&s=beta'
+      }];
+    },
+  },
 };

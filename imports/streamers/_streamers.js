@@ -236,6 +236,15 @@ export default class Streamers {
     });
   }
 
+  static getEpisodeResults(url, streamer, logData, resultCallback) {
+    if (!streamer.episode.requiresDownload) {
+      resultCallback(streamer.episode.getSources(url));
+    } else {
+      // TODO: Implement this when needed
+      console.error('Scraping episode pages has not been implemented yet!');
+    }
+  }
+
   static doSearch(query, resultCallback, doneCallback) {
     let streamersDone = 0;
 

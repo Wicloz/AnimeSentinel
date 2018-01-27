@@ -17,6 +17,11 @@ Template.pages_show.onCreated(function() {
 
   this.autorun(() => {
     this.subscribe('episodes.forShow', FlowRouter.getParam('showId'));
+    if (this.subscriptionsReady()) {
+      Episodes.queryForShow(FlowRouter.getParam('showId')).forEach((episode) => {
+        Meteor.call('episodes.attemptUpdate', episode._id);
+      });
+    }
   });
 });
 
@@ -27,7 +32,13 @@ Template.pages_show.helpers({
 
   updating() {
     let show = Shows.findOne(FlowRouter.getParam('showId'));
-    return show && show.locked();
+    let busy = show && show.locked();
+
+    Episodes.queryForShow(FlowRouter.getParam('showId')).forEach((episode) => {
+      busy = busy || episode.locked();
+    });
+
+    return busy;
   },
 
   episodes() {

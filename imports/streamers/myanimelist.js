@@ -157,4 +157,16 @@ export let myanimelist = {
       },
     },
   },
+
+  // Episode page data
+  episode: {
+    requiresDownload: false,
+
+    getSources: function(sourceUrl) {
+      return [{
+        name: 'Crunchyroll',
+        url: sourceUrl
+      }];
+    },
+  },
 };
