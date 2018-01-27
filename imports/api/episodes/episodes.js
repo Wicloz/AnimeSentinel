@@ -33,18 +33,33 @@ Schemas.Episode = new SimpleSchema({
   sourceUrl: {
     type: String
   },
-  videos: {
+  sources: {
     type: Array,
     optional: true,
-    defaultValue: []
+    autoValue: function() {
+      if (!this.isSet) {
+        return [];
+      }
+      return this.value.reduce((total, value) => {
+        if (!total.hasPartialObjects({
+            id: value.id
+          })) {
+          total.push(value);
+        }
+        return total;
+      }, []);
+    }
   },
-  'videos.$': {
+  'sources.$': {
     type: Object
   },
-  'videos.$.url': {
+  'sources.$.id': {
     type: String
   },
-  'videos.$.js': {
+  'sources.$.url': {
+    type: String
+  },
+  'sources.$.js': {
     type: String,
     optional: true
   }
@@ -67,7 +82,7 @@ Episodes.helpers({
   mergeEpisode(other) {
     // Overwrite and merge attributes
     Object.keys(other).forEach((key) => {
-      if (key === 'videos') {
+      if (key === 'sources' && typeof this[key] !== 'undefined') {
         this[key] = this[key].concat(other[key]);
       } else if (!['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key)) {
         this[key] = other[key];
