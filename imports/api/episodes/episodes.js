@@ -90,32 +90,34 @@ Episodes.helpers({
     return this.lastUpdateStart && (!this.lastUpdateEnd || this.lastUpdateStart > this.lastUpdateEnd);
   },
 
-  doUpdate() {
-    this.lastUpdateStart = moment().toDate();
-    Episodes.update(this._id, {
-      $set: {
-        lastUpdateStart: this.lastUpdateStart
-      }
-    });
-
-    if (Meteor.isServer) { // TODO: remove when downloads are fixed
-      Streamers.getEpisodeResults(this.sourceUrl, Streamers.getStreamerWithId(this.streamerId), this._id, (sources) => {
-
-        // Replace existing sources
-        this.sources = sources;
-
-        // Update result
-        this.lastUpdateEnd = moment().toDate();
-        Episodes.update({
-          _id: this._id,
+  attemptUpdate() {
+    if (this.expired()) {
+      this.lastUpdateStart = moment().toDate();
+      Episodes.update(this._id, {
+        $set: {
           lastUpdateStart: this.lastUpdateStart
-        }, {
-          $set: Episodes.simpleSchema().clean(this, {
-            mutate: true
-          })
-        });
-
+        }
       });
+
+      if (Meteor.isServer) { // TODO: remove when downloads are fixed
+        Streamers.getEpisodeResults(this.sourceUrl, Streamers.getStreamerWithId(this.streamerId), this._id, (sources) => {
+
+          // Replace existing sources
+          this.sources = sources;
+
+          // Update result
+          this.lastUpdateEnd = moment().toDate();
+          Episodes.update({
+            _id: this._id,
+            lastUpdateStart: this.lastUpdateStart
+          }, {
+            $set: Episodes.simpleSchema().clean(this, {
+              mutate: true
+            })
+          });
+
+        });
+      }
     }
   },
 
@@ -173,19 +175,11 @@ Episodes.addEpisode = function(episode) {
   }
 };
 
-Episodes.attemptUpdate = function(id) {
-  Schemas.id.validate({id});
-
-  let episode = Episodes.findOne(id);
-  if (episode.expired()) {
-    episode.doUpdate();
-  }
-};
-
 // Methods
 Meteor.methods({
   'episodes.attemptUpdate'(id) {
-    Episodes.attemptUpdate(id);
+    Schemas.id.validate({id});
+    Episodes.findOne(id).attemptUpdate();
   }
 });
 

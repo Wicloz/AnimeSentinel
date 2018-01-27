@@ -157,43 +157,45 @@ Shows.helpers({
     }
   },
 
-  doUpdate() {
-    this.lastUpdateStart = moment().toDate();
-    Shows.update(this._id, {
-      $set: {
-        lastUpdateStart: this.lastUpdateStart
-      }
-    });
-
-    if (Meteor.isServer) { // TODO: remove when downloads are fixed
-      Streamers.createFullShow(this.altNames, this.streamerUrls, this._id, (show) => {
-
-        // Replace existing fields
-        Object.keys(show).forEach((key) => {
-          this[key] = show[key];
-        });
-
-        // Update result
-        this.lastUpdateEnd = moment().toDate();
-        Shows.update({
-          _id: this._id,
+  attemptUpdate() {
+    if (this.expired()) {
+      this.lastUpdateStart = moment().toDate();
+      Shows.update(this._id, {
+        $set: {
           lastUpdateStart: this.lastUpdateStart
-        }, {
-          $set: Shows.simpleSchema().clean(this, {
-            mutate: true
-          })
-        });
-
-        // TODO: Merge and remove duplicate shows
-        // TODO: Move episodes
-
-      }, (partial) => {
-        // Insert any partial results found in the process
-        Shows.addPartialShow(partial);
-      }, (episode) => {
-        // Add found episodes
-        Episodes.addEpisode(episode);
+        }
       });
+
+      if (Meteor.isServer) { // TODO: remove when downloads are fixed
+        Streamers.createFullShow(this.altNames, this.streamerUrls, this._id, (show) => {
+
+          // Replace existing fields
+          Object.keys(show).forEach((key) => {
+            this[key] = show[key];
+          });
+
+          // Update result
+          this.lastUpdateEnd = moment().toDate();
+          Shows.update({
+            _id: this._id,
+            lastUpdateStart: this.lastUpdateStart
+          }, {
+            $set: Shows.simpleSchema().clean(this, {
+              mutate: true
+            })
+          });
+
+          // TODO: Merge and remove duplicate shows
+          // TODO: Move episodes
+
+        }, (partial) => {
+          // Insert any partial results found in the process
+          Shows.addPartialShow(partial);
+        }, (episode) => {
+          // Add found episodes
+          Episodes.addEpisode(episode);
+        });
+      }
     }
   }
 });
@@ -233,19 +235,11 @@ Shows.addPartialShow = function(show) {
   }
 };
 
-Shows.attemptUpdate = function(id) {
-  Schemas.id.validate({id});
-
-  let show = Shows.findOne(id);
-  if (show.expired()) {
-    show.doUpdate();
-  }
-};
-
 // Methods
 Meteor.methods({
   'shows.attemptUpdate'(id) {
-    Shows.attemptUpdate(id);
+    Schemas.id.validate({id});
+    Shows.findOne(id).attemptUpdate();
   }
 });
 
