@@ -55,7 +55,7 @@
       {{#each episodes}}
         {{#if $eq translationType 'sub'}}
           <li class="collection-item">
-            Episode {{episodeNum}} - {{streamerId}}
+            <a href="{{pathFor 'episode' showId=showId translationType=translationType episodeNum=episodeNum}}">Episode {{episodeNum}}</a>
           </li>
         {{/if}}
       {{/each}}
@@ -66,7 +66,7 @@
       {{#each episodes}}
         {{#if $eq translationType 'dub'}}
           <li class="collection-item">
-            Episode {{episodeNum}} - {{streamerId}}
+            <a href="{{pathFor 'episode' showId=showId translationType=translationType episodeNum=episodeNum}}">Episode {{episodeNum}}</a>
           </li>
         {{/if}}
       {{/each}}
@@ -77,7 +77,7 @@
       {{#each episodes}}
         {{#if $eq translationType 'raw'}}
           <li class="collection-item">
-            Episode {{episodeNum}} - {{streamerId}}
+            <a href="{{pathFor 'episode' showId=showId translationType=translationType episodeNum=episodeNum}}">Episode {{episodeNum}}</a>
           </li>
         {{/if}}
       {{/each}}

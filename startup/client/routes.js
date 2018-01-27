@@ -3,6 +3,7 @@ import '/imports/ui/pages/welcome.js';
 import '/imports/ui/pages/search.js';
 import '/imports/ui/pages/notFound.js';
 import '/imports/ui/pages/show.js';
+import '/imports/ui/pages/episode.js';
 
 FlowRouter.notFound = {
   name: 'notFound',
@@ -29,5 +30,12 @@ FlowRouter.route('/anime/:showId', {
   name: 'show',
   action() {
     BlazeLayout.render('layouts_main', {content: 'pages_show'});
+  }
+});
+
+FlowRouter.route('/anime/:showId/episodes/:translationType/:episodeNum', {
+  name: 'episode',
+  action() {
+    BlazeLayout.render('layouts_main', {content: 'pages_episode'});
   }
 });

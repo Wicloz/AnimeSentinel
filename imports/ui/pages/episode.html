@@ -1,0 +1,18 @@
+<template name="pages_episode">
+  <div class="container">
+    <div id="player-container-outer">
+      <div id="player-container-inner">
+        <iframe id="episode-frame" src="{{selectedEpisode.sourceUrl}}"></iframe>
+      </div>
+    </div>
+
+    <div class="collection">
+      {{#each streamers}}
+        <a class="collection-item {{#if $eq selectedEpisode.streamerId id}}active{{/if}}" data-id="{{id}}">
+          {{name}}
+        </a>
+      {{/each}}
+    </div>
+  </div>
+</template>
+

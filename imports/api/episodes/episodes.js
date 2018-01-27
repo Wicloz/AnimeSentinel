@@ -159,3 +159,21 @@ Episodes.queryForShow = function(showId) {
     }
   });
 };
+
+Episodes.queryForEpisode = function(showId, episodeNum, translationType) {
+  // Validate
+  Episodes.simpleSchema().validate({
+    showId: showId,
+    episodeNum: episodeNum,
+    translationType: translationType
+  }, {
+    keys: ['showId', 'episodeNum', 'translationType']
+  });
+
+  // Return results cursor
+  return Episodes.find({
+    showId: showId,
+    episodeNum: episodeNum,
+    translationType: translationType
+  });
+};
