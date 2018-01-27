@@ -149,6 +149,8 @@ Shows.helpers({
       })
     });
 
+    // TODO: Move episodes
+
     // Remove other from database
     if (other._id) {
       other.remove();
@@ -183,6 +185,7 @@ Shows.helpers({
         });
 
         // TODO: Merge and remove duplicate shows
+        // TODO: Move episodes
 
       }, (partial) => {
         // Insert any partial results found in the process
