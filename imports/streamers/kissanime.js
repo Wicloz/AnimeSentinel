@@ -7,6 +7,10 @@ export let kissanime = {
   name: 'KissAnime',
   homepage: 'http://kissanime.ru',
 
+  isInvalidPage(page) {
+    return false;
+  },
+
   // Search page data
   search: {
     createUrl: function(query) {

@@ -96,35 +96,40 @@ export default class Streamers {
         // Load page
         let page = Cheerio.load(html);
 
-        // Check if we have a show page
-        if (streamer.show.checkIfPage(page)) {
-          let result = this.processShowPage(html, streamer, logData);
-          results.concat(result.partials);
-          if (result.full) {
-            results.push(result.full);
-          }
-        }
+        // If the page is valid
+        if (!streamer.isInvalidPage(page)) {
 
-        // Otherwise we have a search page
-        else {
-          // For each row of data
-          page(streamer.search.rowSelector).each((index, element) => {
-            try {
-              if (index >= streamer.search.rowSkips) {
-                // Create and add show
-                let result = this.convertCheerioToShow(page(element), streamer, 'search');
-                if (result) {
-                  results.push(result);
+          // Check if we have a show page
+          if (streamer.show.checkIfPage(page)) {
+            let result = this.processShowPage(html, streamer, logData);
+            results.concat(result.partials);
+            if (result.full) {
+              results.push(result.full);
+            }
+          }
+
+          // Otherwise we have a search page
+          else {
+            // For each row of data
+            page(streamer.search.rowSelector).each((index, element) => {
+              try {
+                if (index >= streamer.search.rowSkips) {
+                  // Create and add show
+                  let result = this.convertCheerioToShow(page(element), streamer, 'search');
+                  if (result) {
+                    results.push(result);
+                  }
                 }
               }
-            }
 
-            catch(err) {
-              console.error('Failed to process search page with query: \'' + logData + '\' and streamer: \'' + streamer.id + '\'.');
-              console.error('Failed to process row number ' + index + '.');
-              console.error(err);
-            }
-          });
+              catch(err) {
+                console.error('Failed to process search page with query: \'' + logData + '\' and streamer: \'' + streamer.id + '\'.');
+                console.error('Failed to process row number ' + index + '.');
+                console.error(err);
+              }
+            });
+          }
+
         }
       }
 
@@ -149,59 +154,64 @@ export default class Streamers {
         // Load page
         let page = Cheerio.load(html);
 
-        // For each related show
-        page(streamer.showRelated.rowSelector).each((index, element) => {
-          try {
-            if (!streamer.showRelated.rowIgnore(page(element))) {
-              // Create and add related show
-              let result = this.convertCheerioToShow(page(element), streamer, 'showRelated');
-              if (result) {
-                results.partials.push(result);
+        // If the page is valid
+        if (!streamer.isInvalidPage(page)) {
+
+          // For each related show
+          page(streamer.showRelated.rowSelector).each((index, element) => {
+            try {
+              if (!streamer.showRelated.rowIgnore(page(element))) {
+                // Create and add related show
+                let result = this.convertCheerioToShow(page(element), streamer, 'showRelated');
+                if (result) {
+                  results.partials.push(result);
+                }
               }
             }
-          }
 
-          catch(err) {
-            console.error('Failed to process show page for show: \'' + logData + '\' and streamer: \'' + streamer.id + '\'.');
-            console.error('Failed to process related row number ' + index + '.');
-            console.error(err);
-          }
-        });
-
-        // For each episode
-        page(streamer.showEpisodes.rowSelector).each((index, element) => {
-          try {
-            if (index >= streamer.showEpisodes.rowSkips) {
-              // Create and add episode
-              let result = this.convertCheerioToEpisode(page(element), streamer, 'showEpisodes');
-              if (result) {
-                results.episodes.push(result);
-              }
+            catch(err) {
+              console.error('Failed to process show page for show: \'' + logData + '\' and streamer: \'' + streamer.id + '\'.');
+              console.error('Failed to process related row number ' + index + '.');
+              console.error(err);
             }
-          }
-
-          catch(err) {
-            console.error('Failed to process show page for show: \'' + logData + '\' and streamer: \'' + streamer.id + '\'.');
-            console.error('Failed to process episode row number ' + index + '.');
-            console.error(err);
-          }
-        });
-
-        // Fix episode numbers if required
-        if (streamer.showEpisodes.cannotCount && !results.episodes.empty()) {
-          let episodeCorrection = results.episodes.reduce((total, episode) => {
-            return Math.min(total, episode.episodeNum);
-          }, Infinity) - 1;
-          results.episodes = results.episodes.map((episode) => {
-            episode.episodeNum -= episodeCorrection;
-            return episode;
           });
-        }
 
-        // Create and store show
-        let result = this.convertCheerioToShow(page('html'), streamer, 'show');
-        if (result) {
-          results.full = result;
+          // For each episode
+          page(streamer.showEpisodes.rowSelector).each((index, element) => {
+            try {
+              if (index >= streamer.showEpisodes.rowSkips) {
+                // Create and add episode
+                let result = this.convertCheerioToEpisode(page(element), streamer, 'showEpisodes');
+                if (result) {
+                  results.episodes.push(result);
+                }
+              }
+            }
+
+            catch(err) {
+              console.error('Failed to process show page for show: \'' + logData + '\' and streamer: \'' + streamer.id + '\'.');
+              console.error('Failed to process episode row number ' + index + '.');
+              console.error(err);
+            }
+          });
+
+          // Fix episode numbers if required
+          if (streamer.showEpisodes.cannotCount && !results.episodes.empty()) {
+            let episodeCorrection = results.episodes.reduce((total, episode) => {
+              return Math.min(total, episode.episodeNum);
+            }, Infinity) - 1;
+            results.episodes = results.episodes.map((episode) => {
+              episode.episodeNum -= episodeCorrection;
+              return episode;
+            });
+          }
+
+          // Create and store show
+          let result = this.convertCheerioToShow(page('html'), streamer, 'show');
+          if (result) {
+            results.full = result;
+          }
+
         }
       }
 

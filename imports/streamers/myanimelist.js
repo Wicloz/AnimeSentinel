@@ -6,6 +6,10 @@ export let myanimelist = {
   name: 'MyAnimeList',
   homepage: 'https://myanimelist.net',
 
+  isInvalidPage(page) {
+    return false;
+  },
+
   // Search page data
   search: {
     createUrl: function(query) {
