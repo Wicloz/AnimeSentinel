@@ -114,5 +114,9 @@ Episodes.queryForShow = function(showId) {
   // Return results cursor
   return Episodes.find({
     showId: showId
+  }, {
+    sort: {
+      episodeNum: -1
+    }
   });
 };

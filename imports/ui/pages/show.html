@@ -1,5 +1,6 @@
 <template name="pages_show">
   <div class="container">
+    <h1>Information:</h1>
     <ul class="collection">
       <li class="collection-item">
         <p>Name:</p>
@@ -49,11 +50,36 @@
       </li>
     </ul>
 
+    <h1>Subbed:</h1>
     <ul class="collection">
       {{#each episodes}}
-        <li class="collection-item">
-          {{translationType}} - {{episodeNum}} - {{streamerId}}
-        </li>
+        {{#if $eq translationType 'sub'}}
+          <li class="collection-item">
+            Episode {{episodeNum}} - {{streamerId}}
+          </li>
+        {{/if}}
+      {{/each}}
+    </ul>
+
+    <h1>Dubbed:</h1>
+    <ul class="collection">
+      {{#each episodes}}
+        {{#if $eq translationType 'dub'}}
+          <li class="collection-item">
+            Episode {{episodeNum}} - {{streamerId}}
+          </li>
+        {{/if}}
+      {{/each}}
+    </ul>
+
+    <h1>Raw:</h1>
+    <ul class="collection">
+      {{#each episodes}}
+        {{#if $eq translationType 'raw'}}
+          <li class="collection-item">
+            Episode {{episodeNum}} - {{streamerId}}
+          </li>
+        {{/if}}
       {{/each}}
     </ul>
   </div>
