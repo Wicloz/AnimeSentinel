@@ -5,5 +5,5 @@ Meteor.publish('episodes.forShow', function(showId) {
 });
 
 Meteor.publish('episodes.forEpisode', function(showId, episodeNum, translationType) {
-  return Episodes.queryForEpisode(showId, episodeNum, translationType);
+  return Episodes.queryForEpisode(showId, translationType, episodeNum);
 });

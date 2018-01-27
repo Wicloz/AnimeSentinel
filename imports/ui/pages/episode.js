@@ -8,10 +8,10 @@ Template.pages_episode.onCreated(function() {
   this.autorun(() => {
     this.subscribe('episodes.forEpisode', FlowRouter.getParam('showId'), Number(FlowRouter.getParam('episodeNum')), FlowRouter.getParam('translationType'));
     if (this.subscriptionsReady()) {
-      if (!Episodes.queryForEpisode(FlowRouter.getParam('showId'), Number(FlowRouter.getParam('episodeNum')), FlowRouter.getParam('translationType')).count()) {
+      if (!Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).count()) {
         FlowRouter.go('notFound');
       }
-      this.selectedEpisode.set(Episodes.queryForEpisode(FlowRouter.getParam('showId'), Number(FlowRouter.getParam('episodeNum')), FlowRouter.getParam('translationType')).fetch()[0]._id);
+      this.selectedEpisode.set(Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch()[0]._id);
       Session.set('PageTitle', 'Episode ' + FlowRouter.getParam('episodeNum') + ' (' + FlowRouter.getParam('translationType') + ')');
     }
   });
@@ -25,9 +25,9 @@ Template.pages_episode.helpers({
   streamers() {
     let streamers = [];
 
-    Episodes.queryForEpisode(FlowRouter.getParam('showId'), Number(FlowRouter.getParam('episodeNum')), FlowRouter.getParam('translationType')).forEach((episode) => {
+    Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).forEach((episode) => {
       if (!streamers.hasPartialObjects({id: episode.streamerId})) {
-        streamers.push(Streamers.getStreamerWithId(episode.streamerId));
+        streamers.push(Streamers.getSimpleStreamerById(episode.streamerId));
       }
     });
 
@@ -37,6 +37,6 @@ Template.pages_episode.helpers({
 
 Template.pages_episode.events({
   'click a.collection-item'(event) {
-    Template.instance().selectedEpisode.set(Episodes.queryUnique(FlowRouter.getParam('showId'), Number(FlowRouter.getParam('episodeNum')), FlowRouter.getParam('translationType'), event.target.dataset.id).fetch()[0]._id)
+    Template.instance().selectedEpisode.set(Episodes.queryUnique(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum')), event.target.dataset.id).fetch()[0]._id)
   }
 });

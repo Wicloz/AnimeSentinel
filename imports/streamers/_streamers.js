@@ -7,10 +7,22 @@ import {Episodes} from "../api/episodes/episodes";
 let streamers = [myanimelist, kissanime];
 
 export default class Streamers {
-  static getStreamerWithId(id) {
+  static getStreamerById(id) {
     for (let i = 0; i < streamers.length; i++) {
       if (streamers[i].id === id) {
         return streamers[i];
+      }
+    }
+  }
+
+  static getSimpleStreamerById(id) {
+    for (let i = 0; i < streamers.length; i++) {
+      if (streamers[i].id === id) {
+        return {
+          id: streamers[i].id,
+          name: streamers[i].name,
+          homepage: streamers[i].homepage
+        };
       }
     }
   }

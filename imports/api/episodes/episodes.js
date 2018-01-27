@@ -100,7 +100,7 @@ Episodes.helpers({
       });
 
       if (Meteor.isServer) { // TODO: remove when downloads are fixed
-        Streamers.getEpisodeResults(this.sourceUrl, Streamers.getStreamerWithId(this.streamerId), this._id, (sources) => {
+        Streamers.getEpisodeResults(this.sourceUrl, Streamers.getStreamerById(this.streamerId), this._id, (sources) => {
 
           // Replace existing sources
           this.sources = sources;
@@ -150,7 +150,7 @@ Episodes.helpers({
 
 Episodes.addEpisode = function(episode) {
   // Get episodes which are the same
-  let others = Episodes.queryUnique(episode.showId, episode.episodeNum, episode.translationType, episode.streamerId);
+  let others = Episodes.queryUnique(episode.showId, episode.translationType, episode.episodeNum, episode.streamerId);
 
   // Merge episodes if found
   if (others.count()) {
@@ -184,30 +184,12 @@ Meteor.methods({
 });
 
 // Queries
-Episodes.queryUnique = function(showId, episodeNum, translationType, streamerId) {
+Episodes.queryForShow = function(showId) {
   // Validate
   Episodes.simpleSchema().validate({
     showId: showId,
-    episodeNum: episodeNum,
-    translationType: translationType,
-    streamerId: streamerId
   }, {
-    keys: ['showId', 'episodeNum', 'translationType', 'streamerId']
-  });
-
-  // Return results cursor
-  return Episodes.find({
-    showId: showId,
-    episodeNum: episodeNum,
-    translationType: translationType,
-    streamerId: streamerId
-  });
-};
-
-Episodes.queryForShow = function(showId) {
-  // Validate
-  Schemas.id.validate({
-    id: showId
+    keys: ['showId']
   });
 
   // Return results cursor
@@ -220,14 +202,34 @@ Episodes.queryForShow = function(showId) {
   });
 };
 
-Episodes.queryForEpisode = function(showId, episodeNum, translationType) {
+Episodes.queryForTranslationType = function(showId, translationType) {
   // Validate
   Episodes.simpleSchema().validate({
     showId: showId,
-    episodeNum: episodeNum,
     translationType: translationType
   }, {
-    keys: ['showId', 'episodeNum', 'translationType']
+    keys: ['showId', 'translationType']
+  });
+
+  // Return results cursor
+  return Episodes.find({
+    showId: showId,
+    translationType: translationType
+  }, {
+    sort: {
+      episodeNum: -1
+    }
+  });
+};
+
+Episodes.queryForEpisode = function (showId, translationType, episodeNum) {
+  // Validate
+  Episodes.simpleSchema().validate({
+    showId: showId,
+    translationType: translationType,
+    episodeNum: episodeNum
+  }, {
+    keys: ['showId', 'translationType', 'episodeNum']
   });
 
   // Return results cursor
@@ -235,5 +237,25 @@ Episodes.queryForEpisode = function(showId, episodeNum, translationType) {
     showId: showId,
     episodeNum: episodeNum,
     translationType: translationType
+  });
+};
+
+Episodes.queryUnique = function (showId, translationType, episodeNum, streamerId) {
+  // Validate
+  Episodes.simpleSchema().validate({
+    showId: showId,
+    translationType: translationType,
+    episodeNum: episodeNum,
+    streamerId: streamerId
+  }, {
+    keys: ['showId', 'translationType', 'episodeNum', 'streamerId']
+  });
+
+  // Return results cursor
+  return Episodes.find({
+    showId: showId,
+    episodeNum: episodeNum,
+    translationType: translationType,
+    streamerId: streamerId
   });
 };
