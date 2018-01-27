@@ -60,20 +60,59 @@ Episodes.maxUpdateTime = 600000; // 10 minutes
 
 // Helpers
 Episodes.helpers({
+  remove() {
+    Episodes.remove(this._id);
+  },
+
   mergeEpisode(other) {
-    // console.log(other);
+    // Overwrite and merge attributes
+    Object.keys(other).forEach((key) => {
+      if (key === 'videos') {
+        this[key] = this[key].concat(other[key]);
+      } else if (!['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key)) {
+        this[key] = other[key];
+      }
+    });
+
+    // Update database
+    Episodes.update({
+      _id: this._id,
+      lastUpdateStart: this.lastUpdateStart
+    }, {
+      $set: Episodes.simpleSchema().clean(this, {
+        mutate: true
+      })
+    });
+
+    // Remove other from database
+    if (other._id) {
+      other.remove();
+    }
   }
 });
 
 Episodes.addEpisode = function(episode) {
+  // Get episodes which are the same
   let others = Episodes.queryUnique(episode.showId, episode.episodeNum, episode.translationType, episode.streamerId);
 
+  // Merge episodes if found
   if (others.count()) {
+    let firstOther = undefined;
+
     others.forEach((other) => {
-      other.mergeEpisode(episode);
+      if (!firstOther) {
+        firstOther = other;
+      } else {
+        firstOther.mergeEpisode(other);
+      }
     });
+
+    if (firstOther) {
+      firstOther.mergeEpisode(episode);
+    }
   }
 
+  // Insert otherwise
   else {
     Episodes.insert(episode);
   }

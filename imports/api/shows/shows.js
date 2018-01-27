@@ -126,7 +126,7 @@ Shows.helpers({
   mergePartialShow(other) {
     // Copy and merge attributes
     Object.keys(other).forEach((key) => {
-      if (typeof this[key] === 'undefined') {
+      if (typeof this[key] === 'undefined' && !['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key)) {
         this[key] = other[key];
       }
       else if (Shows.arrayKeys.includes(key)) {
