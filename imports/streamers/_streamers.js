@@ -7,6 +7,14 @@ import {Episodes} from "../api/episodes/episodes";
 let streamers = [myanimelist, kissanime];
 
 export default class Streamers {
+  static getStreamerWithId(id) {
+    for (let i = 0; i < streamers.length; i++) {
+      if (streamers[i].id === id) {
+        return streamers[i];
+      }
+    }
+  }
+
   static convertCheerioToShow(cheerio, streamer, type) {
     // Create empty show
     let show = {};
