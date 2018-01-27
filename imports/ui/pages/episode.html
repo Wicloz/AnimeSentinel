@@ -2,17 +2,23 @@
   <div class="container">
     <div id="player-container-outer">
       <div id="player-container-inner">
-        <iframe id="episode-frame" src="{{selectedEpisode.sourceUrl}}"></iframe>
+        <iframe id="episode-frame" src="{{selectedSource.url}}"></iframe>
       </div>
     </div>
 
-    <div class="collection">
-      {{#each streamers}}
-        <a class="collection-item {{#if $eq selectedEpisode.streamerId id}}active{{/if}}" data-id="{{id}}">
-          {{name}}
-        </a>
-      {{/each}}
-    </div>
+    {{#each episode in episodes}}
+      <ul class="collection with-header">
+        <li class="collection-header">
+          <h6>{{episode.streamer.name}}</h6>
+        </li>
+        <li class="collection-item">
+          {{#each source in episode.sources}}
+            <a class="waves-effect waves-light btn {{#if $eq selectedSource.name source.name}}{{#if $eq selectedEpisode._id episode._id}}disabled{{/if}}{{/if}}" data-episode="{{episode._id}}" data-source="{{source.name}}">{{source.name}}</a>
+          {{/each}}
+        </li>
+      </ul>
+    {{/each}}
   </div>
-</template>
 
+  {{> components_loading_indicator_background state=updating}}
+</template>

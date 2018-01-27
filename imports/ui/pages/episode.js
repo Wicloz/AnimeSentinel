@@ -1,18 +1,36 @@
 import './episode.html';
 import {Episodes} from "../../api/episodes/episodes";
 import Streamers from "../../streamers/_streamers";
+import {Shows} from "../../api/shows/shows";
+import '/imports/ui/components/loadingIndicatorBackground.js';
 
 Template.pages_episode.onCreated(function() {
   this.selectedEpisode = new ReactiveVar(undefined);
+  this.selectedSource = new ReactiveVar(undefined);
+
+  this.autorun(() => {
+    this.subscribe('shows.withId', FlowRouter.getParam('showId'));
+    if (this.subscriptionsReady()) {
+      if (!Shows.findOne(FlowRouter.getParam('showId'))) {
+        FlowRouter.go('notFound');
+      } else {
+        Session.set('PageTitle', Shows.findOne(FlowRouter.getParam('showId')).name + ' - Episode ' + FlowRouter.getParam('episodeNum') + ' (' + FlowRouter.getParam('translationType').capitalize() + ')');
+      }
+    }
+  });
 
   this.autorun(() => {
     this.subscribe('episodes.forEpisode', FlowRouter.getParam('showId'), Number(FlowRouter.getParam('episodeNum')), FlowRouter.getParam('translationType'));
     if (this.subscriptionsReady()) {
       if (!Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).count()) {
         FlowRouter.go('notFound');
+      } else {
+        this.selectedEpisode.set(Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch()[0]._id);
+        this.selectedSource.set(Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch()[0].sources[0].name);
+        Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).forEach((episode) => {
+          Meteor.call('episodes.attemptUpdate', episode._id);
+        });
       }
-      this.selectedEpisode.set(Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch()[0]._id);
-      Session.set('PageTitle', 'Episode ' + FlowRouter.getParam('episodeNum') + ' (' + FlowRouter.getParam('translationType') + ')');
     }
   });
 });
@@ -22,21 +40,29 @@ Template.pages_episode.helpers({
     return Episodes.findOne(Template.instance().selectedEpisode.get());
   },
 
-  streamers() {
-    let streamers = [];
+  selectedSource() {
+    return Episodes.findOne(Template.instance().selectedEpisode.get()).sources.getPartialObjects({
+      name: Template.instance().selectedSource.get()
+    })[0];
+  },
 
-    Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).forEach((episode) => {
-      if (!streamers.hasPartialObjects({id: episode.streamerId})) {
-        streamers.push(Streamers.getSimpleStreamerById(episode.streamerId));
-      }
+  episodes() {
+    return Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch().map((episode) =>{
+      episode.streamer = Streamers.getSimpleStreamerById(episode.streamerId);
+      return episode;
     });
+  },
 
-    return streamers;
+  updating() {
+    return Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch().reduce((total, episode) => {
+      return total || episode.locked();
+    }, false);
   }
 });
 
 Template.pages_episode.events({
-  'click a.collection-item'(event) {
-    Template.instance().selectedEpisode.set(Episodes.queryUnique(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum')), event.target.dataset.id).fetch()[0]._id)
+  'click a.btn'(event) {
+    Template.instance().selectedEpisode.set(event.target.dataset.episode);
+    Template.instance().selectedSource.set(event.target.dataset.source);
   }
 });
