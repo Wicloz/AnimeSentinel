@@ -1,6 +1,35 @@
 <template name="pages_episode">
   <div class="container">
-    <div id="player-container-outer">
+    {{#each iframeError in iframeErrors}}
+      {{#if $eq iframeError 'cloudflare'}}
+        <ul class="collection">
+          <li class="collection-item">Complete Cloudflare's challenge once to watch this video.</li>
+          <li class="collection-item">
+            The challenge is to wait for this to complete:<br>
+            <img class="fullwidth" src="/images/cloudflare-challenge-simple.png">
+          </li>
+          <li class="collection-item"><a href="{{selectedSource.url}}" target="_blank">Click here to start the challenge.</a></li>
+          <li class="collection-item">Close that tab and return here once the challenge is completed.</li>
+        </ul>
+      {{/if}}
+      {{#if $eq iframeError 'mixed-content'}}
+        <ul class="collection">
+          <li class="collection-item">Disable mixed content protection to watch this video.</li>
+          <li class="collection-item">
+            Firefox:<br>
+            <img class="disable-mixed-protection-image" src="/images/firefox-unsafe-1.png">
+            <img class="disable-mixed-protection-image" src="/images/firefox-unsafe-2.png">
+          </li>
+          <li class="collection-item">
+            Chrome:<br>
+            <img class="disable-mixed-protection-image" src="/images/chrome-unsafe-1.png">
+            <img class="disable-mixed-protection-image" src="/images/chrome-unsafe-2.png">
+          </li>
+        </ul>
+      {{/if}}
+    {{/each}}
+
+    <div class="{{#if iframeErrors}}hidden{{/if}}" id="player-container-outer">
       <div id="player-container-inner">
         <iframe id="episode-frame" src="{{selectedSource.url}}"></iframe>
       </div>

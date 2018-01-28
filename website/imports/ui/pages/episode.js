@@ -4,9 +4,20 @@ import Streamers from "../../streamers/_streamers";
 import {Shows} from "../../api/shows/shows";
 import '/imports/ui/components/loadingIndicatorBackground.js';
 
+function isFlagProblematic(flag) {
+  return !Session.get('AddOnInstalled') || Episodes.flagsWithAddOnPreference.includes(flag) || Episodes.flagsWithAddOnNever.includes(flag);
+}
+
+function selectedSource() {
+  return Episodes.findOne(Template.instance().selectedEpisode.get()).sources.getPartialObjects({
+    name: Template.instance().selectedSource.get()
+  })[0];
+}
+
 Template.pages_episode.onCreated(function() {
   this.selectedEpisode = new ReactiveVar(undefined);
   this.selectedSource = new ReactiveVar(undefined);
+  this.iframeErrors = new ReactiveVar([]);
 
   this.autorun(() => {
     this.subscribe('shows.withId', FlowRouter.getParam('showId'));
@@ -71,9 +82,7 @@ Template.pages_episode.helpers({
     if (!Template.instance().selectedEpisode.get() || !Template.instance().selectedSource.get()) {
       return undefined;
     }
-    return Episodes.findOne(Template.instance().selectedEpisode.get()).sources.getPartialObjects({
-      name: Template.instance().selectedSource.get()
-    })[0];
+    return selectedSource();
   },
 
   episodes() {
@@ -90,13 +99,17 @@ Template.pages_episode.helpers({
   },
 
   showIcon(flag) {
-    return !Session.get('AddOnInstalled') || Episodes.flagsWithAddOnPreference.includes(flag) || Episodes.flagsWithAddOnNever.includes(flag);
+    return isFlagProblematic(flag);
   },
 
   flagsDisabled(flags) {
     return flags.reduce((total, flag) => {
       return total || (!Session.get('AddOnInstalled') && Episodes.flagsWithoutAddOnNever.includes(flag)) || (Session.get('AddOnInstalled') && Episodes.flagsWithAddOnNever.includes(flag));
     }, false);
+  },
+
+  iframeErrors() {
+    return Template.instance().iframeErrors.get();
   }
 });
 
@@ -108,5 +121,12 @@ Template.pages_episode.events({
 
     Template.instance().selectedEpisode.set(event.target.dataset.episode);
     Template.instance().selectedSource.set(event.target.dataset.source);
+    Template.instance().iframeErrors.set([]);
+  },
+
+  'error #episode-frame'(event) {
+    Template.instance().iframeErrors.set(selectedSource().flags.filter((flag) => {
+      return isFlagProblematic(flag);
+    }));
   }
 });
