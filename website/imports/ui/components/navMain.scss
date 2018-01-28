@@ -12,7 +12,7 @@
   margin-bottom: $spacer;
 }
 
-nav .brand-logo.center {
+.nav-wrapper .brand-logo.center {
   @media #{$medium-only} {
     width: calc(100% - 64px - #{$spacer});
     margin-left: 32px - $spacer/2;
@@ -21,4 +21,8 @@ nav .brand-logo.center {
     width: calc(100% - 56px - #{$spacer});
     margin-left: 28px - $spacer/2;
   }
+}
+
+#navbar-breadcrumbs {
+  font-size: 18px;
 }

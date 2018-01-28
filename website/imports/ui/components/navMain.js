@@ -6,28 +6,42 @@ Template.components_nav_main.onRendered(function() {
     closeOnClick: true
   });
 
-  let pageTitleElement = $('#page-title');
+  let breadcrumbsElement = $('#navbar-breadcrumbs');
 
-  let resizeTitleDebounced = _.debounce(function() {
-    pageTitleElement.css({
+  let resizeBreadcrumbsDebounced = _.debounce(function() {
+    breadcrumbsElement.find('.breadcrumb').css({
       fontSize: '2.1rem'
     });
-    while (pageTitleElement.height() > 64) {
-      pageTitleElement.css({
-        fontSize: (pageTitleElement.css('fontSize').replace('px', '') - 0.5) + 'px'
+    breadcrumbsElement.css({
+      fontSize: '2.1rem'
+    });
+
+    let fontSize = Number(breadcrumbsElement.css('fontSize').replace('px', ''));
+
+    while (breadcrumbsElement.height() > 64 && fontSize > 1) {
+      fontSize -= 0.5;
+      breadcrumbsElement.find('.breadcrumb').css({
+        fontSize: fontSize + 'px'
+      });
+      breadcrumbsElement.css({
+        fontSize: fontSize + 'px'
       });
     }
   }, 100, true);
 
-  new ResizeSensor(pageTitleElement, function() {
-    resizeTitleDebounced();
+  new ResizeSensor(breadcrumbsElement, function() {
+    resizeBreadcrumbsDebounced();
   });
-  resizeTitleDebounced();
+  resizeBreadcrumbsDebounced();
 });
 
 Template.components_nav_main.helpers({
   pageTitle() {
     return Session.get('PageTitle');
+  },
+
+  breadCrumbs() {
+    return JSON.parse(Session.get('BreadCrumbs'));
   }
 });
 

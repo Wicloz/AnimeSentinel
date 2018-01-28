@@ -2,7 +2,12 @@
   <div class="navbar-fixed">
     <nav>
       <div class="nav-wrapper">
-        <span id="page-title" class="brand-logo center">{{pageTitle}}</span>
+        <span id="navbar-breadcrumbs" class="brand-logo center">
+          {{#each breadCrumbs}}
+            <a href="{{url}}" class="breadcrumb">{{name}}</a>
+          {{/each}}
+          <a class="breadcrumb">{{pageTitle}}</a>
+        </span>
 
         <a data-activates="navMainSide" class="button-collapse pointer">
           <i class="material-icons">menu</i>
