@@ -93,7 +93,7 @@ Episodes.attachSchema(Schemas.Episode);
 // Constants
 Episodes.timeUntilRecache = 8000; // 1 day
 Episodes.maxUpdateTime = 8000; // 10 minutes
-Episodes.flagsWithoutAddOnPreference = ['flash', 'cloudflare', 'mixed-content'];
+Episodes.flagsWithoutAddOnPreference = ['cloudflare', 'mixed-content', 'flash'];
 Episodes.flagsWithoutAddOnNever = ['x-frame-options'];
 Episodes.flagsWithAddOnPreference = ['flash', 'mixed-content'];
 Episodes.flagsWithAddOnNever = [];
