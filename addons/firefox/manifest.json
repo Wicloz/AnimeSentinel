@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+  "name": "AnimeSentinel Companion AddOn",
+  "version": "0.2",
+
+  "description": "Companion AddOn for AnimeSentinel. Allows more episodes to be watched on AnimeSentinel and improves performance.",
+
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+  ],
+
+  "background": {
+    "scripts": ["onHeadersReceived.js"]
+  }
+}
