@@ -71,8 +71,8 @@ export const Episodes = new Mongo.Collection('episodes');
 Episodes.attachSchema(Schemas.Episode);
 
 // Constants
-Episodes.timeUntilRecache = 86400000; // 1 day
-Episodes.maxUpdateTime = 600000; // 10 minutes
+Episodes.timeUntilRecache = 8000; // 1 day
+Episodes.maxUpdateTime = 8000; // 10 minutes
 
 // Helpers
 Episodes.helpers({

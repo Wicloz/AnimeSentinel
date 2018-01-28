@@ -104,8 +104,8 @@ Shows.arrayKeys = Shows.simpleSchema()._schemaKeys.filter((key) => {
   return !key.includes('.') && Shows.simpleSchema()._schema[key].type.definitions[0].type.toString().includes('Array()');
 });
 Shows.descriptionCutoff = '&#x2026; (read more)';
-Shows.timeUntilRecache = 86400000; // 1 day
-Shows.maxUpdateTime = 600000; // 10 minutes
+Shows.timeUntilRecache = 8000; // 1 day
+Shows.maxUpdateTime = 8000; // 10 minutes
 
 // Helpers
 Shows.helpers({
