@@ -29,11 +29,19 @@
       {{/if}}
     {{/each}}
 
-    <div class="{{#if iframeErrors}}hidden{{/if}}" id="player-container-outer">
-      <div id="player-container-inner">
-        <iframe id="episode-frame" src="{{selectedSource.url}}"></iframe>
-      </div>
-    </div>
+    <ul class="collection {{#if iframeErrors}}hidden{{/if}}">
+      <li class="collection-item" id="player-container-collection">
+        <div id="player-container-outer">
+          <div id="player-container-inner">
+            <iframe id="episode-frame" src="{{selectedSource.url}}"></iframe>
+          </div>
+        </div>
+      </li>
+      <li class="collection-item">
+        <a class="waves-effect waves-light btn not-working-btn">Video not working?</a>
+        Try another video first.
+      </li>
+    </ul>
 
     {{#each episode in episodes}}
       <ul class="collection with-header">
@@ -42,7 +50,7 @@
         </li>
         <li class="collection-item">
           {{#each source in episode.sources}}
-            <a class="waves-effect waves-light btn {{#if flagsDisabled source.flags}}disabled{{/if}} {{#if $eq selectedSource.name source.name}}{{#if $eq selectedEpisode._id episode._id}}primary-color{{/if}}{{/if}}" data-episode="{{episode._id}}" data-source="{{source.name}}">
+            <a class="waves-effect waves-light btn source-btn {{#if flagsDisabled source.flags}}disabled{{/if}} {{#if $eq selectedSource.name source.name}}{{#if $eq selectedEpisode._id episode._id}}primary-color{{/if}}{{/if}}" data-episode="{{episode._id}}" data-source="{{source.name}}">
               {{source.name}}
               {{#each flag in source.flags}}
                 {{#if showIcon flag}}

@@ -14,6 +14,12 @@ function selectedSource() {
   })[0];
 }
 
+function setIframeErrors() {
+  Template.instance().iframeErrors.set(selectedSource().flags.filter((flag) => {
+    return isFlagProblematic(flag);
+  }));
+}
+
 Template.pages_episode.onCreated(function() {
   this.selectedEpisode = new ReactiveVar(undefined);
   this.selectedSource = new ReactiveVar(undefined);
@@ -114,7 +120,7 @@ Template.pages_episode.helpers({
 });
 
 Template.pages_episode.events({
-  'click a.btn'(event) {
+  'click a.source-btn'(event) {
     if (event.target.tagName === 'I') {
       event.target = event.target.parentElement.parentElement;
     }
@@ -125,8 +131,10 @@ Template.pages_episode.events({
   },
 
   'error #episode-frame'(event) {
-    Template.instance().iframeErrors.set(selectedSource().flags.filter((flag) => {
-      return isFlagProblematic(flag);
-    }));
-  }
+    setIframeErrors();
+  },
+
+  'click a.not-working-btn'(event) {
+    setIframeErrors();
+  },
 });

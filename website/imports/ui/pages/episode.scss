@@ -1,9 +1,12 @@
 @import "../../../client/_vars.scss";
 
+#player-container-collection {
+  padding: 0;
+}
+
 #player-container-outer {
   position: relative;
   width: 100%;
-  margin-bottom: $spacer;
 }
 
 #player-container-outer:before {
@@ -23,7 +26,7 @@
 #episode-frame {
   width: 100%;
   height: 100%;
-  border: 1px solid $secondary-color;
+  border: none;
 }
 
 .disable-mixed-protection-image {
