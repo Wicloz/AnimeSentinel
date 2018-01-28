@@ -12,11 +12,9 @@
         <a data-activates="navMainSide" class="button-collapse pointer">
           <i class="material-icons">menu</i>
         </a>
+
         <ul class="left hide-on-med-and-down">
-          {{> components_sidenav_linksPublic}}
-        </ul>
-        <ul class="side-nav" id="navMainSide">
-          {{> components_sidenav_linksPublic}}
+          {{> components_nav_main_linksPublic}}
         </ul>
 
         {{#autoForm schema='Schemas.animeSearch' id='navMainSearchForm' class='right hide-on-med-and-down'}}
@@ -25,9 +23,13 @@
       </div>
     </nav>
   </div>
+
+  <ul class="side-nav" id="navMainSide">
+    {{> components_nav_main_linksPublic}}
+  </ul>
 </template>
 
-<template name="components_sidenav_linksPublic">
+<template name="components_nav_main_linksPublic">
   {{> components_nav_main_link routeName='welcome' routeTitle='Home' activeWhen='welcome'}}
   {{> components_nav_main_link routeName='search' routeTitle='Anime' activeWhen='search|show|episode'}}
 </template>

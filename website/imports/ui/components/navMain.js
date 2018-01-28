@@ -2,7 +2,7 @@ import './navMain.html';
 let ResizeSensor = require('css-element-queries/src/ResizeSensor');
 
 Template.components_nav_main.onRendered(function() {
-  $('.navMainSide').sideNav({
+  $(".button-collapse").sideNav({
     closeOnClick: true
   });
 
