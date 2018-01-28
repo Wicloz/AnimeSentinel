@@ -3,7 +3,7 @@
     {{#each iframeError in iframeErrors}}
       {{#if $eq iframeError 'cloudflare'}}
         <ul class="collection">
-          <li class="collection-item">Complete Cloudflare's challenge once to watch this video.</li>
+          <li class="collection-item">Complete the Cloudflare challenge once to watch this video.</li>
           <li class="collection-item">
             The challenge is to wait for this to complete:<br>
             <img class="fullwidth" src="/images/cloudflare-challenge-simple.png">
@@ -25,6 +25,18 @@
             <img class="disable-mixed-protection-image" src="/images/chrome-unsafe-1.png">
             <img class="disable-mixed-protection-image" src="/images/chrome-unsafe-2.png">
           </li>
+        </ul>
+      {{/if}}
+      {{#if $eq iframeError 'flash'}}
+        <ul class="collection">
+          <li class="collection-item">This video requires Adobe Flash Player to be played.</li>
+          <li class="collection-item"><a href="https://get.adobe.com/flashplayer/" target="_blank">You can get it here.</a></li>
+          <li class="collection-item">Make sure to uncheck the optional offers.</li>
+        </ul>
+      {{/if}}
+      {{#if $eq iframeError 'x-frame-options'}}
+        <ul class="collection">
+          <li class="collection-item">This video cannot be watched without the companion browser add-on.</li>
         </ul>
       {{/if}}
     {{/each}}
