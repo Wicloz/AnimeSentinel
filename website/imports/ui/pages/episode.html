@@ -13,20 +13,22 @@
         </li>
         <li class="collection-item">
           {{#each source in episode.sources}}
-            <a class="waves-effect waves-light btn {{#if $in 'x-frame-options' source.flags}}disabled{{/if}} {{#if $eq selectedSource.name source.name}}{{#if $eq selectedEpisode._id episode._id}}primary-color{{/if}}{{/if}}" data-episode="{{episode._id}}" data-source="{{source.name}}">
+            <a class="waves-effect waves-light btn {{#if flagsDisabled source.flags}}disabled{{/if}} {{#if $eq selectedSource.name source.name}}{{#if $eq selectedEpisode._id episode._id}}primary-color{{/if}}{{/if}}" data-episode="{{episode._id}}" data-source="{{source.name}}">
               {{source.name}}
               {{#each flag in source.flags}}
-                {{#if $eq flag 'mixed-content'}}
-                  {{>tooltippedIcon icon='lock_open' iconClass='right' text='Has Mixed Content' position='top'}}
-                {{/if}}
-                {{#if $eq flag 'x-frame-options'}}
-                  {{>tooltippedIcon icon='block' iconClass='right' text='Abuses X-Frame-Options' position='top'}}
-                {{/if}}
-                {{#if $eq flag 'cloudflare'}}
-                  {{>tooltippedIcon icon='cloud_off' iconClass='right' text='Uses Cloudflare Filtering' position='top'}}
-                {{/if}}
-                {{#if $eq flag 'flash'}}
-                  {{>tooltippedIcon icon='flash_off' iconClass='right' text='Uses Flash Player' position='top'}}
+                {{#if showIcon flag}}
+                  {{#if $eq flag 'x-frame-options'}}
+                    {{>tooltippedIcon icon='block' iconClass='right' text='Abuses X-Frame-Options' position='top'}}
+                  {{/if}}
+                  {{#if $eq flag 'cloudflare'}}
+                    {{>tooltippedIcon icon='cloud_off' iconClass='right' text='Uses Cloudflare Filtering' position='top'}}
+                  {{/if}}
+                  {{#if $eq flag 'mixed-content'}}
+                    {{>tooltippedIcon icon='lock_open' iconClass='right' text='Has Mixed Content' position='top'}}
+                  {{/if}}
+                  {{#if $eq flag 'flash'}}
+                    {{>tooltippedIcon icon='flash_off' iconClass='right' text='Uses Flash Player' position='top'}}
+                  {{/if}}
                 {{/if}}
               {{/each}}
             </a>

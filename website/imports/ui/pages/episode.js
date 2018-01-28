@@ -27,11 +27,33 @@ Template.pages_episode.onCreated(function() {
       } else {
         Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).forEach((episode) => {
           Meteor.call('episodes.attemptUpdate', episode._id);
-          if (episode.lastUpdateEnd && (!this.selectedEpisode.get() || !this.selectedSource.get())) {
-            this.selectedEpisode.set(Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch()[0]._id);
-            this.selectedSource.set(Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch()[0].sources[0].name);
-          }
         });
+      }
+    }
+  });
+
+  this.autorun(() => {
+    if (this.subscriptionsReady() && (!this.selectedEpisode.get() || !this.selectedSource.get())) {
+      let flagsPreference = Episodes.flagsWithoutAddOnPreference;
+      let flagsNever = Episodes.flagsWithoutAddOnNever;
+      if (Session.get('AddOnInstalled')) {
+        flagsPreference = Episodes.flagsWithAddOnPreference;
+        flagsNever = Episodes.flagsWithAddOnNever;
+      }
+
+      for (let i = flagsPreference.length; i >= 0; i--) {
+        if (!this.selectedEpisode.get() || !this.selectedSource.get()) {
+          Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).forEach((episode) => {
+            episode.sources.forEach((source) => {
+              if ((!this.selectedEpisode.get() || !this.selectedSource.get()) && source.flags.reduce((total, flag) => {
+                  return total && !flagsNever.includes(flag) && !flagsPreference.slice(0, i).includes(flag);
+                }, true)) {
+                this.selectedEpisode.set(episode._id);
+                this.selectedSource.set(source.name);
+              }
+            });
+          });
+        }
       }
     }
   });
@@ -64,6 +86,16 @@ Template.pages_episode.helpers({
   updating() {
     return Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch().reduce((total, episode) => {
       return total || episode.locked();
+    }, false);
+  },
+
+  showIcon(flag) {
+    return !Session.get('AddOnInstalled') || Episodes.flagsWithAddOnPreference.includes(flag) || Episodes.flagsWithAddOnNever.includes(flag);
+  },
+
+  flagsDisabled(flags) {
+    return flags.reduce((total, flag) => {
+      return total || (!Session.get('AddOnInstalled') && Episodes.flagsWithoutAddOnNever.includes(flag)) || (Session.get('AddOnInstalled') && Episodes.flagsWithAddOnNever.includes(flag));
     }, false);
   }
 });
