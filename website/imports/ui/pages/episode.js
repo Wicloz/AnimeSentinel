@@ -81,7 +81,9 @@ Template.pages_episode.helpers({
     if (!Template.instance().selectedEpisode.get()) {
       return undefined;
     }
-    return Episodes.findOne(Template.instance().selectedEpisode.get());
+    let episode = Episodes.findOne(Template.instance().selectedEpisode.get());
+    episode.streamer = Streamers.getSimpleStreamerById(episode.streamerId);
+    return episode;
   },
 
   selectedSource() {

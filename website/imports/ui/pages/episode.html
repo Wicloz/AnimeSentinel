@@ -2,25 +2,32 @@
   <div class="container">
     {{#each iframeError in iframeErrors}}
       {{#if $eq iframeError 'cloudflare'}}
-        <ul class="collection">
-          <li class="collection-item">Complete the Cloudflare challenge once to watch this video.</li>
-          <li class="collection-item">
-            The challenge is to wait for this to complete:<br>
-            <img class="fullwidth" src="/images/cloudflare-challenge-simple.png">
+        <ul class="collection with-header">
+          <li class="collection-header">
+            <h4>Disable the Cloudflare filter once to watch this video.</h4>
           </li>
-          <li class="collection-item"><a href="{{selectedSource.url}}" target="_blank">Click here to start the challenge.</a></li>
-          <li class="collection-item">Close that tab and reload this page once the challenge is completed.</li>
+          <li class="collection-item">
+            You will have to wait for this to complete:<br>
+            <img class="disable-cloudflare-filter-image" src="/images/cloudflare-challenge-simple.png">
+          </li>
+          <li class="collection-item">
+            <a href="{{selectedEpisode.streamer.homepage}}" target="_blank">Click here to disable the filter.</a>
+            <strong>Return here</strong> once the loading is done.
+          </li>
+          <li class="collection-item">Close the new tab and reload this page once the filter is disabled.</li>
         </ul>
       {{/if}}
       {{#if $eq iframeError 'mixed-content'}}
-        <ul class="collection">
-          <li class="collection-item">Disable mixed content protection to watch this video.</li>
-          <li class="collection-item">
+        <ul class="collection with-header">
+          <li class="collection-header">
+            <h4>Disable mixed content protection to watch this video.</h4>
+          </li>
+          <li class="collection-item {{#unless $eq $.BrowserDetect.browser 'Firefox'}}hidden{{/unless}}">
             Firefox:<br>
             <img class="disable-mixed-protection-image" src="/images/firefox-unsafe-1.png">
             <img class="disable-mixed-protection-image" src="/images/firefox-unsafe-2.png">
           </li>
-          <li class="collection-item">
+          <li class="collection-item {{#unless $eq $.BrowserDetect.browser 'Chrome'}}hidden{{/unless}}">
             Chrome:<br>
             <img class="disable-mixed-protection-image" src="/images/chrome-unsafe-1.png">
             <img class="disable-mixed-protection-image" src="/images/chrome-unsafe-2.png">
@@ -28,15 +35,19 @@
         </ul>
       {{/if}}
       {{#if $eq iframeError 'flash'}}
-        <ul class="collection">
-          <li class="collection-item">This video requires Adobe Flash Player to be played.</li>
+        <ul class="collection with-header">
+          <li class="collection-header">
+            <h4>This video requires Adobe Flash Player to be played.</h4>
+          </li>
           <li class="collection-item"><a href="https://get.adobe.com/flashplayer/" target="_blank">You can get it here.</a></li>
           <li class="collection-item">Make sure to uncheck the optional offers.</li>
         </ul>
       {{/if}}
       {{#if $eq iframeError 'x-frame-options'}}
-        <ul class="collection">
-          <li class="collection-item">This video cannot be watched without the companion browser add-on.</li>
+        <ul class="collection with-header">
+          <li class="collection-header">
+            <h4>This video cannot be watched without the companion browser add-on.</h4>
+          </li>
         </ul>
       {{/if}}
     {{/each}}
@@ -58,7 +69,7 @@
     {{#each episode in episodes}}
       <ul class="collection with-header">
         <li class="collection-header">
-          <h6>{{episode.streamer.name}}</h6>
+          <h5>{{episode.streamer.name}}</h5>
         </li>
         <li class="collection-item">
           {{#each source in episode.sources}}
