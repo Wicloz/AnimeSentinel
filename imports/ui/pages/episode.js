@@ -25,11 +25,13 @@ Template.pages_episode.onCreated(function() {
       if (!Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).count()) {
         FlowRouter.go('notFound');
       } else {
-        this.selectedEpisode.set(Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch()[0]._id);
-        this.selectedSource.set(Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch()[0].sources[0].name);
         Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).forEach((episode) => {
           Meteor.call('episodes.attemptUpdate', episode._id);
         });
+        if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch()[0].lastUpdateEnd) {
+          this.selectedEpisode.set(Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch()[0]._id);
+          this.selectedSource.set(Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch()[0].sources[0].name);
+        }
       }
     }
   });
@@ -37,10 +39,16 @@ Template.pages_episode.onCreated(function() {
 
 Template.pages_episode.helpers({
   selectedEpisode() {
+    if (!Template.instance().selectedEpisode.get()) {
+      return undefined;
+    }
     return Episodes.findOne(Template.instance().selectedEpisode.get());
   },
 
   selectedSource() {
+    if (!Template.instance().selectedEpisode.get() || !Template.instance().selectedSource.get()) {
+      return undefined;
+    }
     return Episodes.findOne(Template.instance().selectedEpisode.get()).sources.getPartialObjects({
       name: Template.instance().selectedSource.get()
     })[0];
