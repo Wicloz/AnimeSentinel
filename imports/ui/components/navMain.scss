@@ -1,7 +1,7 @@
 @import "../../../client/_vars.scss";
 
 #navMainSearchForm {
-  width: 33%;
+  width: 25%;
   .red-text {
     margin-top: -90px;
     padding-left: 45px;
@@ -10,4 +10,15 @@
 
 .navbar-fixed {
   margin-bottom: $spacer;
+}
+
+nav .brand-logo.center {
+  @media #{$medium-only} {
+    width: calc(100% - 64px - #{$spacer});
+    margin-left: 32px - $spacer/2;
+  }
+  @media #{$small-and-down} {
+    width: calc(100% - 56px - #{$spacer});
+    margin-left: 28px - $spacer/2;
+  }
 }

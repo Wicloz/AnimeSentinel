@@ -9,6 +9,7 @@
     "autoprefixer": "^7.2.5",
     "cheerio": "^1.0.0-rc.2",
     "cloudkicker": "^1.0.13",
+    "css-element-queries": "^1.0.1",
     "materialize-css": "^0.100.2",
     "meteor-node-stubs": "^0.3.2",
     "simpl-schema": "^1.4.1"
