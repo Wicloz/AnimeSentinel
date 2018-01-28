@@ -165,7 +165,8 @@ export let myanimelist = {
     getSources: function(sourceUrl) {
       return [{
         name: 'Crunchyroll',
-        url: sourceUrl
+        url: sourceUrl,
+        flags: ['flash']
       }];
     },
   },

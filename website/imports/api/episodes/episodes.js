@@ -63,6 +63,26 @@ Schemas.Episode = new SimpleSchema({
   'sources.$.js': {
     type: String,
     optional: true
+  },
+  'sources.$.flags': {
+    type: Array,
+    optional: true,
+    autoValue: function() {
+      if (!this.isSet) {
+        return [];
+      }
+      return this.value.reduce((total, value) => {
+        value = value.trim();
+        if (!total.includes(value)) {
+          total.push(value);
+        }
+        return total;
+      }, []);
+    }
+  },
+  'sources.$.flags.$': {
+    type: String,
+    allowedValues: ['flash', 'cloudflare', 'x-frame-options', 'mixed-content']
   }
 }, { tracker: Tracker });
 

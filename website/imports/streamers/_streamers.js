@@ -250,7 +250,12 @@ export default class Streamers {
 
   static getEpisodeResults(url, streamer, logData, resultCallback) {
     if (!streamer.episode.requiresDownload) {
-      resultCallback(streamer.episode.getSources(url));
+      resultCallback(streamer.episode.getSources(url).map((source) => {
+        if (url.startsWith('http://')) {
+          source.flags.push('mixed-content');
+        }
+        return source;
+      }));
     } else {
       // TODO: Implement this when needed
       console.error('Scraping episode pages has not been implemented yet!');

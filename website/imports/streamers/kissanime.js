@@ -135,16 +135,20 @@ export let kissanime = {
     getSources: function(sourceUrl) {
       return [{
         name: 'Openload',
-        url: sourceUrl + '&s=openload'
+        url: sourceUrl + '&s=openload',
+        flags: ['cloudflare']
       }, {
         name: 'RapidVideo',
-        url: sourceUrl + '&s=rapidvideo'
+        url: sourceUrl + '&s=rapidvideo',
+        flags: ['cloudflare']
       }, {
         name: 'Streamango',
-        url: sourceUrl + '&s=streamango'
+        url: sourceUrl + '&s=streamango',
+        flags: ['cloudflare']
       }, {
         name: 'Beta Server',
-        url: sourceUrl + '&s=beta'
+        url: sourceUrl + '&s=beta',
+        flags: ['cloudflare']
       }];
     },
   },
