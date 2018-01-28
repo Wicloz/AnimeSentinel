@@ -4,17 +4,26 @@ import {Searches} from "../../api/searches/searches";
 import '/imports/ui/components/loadingIndicatorBackground.js';
 
 Template.pages_search.onCreated(function() {
+  // Set page variables
+  Session.set('BreadCrumbs', JSON.stringify([]));
   Session.set('PageTitle', 'Browse Anime');
 
+  // Create local variables
   this.searchQuery = new ReactiveVar(undefined);
   this.searchLimit = new ReactiveVar(10);
 
+  // Subscribe based on search options and limit
   this.autorun(() => {
     this.subscribe('shows.search', this.searchQuery.get(), this.searchLimit.get());
   });
 
+  // Subscribe based on search options
   this.autorun(() => {
     this.subscribe('searches.withQuery', this.searchQuery.get());
+  });
+
+  // When the subscriptions are ready
+  this.autorun(() => {
     if (this.subscriptionsReady() && this.searchQuery.get()) {
       Meteor.call('searches.startSearch', this.searchQuery.get());
     }

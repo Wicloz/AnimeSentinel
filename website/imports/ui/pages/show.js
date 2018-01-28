@@ -5,20 +5,31 @@ import {Episodes} from "../../api/episodes/episodes";
 import Streamers from "../../streamers/_streamers";
 
 Template.pages_show.onCreated(function() {
+  // Set page variables
+  Session.set('BreadCrumbs', JSON.stringify([{
+    name: 'Anime',
+    url: FlowRouter.path('search')
+  }]));
+
+  // Subscribe based on the show id
   this.autorun(() => {
     this.subscribe('shows.withId', FlowRouter.getParam('showId'));
-    if (this.subscriptionsReady()) {
-      if (!Shows.findOne(FlowRouter.getParam('showId'))) {
-        FlowRouter.go('notFound');
-      } else {
-        Session.set('PageTitle', Shows.findOne(FlowRouter.getParam('showId')).name);
-        Meteor.call('shows.attemptUpdate', FlowRouter.getParam('showId'));
-      }
+    this.subscribe('episodes.forShow', FlowRouter.getParam('showId'));
+  });
+
+  // Check if the show exists
+  this.autorun(() => {
+    if (this.subscriptionsReady() && !Shows.findOne(FlowRouter.getParam('showId'))) {
+      FlowRouter.go('notFound');
     }
   });
 
+  // When a show is found
   this.autorun(() => {
-    this.subscribe('episodes.forShow', FlowRouter.getParam('showId'));
+    if (Shows.findOne(FlowRouter.getParam('showId'))) {
+      Session.set('PageTitle', Shows.findOne(FlowRouter.getParam('showId')).name);
+      Meteor.call('shows.attemptUpdate', FlowRouter.getParam('showId'));
+    }
   });
 });
 
