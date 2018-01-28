@@ -1,6 +1,10 @@
 import './navMain.html';
 let ResizeSensor = require('css-element-queries/src/ResizeSensor');
 
+Template.components_nav_main.onCreated(function() {
+  Session.set('BreadCrumbs', JSON.stringify([]));
+});
+
 Template.components_nav_main.onRendered(function() {
   $(".button-collapse").sideNav({
     closeOnClick: true
