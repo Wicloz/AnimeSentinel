@@ -13,6 +13,9 @@
 }
 
 .nav-wrapper .brand-logo.center {
+  @media #{$large-and-up} {
+    width: 50%;
+  }
   @media #{$medium-only} {
     width: calc(100% - 64px - #{$spacer});
     margin-left: 32px - $spacer/2;
@@ -24,5 +27,16 @@
 }
 
 #navMainBreadcrumbs {
+  @media #{$medium-and-up} {
+    height: 64px;
+  }
+  @media #{$small-and-down} {
+    height: 56px;
+  }
+
   font-size: 18px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  direction: rtl;
 }
