@@ -18,16 +18,16 @@
               {{#each flag in source.flags}}
                 {{#if showIcon flag}}
                   {{#if $eq flag 'x-frame-options'}}
-                    {{>tooltippedIcon icon='block' iconClass='right' text='Abuses X-Frame-Options' position='top'}}
+                    {{>tooltippedIcon icon='block' iconClass='right' text='Abuses X-Frame-Options' position='right'}}
                   {{/if}}
                   {{#if $eq flag 'cloudflare'}}
-                    {{>tooltippedIcon icon='cloud_off' iconClass='right' text='Uses Cloudflare Filtering' position='top'}}
+                    {{>tooltippedIcon icon='cloud_off' iconClass='right' text='Uses Cloudflare Filtering' position='right'}}
                   {{/if}}
                   {{#if $eq flag 'mixed-content'}}
-                    {{>tooltippedIcon icon='lock_open' iconClass='right' text='Has Mixed Content' position='top'}}
+                    {{>tooltippedIcon icon='lock_open' iconClass='right' text='Has Mixed Content' position='right'}}
                   {{/if}}
                   {{#if $eq flag 'flash'}}
-                    {{>tooltippedIcon icon='flash_off' iconClass='right' text='Uses Flash Player' position='top'}}
+                    {{>tooltippedIcon icon='flash_off' iconClass='right' text='Uses Flash Player' position='right'}}
                   {{/if}}
                 {{/if}}
               {{/each}}

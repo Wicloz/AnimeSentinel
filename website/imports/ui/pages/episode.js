@@ -102,6 +102,10 @@ Template.pages_episode.helpers({
 
 Template.pages_episode.events({
   'click a.btn'(event) {
+    if (event.target.tagName === 'I') {
+      event.target = event.target.parentElement.parentElement;
+    }
+
     Template.instance().selectedEpisode.set(event.target.dataset.episode);
     Template.instance().selectedSource.set(event.target.dataset.source);
   }
