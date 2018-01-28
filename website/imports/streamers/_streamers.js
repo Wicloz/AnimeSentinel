@@ -324,7 +324,11 @@ export default class Streamers {
           // Check if done
           streamerUrlsDone++;
           if (streamerUrlsDone === streamerUrls.length) {
-            finalResult.streamerUrls = finalResult.streamerUrls.concat(streamerUrls);
+            if (finalResult.streamerUrls) {
+              finalResult.streamerUrls = finalResult.streamerUrls.concat(streamerUrls);
+            } else {
+              finalResult.streamerUrls = streamerUrls;
+            }
             showCallback(finalResult);
           }
 

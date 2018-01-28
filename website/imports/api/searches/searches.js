@@ -50,20 +50,18 @@ Searches.helpers({
       }
     });
 
-    if (Meteor.isServer) { // TODO: remove when downloads are fixed
-      Streamers.doSearch(query, (result) => {
-        // For each search result
-        Shows.addPartialShow(result);
-      }, () => {
-        // When done
-        this.lastSearchEnd = moment().toDate();
-        Searches.update(this._id, {
-          $set: {
-            lastSearchEnd: this.lastSearchEnd
-          }
-        });
+    Streamers.doSearch(query, (result) => {
+      // For each search result
+      Shows.addPartialShow(result);
+    }, () => {
+      // When done
+      this.lastSearchEnd = moment().toDate();
+      Searches.update(this._id, {
+        $set: {
+          lastSearchEnd: this.lastSearchEnd
+        }
       });
-    }
+    });
   }
 });
 

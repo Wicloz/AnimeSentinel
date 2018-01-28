@@ -99,25 +99,23 @@ Episodes.helpers({
         }
       });
 
-      if (Meteor.isServer) { // TODO: remove when downloads are fixed
-        Streamers.getEpisodeResults(this.sourceUrl, Streamers.getStreamerById(this.streamerId), this._id, (sources) => {
+      Streamers.getEpisodeResults(this.sourceUrl, Streamers.getStreamerById(this.streamerId), this._id, (sources) => {
 
-          // Replace existing sources
-          this.sources = sources;
+        // Replace existing sources
+        this.sources = sources;
 
-          // Update result
-          this.lastUpdateEnd = moment().toDate();
-          Episodes.update({
-            _id: this._id,
-            lastUpdateStart: this.lastUpdateStart
-          }, {
-            $set: Episodes.simpleSchema().clean(this, {
-              mutate: true
-            })
-          });
-
+        // Update result
+        this.lastUpdateEnd = moment().toDate();
+        Episodes.update({
+          _id: this._id,
+          lastUpdateStart: this.lastUpdateStart
+        }, {
+          $set: Episodes.simpleSchema().clean(this, {
+            mutate: true
+          })
         });
-      }
+
+      });
     }
   },
 

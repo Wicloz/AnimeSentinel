@@ -166,36 +166,34 @@ Shows.helpers({
         }
       });
 
-      if (Meteor.isServer) { // TODO: remove when downloads are fixed
-        Streamers.createFullShow(this.altNames, this.streamerUrls, this._id, (show) => {
+      Streamers.createFullShow(this.altNames, this.streamerUrls, this._id, (show) => {
 
-          // Replace existing fields
-          Object.keys(show).forEach((key) => {
-            this[key] = show[key];
-          });
-
-          // Update result
-          this.lastUpdateEnd = moment().toDate();
-          Shows.update({
-            _id: this._id,
-            lastUpdateStart: this.lastUpdateStart
-          }, {
-            $set: Shows.simpleSchema().clean(this, {
-              mutate: true
-            })
-          });
-
-          // TODO: Merge and remove duplicate shows
-          // TODO: Move episodes
-
-        }, (partial) => {
-          // Insert any partial results found in the process
-          Shows.addPartialShow(partial);
-        }, (episode) => {
-          // Add found episodes
-          Episodes.addEpisode(episode);
+        // Replace existing fields
+        Object.keys(show).forEach((key) => {
+          this[key] = show[key];
         });
-      }
+
+        // Update result
+        this.lastUpdateEnd = moment().toDate();
+        Shows.update({
+          _id: this._id,
+          lastUpdateStart: this.lastUpdateStart
+        }, {
+          $set: Shows.simpleSchema().clean(this, {
+            mutate: true
+          })
+        });
+
+        // TODO: Merge and remove duplicate shows
+        // TODO: Move episodes
+
+      }, (partial) => {
+        // Insert any partial results found in the process
+        Shows.addPartialShow(partial);
+      }, (episode) => {
+        // Add found episodes
+        Episodes.addEpisode(episode);
+      });
     }
   }
 });
