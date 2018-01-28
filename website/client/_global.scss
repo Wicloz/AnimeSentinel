@@ -7,3 +7,19 @@
 .collection-item > .row {
   margin-bottom: 0;
 }
+
+.primary-color {
+  background-color: $primary-color !important;
+}
+
+.primary-color-light {
+  background-color: $primary-color-light !important;
+}
+
+.primary-color-dark {
+  background-color: $primary-color-dark !important;
+}
+
+.secondary-color {
+  background-color: $secondary-color !important;
+}
