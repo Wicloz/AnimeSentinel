@@ -1,14 +1,22 @@
 function modifyHeaders(response) {
   // console.log(response);
 
-  if (response.originUrl && (response.originUrl.match(/^.*:\/\/development.wilcodeboer.me/) || response.originUrl.match(/^.*:\/\/anime.wilcodeboer.me/))) {
+  let origin = undefined;
+  if (response.initiator) {
+    origin = response.initiator;
+  }
+  else if (response.originUrl) {
+    origin = response.originUrl.replace(/^(.*:\/\/[^\/]+).*$/, '$1');
+  }
+
+  if (origin && (origin.match(/^.*:\/\/development.wilcodeboer.me\/?$/) || origin.match(/^.*:\/\/anime.wilcodeboer.me\/?$/))) {
     response.responseHeaders = response.responseHeaders.filter((header) => {
       return !['x-frame-options', 'access-control-allow-origin', 'access-control-allow-credentials', 'access-control-allow-methods', 'access-control-allow-headers'].includes(header.name.toLowerCase());
     });
 
     response.responseHeaders.push({
       name: 'Access-Control-Allow-Origin',
-      value: response.originUrl.replace(/^(.*:\/\/[^\/]+).*$/, '$1')
+      value: origin
     });
     response.responseHeaders.push({
       name: 'Access-Control-Allow-Credentials',
@@ -31,8 +39,18 @@ function modifyHeaders(response) {
   return {responseHeaders: response.responseHeaders};
 }
 
-browser.webRequest.onHeadersReceived.addListener(
-  modifyHeaders,
-  {urls: ['<all_urls>']},
-  ['blocking', 'responseHeaders']
-);
+if (typeof browser !== 'undefined') {
+  browser.webRequest.onHeadersReceived.addListener(
+    modifyHeaders,
+    {urls: ['<all_urls>']},
+    ['blocking', 'responseHeaders']
+  );
+}
+
+else if (typeof chrome !== 'undefined') {
+  chrome.webRequest.onHeadersReceived.addListener(
+    modifyHeaders,
+    {urls: ['<all_urls>']},
+    ['blocking', 'responseHeaders']
+  );
+}
