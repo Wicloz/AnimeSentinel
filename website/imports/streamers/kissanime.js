@@ -82,6 +82,8 @@ export let kissanime = {
             return types[i];
           }
         }
+
+        return undefined;
       },
     },
   },
