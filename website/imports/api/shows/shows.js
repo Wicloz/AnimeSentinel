@@ -149,12 +149,13 @@ Shows.helpers({
       })
     });
 
-    // TODO: Move episodes
-
     // Remove other from database
     if (other._id) {
       other.remove();
     }
+
+    // Move episodes
+    Episodes.moveEpisodes(this._id, other._id);
   },
 
   attemptUpdate() {

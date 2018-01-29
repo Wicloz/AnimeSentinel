@@ -167,6 +167,15 @@ Episodes.helpers({
     if (other._id) {
       other.remove();
     }
+  },
+
+  moveToShow(showId) {
+    this.showId = showId;
+    Episodes.update(this._id, {
+      $set: {
+        showId: this.showId
+      }
+    });
   }
 });
 
@@ -195,6 +204,12 @@ Episodes.addEpisode = function(episode) {
   else {
     Episodes.insert(episode);
   }
+};
+
+Episodes.moveEpisodes = function(fromId, toId) {
+  Episodes.queryForShow(fromId).forEach((episode) => {
+    episode.moveToShow(toId);
+  });
 };
 
 // Methods
