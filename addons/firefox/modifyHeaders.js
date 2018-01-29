@@ -1,7 +1,7 @@
 function modifyHeaders(response) {
   // console.log(response);
 
-  if (response.originUrl.match(/^.*:\/\/development.wilcodeboer.me/) || response.originUrl.match(/^.*:\/\/anime.wilcodeboer.me/)) {
+  if (response.originUrl && (response.originUrl.match(/^.*:\/\/development.wilcodeboer.me/) || response.originUrl.match(/^.*:\/\/anime.wilcodeboer.me/))) {
     response.responseHeaders = response.responseHeaders.filter((header) => {
       return !['x-frame-options', 'access-control-allow-origin', 'access-control-allow-credentials', 'access-control-allow-methods', 'access-control-allow-headers'].includes(header.name.toLowerCase());
     });
