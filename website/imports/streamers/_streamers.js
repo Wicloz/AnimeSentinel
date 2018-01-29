@@ -341,7 +341,9 @@ class TempShow {
     });
 
     // Start the alt search loop
-    this.searchWithNextAlt();
+    if (!this.getStreamersOrAltsDone() && !this.searchWithNextAltLooping) {
+      this.searchWithNextAlt();
+    }
   }
 
   processUnprocessedStreamerUrls(streamerUrls) {
