@@ -3,7 +3,7 @@
   "name": "AnimeSentinel Companion AddOn",
   "version": "0.7",
 
-  "description": "Companion AddOn for AnimeSentinel. Current features: (1) Allows certain blocked videos to be watched. (2) Will make it easier to watch videos behind the Cloudflare filter. (3) Tells the website it is installed to which it will react accordingly.",
+  "description": "Companion AddOn for AnimeSentinel. Improves performance and allows certain otherwise resticted features to be used.",
 
   "permissions": [
     "webRequest",
