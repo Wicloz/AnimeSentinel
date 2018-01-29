@@ -285,71 +285,82 @@ export default class Streamers {
     });
   }
 
-  static createFullShow(altNames, streamerUrls, showId, showCallback, partialCallback, episodeCallback) {
-    let streamerUrlsDone = 0;
-    let finalResult = {};
+  static createFullShow(oldShow, showCallback, partialCallback, episodeCallback) {
+    let tempShow = new TempShow(oldShow, showCallback, partialCallback, episodeCallback);
+    tempShow.start();
+  }
+}
 
-    // For each streamer
-    streamers.forEach((streamer) => {
-      // For each streamer url
-      streamerUrls.getPartialObjects({streamer: streamer.id}).forEach((streamerUrl) => {
-        // Download and process show page
-        this.getShowResults(streamerUrl.url, streamer, altNames[0], (result) => {
+class TempShow {
+  constructor(oldShow, showCallback, partialCallback, episodeCallback) {
+    this.showCallback = showCallback;
+    this.partialCallback = partialCallback;
+    this.episodeCallback = episodeCallback;
+    this.oldShow = oldShow;
 
-          if (result.full) {
-            // Merge altNames into working set
-            if (result.full.altNames) {
-              result.full.altNames.forEach((altName) => {
-                if (!altNames.includes(altName)) {
-                  altNames.push(altName);
-                }
-              });
-            }
+    this.newShow = {};
+    this.streamerUrlsStarted = [];
+    this.streamerUrlsDone = [];
+  }
 
-            // Merge show into final result
-            Object.keys(result.full).forEach((key) => {
-              if (Shows.arrayKeys.includes(key)) {
-                if (typeof finalResult[key] === 'undefined') {
-                  finalResult[key] = result.full[key];
-                } else {
-                  finalResult[key] = finalResult[key].concat(result.full[key]);
-                }
-              }
-              else if (streamer.id === 'myanimelist' || typeof finalResult[key] === 'undefined') {
-                finalResult[key] = result.full[key];
-              }
-            });
+  start() {
+    // Process all existing streamer urls
+    this.oldShow.streamerUrls.forEach((streamerUrl) => {
+      this.processStreamerUrl(streamerUrl, Streamers.getStreamerById(streamerUrl.streamer));
+    });
+  }
 
-            // Clean the working result
-            Shows.simpleSchema().clean(finalResult, {
-              mutate: true
-            });
+  processStreamerUrl(streamerUrl, streamer) {
+    // Mark streamerUrl as started
+    this.streamerUrlsStarted.push(streamerUrl);
+
+    // Download and process show page
+    Streamers.getShowResults(streamerUrl.url, streamer, this.oldShow.name, (result) => {
+
+      if (result.full) {
+        // Merge result into the new show
+        Object.keys(result.full).forEach((key) => {
+          if (typeof this.newShow[key] === 'undefined') {
+            this.newShow[key] = result.full[key];
           }
-
-          // Check if done
-          streamerUrlsDone++;
-          if (streamerUrlsDone === streamerUrls.length) {
-            if (finalResult.streamerUrls) {
-              finalResult.streamerUrls = finalResult.streamerUrls.concat(streamerUrls);
-            } else {
-              finalResult.streamerUrls = streamerUrls;
-            }
-            showCallback(finalResult);
+          else if (Shows.arrayKeys.includes(key)) {
+            this.newShow[key] = this.newShow[key].concat(result.full[key]);
           }
-
-          // Store partial results from show page
-          result.partials.forEach((partial) => {
-            partialCallback(partial);
-          });
-
-          // Handle episodes
-          result.episodes.forEach((episode) => {
-            episode.showId = showId;
-            episodeCallback(episode);
-          });
-
+          else if (streamer.id === 'myanimelist') {
+            this.newShow[key] = result.full[key];
+          }
         });
+      }
+
+      // Store partial results from show page
+      result.partials.forEach((partial) => {
+        this.partialCallback(partial);
       });
+
+      // Handle episodes
+      result.episodes.forEach((episode) => {
+        episode.showId = this.oldShow._id;
+        this.episodeCallback(episode);
+      });
+
+      // Mark streamerUrl as done
+      this.streamerUrlsDone.push(streamerUrl);
+
+      // Check if completely done
+      if (this.streamerUrlsStarted.every((streamerUrl) => {
+        return this.streamerUrlsDone.hasPartialObjects({
+          streamer: streamerUrl.streamer,
+          type: streamerUrl.type
+        });
+      })) {
+        if (this.newShow.streamerUrls) {
+          this.newShow.streamerUrls = this.newShow.streamerUrls.concat(this.streamerUrlsStarted);
+        } else {
+          this.newShow.streamerUrls = this.streamerUrlsStarted;
+        }
+        this.showCallback(this.newShow);
+      }
+
     });
   }
 }

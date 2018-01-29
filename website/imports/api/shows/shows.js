@@ -167,7 +167,7 @@ Shows.helpers({
         }
       });
 
-      Streamers.createFullShow(this.altNames, this.streamerUrls, this._id, (show) => {
+      Streamers.createFullShow(this, (show) => {
 
         // Replace existing fields
         Object.keys(show).forEach((key) => {
