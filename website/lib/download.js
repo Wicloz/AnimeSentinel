@@ -16,9 +16,7 @@ downloadWithCallback = function(url, callback, tries=1) {
       if (tries >= 3) {
         console.error('Failed downloading ' + url + ' after ' + tries + ' tries.');
         console.error(err);
-        if (Meteor.isServer) {
-          callback(false);
-        }
+        callback(false);
       } else {
         downloadWithCallback(url, callback, tries + 1);
       }
