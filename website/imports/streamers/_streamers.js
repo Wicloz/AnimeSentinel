@@ -2,6 +2,7 @@ import Cheerio from 'cheerio';
 import { Shows } from '/imports/api/shows/shows.js';
 import { myanimelist } from './myanimelist';
 import { kissanime } from './kissanime';
+import { nineanime } from './nineanime';
 import {Episodes} from "../api/episodes/episodes";
 
 let streamers = [myanimelist, kissanime];
