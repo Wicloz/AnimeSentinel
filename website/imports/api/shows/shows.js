@@ -234,6 +234,15 @@ Shows.addPartialShow = function(show) {
   }
 };
 
+Shows.prepareAltForMatching = function(altName) {
+  // allow matching of 'and', 'to' and 'und' to each other
+  // allow matching of '&' to synonymous words
+  // allow matching of ': ' to ' '
+  let regex = '^' + RegExp.escape(altName).replace(/((?:\\:)? ?)\band\b((?:\\:)? ?)|((?:\\:)? ?)\bund\b((?:\\:)? ?)|((?:\\:)? ?)\bto\b((?:\\:)? ?)|((?:\\:)? ?)&((?:\\:)? ?)/g, '(?:$1$3$5$7 ?and ?$2$4$6$8|$1$3$5$7 ?und ?$2$4$6$8|$1$3$5$7 ?to ?$2$4$6$8|(?:$1$3$5$7)?&(?:$2$4$6$8)?)').replace(/\\: | /g, '(?:\\: | )') + '$';
+  // allow case insensitive matching
+  return new RegExp(regex, 'i');
+};
+
 // Methods
 Meteor.methods({
   'shows.attemptUpdate'(id) {
@@ -306,21 +315,9 @@ Shows.queryMatchingAltsMalId = function(names, malId) {
     malId: malId
   });
 
-  // Split names on commas
-  names.forEach((name) => {
-    if (name.includes(', ')) { // TODO: Remove when alts are fixed
-      names = names.concat(name.split(', '));
-    }
-  });
-
   // Process names to regex
   names = names.map((name) => {
-    // allow matching of 'and', 'to' and 'und' to each other
-    // allow matching of '&' to synonymous words
-    // allow matching of ': ' to ' '
-    let regex = '^' + RegExp.escape(name).replace(/((?:\\:)? ?)\band\b((?:\\:)? ?)|((?:\\:)? ?)\bund\b((?:\\:)? ?)|((?:\\:)? ?)\bto\b((?:\\:)? ?)|((?:\\:)? ?)&((?:\\:)? ?)/g, '(?:$1$3$5$7 ?and ?$2$4$6$8|$1$3$5$7 ?und ?$2$4$6$8|$1$3$5$7 ?to ?$2$4$6$8|(?:$1$3$5$7)?&(?:$2$4$6$8)?)').replace(/\\: | /g, '(?:\\: | )') + '$';
-    // allow case insensitive matching
-    return new RegExp(regex, 'i');
+    return Shows.prepareAltForMatching(name);
   });
 
   // Return results cursor
