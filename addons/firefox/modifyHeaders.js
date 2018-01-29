@@ -8,7 +8,7 @@ function modifyHeaders(response) {
 
     response.responseHeaders.push({
       name: 'Access-Control-Allow-Origin',
-      value: response.originUrl.replace(/^(.*:\/\/[^\/]+)\/?.*$/, '$1')
+      value: response.originUrl.replace(/^(.*:\/\/[^\/]+).*$/, '$1')
     });
     response.responseHeaders.push({
       name: 'Access-Control-Allow-Credentials',
@@ -16,11 +16,14 @@ function modifyHeaders(response) {
     });
     response.responseHeaders.push({
       name: 'Access-Control-Allow-Methods',
-      value: 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH'
+      value: response.method
     });
+
     response.responseHeaders.push({
       name: 'Access-Control-Allow-Headers',
-      value: 'Accept, Authorization, Cache-Control, Content-Type, DNT, If-Modified-Since, Keep-Alive, Origin, User-Agent, X-Requested-With'
+      value: response.responseHeaders.map((header) => {
+        return header.name;
+      }).join(', ')
     });
   }
 
