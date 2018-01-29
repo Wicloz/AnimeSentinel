@@ -343,6 +343,18 @@ class TempShow {
         this.episodeCallback(episode);
       });
 
+      if (result.full) {
+        // Process any new unprocessed streamer urls
+        result.full.streamerUrls.filter((streamerUrl) => {
+          return !this.streamerUrlsStarted.hasPartialObjects({
+            streamer: streamerUrl.streamer,
+            type: streamerUrl.type
+          });
+        }).forEach((streamerUrl) => {
+          this.processStreamerUrl(streamerUrl, Streamers.getStreamerById(streamerUrl.streamer))
+        });
+      }
+
       // Mark streamerUrl as done
       this.streamerUrlsDone.push(streamerUrl);
 
