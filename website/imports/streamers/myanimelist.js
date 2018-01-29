@@ -7,7 +7,7 @@ export let myanimelist = {
   homepage: 'https://myanimelist.net',
 
   isInvalidPage(page) {
-    return false;
+    return page.text() === 'Too Many Requests';
   },
 
   // Search page data

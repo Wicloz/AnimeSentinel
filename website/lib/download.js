@@ -12,16 +12,28 @@ downloadWithCallback = function(url, callback, tries=1) {
 
     cloudkicker.get(url).then(({options, response}) => {
       callback(response.body.toString());
-    }, (err) => {
-      if (tries >= 3) {
-        console.error('Failed downloading ' + url + ' after ' + tries + ' tries.');
-        console.error(err);
-        callback(false);
+    },
+
+    (err) => {
+      maybeNextDownload(url, callback, tries, err);
+    }).
+
+    catch((err) => {
+      if (err === 'Download Failed!') {
+        maybeNextDownload(url, callback, tries, err);
       } else {
-        downloadWithCallback(url, callback, tries + 1);
+        console.error(err);
       }
-    }).catch((err) => {
-      console.error(err);
     });
   }
 };
+
+function maybeNextDownload(url, callback, tries, err) {
+  if (tries >= 3) {
+    console.error('Failed downloading ' + url + ' after ' + tries + ' tries.');
+    console.error(err);
+    callback(false);
+  } else {
+    downloadWithCallback(url, callback, tries + 1);
+  }
+}
