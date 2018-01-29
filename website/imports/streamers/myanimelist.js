@@ -13,7 +13,7 @@ export let myanimelist = {
   // Search page data
   search: {
     createUrl: function(query) {
-      return 'https://myanimelist.net/anime.php?q=' + encodeURIComponentReplaceSpaces(query, '+') + '&type=0&score=0&status=0&p=0&r=0&sm=0&sd=0&sy=0&em=0&ed=0&ey=0&c[]=a&c[]=b&c[]=c&c[]=d&c[]=e&c[]=f&c[]=g&gx=1&genre[]=12';
+      return myanimelist.homepage + '/anime.php?q=' + encodeURIComponentReplaceSpaces(query, '+') + '&type=0&score=0&status=0&p=0&r=0&sm=0&sd=0&sy=0&em=0&ed=0&ey=0&c[]=a&c[]=b&c[]=c&c[]=d&c[]=e&c[]=f&c[]=g&gx=1&genre[]=12';
     },
     rowSelector: '.js-block-list.list table tbody tr',
     rowSkips: 1,

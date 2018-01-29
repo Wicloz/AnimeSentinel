@@ -14,7 +14,7 @@ export let kissanime = {
   // Search page data
   search: {
     createUrl: function(query) {
-      return 'http://kissanime.ru/Search/Anime?keyword=' + encodeURIComponentReplaceSpaces(query, '+');
+      return kissanime.homepage + '/Search/Anime?keyword=' + encodeURIComponentReplaceSpaces(query, '+');
     },
     rowSelector: 'table.listing tbody tr',
     rowSkips: 2,
