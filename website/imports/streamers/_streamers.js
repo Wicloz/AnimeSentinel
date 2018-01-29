@@ -308,28 +308,76 @@ class TempShow {
     this.showCallback = showCallback;
     this.partialCallback = partialCallback;
     this.episodeCallback = episodeCallback;
-    this.oldShow = oldShow;
 
+    this.oldShow = oldShow;
     this.newShow = {};
+
     this.streamerUrlsStarted = [];
     this.streamerUrlsDone = [];
+    this.streamersHandled = [];
+
+    this.altNames = oldShow.altNames;
+    this.currentAltNameIndex = 0;
+    this.searchWithNextAltLooping = false;
+  }
+
+  getDownloadsDone() {
+    return this.streamerUrlsStarted.every((streamerUrl) => {
+      return this.streamerUrlsDone.hasPartialObjects({
+        streamer: streamerUrl.streamer,
+        type: streamerUrl.type
+      });
+    });
+  }
+
+  getStreamersOrAltsDone() {
+    return this.streamersHandled.length >= streamers.length || this.currentAltNameIndex >= this.altNames.length;
   }
 
   start() {
     // Process all existing streamer urls
     this.oldShow.streamerUrls.forEach((streamerUrl) => {
-      this.processStreamerUrl(streamerUrl, Streamers.getStreamerById(streamerUrl.streamer));
+      this.processStreamerUrl(streamerUrl);
+    });
+
+    // Start the alt search loop
+    this.searchWithNextAlt();
+  }
+
+  processUnprocessedStreamerUrls(streamerUrls) {
+    streamerUrls.filter((streamerUrl) => {
+      return !this.streamerUrlsStarted.hasPartialObjects({
+        streamer: streamerUrl.streamer,
+        type: streamerUrl.type
+      });
+    }).forEach((streamerUrl) => {
+      this.processStreamerUrl(streamerUrl)
     });
   }
 
-  processStreamerUrl(streamerUrl, streamer) {
+  processStreamerUrl(streamerUrl) {
+    // Get the streamer
+    let streamer = Streamers.getStreamerById(streamerUrl.streamer);
+
     // Mark streamerUrl as started
     this.streamerUrlsStarted.push(streamerUrl);
+
+    // Mark streamer as handled
+    if (!this.streamersHandled.includes(streamer.id)) {
+      this.streamersHandled.push(streamer.id);
+    }
 
     // Download and process show page
     Streamers.getShowResults(streamerUrl.url, streamer, this.oldShow.name, (result) => {
 
       if (result.full) {
+        // Merge altNames into working set
+        result.full.altNames.forEach((altName) => {
+          if (!this.altNames.includes(altName)) {
+            this.altNames.push(altName);
+          }
+        });
+
         // Merge result into the new show
         Object.keys(result.full).forEach((key) => {
           if (typeof this.newShow[key] === 'undefined') {
@@ -355,36 +403,76 @@ class TempShow {
         this.episodeCallback(episode);
       });
 
+      // Process any new unprocessed streamer urls
       if (result.full) {
-        // Process any new unprocessed streamer urls
-        result.full.streamerUrls.filter((streamerUrl) => {
-          return !this.streamerUrlsStarted.hasPartialObjects({
-            streamer: streamerUrl.streamer,
-            type: streamerUrl.type
-          });
-        }).forEach((streamerUrl) => {
-          this.processStreamerUrl(streamerUrl, Streamers.getStreamerById(streamerUrl.streamer))
-        });
+        this.processUnprocessedStreamerUrls(result.full.streamerUrls);
       }
 
       // Mark streamerUrl as done
       this.streamerUrlsDone.push(streamerUrl);
 
-      // Check if completely done
-      if (this.streamerUrlsStarted.every((streamerUrl) => {
-        return this.streamerUrlsDone.hasPartialObjects({
-          streamer: streamerUrl.streamer,
-          type: streamerUrl.type
-        });
-      })) {
-        if (this.newShow.streamerUrls) {
-          this.newShow.streamerUrls = this.newShow.streamerUrls.concat(this.streamerUrlsStarted);
-        } else {
-          this.newShow.streamerUrls = this.streamerUrlsStarted;
-        }
-        this.showCallback(this.newShow);
+      // Start the loop again if possible
+      if (!this.getStreamersOrAltsDone() && !this.searchWithNextAltLooping) {
+        this.searchWithNextAlt();
+      }
+
+      // When completely done
+      if (this.getDownloadsDone() && this.getStreamersOrAltsDone()) {
+        this.finish();
       }
 
     });
+  }
+
+  searchWithNextAlt() {
+    this.searchWithNextAltLooping = true;
+
+    // Search all the pending streamers with the current altName
+    Streamers.doSearch(this.altNames[this.currentAltNameIndex], (result) => {
+
+      // If the result matches this show
+      if (result.altNames.some((resultAltName) => {
+          resultAltName = Shows.prepareAltForMatching(resultAltName);
+          return this.altNames.some((thisAltName) => {
+            return thisAltName.match(resultAltName);
+          });
+        })) {
+        // Process it's unprocessed streamer urls
+        this.processUnprocessedStreamerUrls(result.streamerUrls);
+      }
+
+      // Otherwise store as partial result
+      else {
+        this.partialCallback(result);
+      }
+
+    }, () => {
+
+      // When all alts or streamers are done
+      if (this.getStreamersOrAltsDone()) {
+        this.searchWithNextAltLooping = false;
+        // When we have nothing to do anymore
+        if (this.getDownloadsDone()) {
+          this.finish();
+        }
+      }
+
+      // When some streamers are not done
+      else {
+        this.searchWithNextAlt();
+      }
+
+    }, this.streamersHandled);
+
+    this.currentAltNameIndex++;
+  }
+
+  finish() {
+    if (this.newShow.streamerUrls) {
+      this.newShow.streamerUrls = this.newShow.streamerUrls.concat(this.streamerUrlsStarted);
+    } else {
+      this.newShow.streamerUrls = this.streamerUrlsStarted;
+    }
+    this.showCallback(this.newShow);
   }
 }
