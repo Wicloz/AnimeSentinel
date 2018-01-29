@@ -20,7 +20,7 @@ Schemas.Episode = new SimpleSchema({
     index: true
   },
   episodeNum: {
-    type: Number,
+    type: String, // TODO: make sure this works
     index: true
   },
   translationType: {
