@@ -263,12 +263,22 @@ export default class Streamers {
   }
 
   static doSearch(query, resultCallback, doneCallback, streamersExcluded=[]) {
+    // Filter streamers
+    let filteredStreamers = streamers.filter((streamer) => {
+      return !streamersExcluded.includes(streamer.id);
+    });
+
+    // Stop if none remain
+    if (filteredStreamers.empty()) {
+      doneCallback();
+      return;
+    }
+
+    // Variables
     let streamersDone = 0;
 
     // For each not excluded streamer
-    streamers.filter((streamer) => {
-      return !streamersExcluded.includes(streamer.id);
-    }).forEach((streamer) => {
+    filteredStreamers.forEach((streamer) => {
       // Download and process search results
       this.getSearchResults(streamer.search.createUrl(query), streamer, query, (results) => {
 
@@ -279,7 +289,7 @@ export default class Streamers {
 
         // Check if done
         streamersDone++;
-        if (streamersDone === streamers.length - streamersExcluded.length) {
+        if (streamersDone === filteredStreamers.length) {
           doneCallback();
         }
 
