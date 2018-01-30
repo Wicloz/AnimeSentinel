@@ -19,3 +19,12 @@ Schemas.id = new SimpleSchema({
     type: String
   }
 });
+
+Schemas.episodeSelection = new SimpleSchema({
+  episodeNumber: {
+    type: String,
+    autoform: {
+      label: 'Episode Number',
+    }
+  }
+}, { tracker: Tracker });

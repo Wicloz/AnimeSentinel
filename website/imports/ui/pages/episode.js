@@ -44,13 +44,15 @@ Template.pages_episode.onCreated(function() {
     this.iframeErrors.set(problemFlags);
   };
 
-  // Set page variables
-  Session.set('PageTitle', 'Episode ' + this.getEpisodeNumBoth());
-
   // Create local variables
   this.selectedEpisode = new ReactiveVar(undefined);
   this.selectedSource = new ReactiveVar(undefined);
   this.iframeErrors = new ReactiveVar([]);
+
+  // Set page title based on getEpisodeNumBoth()
+  this.autorun(() => {
+    Session.set('PageTitle', 'Episode ' + this.getEpisodeNumBoth());
+  });
 
   // Subscribe based on the show id
   this.autorun(() => {
@@ -81,9 +83,9 @@ Template.pages_episode.onCreated(function() {
     }
   });
 
-  // Subscribe based on all parameters
+  // Subscribe based on the showId and translationType
   this.autorun(() => {
-    this.subscribe('episodes.forEpisode', FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd());
+    this.subscribe('episodes.forTranslationType', FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'));
   });
 
   // Check if the episodes exists
@@ -172,6 +174,30 @@ Template.pages_episode.helpers({
 
   iframeErrors() {
     return Template.instance().iframeErrors.get();
+  },
+
+  episodeSelectionOptions() {
+    let options = [];
+
+    Episodes.queryForTranslationType(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType')).forEach((episode) => {
+      let label = episode.episodeNumStart;
+      if (episode.episodeNumStart !== episode.episodeNumEnd) {
+        label += ' - ' + episode.episodeNumEnd;
+      }
+
+      if (!options.hasPartialObjects({label})) {
+        options.push({
+          label: label,
+          value: label
+        });
+      }
+    });
+
+    return options;
+  },
+
+  episodeSelectionDefaultValue() {
+    return Template.instance().getEpisodeNumBoth();
   }
 });
 
@@ -193,4 +219,40 @@ Template.pages_episode.events({
   'click a.not-working-btn'(event) {
     Template.instance().setIframeErrors();
   },
+
+  'click button.btn-select-prev'(event) {
+    $('#episodeNumberSelection').find('option:selected').next().attr('selected', 'selected');
+  },
+  'click button.btn-select-next'(event) {
+    $('#episodeNumberSelection').find('option:selected').prev().attr('selected', 'selected');
+  },
+});
+
+AutoForm.hooks({
+  episodeSelectionForm: {
+    onSubmit(insertDoc) {
+      let split = insertDoc.episodeNumber.split(' - ');
+
+      if (split.length === 2) {
+        FlowRouter.go('episodeDouble', {
+          showId: FlowRouter.getParam('showId'),
+          translationType: FlowRouter.getParam('translationType'),
+          episodeNumStart: split[0],
+          episodeNumEnd: split[1]
+        });
+      } else {
+        FlowRouter.go('episodeSingle', {
+          showId: FlowRouter.getParam('showId'),
+          translationType: FlowRouter.getParam('translationType'),
+          episodeNumBoth: insertDoc.episodeNumber
+        });
+      }
+
+      this.template.view.parentView.parentView._templateInstance.selectedEpisode.set(undefined);
+      this.template.view.parentView.parentView._templateInstance.selectedSource.set(undefined);
+
+      this.done();
+      return false;
+    }
+  }
 });
