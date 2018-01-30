@@ -5,7 +5,7 @@ import { kissanime } from './kissanime';
 import { nineanime } from './nineanime';
 import {Episodes} from "../api/episodes/episodes";
 
-let streamers = [myanimelist, kissanime];
+let streamers = [myanimelist, kissanime, nineanime];
 
 export default class Streamers {
   static getStreamerById(id) {
