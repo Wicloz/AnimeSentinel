@@ -121,14 +121,30 @@ export let nineanime = {
         let episodeNum = partial.text();
         let found = [];
 
-        full.find('div.widget.servers div.widget-body div.server ul li a').each((index, element) => {
-          if (full.find(element).text() === episodeNum) {
-            found.push({
-              name: index,
-              url: nineanime.homepage + full.find(element).attr('href')
-            });
-          }
+        let tabs = [];
+        full.find('div.widget.servers div.widget-title span.tabs span.tab').each((index, element) => {
+          let tab = full.find(element);
+          tabs.push({
+            data: tab.attr('data-name'),
+            name: tab.text()
+          });
         });
+
+        full.find('div.widget.servers div.widget-body div.server').each((index, element) => {
+          let server = full.find(element);
+          let name = tabs.getPartialObjects({data: server.attr('data-name')})[0].name;
+
+          server.find('ul li a').each((index, element) => {
+            if (full.find(element).text() === episodeNum) {
+              found.push({
+                name: name,
+                url: nineanime.homepage + full.find(element).attr('href')
+              });
+            }
+          });
+        });
+
+        return found;
       },
     },
   },

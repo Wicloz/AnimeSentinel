@@ -131,7 +131,9 @@ Episodes.helpers({
       Streamers.getEpisodeResults(this.sourceUrl, Streamers.getStreamerById(this.streamerId), this._id, (sources) => {
 
         // Replace existing sources
-        this.sources = sources;
+        if (!sources.empty()) {
+          this.sources = sources;
+        }
 
         // Update result
         this.lastUpdateEnd = moment().toDate();

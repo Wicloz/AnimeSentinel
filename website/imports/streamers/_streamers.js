@@ -93,6 +93,11 @@ export default class Streamers {
       episode.translationType = streamer[type].attributes.translationType(cheerioRow, cheerioPage);
     }
 
+    // Get 'sources'
+    if (streamer[type].attributes.sources) {
+      episode.sources = streamer[type].attributes.sources(cheerioRow, cheerioPage);
+    }
+
     // Clean and validate episode
     Episodes.simpleSchema().clean(episode, {
       mutate: true
@@ -252,16 +257,11 @@ export default class Streamers {
   }
 
   static getEpisodeResults(url, streamer, logData, resultCallback) {
-    if (!streamer.episode.requiresDownload) {
-      resultCallback(streamer.episode.getSources(url).map((source) => {
-        if (url.startsWith('http://')) {
-          source.flags.push('mixed-content');
-        }
-        return source;
-      }));
-    } else {
+    if (streamer.episode) {
       // TODO: Implement this when needed
       console.error('Scraping episode pages has not been implemented yet!');
+    } else {
+      resultCallback([]);
     }
   }
 
