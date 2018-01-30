@@ -229,7 +229,7 @@ Shows.addPartialShow = function(show) {
   }
 
   // Insert otherwise
-  else if (Meteor.isServer) { // TODO: Allow on client when searching is fixed
+  else {
     Shows.insert(show);
   }
 };
