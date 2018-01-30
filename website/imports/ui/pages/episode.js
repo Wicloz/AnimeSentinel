@@ -15,6 +15,13 @@ Template.pages_episode.onCreated(function() {
   this.getEpisodeNumEnd = function() {
     return Number(this.hasMultipleEpisodeNumbers() ? FlowRouter.getParam('episodeNumEnd') : FlowRouter.getParam('episodeNumBoth'));
   };
+  this.getEpisodeNumBoth = function() {
+    if (this.hasMultipleEpisodeNumbers()) {
+      return this.getEpisodeNumStart() + ' - ' + this.getEpisodeNumEnd();
+    } else {
+      return this.getEpisodeNumStart();
+    }
+  };
 
   // Other functions
   this.getSelectedSource = function() {
@@ -38,11 +45,7 @@ Template.pages_episode.onCreated(function() {
   };
 
   // Set page variables
-  if (this.hasMultipleEpisodeNumbers()) {
-    Session.set('PageTitle', 'Episode ' + this.getEpisodeNumStart() + ' - ' + this.getEpisodeNumEnd());
-  } else {
-    Session.set('PageTitle', 'Episode ' + this.getEpisodeNumStart());
-  }
+  Session.set('PageTitle', 'Episode ' + this.getEpisodeNumBoth());
 
   // Create local variables
   this.selectedEpisode = new ReactiveVar(undefined);
@@ -85,7 +88,7 @@ Template.pages_episode.onCreated(function() {
 
   // Check if the episodes exists
   this.autorun(() => {
-    if (this.subscriptionsReady() && !Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count()) {
+    if (this.subscriptionsReady() && (isNaN(this.getEpisodeNumStart()) || isNaN(this.getEpisodeNumEnd()) || !Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count())) {
       FlowRouter.go('notFound');
     }
   });
