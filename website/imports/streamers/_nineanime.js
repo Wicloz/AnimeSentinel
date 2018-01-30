@@ -123,6 +123,8 @@ export let nineanime = {
         return nineanime.homepage + partial.attr('href');
       },
       sources: function(partial, full) {
+        // TODO: Source selection does not work well
+
         let episodeString = partial.text();
         let found = [];
 
