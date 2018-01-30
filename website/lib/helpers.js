@@ -61,3 +61,31 @@ isNumeric = function(num) {
 String.prototype.capitalize = function() {
   return this.charAt(0).toUpperCase() + this.substr(1);
 };
+
+String.prototype.replaceEnd = function(from, to, caseInsensitive=false) {
+  if (from.source) {
+    from = from.source;
+    caseInsensitive = caseInsensitive || from.ignoreCase;
+  } else {
+    from = RegExp.escape(from);
+  }
+
+  let flags = caseInsensitive ? 'i' : '';
+  let regex = new RegExp(from + '$', flags);
+
+  return this.replace(regex, to);
+};
+
+String.prototype.replaceStart = function(from, to, caseInsensitive=false) {
+  if (from.source) {
+    from = from.source;
+    caseInsensitive = caseInsensitive || from.ignoreCase;
+  } else {
+    from = RegExp.escape(from);
+  }
+
+  let flags = caseInsensitive ? 'i' : '';
+  let regex = new RegExp('^' + from, flags);
+
+  return this.replace(regex, to);
+};
