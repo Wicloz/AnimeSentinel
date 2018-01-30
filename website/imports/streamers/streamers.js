@@ -450,7 +450,23 @@ class TempShow {
     this.searchWithNextAltLooping = true;
 
     // Search all the pending streamers with the current altName
-    Streamers.doSearch(this.altNames[this.currentAltNameIndex], (result) => {
+    Streamers.doSearch(this.altNames[this.currentAltNameIndex], () => {
+
+      // When all alts or streamers are done
+      if (this.getStreamersOrAltsDone()) {
+        this.searchWithNextAltLooping = false;
+        // When we have nothing to do anymore
+        if (this.getDownloadsDone()) {
+          this.finish();
+        }
+      }
+
+      // When some streamers are not done
+      else {
+        this.searchWithNextAlt();
+      }
+
+    }, (result) => {
 
       // If the result matches this show
       if (result.altNames.some((resultAltName) => {
@@ -469,21 +485,9 @@ class TempShow {
         this.partialCallback(result);
       }
 
-    }, () => {
+    }, (episode) => {
 
-      // When all alts or streamers are done
-      if (this.getStreamersOrAltsDone()) {
-        this.searchWithNextAltLooping = false;
-        // When we have nothing to do anymore
-        if (this.getDownloadsDone()) {
-          this.finish();
-        }
-      }
-
-      // When some streamers are not done
-      else {
-        this.searchWithNextAlt();
-      }
+      // TODO: Do something with episodes here
 
     }, this.streamersHandled);
 
