@@ -10,6 +10,12 @@ downloadWithCallback = function(url, callback, tries=1) {
       console.log('Downloading: url \'' + url + '\', try \'' + tries + '\'');
     }
 
+    if (Meteor.isClient && url.startsWith('http://')) {
+      // TODO: Fix http downloads on the client
+      callback(false);
+      return;
+    }
+
     cloudkicker.get(url).then(({options, response}) => {
       callback(response.body.toString());
     },
