@@ -76,18 +76,21 @@ export default class Streamers {
     return show;
   }
 
-  static convertCheerioToEpisode(cheerio, streamer, type) {
+  static convertCheerioToEpisode(cheerio, pageTranslationType, streamer, type) {
     // Create empty episode
     let episode = {
       showId: 'undefined',
-      streamerId: streamer.id
+      streamerId: streamer.id,
+      translationType: pageTranslationType
     };
 
     // Get 'episodeNum'
     episode.episodeNum = streamer[type].attributes.episodeNum(cheerio);
 
     // Get 'translationType'
-    episode.translationType = streamer[type].attributes.translationType(cheerio);
+    if (streamer[type].attributes.translationType) {
+      episode.translationType = streamer[type].attributes.translationType(cheerio);
+    }
     // Get 'sourceUrl'
     episode.sourceUrl = streamer[type].attributes.sourceUrl(cheerio);
 
@@ -173,6 +176,12 @@ export default class Streamers {
     }
 
     try {
+      // Create and store show
+      let result = this.convertCheerioToShow(page('html'), streamer, 'show');
+      if (result) {
+        results.full = result;
+      }
+
       // For each related show
       page(streamer.showRelated.rowSelector).each((index, element) => {
         try {
@@ -192,12 +201,18 @@ export default class Streamers {
         }
       });
 
+      // Get the page wide translation type
+      let pageTranslationType = undefined;
+      if (streamer.showEpisodes.defaultTranslationType) {
+        pageTranslationType = streamer.showEpisodes.defaultTranslationType(page('html'));
+      }
+
       // For each episode
       page(streamer.showEpisodes.rowSelector).each((index, element) => {
         try {
           if (index >= streamer.showEpisodes.rowSkips) {
             // Create and add episode
-            let result = this.convertCheerioToEpisode(page(element), streamer, 'showEpisodes');
+            let result = this.convertCheerioToEpisode(page(element), pageTranslationType, streamer, 'showEpisodes');
             if (result) {
               results.episodes.push(result);
             }
@@ -220,12 +235,6 @@ export default class Streamers {
           episode.episodeNum -= episodeCorrection;
           return episode;
         });
-      }
-
-      // Create and store show
-      let result = this.convertCheerioToShow(page('html'), streamer, 'show');
-      if (result) {
-        results.full = result;
       }
     }
 

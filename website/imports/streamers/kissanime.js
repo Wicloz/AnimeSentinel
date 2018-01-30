@@ -115,14 +115,15 @@ export let kissanime = {
     rowSkips: 2,
     cannotCount: true,
 
+    defaultTranslationType: function(partial) {
+      return partial.find('a.bigChar').text().match(/\(Dub\)$/) ? 'dub' : 'sub';
+    },
+
     // Episode list attribute data
     attributes: {
       episodeNum: function(partial) {
         let number = partial.find('td:first-of-type a').text().cleanWhitespace().split(' ').pop();
         return isNumeric(number) ? number : 1;
-      },
-      translationType: function(partial) {
-        return partial.find('td:first-of-type a').text().includes('(Dub)') ? 'dub' : 'sub';
       },
       sourceUrl: function(partial) {
         return kissanime.homepage + partial.find('td:first-of-type a').attr('href');
