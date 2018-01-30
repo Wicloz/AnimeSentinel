@@ -198,6 +198,7 @@ Shows.helpers({
       }, (episode) => {
         // Add found episodes
         Episodes.addEpisode(episode);
+        // TODO: Remove not found episodes
       });
     }
   }
