@@ -150,7 +150,10 @@ export let myanimelist = {
 
     // Episode list attribute data
     attributes: {
-      episodeNum: function(partial, full) {
+      episodeNumStart: function(partial, full) {
+        return partial.find('td.episode-number').text();
+      },
+      episodeNumEnd: function(partial, full) {
         return partial.find('td.episode-number').text();
       },
       translationType: function(partial, full) {

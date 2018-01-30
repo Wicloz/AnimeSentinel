@@ -51,59 +51,35 @@
     </ul>
 
     <h1>Subbed:</h1>
-    <div class="collection">
-      {{#each episodes 'sub'}}
-        <a href="{{pathFor 'episode' showId=showId translationType=translationType episodeNum=episodeNum}}" class="collection-item">
-          <div class="row">
-            <div class="col s6">Episode {{episodeNum}}</div>
-            <div class="col s6">
-              <ul class="right episode-streamer-list">
-                {{#each streamers}}
-                  <li>{{name}}</li>
-                {{/each}}
-              </ul>
-            </div>
-          </div>
-        </a>
-      {{/each}}
-    </div>
-
+    {{> pages_show_episodes episodes 'sub'}}
     <h1>Dubbed:</h1>
-    <div class="collection">
-      {{#each episodes 'dub'}}
-        <a href="{{pathFor 'episode' showId=showId translationType=translationType episodeNum=episodeNum}}" class="collection-item">
-          <div class="row">
-            <div class="col s6">Episode {{episodeNum}}</div>
-            <div class="col s6">
-              <ul class="right episode-streamer-list">
-                {{#each streamers}}
-                  <li>{{name}}</li>
-                {{/each}}
-              </ul>
-            </div>
-          </div>
-        </a>
-      {{/each}}
-    </div>
-
+    {{> pages_show_episodes episodes 'dub'}}
     <h1>Raw:</h1>
-    <div class="collection">
-      {{#each episodes 'raw'}}
-        <a href="{{pathFor 'episode' showId=showId translationType=translationType episodeNum=episodeNum}}" class="collection-item">
-          <div class="row">
-            <div class="col s6">Episode {{episodeNum}}</div>
-            <div class="col s6">
-              <ul class="right episode-streamer-list">
-                {{#each streamers}}
-                  <li>{{name}}</li>
-                {{/each}}
-              </ul>
-            </div>
-          </div>
-        </a>
-      {{/each}}
-    </div>
+    {{> pages_show_episodes episodes 'raw'}}
   </div>
 
   {{> components_loading_indicator_background state=updating}}
+</template>
+
+<template name="pages_show_episodes">
+  <div class="collection">
+    {{#each this}}
+      <a href="{{#if $eq episodeNumStart episodeNumEnd}}
+        {{pathFor 'episodeSingle' showId=showId translationType=translationType episodeNumBoth=episodeNumStart}}
+      {{else}}
+        {{pathFor 'episodeDouble' showId=showId translationType=translationType episodeNumStart=episodeNumStart episodeNumEnd=episodeNumEnd}}
+      {{/if}}" class="collection-item">
+        <div class="row">
+          <div class="col s6">Episode {{episodeNumStart}}{{#if $neq episodeNumStart episodeNumEnd}} - {{episodeNumEnd}}{{/if}}</div>
+          <div class="col s6">
+            <ul class="right episode-streamer-list">
+              {{#each streamers}}
+                <li>{{name}}</li>
+              {{/each}}
+            </ul>
+          </div>
+        </div>
+      </a>
+    {{/each}}
+  </div>
 </template>

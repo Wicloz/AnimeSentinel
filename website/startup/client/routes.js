@@ -33,8 +33,15 @@ FlowRouter.route('/anime/:showId', {
   }
 });
 
-FlowRouter.route('/anime/:showId/episodes/:translationType/:episodeNum', {
-  name: 'episode',
+FlowRouter.route('/anime/:showId/episodes/:translationType/:episodeNumStart-:episodeNumEnd', {
+  name: 'episodeDouble',
+  action() {
+    BlazeLayout.render('layouts_main', {content: 'pages_episode'});
+  }
+});
+
+FlowRouter.route('/anime/:showId/episodes/:translationType/:episodeNumBoth', {
+  name: 'episodeSingle',
   action() {
     BlazeLayout.render('layouts_main', {content: 'pages_episode'});
   }

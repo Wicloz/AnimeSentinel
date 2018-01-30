@@ -125,8 +125,20 @@ export let kissanime = {
 
     // Episode list attribute data
     attributes: {
-      episodeNum: function(partial, full) {
-        return ScrapingHelpers.processEpisodeNumber(partial.find('td:first-of-type a').text().cleanWhitespace().split(' ').pop())
+      episodeNumStart: function(partial, full) {
+        let words = partial.find('td:first-of-type a').text().cleanWhitespace().split(' ');
+        let lastWord = words.pop();
+
+        if (isNumeric(lastWord)) {
+          if (words.pop() === '-') {
+            return words.pop();
+          }
+        }
+
+        return lastWord;
+      },
+      episodeNumEnd: function(partial, full) {
+        return partial.find('td:first-of-type a').text().cleanWhitespace().split(' ').pop()
       },
       translationType: function(partial, full) {
         return getTypeFromName(full.find('a.bigChar').text());

@@ -83,8 +83,16 @@ export default class Streamers {
       streamerId: streamer.id
     };
 
-    // Get 'episodeNum'
-    episode.episodeNum = streamer[type].attributes.episodeNum(cheerioRow, cheerioPage);
+    // Get 'episodeNumStart'
+    episode.episodeNumStart = streamer[type].attributes.episodeNumStart(cheerioRow, cheerioPage);
+    if (episode.episodeNumStart && !isNumeric(episode.episodeNumStart)) {
+      episode.episodeNumStart = 1;
+    }
+    // Get 'episodeNumEnd'
+    episode.episodeNumEnd = streamer[type].attributes.episodeNumEnd(cheerioRow, cheerioPage);
+    if (episode.episodeNumEnd && !isNumeric(episode.episodeNumEnd)) {
+      episode.episodeNumEnd = 1;
+    }
     // Get 'sourceUrl'
     episode.sourceUrl = streamer[type].attributes.sourceUrl(cheerioRow, cheerioPage);
 
@@ -227,10 +235,11 @@ export default class Streamers {
       // Fix episode numbers if required
       if (streamer.showEpisodes.cannotCount && !results.episodes.empty()) {
         let episodeCorrection = results.episodes.reduce((total, episode) => {
-          return Math.min(total, episode.episodeNum);
+          return Math.min(total, episode.episodeNumStart);
         }, Infinity) - 1;
         results.episodes = results.episodes.map((episode) => {
-          episode.episodeNum -= episodeCorrection;
+          episode.episodeNumStart -= episodeCorrection;
+          episode.episodeNumEnd -= episodeCorrection;
           return episode;
         });
       }

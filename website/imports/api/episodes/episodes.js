@@ -19,7 +19,11 @@ Schemas.Episode = new SimpleSchema({
     type: String,
     index: true
   },
-  episodeNum: {
+  episodeNumStart: {
+    type: Number,
+    index: true
+  },
+  episodeNumEnd: {
     type: Number,
     index: true
   },
@@ -188,7 +192,7 @@ Episodes.helpers({
 
 Episodes.addEpisode = function(episode) {
   // Get episodes which are the same
-  let others = Episodes.queryUnique(episode.showId, episode.translationType, episode.episodeNum, episode.streamerId);
+  let others = Episodes.queryUnique(episode.showId, episode.translationType, episode.episodeNumStart, episode.episodeNumEnd, episode.streamerId);
 
   // Merge episodes if found
   if (others.count()) {
@@ -241,7 +245,8 @@ Episodes.queryForShow = function(showId) {
     showId: showId
   }, {
     sort: {
-      episodeNum: -1
+      episodeNumEnd: -1,
+      episodeNumStart: 1
     }
   });
 };
@@ -261,44 +266,49 @@ Episodes.queryForTranslationType = function(showId, translationType) {
     translationType: translationType
   }, {
     sort: {
-      episodeNum: -1
+      episodeNumEnd: -1,
+      episodeNumStart: 1
     }
   });
 };
 
-Episodes.queryForEpisode = function (showId, translationType, episodeNum) {
+Episodes.queryForEpisode = function (showId, translationType, episodeNumStart, episodeNumEnd) {
   // Validate
   Episodes.simpleSchema().validate({
     showId: showId,
     translationType: translationType,
-    episodeNum: episodeNum
+    episodeNumStart: episodeNumStart,
+    episodeNumEnd: episodeNumEnd
   }, {
-    keys: ['showId', 'translationType', 'episodeNum']
+    keys: ['showId', 'translationType', 'episodeNumStart', 'episodeNumEnd']
   });
 
   // Return results cursor
   return Episodes.find({
     showId: showId,
-    episodeNum: episodeNum,
+    episodeNumStart: episodeNumStart,
+    episodeNumEnd: episodeNumEnd,
     translationType: translationType
   });
 };
 
-Episodes.queryUnique = function (showId, translationType, episodeNum, streamerId) {
+Episodes.queryUnique = function (showId, translationType, episodeNumStart, episodeNumEnd, streamerId) {
   // Validate
   Episodes.simpleSchema().validate({
     showId: showId,
     translationType: translationType,
-    episodeNum: episodeNum,
+    episodeNumStart: episodeNumStart,
+    episodeNumEnd: episodeNumEnd,
     streamerId: streamerId
   }, {
-    keys: ['showId', 'translationType', 'episodeNum', 'streamerId']
+    keys: ['showId', 'translationType', 'episodeNumStart', 'episodeNumEnd', 'streamerId']
   });
 
   // Return results cursor
   return Episodes.find({
     showId: showId,
-    episodeNum: episodeNum,
+    episodeNumStart: episodeNumStart,
+    episodeNumEnd: episodeNumEnd,
     translationType: translationType,
     streamerId: streamerId
   });

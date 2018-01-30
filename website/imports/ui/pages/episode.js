@@ -21,8 +21,23 @@ function setIframeErrors() {
 }
 
 Template.pages_episode.onCreated(function() {
+  // Getters for the episode numbers
+  this.hasMultipleEpisodeNumbers = function() {
+    return FlowRouter.getRouteName() === 'episodeDouble';
+  };
+  this.getEpisodeNumStart = function() {
+    return Number(this.hasMultipleEpisodeNumbers() ? FlowRouter.getParam('episodeNumStart') : FlowRouter.getParam('episodeNumBoth'));
+  };
+  this.getEpisodeNumEnd = function() {
+    return Number(this.hasMultipleEpisodeNumbers() ? FlowRouter.getParam('episodeNumEnd') : FlowRouter.getParam('episodeNumBoth'));
+  };
+
   // Set page variables
-  Session.set('PageTitle', 'Episode ' + FlowRouter.getParam('episodeNum'));
+  if (this.hasMultipleEpisodeNumbers()) {
+    Session.set('PageTitle', 'Episode ' + this.getEpisodeNumStart() + ' - ' + this.getEpisodeNumEnd());
+  } else {
+    Session.set('PageTitle', 'Episode ' + this.getEpisodeNumStart());
+  }
 
   // Create local variables
   this.selectedEpisode = new ReactiveVar(undefined);
@@ -60,20 +75,20 @@ Template.pages_episode.onCreated(function() {
 
   // Subscribe based on all parameters
   this.autorun(() => {
-    this.subscribe('episodes.forEpisode', FlowRouter.getParam('showId'), Number(FlowRouter.getParam('episodeNum')), FlowRouter.getParam('translationType'));
+    this.subscribe('episodes.forEpisode', FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd());
   });
 
   // Check if the episodes exists
   this.autorun(() => {
-    if (this.subscriptionsReady() && !Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).count()) {
+    if (this.subscriptionsReady() && !Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count()) {
       FlowRouter.go('notFound');
     }
   });
 
   // When the episodes are found
   this.autorun(() => {
-    if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).count()) {
-      Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).forEach((episode) => {
+    if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count()) {
+      Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).forEach((episode) => {
         Meteor.call('episodes.attemptUpdate', episode._id);
       });
     }
@@ -81,7 +96,7 @@ Template.pages_episode.onCreated(function() {
 
   // When the episodes are found and the selection needs to change
   this.autorun(() => {
-    if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).count() && (!this.selectedEpisode.get() || !this.selectedSource.get())) {
+    if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count() && (!this.selectedEpisode.get() || !this.selectedSource.get())) {
       let flagsPreference = Episodes.flagsWithoutAddOnPreference;
       let flagsNever = Episodes.flagsWithoutAddOnNever;
       if (Session.get('AddOnInstalled')) {
@@ -91,7 +106,7 @@ Template.pages_episode.onCreated(function() {
 
       for (let i = flagsPreference.length; i >= 0; i--) {
         if (!this.selectedEpisode.get() || !this.selectedSource.get()) {
-          Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).forEach((episode) => {
+          Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).forEach((episode) => {
             episode.sources.forEach((source) => {
               if ((!this.selectedEpisode.get() || !this.selectedSource.get()) && source.flags.reduce((total, flag) => {
                   return total && !flagsNever.includes(flag) && !flagsPreference.slice(0, i).includes(flag);
@@ -125,14 +140,14 @@ Template.pages_episode.helpers({
   },
 
   episodes() {
-    return Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch().map((episode) =>{
+    return Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd()).fetch().map((episode) =>{
       episode.streamer = Streamers.getSimpleStreamerById(episode.streamerId);
       return episode;
     });
   },
 
   updating() {
-    return Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Number(FlowRouter.getParam('episodeNum'))).fetch().reduce((total, episode) => {
+    return Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd()).fetch().reduce((total, episode) => {
       return total || episode.locked();
     }, false);
   },

@@ -50,7 +50,8 @@ Template.pages_show.helpers({
       let selector = {
         showId: episode.showId,
         translationType: episode.translationType,
-        episodeNum: episode.episodeNum
+        episodeNumStart: episode.episodeNumStart,
+        episodeNumEnd: episode.episodeNumEnd
       };
 
       if (episodes.hasPartialObjects(selector)) {

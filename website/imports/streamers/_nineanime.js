@@ -110,8 +110,11 @@ export let nineanime = {
 
     // Episode list attribute data
     attributes: {
-      episodeNum: function(partial, full) {
-        return ScrapingHelpers.processEpisodeNumber(partial.text());
+      episodeNumStart: function(partial, full) {
+        return partial.text().includes('-') ? partial.text().split('-')[0] : partial.text();
+      },
+      episodeNumEnd: function(partial, full) {
+        return partial.text().includes('-') ? partial.text().split('-')[1] : partial.text();
       },
       translationType: function(partial, full) {
         return getTypeFromName(full.find('div.widget.player div.widget-title h1.title').text());
@@ -120,7 +123,7 @@ export let nineanime = {
         return nineanime.homepage + partial.attr('href');
       },
       sources: function(partial, full) {
-        let episodeNum = partial.text();
+        let episodeString = partial.text();
         let found = [];
 
         let tabs = [];
@@ -137,7 +140,7 @@ export let nineanime = {
           let name = tabs.getPartialObjects({data: server.attr('data-name')})[0].name;
 
           server.find('ul li a').each((index, element) => {
-            if (full.find(element).text() === episodeNum) {
+            if (full.find(element).text() === episodeString) {
               found.push({
                 name: name,
                 url: nineanime.homepage + full.find(element).attr('href')
