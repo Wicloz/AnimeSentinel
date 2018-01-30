@@ -1,6 +1,6 @@
 import './episode.html';
 import {Episodes} from "../../api/episodes/episodes";
-import Streamers from "../../streamers/_streamers";
+import Streamers from "../../streamers/streamers";
 import {Shows} from "../../api/shows/shows";
 import '/imports/ui/components/loadingIndicatorBackground.js';
 

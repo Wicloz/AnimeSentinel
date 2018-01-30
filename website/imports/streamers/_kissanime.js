@@ -1,5 +1,5 @@
 import Cheerio from 'cheerio';
-import ScrapingHelpers from "./_scrapingHelpers";
+import ScrapingHelpers from "./scrapingHelpers";
 
 function cleanName(name) {
   return name.replace(/ \(Dub\)$/, '').replace(/ \(Sub\)$/, '');

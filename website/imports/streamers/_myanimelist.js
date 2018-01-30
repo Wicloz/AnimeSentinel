@@ -1,4 +1,4 @@
-import ScrapingHelpers from "./_scrapingHelpers";
+import ScrapingHelpers from "./scrapingHelpers";
 
 function getMalIdFromUrl(url) {
   return url.replace(/^.*\/(\d+)\/.*$/, '$1');

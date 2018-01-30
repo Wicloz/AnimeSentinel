@@ -2,7 +2,7 @@ import './show.html';
 import {Shows} from '/imports/api/shows/shows.js';
 import '/imports/ui/components/loadingIndicatorBackground.js';
 import {Episodes} from "../../api/episodes/episodes";
-import Streamers from "../../streamers/_streamers";
+import Streamers from "../../streamers/streamers";
 
 Template.pages_show.onCreated(function() {
   // Set page variables

@@ -1,5 +1,5 @@
 import SimpleSchema from 'simpl-schema';
-import Streamers from "../../streamers/_streamers";
+import Streamers from "../../streamers/streamers";
 import {Shows} from "../shows/shows";
 
 // Schema
