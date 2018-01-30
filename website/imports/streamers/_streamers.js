@@ -444,6 +444,7 @@ class TempShow {
         })) {
         // Process it's unprocessed streamer urls
         this.processUnprocessedStreamerUrls(result.streamerUrls);
+        // TODO: check for full shows
       }
 
       // Otherwise store as partial result
