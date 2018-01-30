@@ -28,30 +28,30 @@ export default class Streamers {
     }
   }
 
-  static convertCheerioToShow(cheerio, streamer, type) {
+  static convertCheerioToShow(cheerioRow, cheerioPage, streamer, type) {
     // Create empty show
     let show = {};
 
     // Get 'type'
     if (streamer[type].attributes.type) {
-      show.type = streamer[type].attributes.type(cheerio);
+      show.type = streamer[type].attributes.type(cheerioRow, cheerioPage);
       if (show.type && show.type.cleanWhitespace() === 'Music') {
         return false; // Reject music videos
       }
     }
 
     // Get 'streamerUrls'
-    show.streamerUrls = streamer[type].attributes.streamerUrls(cheerio);
+    show.streamerUrls = streamer[type].attributes.streamerUrls(cheerioRow, cheerioPage);
     show.streamerUrls = show.streamerUrls.map((streamerUrl) => {
       streamerUrl.streamer = streamer.id;
       return streamerUrl;
     });
 
     // Get 'name'
-    show.name = streamer[type].attributes.name(cheerio);
+    show.name = streamer[type].attributes.name(cheerioRow, cheerioPage);
     // Get 'altNames'
     if (streamer[type].attributes.altNames) {
-      show.altNames = streamer[type].attributes.altNames(cheerio);
+      show.altNames = streamer[type].attributes.altNames(cheerioRow, cheerioPage);
     } else {
       show.altNames = [];
     }
@@ -59,11 +59,11 @@ export default class Streamers {
 
     // Get 'description'
     if (streamer[type].attributes.description) {
-      show.description = streamer[type].attributes.description(cheerio);
+      show.description = streamer[type].attributes.description(cheerioRow, cheerioPage);
     }
     // Get 'malId'
     if (streamer[type].attributes.malId) {
-      show.malId = streamer[type].attributes.malId(cheerio);
+      show.malId = streamer[type].attributes.malId(cheerioRow, cheerioPage);
     }
 
     // Clean and validate show
@@ -76,23 +76,22 @@ export default class Streamers {
     return show;
   }
 
-  static convertCheerioToEpisode(cheerio, pageTranslationType, streamer, type) {
+  static convertCheerioToEpisode(cheerioRow, cheerioPage, streamer, type) {
     // Create empty episode
     let episode = {
       showId: 'undefined',
-      streamerId: streamer.id,
-      translationType: pageTranslationType
+      streamerId: streamer.id
     };
 
     // Get 'episodeNum'
-    episode.episodeNum = streamer[type].attributes.episodeNum(cheerio);
+    episode.episodeNum = streamer[type].attributes.episodeNum(cheerioRow, cheerioPage);
+    // Get 'sourceUrl'
+    episode.sourceUrl = streamer[type].attributes.sourceUrl(cheerioRow, cheerioPage);
 
     // Get 'translationType'
     if (streamer[type].attributes.translationType) {
-      episode.translationType = streamer[type].attributes.translationType(cheerio);
+      episode.translationType = streamer[type].attributes.translationType(cheerioRow, cheerioPage);
     }
-    // Get 'sourceUrl'
-    episode.sourceUrl = streamer[type].attributes.sourceUrl(cheerio);
 
     // Clean and validate episode
     Episodes.simpleSchema().clean(episode, {
@@ -134,7 +133,7 @@ export default class Streamers {
           try {
             if (index >= streamer.search.rowSkips) {
               // Create and add show
-              let result = this.convertCheerioToShow(page(element), streamer, 'search');
+              let result = this.convertCheerioToShow(page(element), page('html'), streamer, 'search');
               if (result) {
                 results.push(result);
               }
@@ -177,7 +176,7 @@ export default class Streamers {
 
     try {
       // Create and store show
-      let result = this.convertCheerioToShow(page('html'), streamer, 'show');
+      let result = this.convertCheerioToShow(page('html'), page('html'), streamer, 'show');
       if (result) {
         results.full = result;
       }
@@ -187,7 +186,7 @@ export default class Streamers {
         try {
           if (!streamer.showRelated.rowIgnore(page(element))) {
             // Create and add related show
-            let result = this.convertCheerioToShow(page(element), streamer, 'showRelated');
+            let result = this.convertCheerioToShow(page(element), page('html'), streamer, 'showRelated');
             if (result) {
               results.partials.push(result);
             }
@@ -201,18 +200,12 @@ export default class Streamers {
         }
       });
 
-      // Get the page wide translation type
-      let pageTranslationType = undefined;
-      if (streamer.showEpisodes.defaultTranslationType) {
-        pageTranslationType = streamer.showEpisodes.defaultTranslationType(page('html'));
-      }
-
       // For each episode
       page(streamer.showEpisodes.rowSelector).each((index, element) => {
         try {
           if (index >= streamer.showEpisodes.rowSkips) {
             // Create and add episode
-            let result = this.convertCheerioToEpisode(page(element), pageTranslationType, streamer, 'showEpisodes');
+            let result = this.convertCheerioToEpisode(page(element), page('html'), streamer, 'showEpisodes');
             if (result) {
               results.episodes.push(result);
             }

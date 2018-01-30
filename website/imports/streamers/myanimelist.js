@@ -20,7 +20,7 @@ export let myanimelist = {
 
     // Search page attribute data
     attributes: {
-      streamerUrls: function(partial) {
+      streamerUrls: function(partial, full) {
         return [{
           type: 'details',
           url: partial.find('td a.hoverinfo_trigger').attr('href')
@@ -29,16 +29,16 @@ export let myanimelist = {
           url: partial.find('td a.hoverinfo_trigger').attr('href') + '/pics'
         }];
       },
-      name: function(partial) {
+      name: function(partial, full) {
         return partial.find('td a.hoverinfo_trigger strong').text();
       },
-      description: function(partial) {
+      description: function(partial, full) {
         return partial.find('td div.pt4').text().replace(/\.\.\.read more\.$/, Shows.descriptionCutoff);
       },
-      type: function(partial) {
+      type: function(partial, full) {
         return partial.find('td[width=45]').text().replace(/Unknown/g, '');
       },
-      malId: function(partial) {
+      malId: function(partial, full) {
         return partial.find('td a.hoverinfo_trigger').attr('href').replace(/^.*\/([0-9]+)\/.*$/, '$1');
       },
     },
@@ -52,7 +52,7 @@ export let myanimelist = {
 
     // Show page attribute data
     attributes: {
-      streamerUrls: function(partial) {
+      streamerUrls: function(partial, full) {
         let urls = [{
           type: 'details',
           url: partial.find('div#horiznav_nav ul li:first-of-type a').attr('href')
@@ -81,20 +81,20 @@ export let myanimelist = {
 
         return urls;
       },
-      name: function(partial) {
+      name: function(partial, full) {
         return partial.find('div#contentWrapper div:first-of-type h1 span').text();
       },
-      altNames: function(partial) {
+      altNames: function(partial, full) {
         return partial.find('td.borderClass div.js-scrollfix-bottom').find('div.spaceit_pad').map((index, element) => {
           let altNames = partial.find(element);
           altNames.find('span').remove();
           return altNames.text().split(', ');
         }).get();
       },
-      description: function(partial) {
+      description: function(partial, full) {
         return partial.find('td span[itemprop=description]').html();
       },
-      type: function(partial) {
+      type: function(partial, full) {
         let type = undefined;
         partial.find('td.borderClass div.js-scrollfix-bottom div').each((index, element) => {
           let row = partial.find(element);
@@ -105,7 +105,7 @@ export let myanimelist = {
         });
         return type;
       },
-      malId: function(partial) {
+      malId: function(partial, full) {
         return partial.find('div#horiznav_nav ul li:first-of-type a').attr('href').replace(/^.*\/anime\/(\d+)\/.*$/, '$1');
       },
     },
@@ -120,7 +120,7 @@ export let myanimelist = {
 
     // Related shows attribute data
     attributes: {
-      streamerUrls: function(partial) {
+      streamerUrls: function(partial, full) {
         return [{
           type: 'details',
           url: myanimelist.homepage + partial.attr('href')
@@ -129,10 +129,10 @@ export let myanimelist = {
           url: myanimelist.homepage + partial.attr('href') + '/pics'
         }];
       },
-      name: function(partial) {
+      name: function(partial, full) {
         return partial.text();
       },
-      malId: function(partial) {
+      malId: function(partial, full) {
         return partial.attr('href').replace(/^.*\/([0-9]+)\/.*$/, '$1');
       },
     },
@@ -146,28 +146,22 @@ export let myanimelist = {
 
     // Episode list attribute data
     attributes: {
-      episodeNum: function(partial) {
+      episodeNum: function(partial, full) {
         return partial.find('td.episode-number').text();
       },
-      translationType: function(partial) {
+      translationType: function(partial, full) {
         return 'sub';
       },
-      sourceUrl: function(partial) {
+      sourceUrl: function(partial, full) {
         return partial.find('td.episode-title a').attr('href');
       },
-    },
-  },
-
-  // Episode page data
-  episode: {
-    requiresDownload: false,
-
-    getSources: function(sourceUrl) {
-      return [{
-        name: 'Crunchyroll',
-        url: sourceUrl,
-        flags: ['flash']
-      }];
+      sources: function(partial, full) {
+        return [{
+          name: 'Crunchyroll',
+          url: partial.find('td.episode-title a').attr('href'),
+          flags: ['flash']
+        }];
+      },
     },
   },
 };

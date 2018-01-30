@@ -21,16 +21,16 @@ export let kissanime = {
 
     // Search page attribute data
     attributes: {
-      streamerUrls: function(partial) {
+      streamerUrls: function(partial, full) {
         return [{
           type: partial.find('td:first-of-type a').text().match(/\(Dub\)$/) ? 'dub' : 'sub',
           url: kissanime.homepage + partial.find('td:first-of-type a').attr('href')
         }];
       },
-      name: function(partial) {
+      name: function(partial, full) {
         return partial.find('td:first-of-type a').text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
       },
-      description: function(partial) {
+      description: function(partial, full) {
         return Cheerio.load(partial.find('td:first-of-type').attr('title'))('div p').text().replace(/ \.\.\.\n\s*$/, Shows.descriptionCutoff);
       },
     },
@@ -44,16 +44,16 @@ export let kissanime = {
 
     // Show page attribute data
     attributes: {
-      streamerUrls: function(partial) {
+      streamerUrls: function(partial, full) {
         return [{
           type: partial.find('a.bigChar').text().match(/\(Dub\)$/) ? 'dub' : 'sub',
           url: kissanime.homepage + partial.find('a.bigChar').attr('href')
         }];
       },
-      name: function(partial) {
+      name: function(partial, full) {
         return partial.find('a.bigChar').text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
       },
-      altNames: function(partial) {
+      altNames: function(partial, full) {
         if (partial.find('.bigBarContainer .barContent div:nth-of-type(2) p:first-of-type').find('span.info').text() !== 'Other name:') {
           return [];
         }
@@ -61,10 +61,10 @@ export let kissanime = {
           return partial.find(element).text();
         }).get();
       },
-      description: function(partial) {
+      description: function(partial, full) {
         return partial.find('.bigBarContainer .barContent div:nth-of-type(2) p:nth-last-of-type(2)').html();
       },
-      type: function(partial) {
+      type: function(partial, full) {
         let genres = [];
 
         partial.find('.bigBarContainer .barContent div:nth-of-type(2) p').each((index, element) => {
@@ -97,13 +97,13 @@ export let kissanime = {
 
     // Related shows attribute data
     attributes: {
-      streamerUrls: function(partial) {
+      streamerUrls: function(partial, full) {
         return [{
           type: partial.text().match(/\(Dub\)$/) ? 'dub' : 'sub',
           url: kissanime.homepage + partial.attr('href')
         }];
       },
-      name: function(partial) {
+      name: function(partial, full) {
         return partial.text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
       },
     },
@@ -115,44 +115,38 @@ export let kissanime = {
     rowSkips: 2,
     cannotCount: true,
 
-    defaultTranslationType: function(partial) {
-      return partial.find('a.bigChar').text().match(/\(Dub\)$/) ? 'dub' : 'sub';
-    },
-
     // Episode list attribute data
     attributes: {
-      episodeNum: function(partial) {
+      episodeNum: function(partial, full) {
         let number = partial.find('td:first-of-type a').text().cleanWhitespace().split(' ').pop();
         return isNumeric(number) ? number : 1;
       },
-      sourceUrl: function(partial) {
+      translationType: function(partial, full) {
+        return full.find('a.bigChar').text().match(/\(Dub\)$/) ? 'dub' : 'sub';
+      },
+      sourceUrl: function(partial, full) {
         return kissanime.homepage + partial.find('td:first-of-type a').attr('href');
       },
-    },
-  },
-
-  // Episode page data
-  episode: {
-    requiresDownload: false,
-
-    getSources: function(sourceUrl) {
-      return [{
-        name: 'Openload',
-        url: sourceUrl + '&s=openload',
-        flags: ['cloudflare']
-      }, {
-        name: 'RapidVideo',
-        url: sourceUrl + '&s=rapidvideo',
-        flags: ['cloudflare']
-      }, {
-        name: 'Streamango',
-        url: sourceUrl + '&s=streamango',
-        flags: ['cloudflare']
-      }, {
-        name: 'Beta Server',
-        url: sourceUrl + '&s=beta',
-        flags: ['cloudflare']
-      }];
+      sources: function(partial, full) {
+        let sourceUrl = kissanime.homepage + partial.find('td:first-of-type a').attr('href');
+        return [{
+          name: 'Openload',
+          url: sourceUrl + '&s=openload',
+          flags: ['cloudflare']
+        }, {
+          name: 'RapidVideo',
+          url: sourceUrl + '&s=rapidvideo',
+          flags: ['cloudflare']
+        }, {
+          name: 'Streamango',
+          url: sourceUrl + '&s=streamango',
+          flags: ['cloudflare']
+        }, {
+          name: 'Beta Server',
+          url: sourceUrl + '&s=beta',
+          flags: ['cloudflare']
+        }];
+      },
     },
   },
 };

@@ -26,16 +26,16 @@ export let nineanime = {
 
     // Search page attribute data
     attributes: {
-      streamerUrls: function(partial) {
+      streamerUrls: function(partial, full) {
         return [{
           type: getTypeFromName(partial.find('a.name').text()),
           url: partial.find('a.name').attr('href')
         }];
       },
-      name: function(partial) {
+      name: function(partial, full) {
         return cleanName(partial.find('a.name').text());
       },
-      type: function(partial) {
+      type: function(partial, full) {
         let types = ['OVA', 'Movie', 'Special', 'ONA'];
         let found = undefined;
 
@@ -58,22 +58,22 @@ export let nineanime = {
 
     // Show page attribute data
     attributes: {
-      streamerUrls: function(partial) {
+      streamerUrls: function(partial, full) {
         return [{
           type: getTypeFromName(partial.find('div.widget.player div.widget-title h1.title').text()),
           url: partial.find('head link').attr('href')
         }];
       },
-      name: function(partial) {
+      name: function(partial, full) {
         return cleanName(partial.find('div.widget.player div.widget-title h1.title').text());
       },
-      altNames: function(partial) {
+      altNames: function(partial, full) {
         return partial.find('div.info div.head div.c1 p.alias').text().split('; ');
       },
-      description: function(partial) {
+      description: function(partial, full) {
         return partial.find('div.info div.desc').text()
       },
-      type: function(partial) {
+      type: function(partial, full) {
         return partial.find('div.info div.row dl.meta dd:first-of-type').text().split(' ')[0]
       },
     },
@@ -88,13 +88,13 @@ export let nineanime = {
 
     // Related shows attribute data
     attributes: {
-      streamerUrls: function(partial) {
+      streamerUrls: function(partial, full) {
         return [{
           type: getTypeFromName(partial.find('div.info a.name').text()),
           url: partial.find('div.info a.name').attr('href')
         }];
       },
-      name: function(partial) {
+      name: function(partial, full) {
         return cleanName(partial.find('div.info a.name').text());
       },
     },
@@ -108,21 +108,28 @@ export let nineanime = {
 
     // Episode list attribute data
     attributes: {
-      episodeNum: function(partial) {
+      episodeNum: function(partial, full) {
         return partial.text()
       },
-      sourceUrl: function(partial) {
+      translationType: function(partial, full) {
+        return getTypeFromName(full.find('div.widget.player div.widget-title h1.title').text());
+      },
+      sourceUrl: function(partial, full) {
         return nineanime.homepage + partial.attr('href');
       },
-    },
-  },
+      sources: function(partial, full) {
+        let episodeNum = partial.text();
+        let found = [];
 
-  // Episode page data
-  episode: {
-    requiresDownload: false,
-
-    getSources: function(sourceUrl) {
-
+        full.find('div.widget.servers div.widget-body div.server ul li a').each((index, element) => {
+          if (full.find(element).text() === episodeNum) {
+            found.push({
+              name: index,
+              url: nineanime.homepage + full.find(element).attr('href')
+            });
+          }
+        });
+      },
     },
   },
 };
