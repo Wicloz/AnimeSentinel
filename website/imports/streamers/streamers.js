@@ -97,9 +97,7 @@ export default class Streamers {
     episode.sourceUrl = streamer[type].attributes.sourceUrl(cheerioRow, cheerioPage);
 
     // Get 'translationType'
-    if (streamer[type].attributes.translationType) {
-      episode.translationType = streamer[type].attributes.translationType(cheerioRow, cheerioPage);
-    }
+    episode.translationType = streamer[type].attributes.translationType(cheerioRow, cheerioPage);
 
     // Get 'sources'
     if (streamer[type].attributes.sources) {
