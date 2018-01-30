@@ -91,12 +91,17 @@ export const Episodes = new Mongo.Collection('episodes');
 Episodes.attachSchema(Schemas.Episode);
 
 // Constants
-Episodes.timeUntilRecache = 8000; // 1 day
-Episodes.maxUpdateTime = 8000; // 10 minutes
+Episodes.timeUntilRecache = 86400000; // 1 day
+Episodes.maxUpdateTime = 60000; // 1 minute
 Episodes.flagsWithoutAddOnPreference = ['cloudflare', 'mixed-content', 'flash'];
 Episodes.flagsWithoutAddOnNever = ['x-frame-options'];
 Episodes.flagsWithAddOnPreference = ['flash', 'mixed-content'];
 Episodes.flagsWithAddOnNever = [];
+
+if (Meteor.isDevelopment) {
+  Episodes.timeUntilRecache = 8000;
+  Episodes.maxUpdateTime = 8000;
+}
 
 // Helpers
 Episodes.helpers({

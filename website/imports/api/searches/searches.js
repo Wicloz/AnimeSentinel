@@ -27,8 +27,13 @@ export const Searches = new Mongo.Collection('searches');
 Searches.attachSchema(Schemas.Search);
 
 // Constants
-Searches.timeUntilRecache = 8000; // 1 day
-Searches.maxSearchTime = 8000; // 30 seconds
+Searches.timeUntilRecache = 86400000; // 1 day
+Searches.maxSearchTime = 60000; // 1 minute
+
+if (Meteor.isDevelopment) {
+  Searches.timeUntilRecache = 8000;
+  Searches.maxSearchTime = 8000;
+}
 
 // Helpers
 Searches.helpers({
