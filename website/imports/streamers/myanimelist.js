@@ -1,4 +1,8 @@
-import {Shows} from '/imports/api/shows/shows.js';
+import ScrapingHelpers from "./_scrapingHelpers";
+
+function getMalIdFromUrl(url) {
+  return url.replace(/^.*\/(\d+)\/.*$/, '$1');
+}
 
 export let myanimelist = {
   // General data
@@ -33,13 +37,13 @@ export let myanimelist = {
         return partial.find('td a.hoverinfo_trigger strong').text();
       },
       description: function(partial, full) {
-        return partial.find('td div.pt4').text().replace(/\.\.\.read more\.$/, Shows.descriptionCutoff);
+        return ScrapingHelpers.replaceDescriptionCutoff(partial.find('td div.pt4').text(), '...read more.');
       },
       type: function(partial, full) {
         return partial.find('td[width=45]').text().replace(/Unknown/g, '');
       },
       malId: function(partial, full) {
-        return partial.find('td a.hoverinfo_trigger').attr('href').replace(/^.*\/([0-9]+)\/.*$/, '$1');
+        return getMalIdFromUrl(partial.find('td a.hoverinfo_trigger').attr('href'));
       },
     },
   },
@@ -106,7 +110,7 @@ export let myanimelist = {
         return type;
       },
       malId: function(partial, full) {
-        return partial.find('div#horiznav_nav ul li:first-of-type a').attr('href').replace(/^.*\/anime\/(\d+)\/.*$/, '$1');
+        return getMalIdFromUrl(partial.find('div#horiznav_nav ul li:first-of-type a').attr('href'));
       },
     },
   },
@@ -133,7 +137,7 @@ export let myanimelist = {
         return partial.text();
       },
       malId: function(partial, full) {
-        return partial.attr('href').replace(/^.*\/([0-9]+)\/.*$/, '$1');
+        return getMalIdFromUrl(partial.attr('href'));
       },
     },
   },
@@ -158,7 +162,7 @@ export let myanimelist = {
       sources: function(partial, full) {
         return [{
           name: 'Crunchyroll',
-          url: partial.find('td.episode-title a').attr('href'),
+          url: partial.find('td.episode-title a').attr('href') + '?provider_id=1',
           flags: ['flash']
         }];
       },

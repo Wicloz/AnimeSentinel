@@ -1,5 +1,7 @@
+import ScrapingHelpers from "./_scrapingHelpers";
+
 function cleanName(name) {
-  return name.replace(/\s\(Dub\)$/, '').replace(/\s\(Sub\)$/, '');
+  return name.replace(/ \(Dub\)$/, '').replace(/ \(Sub\)$/, '');
 }
 
 function getTypeFromName(name) {
@@ -74,7 +76,7 @@ export let nineanime = {
         return partial.find('div.info div.desc').text()
       },
       type: function(partial, full) {
-        return partial.find('div.info div.row dl.meta dd:first-of-type').text().split(' ')[0]
+        return partial.find('div.info div.row dl:first-of-type dd:first-of-type').text().split(' ')[0]
       },
     },
   },
@@ -109,7 +111,7 @@ export let nineanime = {
     // Episode list attribute data
     attributes: {
       episodeNum: function(partial, full) {
-        return partial.text()
+        return ScrapingHelpers.processEpisodeNumber(partial.text());
       },
       translationType: function(partial, full) {
         return getTypeFromName(full.find('div.widget.player div.widget-title h1.title').text());

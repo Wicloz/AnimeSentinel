@@ -1,5 +1,13 @@
 import Cheerio from 'cheerio';
-import {Shows} from '/imports/api/shows/shows.js';
+import ScrapingHelpers from "./_scrapingHelpers";
+
+function cleanName(name) {
+  return name.replace(/ \(Dub\)$/, '').replace(/ \(Sub\)$/, '');
+}
+
+function getTypeFromName(name) {
+  return name.endsWith(' (Dub)') ? 'dub' : 'sub';
+}
 
 export let kissanime = {
   // General data
@@ -23,15 +31,15 @@ export let kissanime = {
     attributes: {
       streamerUrls: function(partial, full) {
         return [{
-          type: partial.find('td:first-of-type a').text().match(/\(Dub\)$/) ? 'dub' : 'sub',
+          type: getTypeFromName(partial.find('td:first-of-type a').text()),
           url: kissanime.homepage + partial.find('td:first-of-type a').attr('href')
         }];
       },
       name: function(partial, full) {
-        return partial.find('td:first-of-type a').text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
+        return cleanName(partial.find('td:first-of-type a').text());
       },
       description: function(partial, full) {
-        return Cheerio.load(partial.find('td:first-of-type').attr('title'))('div p').text().replace(/ \.\.\.\n\s*$/, Shows.descriptionCutoff);
+        return ScrapingHelpers.replaceDescriptionCutoff(Cheerio.load(partial.find('td:first-of-type').attr('title'))('div p').text(), /\s\.\.\.\n\s*/);
       },
     },
   },
@@ -46,12 +54,12 @@ export let kissanime = {
     attributes: {
       streamerUrls: function(partial, full) {
         return [{
-          type: partial.find('a.bigChar').text().match(/\(Dub\)$/) ? 'dub' : 'sub',
+          type: getTypeFromName(partial.find('a.bigChar').text()),
           url: kissanime.homepage + partial.find('a.bigChar').attr('href')
         }];
       },
       name: function(partial, full) {
-        return partial.find('a.bigChar').text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
+        return cleanName(partial.find('a.bigChar').text());
       },
       altNames: function(partial, full) {
         if (partial.find('.bigBarContainer .barContent div:nth-of-type(2) p:first-of-type').find('span.info').text() !== 'Other name:') {
@@ -99,12 +107,12 @@ export let kissanime = {
     attributes: {
       streamerUrls: function(partial, full) {
         return [{
-          type: partial.text().match(/\(Dub\)$/) ? 'dub' : 'sub',
+          type: getTypeFromName(partial.text()),
           url: kissanime.homepage + partial.attr('href')
         }];
       },
       name: function(partial, full) {
-        return partial.text().replace(/\(Dub\)$/, '').replace(/\(Sub\)$/, '');
+        return cleanName(partial.text());
       },
     },
   },
@@ -118,11 +126,10 @@ export let kissanime = {
     // Episode list attribute data
     attributes: {
       episodeNum: function(partial, full) {
-        let number = partial.find('td:first-of-type a').text().cleanWhitespace().split(' ').pop();
-        return isNumeric(number) ? number : 1;
+        return ScrapingHelpers.processEpisodeNumber(partial.find('td:first-of-type a').text().cleanWhitespace().split(' ').pop())
       },
       translationType: function(partial, full) {
-        return full.find('a.bigChar').text().match(/\(Dub\)$/) ? 'dub' : 'sub';
+        return getTypeFromName(full.find('a.bigChar').text());
       },
       sourceUrl: function(partial, full) {
         return kissanime.homepage + partial.find('td:first-of-type a').attr('href');
@@ -132,19 +139,19 @@ export let kissanime = {
         return [{
           name: 'Openload',
           url: sourceUrl + '&s=openload',
-          flags: ['cloudflare']
+          flags: ['cloudflare', 'mixed-content']
         }, {
           name: 'RapidVideo',
           url: sourceUrl + '&s=rapidvideo',
-          flags: ['cloudflare']
+          flags: ['cloudflare', 'mixed-content']
         }, {
           name: 'Streamango',
           url: sourceUrl + '&s=streamango',
-          flags: ['cloudflare']
+          flags: ['cloudflare', 'mixed-content']
         }, {
           name: 'Beta Server',
           url: sourceUrl + '&s=beta',
-          flags: ['cloudflare']
+          flags: ['cloudflare', 'mixed-content']
         }];
       },
     },
