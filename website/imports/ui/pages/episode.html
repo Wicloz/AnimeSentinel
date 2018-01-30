@@ -22,12 +22,12 @@
           <li class="collection-header">
             <h4>Disable mixed content protection to watch this video.</h4>
           </li>
-          <li class="collection-item {{#unless $eq $.BrowserDetect.browser 'Firefox'}}hidden{{/unless}}">
+          <li class="collection-item {{#unless $eq $.BrowserDetect.browser 'Firefox'}}removed{{/unless}}">
             Firefox:<br>
             <img class="disable-mixed-protection-image" src="/images/firefox-unsafe-1.png">
             <img class="disable-mixed-protection-image" src="/images/firefox-unsafe-2.png">
           </li>
-          <li class="collection-item {{#unless $eq $.BrowserDetect.browser 'Chrome'}}hidden{{/unless}}">
+          <li class="collection-item {{#unless $eq $.BrowserDetect.browser 'Chrome'}}removed{{/unless}}">
             Chrome:<br>
             <img class="disable-mixed-protection-image" src="/images/chrome-unsafe-1.png">
             <img class="disable-mixed-protection-image" src="/images/chrome-unsafe-2.png">
@@ -52,7 +52,7 @@
       {{/if}}
     {{/each}}
 
-    <ul class="collection {{#if iframeErrors}}hidden{{/if}}">
+    <ul class="collection {{#if iframeErrors}}removed{{/if}}">
       <li class="collection-item" id="player-container-collection">
         <div id="player-container-outer">
           <div id="player-container-inner">
