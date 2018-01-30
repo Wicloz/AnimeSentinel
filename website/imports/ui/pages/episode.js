@@ -4,22 +4,6 @@ import Streamers from "../../streamers/streamers";
 import {Shows} from "../../api/shows/shows";
 import '/imports/ui/components/loadingIndicatorBackground.js';
 
-function isFlagProblematic(flag) {
-  return !Session.get('AddOnInstalled') || Episodes.flagsWithAddOnPreference.includes(flag) || Episodes.flagsWithAddOnNever.includes(flag);
-}
-
-function selectedSource() {
-  return Episodes.findOne(Template.instance().selectedEpisode.get()).sources.getPartialObjects({
-    name: Template.instance().selectedSource.get()
-  })[0];
-}
-
-function setIframeErrors() {
-  Template.instance().iframeErrors.set(selectedSource().flags.filter((flag) => {
-    return isFlagProblematic(flag);
-  }));
-}
-
 Template.pages_episode.onCreated(function() {
   // Getters for the episode numbers
   this.hasMultipleEpisodeNumbers = function() {
@@ -30,6 +14,27 @@ Template.pages_episode.onCreated(function() {
   };
   this.getEpisodeNumEnd = function() {
     return Number(this.hasMultipleEpisodeNumbers() ? FlowRouter.getParam('episodeNumEnd') : FlowRouter.getParam('episodeNumBoth'));
+  };
+
+  // Other functions
+  this.getSelectedSource = function() {
+    return Episodes.findOne(this.selectedEpisode.get()).sources.getPartialObjects({
+      name: this.selectedSource.get()
+    })[0];
+  };
+
+  this.setIframeErrors = function() {
+    let problemFlags = this.getSelectedSource().flags.filter((flag) => {
+      return Episodes.isFlagProblematic(flag);
+    });
+
+    if (problemFlags.empty()) {
+      problemFlags.push('unknown');
+    }
+
+    problemFlags.push('add-on');
+
+    this.iframeErrors.set(problemFlags);
   };
 
   // Set page variables
@@ -136,7 +141,7 @@ Template.pages_episode.helpers({
     if (!Template.instance().selectedEpisode.get() || !Template.instance().selectedSource.get()) {
       return undefined;
     }
-    return selectedSource();
+    return Template.instance().getSelectedSource();
   },
 
   episodes() {
@@ -153,7 +158,7 @@ Template.pages_episode.helpers({
   },
 
   showIcon(flag) {
-    return isFlagProblematic(flag);
+    return Episodes.isFlagProblematic(flag);
   },
 
   flagsDisabled(flags) {
@@ -179,10 +184,10 @@ Template.pages_episode.events({
   },
 
   'error #episode-frame'(event) {
-    setIframeErrors();
+    Template.instance().setIframeErrors();
   },
 
   'click a.not-working-btn'(event) {
-    setIframeErrors();
+    Template.instance().setIframeErrors();
   },
 });

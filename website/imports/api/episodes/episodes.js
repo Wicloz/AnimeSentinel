@@ -223,6 +223,10 @@ Episodes.moveEpisodes = function(fromId, toId) {
   });
 };
 
+Episodes.isFlagProblematic = function(flag) {
+  return !Session.get('AddOnInstalled') || Episodes.flagsWithAddOnPreference.includes(flag) || Episodes.flagsWithAddOnNever.includes(flag);
+};
+
 // Methods
 Meteor.methods({
   'episodes.attemptUpdate'(id) {
