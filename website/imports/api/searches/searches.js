@@ -55,10 +55,8 @@ Searches.helpers({
       }
     });
 
-    Streamers.doSearch(query, (result) => {
-      // For each search result
-      Shows.addPartialShow(result);
-    }, () => {
+    Streamers.doSearch(query, () => {
+
       // When done
       this.lastSearchEnd = moment().toDate();
       Searches.update(this._id, {
@@ -66,6 +64,18 @@ Searches.helpers({
           lastSearchEnd: this.lastSearchEnd
         }
       });
+
+    }, (partial) => {
+
+      // For each search result
+      Shows.addPartialShow(partial);
+
+    }, (episode) => {
+
+      // For each found episode
+      // Episodes.addEpisode(episode);
+      // TODO: Somehow store episodes here
+
     });
   }
 });

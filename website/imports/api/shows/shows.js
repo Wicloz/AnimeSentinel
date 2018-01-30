@@ -193,12 +193,16 @@ Shows.helpers({
         // TODO: Move episodes
 
       }, (partial) => {
+
         // Insert any partial results found in the process
         Shows.addPartialShow(partial);
+
       }, (episode) => {
+
         // Add found episodes
         Episodes.addEpisode(episode);
         // TODO: Remove not found episodes
+
       });
     }
   }

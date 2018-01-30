@@ -115,7 +115,10 @@ export default class Streamers {
   }
 
   static processSearchPage(html, streamer, logData) {
-    let results = [];
+    let results = {
+      partials: [],
+      episodes: []
+    };
 
     if (!html) {
       return results;
@@ -131,9 +134,11 @@ export default class Streamers {
       // Check if we have a show page
       if (streamer.show.checkIfPage(page)) {
         let result = this.processShowPage(html, streamer, logData);
-        results.concat(result.partials);
+        results.episodes = results.episodes.concat(result.episodes);
+        results.partials = results.partials.concat(result.partials);
         if (result.full) {
-          results.push(result.full);
+          result.full.fromShowPage = true;
+          results.partials.push(result.full);
         }
       }
 
@@ -146,7 +151,7 @@ export default class Streamers {
               // Create and add show
               let result = this.convertCheerioToShow(page(element), page('html'), streamer, 'search');
               if (result) {
-                results.push(result);
+                results.partials.push(result);
               }
             }
           }
@@ -272,7 +277,7 @@ export default class Streamers {
     }
   }
 
-  static doSearch(query, resultCallback, doneCallback, streamersExcluded=[]) {
+  static doSearch(query, doneCallback, partialCallback, episodeCallback, streamersExcluded=[]) {
     // Filter streamers
     let filteredStreamers = streamers.filter((streamer) => {
       return !streamersExcluded.includes(streamer.id);
@@ -292,9 +297,14 @@ export default class Streamers {
       // Download and process search results
       this.getSearchResults(streamer.search.createUrl(query), streamer, query, (results) => {
 
-        // Return results
-        results.forEach((result) => {
-          resultCallback(result);
+        // Return partials
+        results.partials.forEach((partial) => {
+          partialCallback(partial);
+        });
+
+        // Return episodes
+        results.episodes.forEach((episode) => {
+          episodeCallback(episode);
         });
 
         // Check if done
