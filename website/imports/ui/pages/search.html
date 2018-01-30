@@ -1,8 +1,12 @@
 <template name="pages_search">
   <div class="container">
-    {{#autoForm schema='Schemas.animeSearch' id='animeSearchForm' autosave=true autosaveOnKeyup=true}}
-      {{> afQuickField name='query'}}
-    {{/autoForm}}
+    <ul class="collection">
+      <li class="collection-item">
+        {{#autoForm schema='Schemas.animeSearch' id='animeSearchForm' autosave=true autosaveOnKeyup=true}}
+          {{> afQuickField name='query'}}
+        {{/autoForm}}
+      </li>
+    </ul>
 
     <ul class="collection">
       {{#each shows}}
