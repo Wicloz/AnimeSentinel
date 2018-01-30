@@ -24,8 +24,12 @@
   background-color: $secondary-color !important;
 }
 
-.hidden {
+.removed {
   display: none !important;
+}
+
+.hidden {
+  visibility: hidden !important;
 }
 
 .fullwidth {

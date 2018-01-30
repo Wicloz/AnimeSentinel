@@ -39,4 +39,8 @@
   overflow-y: hidden;
   white-space: nowrap;
   direction: rtl;
+
+  .hidden {
+    font-size: 0;
+  }
 }

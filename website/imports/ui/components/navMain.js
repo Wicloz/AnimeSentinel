@@ -5,7 +5,7 @@ Template.components_nav_main.onCreated(function() {
 });
 
 Template.components_nav_main.onRendered(function() {
-  $(".button-collapse").sideNav({
+  $('.button-collapse').sideNav({
     closeOnClick: true
   });
 });
