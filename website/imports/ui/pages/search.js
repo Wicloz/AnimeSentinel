@@ -11,8 +11,6 @@ Template.pages_search.onCreated(function() {
   // Local variables
   this.searchQuery = new ReactiveVar(undefined);
   this.searchLimit = new ReactiveVar(10);
-  this.noMoreShows = new ReactiveVar(false);
-  this.lastShowCount = 0;
 
   // Local functions
   this.isSearching = function() {
@@ -20,39 +18,20 @@ Template.pages_search.onCreated(function() {
     return currentSearch && currentSearch.busy();
   };
 
-  // Subscribe to searches based on search options
-  this.autorun(() => {
-    this.lastShowCount = 0;
-    this.searchLimit.set(10);
-    this.noMoreShows.set(false);
-    this.subscribe('searches.withQuery', this.searchQuery.get());
-  });
-
   // Subscribe to shows based on search options and limit
   this.autorun(() => {
     this.subscribe('shows.search', this.searchQuery.get(), this.searchLimit.get());
   });
 
-  // Check if more shows were added
+  // Subscribe to searches based on search options
   this.autorun(() => {
-    if (this.subscriptionsReady()) {
-      let currentShowCount = Shows.querySearch(this.searchQuery.get(), this.searchLimit.get()).count();
-
-      console.log(this.lastShowCount, currentShowCount);
-
-      if (this.lastShowCount === currentShowCount || currentShowCount < this.searchLimit.get()) {
-        this.noMoreShows.set(true);
-      } else {
-        this.noMoreShows.set(false);
-      }
-
-      this.lastShowCount = currentShowCount;
-    }
+    this.subscribe('searches.withQuery', this.searchQuery.get());
+    this.searchLimit.set(10);
   });
 
   // Search when the subscription is ready
   this.autorun(() => {
-    if (this.subscriptionsReady() && this.searchQuery.get()) {
+    if (this.searchQuery.get() && (this.subscriptionsReady() || Searches.queryWithQuery(this.searchQuery.get()).count())) {
       Meteor.call('searches.startSearch', this.searchQuery.get());
     }
   });
@@ -72,7 +51,8 @@ Template.pages_search.helpers({
   },
 
   showsLoading() {
-    return !Template.instance().noMoreShows.get() || Template.instance().isSearching() || !Template.instance().subscriptionsReady();
+    return Template.instance().isSearching() || !Template.instance().subscriptionsReady() ||
+      Shows.querySearch(Template.instance().searchQuery.get(), Template.instance().searchLimit.get()).count() >= Template.instance().searchLimit.get();
   }
 });
 
