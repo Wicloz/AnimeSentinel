@@ -200,7 +200,7 @@ Template.pages_episode.helpers({
 });
 
 Template.pages_episode.events({
-  'click a.source-btn'(event) {
+  'click a.btn-source'(event) {
     if (event.target.tagName === 'I') {
       event.target = event.target.parentElement.parentElement;
     }
@@ -214,7 +214,7 @@ Template.pages_episode.events({
     Template.instance().setIframeErrors();
   },
 
-  'click a.not-working-btn'(event) {
+  'click a.btn-not-working'(event) {
     Template.instance().setIframeErrors();
   },
 
