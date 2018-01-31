@@ -3,9 +3,7 @@
 
     <div class="card-panel">
       <!--TODO: Make this display better-->
-      <span class="card-title">
-        <h2>Information:</h2>
-      </span>
+      <h2 class="card-title">Information:</h2>
       <ul class="collection">
         <li class="collection-item">
           <p>Name:</p>
@@ -58,27 +56,21 @@
 
     {{#if episodes 'sub'}}
       <div class="card-panel">
-        <span class="card-title">
-          <h2>Subbed:</h2>
-        </span>
+        <h2 class="card-title">Subbed:</h2>
         {{> pages_show_episodes episodes 'sub'}}
       </div>
     {{/if}}
 
     {{#if episodes 'dub'}}
       <div class="card-panel">
-        <span class="card-title">
-          <h2>Dubbed:</h2>
-        </span>
+        <h2 class="card-title">Dubbed:</h2>
         {{> pages_show_episodes episodes 'dub'}}
       </div>
     {{/if}}
 
     {{#if episodes 'raw'}}
       <div class="card-panel">
-        <span class="card-title">
-          <h2>Raw:</h2>
-        </span>
+        <h2 class="card-title">Raw:</h2>
         {{> pages_show_episodes episodes 'raw'}}
       </div>
     {{/if}}
