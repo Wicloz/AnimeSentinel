@@ -52,6 +52,11 @@ Schemas.Show = new SimpleSchema({
   'streamerUrls.$.url': {
     type: String
   },
+  'streamerUrls.$.lastDownloadFailed': {
+    type: Boolean,
+    optional: true,
+    defaultValue: false
+  },
   name: {
     type: String
   },
@@ -164,6 +169,7 @@ Shows.helpers({
 
   attemptUpdate() {
     if (this.expired()) {
+      // Mark update as started
       this.lastUpdateStart = moment().toDate();
       Shows.update(this._id, {
         $set: {
@@ -171,7 +177,28 @@ Shows.helpers({
         }
       });
 
+      // Track found episodes
+      let episodeIds = [];
+
       Streamers.createFullShow(this, (show) => {
+
+        // Determine which streamers failed to download
+        let streamersIdsFailed = show.streamerUrls.filter((streamerUrl) => {
+          return streamerUrl.lastDownloadFailed;
+        }).map((streamerUrl) => {
+          return streamerUrl.streamer;
+        });
+
+        // Remove missing episodes
+        Episodes.remove({
+          showId: this._id,
+          _id: {
+            $nin: episodeIds
+          },
+          streamerId: {
+            $nin: streamersIdsFailed
+          }
+        });
 
         // Replace existing fields
         Object.keys(show).forEach((key) => {
@@ -200,8 +227,7 @@ Shows.helpers({
       }, (episode) => {
 
         // Add found episodes
-        Episodes.addEpisode(episode);
-        // TODO: Remove not found episodes
+        episodeIds.push(Episodes.addEpisode(episode));
 
       });
     }
@@ -254,6 +280,9 @@ Shows.addPartialShow = function(show, episodes) {
       });
     });
   }
+
+  // Return ids
+  return ids;
 };
 
 Shows.prepareAltForMatching = function(altName) {

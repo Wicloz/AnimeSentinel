@@ -125,6 +125,7 @@ Episodes.helpers({
 
   attemptUpdate() {
     if (this.expired()) {
+      // Mark update as started
       this.lastUpdateStart = moment().toDate();
       Episodes.update(this._id, {
         $set: {
@@ -191,6 +192,8 @@ Episodes.helpers({
 });
 
 Episodes.addEpisode = function(episode) {
+  let id = undefined;
+
   // Get episodes which are the same
   let others = Episodes.queryUnique(episode.showId, episode.translationType, episode.episodeNumStart, episode.episodeNumEnd, episode.streamerId);
 
@@ -208,13 +211,17 @@ Episodes.addEpisode = function(episode) {
 
     if (firstOther) {
       firstOther.mergeEpisode(episode);
+      id = firstOther._id;
     }
   }
 
   // Insert otherwise
   else {
-    Episodes.insert(episode);
+    id = Episodes.insert(episode);
   }
+
+  // Return id
+  return id;
 };
 
 Episodes.moveEpisodes = function(fromId, toId) {

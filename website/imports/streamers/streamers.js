@@ -534,11 +534,20 @@ class TempShow {
   }
 
   finish() {
-    if (this.newShow.streamerUrls) {
-      this.newShow.streamerUrls = this.newShow.streamerUrls.concat(this.streamerUrlsStarted);
-    } else {
-      this.newShow.streamerUrls = this.streamerUrlsStarted;
+    if (!this.newShow.streamerUrls) {
+      this.newShow.streamerUrls = [];
     }
+
+    this.newShow.streamerUrls = this.newShow.streamerUrls.concat(this.streamerUrlsStarted.filter((streamerUrlStarted) => {
+      return !this.newShow.streamerUrls.hasPartialObjects({
+        streamer: streamerUrlStarted.streamer,
+        type: streamerUrlStarted.type
+      });
+    }).map((streamerUrlStarted) => {
+      streamerUrlStarted.lastDownloadFailed = true;
+      return streamerUrlStarted;
+    }));
+
     this.showCallback(this.newShow);
 
     if (Meteor.isDevelopment) {

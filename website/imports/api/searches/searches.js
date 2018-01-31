@@ -49,6 +49,7 @@ Searches.helpers({
   },
 
   doSearch(query) {
+    // Mark search as started
     this.lastSearchStart = moment().toDate();
     Searches.update(this._id, {
       $set: {
