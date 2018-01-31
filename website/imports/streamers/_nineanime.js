@@ -1,5 +1,3 @@
-import ScrapingHelpers from "./scrapingHelpers";
-
 function cleanName(name) {
   return name.replace(/ \(Dub\)$/, '').replace(/ \(Sub\)$/, '');
 }
@@ -13,6 +11,7 @@ export let nineanime = {
   id: 'nineanime',
   name: '9anime',
   homepage: 'https://9anime.ch',
+  minimalPageTypes: ['sub', 'dub'],
 
   isInvalidPage(page) {
     return false;

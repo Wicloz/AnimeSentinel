@@ -14,6 +14,7 @@ export let kissanime = {
   id: 'kissanime',
   name: 'KissAnime',
   homepage: 'http://kissanime.ru',
+  minimalPageTypes: ['sub', 'dub'],
 
   isInvalidPage(page) {
     return false;

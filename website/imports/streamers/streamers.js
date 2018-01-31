@@ -328,14 +328,22 @@ class TempShow {
 
     this.streamerUrlsStarted = [];
     this.streamerUrlsDone = [];
-    this.streamersHandled = [];
 
     this.altNames = oldShow.altNames;
     this.currentAltNameIndex = 0;
-    this.searchWithNextAltLooping = false;
+    this.searchWithCurrentAltLooping = false;
   }
 
-  getDownloadsDone() {
+  isStreamerDone(streamer) {
+    return streamer.minimalPageTypes.every((minimalPageType) => {
+      return this.streamerUrlsStarted.hasPartialObjects({
+        streamer: streamer.id,
+        type: minimalPageType
+      });
+    });
+  }
+
+  areDownloadsDone() {
     return this.streamerUrlsStarted.every((streamerUrl) => {
       return this.streamerUrlsDone.hasPartialObjects({
         streamer: streamerUrl.streamer,
@@ -344,17 +352,31 @@ class TempShow {
     });
   }
 
-  getStreamersOrAltsDone() {
-    return this.streamersHandled.length >= streamers.length || this.currentAltNameIndex >= this.altNames.length;
+  areStreamersOrAltsDone() {
+    return this.currentAltNameIndex >= this.altNames.length || streamers.every((streamer) => {
+      return this.isStreamerDone(streamer);
+    });
+  }
+
+  getStreamerIdsDone() {
+    return streamers.filter((streamer) => {
+      return this.isStreamerDone(streamer);
+    }).map((streamer) => {
+      return streamer.id;
+    });
   }
 
   start() {
+    if (Meteor.isDevelopment) {
+      console.log('Started creating full show with name: \'' + this.oldShow.name + '\'');
+    }
+
     // Start processing all existing streamer urls
     this.processUnprocessedStreamerUrls(this.oldShow.streamerUrls);
 
     // Start the alt search loop
-    if (!this.getStreamersOrAltsDone() && !this.searchWithNextAltLooping) {
-      this.searchWithNextAlt();
+    if (!this.areStreamersOrAltsDone() && !this.searchWithCurrentAltLooping) {
+      this.searchWithCurrentAlt();
     }
   }
 
@@ -378,35 +400,38 @@ class TempShow {
       this.processShowResult(result, streamerUrl);
 
       // Start the loop again if possible
-      if (!this.getStreamersOrAltsDone() && !this.searchWithNextAltLooping) {
-        this.searchWithNextAlt();
+      if (!this.areStreamersOrAltsDone() && !this.searchWithCurrentAltLooping) {
+        this.searchWithCurrentAlt();
       }
 
       // When completely done
-      if (this.getDownloadsDone() && this.getStreamersOrAltsDone()) {
+      if (this.areDownloadsDone() && this.areStreamersOrAltsDone()) {
         this.finish();
       }
     });
   }
 
-  searchWithNextAlt() {
-    this.searchWithNextAltLooping = true;
+  searchWithCurrentAlt() {
+    this.searchWithCurrentAltLooping = true;
 
     // Search all the pending streamers with the current altName
     Streamers.doSearch(this.altNames[this.currentAltNameIndex], () => {
 
+      // Increment alt index
+      this.currentAltNameIndex++;
+
       // When all alts or streamers are done
-      if (this.getStreamersOrAltsDone()) {
-        this.searchWithNextAltLooping = false;
+      if (this.areStreamersOrAltsDone()) {
+        this.searchWithCurrentAltLooping = false;
         // When we have nothing to do anymore
-        if (this.getDownloadsDone()) {
+        if (this.areDownloadsDone()) {
           this.finish();
         }
       }
 
       // When some streamers are not done
       else {
-        this.searchWithNextAlt();
+        this.searchWithCurrentAlt();
       }
 
     }, (partial) => {
@@ -443,22 +468,12 @@ class TempShow {
         this.partialCallback(partial);
       }
 
-    }, this.streamersHandled);
-
-    this.currentAltNameIndex++;
+    }, this.getStreamerIdsDone());
   }
 
   markAsStarted(streamerUrl) {
-    // Get the streamer
-    let streamer = Streamers.getStreamerById(streamerUrl.streamer);
-
     // Mark streamerUrl as started
     this.streamerUrlsStarted.push(streamerUrl);
-
-    // Mark streamer as handled
-    if (!this.streamersHandled.includes(streamer.id)) {
-      this.streamersHandled.push(streamer.id);
-    }
   }
 
   processShowResult(result, streamerUrl) {
@@ -517,6 +532,9 @@ class TempShow {
       this.newShow.streamerUrls = this.streamerUrlsStarted;
     }
     this.showCallback(this.newShow);
-    console.log('done!');
+
+    if (Meteor.isDevelopment) {
+      console.log('Done creating full show with name: \'' + this.oldShow.name + '\'');
+    }
   }
 }
