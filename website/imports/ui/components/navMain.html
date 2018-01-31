@@ -8,6 +8,7 @@
 
         <ul class="left hide-on-med-and-down">
           {{> components_nav_main_linksPublic}}
+          {{> components_nav_main_link_external href='https://animeold.wilcodeboer.me' title='Old Version' id='navMainOldSiteDesktop'}}
         </ul>
 
         <div id="navMainBreadcrumbs">
@@ -27,6 +28,7 @@
 
   <ul class="side-nav" id="navMainSide">
     {{> components_nav_main_linksPublic}}
+    {{> components_nav_main_link_external href='https://animeold.wilcodeboer.me' title='Old Version' id='navMainOldSiteMobile'}}
   </ul>
 </template>
 
@@ -34,7 +36,6 @@
   {{> components_nav_main_link_internal routeName='welcome' routeTitle='Home' activeWhen='welcome'}}
   {{> components_nav_main_link_internal routeName='search' routeTitle='Anime' activeWhen='search|show|episodeSingle|episodeDouble'}}
   {{> components_nav_main_link_external href='https://github.com/Wicloz/AnimeSentinel/tree/meteor' title='GitHub'}}
-  {{> components_nav_main_link_external href='https://animeold.wilcodeboer.me' title='Old Version'}}
 </template>
 
 <template name="components_nav_main_link_internal">
@@ -45,7 +46,7 @@
 
 <template name="components_nav_main_link_external">
   <li>
-    <a target="_blank" href="{{href}}">
+    <a target="_blank" href="{{href}}" id="{{id}}">
       {{title}}
       {{>tooltippedIcon icon='link' iconClass='right' text='External Link' position='bottom'}}
     </a>
