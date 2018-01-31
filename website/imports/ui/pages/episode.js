@@ -51,7 +51,7 @@ Template.pages_episode.onCreated(function() {
 
   // Set page title based on getEpisodeNumBoth()
   this.autorun(() => {
-    Session.set('PageTitle', 'Episode ' + this.getEpisodeNumBoth());
+    Session.set('PageTitle', 'Episode ' + this.getEpisodeNumBoth() + ' (' + FlowRouter.getParam('translationType').capitalize() + ')');
   });
 
   // Subscribe based on the show id
@@ -77,8 +77,6 @@ Template.pages_episode.onCreated(function() {
         url: FlowRouter.path('show', {
           showId: FlowRouter.getParam('showId')
         })
-      }, {
-        name: 'Episodes (' + FlowRouter.getParam('translationType').capitalize() + ')'
       }]));
     }
   });
