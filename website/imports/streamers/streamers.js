@@ -349,10 +349,8 @@ class TempShow {
   }
 
   start() {
-    // Process all existing streamer urls
-    this.oldShow.streamerUrls.forEach((streamerUrl) => {
-      this.processStreamerUrl(streamerUrl);
-    });
+    // Start processing all existing streamer urls
+    this.processUnprocessedStreamerUrls(this.oldShow.streamerUrls);
 
     // Start the alt search loop
     if (!this.getStreamersOrAltsDone() && !this.searchWithNextAltLooping) {
@@ -372,60 +370,12 @@ class TempShow {
   }
 
   processStreamerUrl(streamerUrl) {
-    // Get the streamer
-    let streamer = Streamers.getStreamerById(streamerUrl.streamer);
-
-    // Mark streamerUrl as started
-    this.streamerUrlsStarted.push(streamerUrl);
-
-    // Mark streamer as handled
-    if (!this.streamersHandled.includes(streamer.id)) {
-      this.streamersHandled.push(streamer.id);
-    }
+    // Mark as started
+    this.markAsStarted(streamerUrl);
 
     // Download and process show page
-    Streamers.getShowResults(streamerUrl.url, streamer, this.oldShow.name, (result) => {
-
-      if (result.full) {
-        // Merge altNames into working set
-        result.full.altNames.forEach((altName) => {
-          if (!this.altNames.includes(altName)) {
-            this.altNames.push(altName);
-          }
-        });
-
-        // Merge result into the new show
-        Object.keys(result.full).forEach((key) => {
-          if (typeof this.newShow[key] === 'undefined') {
-            this.newShow[key] = result.full[key];
-          }
-          else if (Shows.arrayKeys.includes(key)) {
-            this.newShow[key] = this.newShow[key].concat(result.full[key]);
-          }
-          else if (streamer.id === 'myanimelist') {
-            this.newShow[key] = result.full[key];
-          }
-        });
-      }
-
-      // Store partial results from show page
-      result.partials.forEach((partial) => {
-        this.partialCallback(partial);
-      });
-
-      // Handle episodes
-      result.episodes.forEach((episode) => {
-        episode.showId = this.oldShow._id;
-        this.episodeCallback(episode);
-      });
-
-      // Process any new unprocessed streamer urls
-      if (result.full) {
-        this.processUnprocessedStreamerUrls(result.full.streamerUrls);
-      }
-
-      // Mark streamerUrl as done
-      this.streamerUrlsDone.push(streamerUrl);
+    Streamers.getShowResults(streamerUrl.url, Streamers.getStreamerById(streamerUrl.streamer), this.oldShow.name, (result) => {
+      this.processShowResult(result, streamerUrl);
 
       // Start the loop again if possible
       if (!this.getStreamersOrAltsDone() && !this.searchWithNextAltLooping) {
@@ -436,7 +386,6 @@ class TempShow {
       if (this.getDownloadsDone() && this.getStreamersOrAltsDone()) {
         this.finish();
       }
-
     });
   }
 
@@ -469,9 +418,24 @@ class TempShow {
             return thisAltName.match(resultAltName);
           });
         })) {
-        // Process it's unprocessed streamer urls
-        this.processUnprocessedStreamerUrls(partial.streamerUrls);
-        // TODO: check for full shows
+
+        if (partial.fromShowPage) {
+          // Mark as started and process
+          this.markAsStarted(partial.streamerUrls[0]);
+          let episodes = partial.episodes;
+          delete partial.episodes;
+          this.processShowResult({
+            full: partial,
+            partials: [],
+            episodes: episodes
+          }, partial.streamerUrls[0]);
+        }
+
+        else {
+          // Process it's unprocessed streamer urls
+          this.processUnprocessedStreamerUrls(partial.streamerUrls);
+        }
+
       }
 
       // Otherwise store as partial
@@ -484,6 +448,68 @@ class TempShow {
     this.currentAltNameIndex++;
   }
 
+  markAsStarted(streamerUrl) {
+    // Get the streamer
+    let streamer = Streamers.getStreamerById(streamerUrl.streamer);
+
+    // Mark streamerUrl as started
+    this.streamerUrlsStarted.push(streamerUrl);
+
+    // Mark streamer as handled
+    if (!this.streamersHandled.includes(streamer.id)) {
+      this.streamersHandled.push(streamer.id);
+    }
+  }
+
+  processShowResult(result, streamerUrl) {
+    // Get the streamer
+    let streamer = Streamers.getStreamerById(streamerUrl.streamer);
+
+    if (result.full) {
+      // Merge altNames into working set
+      result.full.altNames.forEach((altName) => {
+        if (!this.altNames.includes(altName)) {
+          this.altNames.push(altName);
+        }
+      });
+
+      // Merge result into the new show
+      Object.keys(result.full).forEach((key) => {
+        if (typeof this.newShow[key] === 'undefined') {
+          this.newShow[key] = result.full[key];
+        }
+        else if (Shows.arrayKeys.includes(key)) {
+          this.newShow[key] = this.newShow[key].concat(result.full[key]);
+        }
+        else if (streamer.id === 'myanimelist') {
+          this.newShow[key] = result.full[key];
+        }
+      });
+    }
+
+    // Store partial results from show page
+    result.partials.forEach((partial) => {
+      this.partialCallback(partial);
+    });
+
+    // Handle episodes
+    result.episodes.forEach((episode) => {
+      episode.showId = this.oldShow._id;
+      this.episodeCallback(episode);
+    });
+
+    // Process any new unprocessed streamer urls
+    if (result.full) {
+      this.processUnprocessedStreamerUrls(result.full.streamerUrls);
+    }
+
+    // Store as partial show
+    this.partialCallback(this.newShow);
+
+    // Mark streamerUrl as done
+    this.streamerUrlsDone.push(streamerUrl);
+  }
+
   finish() {
     if (this.newShow.streamerUrls) {
       this.newShow.streamerUrls = this.newShow.streamerUrls.concat(this.streamerUrlsStarted);
@@ -491,5 +517,6 @@ class TempShow {
       this.newShow.streamerUrls = this.streamerUrlsStarted;
     }
     this.showCallback(this.newShow);
+    console.log('done!');
   }
 }
