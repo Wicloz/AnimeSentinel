@@ -66,10 +66,10 @@ Searches.helpers({
         }
       });
 
-    }, (partial) => {
+    }, (partial, episodes) => {
 
       // For each search result
-      Shows.addPartialShow(partial);
+      Shows.addPartialShow(partial, episodes);
 
     });
   }

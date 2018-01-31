@@ -115,9 +115,7 @@ export default class Streamers {
   }
 
   static processSearchPage(html, streamer, logData) {
-    let results = {
-      partials: []
-    };
+    let results = [];
 
     if (!html) {
       return results;
@@ -132,12 +130,21 @@ export default class Streamers {
     try {
       // Check if we have a show page
       if (streamer.show.checkIfPage(page)) {
-        let result = this.processShowPage(html, streamer, logData);
-        results.partials = results.partials.concat(result.partials);
-        if (result.full) {
-          result.full.fromShowPage = true;
-          result.full.episodes = result.episodes;
-          results.partials.push(result.full);
+        let showResult = this.processShowPage(html, streamer, logData);
+
+        results = results.concat(showResult.partials.map((partial) => {
+          return {
+            partial: partial,
+            episodes: []
+          };
+        }));
+
+        if (showResult.full) {
+          results.push({
+            partial: showResult.full,
+            episodes: showResult.episodes,
+            fromShowPage: true
+          });
         }
       }
 
@@ -150,7 +157,10 @@ export default class Streamers {
               // Create and add show
               let result = this.convertCheerioToShow(page(element), page('html'), streamer, 'search');
               if (result) {
-                results.partials.push(result);
+                results.push({
+                  partial: result,
+                  episodes: []
+                });
               }
             }
           }
@@ -276,7 +286,7 @@ export default class Streamers {
     }
   }
 
-  static doSearch(query, doneCallback, partialCallback, streamersExcluded=[]) {
+  static doSearch(query, doneCallback, resultCallback, streamersExcluded=[]) {
     // Filter streamers
     let filteredStreamers = streamers.filter((streamer) => {
       return !streamersExcluded.includes(streamer.id);
@@ -296,9 +306,9 @@ export default class Streamers {
       // Download and process search results
       this.getSearchResults(streamer.search.createUrl(query), streamer, query, (results) => {
 
-        // Return partials
-        results.partials.forEach((partial) => {
-          partialCallback(partial);
+        // Return results
+        results.forEach((result) => {
+          resultCallback(result.partial, result.episodes, result.fromShowPage);
         });
 
         // Check if done
@@ -434,7 +444,7 @@ class TempShow {
         this.searchWithCurrentAlt();
       }
 
-    }, (partial) => {
+    }, (partial, episodes, fromShowPage) => {
 
       // If the partial matches this show
       if (partial.altNames.some((resultAltName) => {
@@ -444,11 +454,9 @@ class TempShow {
           });
         })) {
 
-        if (partial.fromShowPage) {
+        if (fromShowPage) {
           // Mark as started and process
           this.markAsStarted(partial.streamerUrls[0]);
-          let episodes = partial.episodes;
-          delete partial.episodes;
           this.processShowResult({
             full: partial,
             partials: [],
@@ -465,7 +473,7 @@ class TempShow {
 
       // Otherwise store as partial
       else {
-        this.partialCallback(partial);
+        this.partialCallback(partial, episodes);
       }
 
     }, this.getStreamerIdsDone());

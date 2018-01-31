@@ -192,10 +192,10 @@ Shows.helpers({
         // TODO: Merge and remove duplicate shows
         // TODO: Move episodes
 
-      }, (partial) => {
+      }, (partial, episodes) => {
 
         // Insert any partial results found in the process
-        Shows.addPartialShow(partial);
+        Shows.addPartialShow(partial, episodes);
 
       }, (episode) => {
 
@@ -208,7 +208,7 @@ Shows.helpers({
   }
 });
 
-Shows.addPartialShow = function(show) {
+Shows.addPartialShow = function(show, episodes) {
   let ids = [];
 
   // Grab matching shows from database
@@ -246,9 +246,9 @@ Shows.addPartialShow = function(show) {
   }
 
   // Add any episodes
-  if (show.episodes && !show.episodes.empty()) {
+  if (episodes) {
     ids.forEach((id) => {
-      show.episodes.forEach((episode) => {
+      episodes.forEach((episode) => {
         episode.showId = id;
         Episodes.addEpisode(episode);
       });
