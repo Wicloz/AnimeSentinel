@@ -1,10 +1,17 @@
 @import "vars";
 @import "../node_modules/materialize-css/sass/materialize";
 
-.collection-item > .row {
+.side-nav li i {
+  line-height: inherit;
+}
+
+.col {
+  margin-bottom: $spacer;
+}
+.col:last-of-type {
   margin-bottom: 0;
 }
 
-.side-nav li i {
-  line-height: inherit;
+.row {
+  margin-bottom: 0;
 }
