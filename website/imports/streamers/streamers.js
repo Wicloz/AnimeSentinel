@@ -43,7 +43,7 @@ export default class Streamers {
     // Get 'streamerUrls'
     show.streamerUrls = streamer[type].attributes.streamerUrls(cheerioRow, cheerioPage);
     show.streamerUrls = show.streamerUrls.map((streamerUrl) => {
-      streamerUrl.streamer = streamer.id;
+      streamerUrl.streamerId = streamer.id;
       return streamerUrl;
     });
 
@@ -286,10 +286,10 @@ export default class Streamers {
     }
   }
 
-  static doSearch(query, doneCallback, resultCallback, streamersExcluded=[]) {
+  static doSearch(query, doneCallback, resultCallback, streamersIdsExcluded=[]) {
     // Filter streamers
     let filteredStreamers = streamers.filter((streamer) => {
-      return !streamersExcluded.includes(streamer.id);
+      return !streamersIdsExcluded.includes(streamer.id);
     });
 
     // Stop if none remain
@@ -347,7 +347,7 @@ class TempShow {
   isStreamerDone(streamer) {
     return streamer.minimalPageTypes.every((minimalPageType) => {
       return this.streamerUrlsStarted.hasPartialObjects({
-        streamer: streamer.id,
+        streamerId: streamer.id,
         type: minimalPageType
       });
     });
@@ -356,7 +356,7 @@ class TempShow {
   areDownloadsDone() {
     return this.streamerUrlsStarted.every((streamerUrl) => {
       return this.streamerUrlsDone.hasPartialObjects({
-        streamer: streamerUrl.streamer,
+        streamerId: streamerUrl.streamerId,
         type: streamerUrl.type
       });
     });
@@ -393,7 +393,7 @@ class TempShow {
   processUnprocessedStreamerUrls(streamerUrls) {
     streamerUrls.filter((streamerUrl) => {
       return !this.streamerUrlsStarted.hasPartialObjects({
-        streamer: streamerUrl.streamer,
+        streamerId: streamerUrl.streamerId,
         type: streamerUrl.type
       });
     }).forEach((streamerUrl) => {
@@ -406,7 +406,7 @@ class TempShow {
     this.markAsStarted(streamerUrl);
 
     // Download and process show page
-    Streamers.getShowResults(streamerUrl.url, Streamers.getStreamerById(streamerUrl.streamer), this.oldShow.name, (result) => {
+    Streamers.getShowResults(streamerUrl.url, Streamers.getStreamerById(streamerUrl.streamerId), this.oldShow.name, (result) => {
       this.processShowResult(result, streamerUrl);
 
       // Start the loop again if possible
@@ -486,7 +486,7 @@ class TempShow {
 
   processShowResult(result, streamerUrl) {
     // Get the streamer
-    let streamer = Streamers.getStreamerById(streamerUrl.streamer);
+    let streamer = Streamers.getStreamerById(streamerUrl.streamerId);
 
     if (result.full) {
       // Merge altNames into working set
@@ -540,7 +540,7 @@ class TempShow {
 
     this.newShow.streamerUrls = this.newShow.streamerUrls.concat(this.streamerUrlsStarted.filter((streamerUrlStarted) => {
       return !this.newShow.streamerUrls.hasPartialObjects({
-        streamer: streamerUrlStarted.streamer,
+        streamerId: streamerUrlStarted.streamerId,
         type: streamerUrlStarted.type
       });
     }).map((streamerUrlStarted) => {

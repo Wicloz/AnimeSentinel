@@ -31,7 +31,7 @@ Schemas.Show = new SimpleSchema({
       }
       return this.value.reduce((total, value) => {
         if (!total.hasPartialObjects({
-            streamer: value.streamer,
+            streamerId: value.streamerId,
             type: value.type
           })) {
           total.push(value);
@@ -43,7 +43,7 @@ Schemas.Show = new SimpleSchema({
   'streamerUrls.$': {
     type: Object
   },
-  'streamerUrls.$.streamer': {
+  'streamerUrls.$.streamerId': {
     type: String
   },
   'streamerUrls.$.type': {
@@ -186,7 +186,7 @@ Shows.helpers({
         let streamersIdsFailed = show.streamerUrls.filter((streamerUrl) => {
           return streamerUrl.lastDownloadFailed;
         }).map((streamerUrl) => {
-          return streamerUrl.streamer;
+          return streamerUrl.streamerId;
         });
 
         // Remove missing episodes
