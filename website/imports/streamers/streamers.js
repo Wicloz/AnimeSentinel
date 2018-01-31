@@ -460,28 +460,24 @@ class TempShow {
         this.searchWithNextAlt();
       }
 
-    }, (result) => {
+    }, (partial) => {
 
-      // If the result matches this show
-      if (result.altNames.some((resultAltName) => {
+      // If the partial matches this show
+      if (partial.altNames.some((resultAltName) => {
           resultAltName = Shows.prepareAltForMatching(resultAltName);
           return this.altNames.some((thisAltName) => {
             return thisAltName.match(resultAltName);
           });
         })) {
         // Process it's unprocessed streamer urls
-        this.processUnprocessedStreamerUrls(result.streamerUrls);
+        this.processUnprocessedStreamerUrls(partial.streamerUrls);
         // TODO: check for full shows
       }
 
-      // Otherwise store as partial result
+      // Otherwise store as partial
       else {
-        this.partialCallback(result);
+        this.partialCallback(partial);
       }
-
-    }, (episode) => {
-
-      // TODO: Do something with episodes here
 
     }, this.streamersHandled);
 
