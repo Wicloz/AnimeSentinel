@@ -1,22 +1,21 @@
 <template name="pages_episode">
   <div class="container">
-    <ul class="collection overflow-visible">
-      <li class="collection-item">
-        {{#autoForm schema='Schemas.episodeSelection' id='episodeSelectionForm' autosave=true}}
-          <div class="row">
-            <div class="col s2">
-              <button class="waves-effect waves-teal btn btn-select-prev">{{>tooltippedIcon icon='chevron_left' iconClass='left' text='Previous Episode' position='right'}}</button>
-            </div>
-            <div class="col s8">
-              {{> afQuickField name='episodeNumber' options=episodeSelectionOptions defaultValue=episodeSelectionDefaultValue id='episodeNumberSelection'}}
-            </div>
-            <div class="col s2">
-              <button class="waves-effect waves-teal btn btn-select-next">{{>tooltippedIcon icon='chevron_right' iconClass='right' text='Next Episode' position='right'}}</button>
-            </div>
+
+    <div class="card-panel">
+      {{#autoForm schema='Schemas.episodeSelection' id='episodeSelectionForm' autosave=true}}
+        <div class="row">
+          <div class="col s2">
+            <button class="waves-effect waves-teal btn btn-select-prev">{{>tooltippedIcon icon='chevron_left' iconClass='left' text='Previous Episode' position='right'}}</button>
           </div>
-        {{/autoForm}}
-      </li>
-    </ul>
+          <div class="col s8">
+            {{> afQuickField name='episodeNumber' options=episodeSelectionOptions defaultValue=episodeSelectionDefaultValue id='episodeNumberSelection'}}
+          </div>
+          <div class="col s2">
+            <button class="waves-effect waves-teal btn btn-select-next">{{>tooltippedIcon icon='chevron_right' iconClass='right' text='Next Episode' position='right'}}</button>
+          </div>
+        </div>
+      {{/autoForm}}
+    </div>
 
     {{#each iframeError in iframeErrors}}
       {{#if $eq iframeError 'unknown'}}
@@ -145,7 +144,7 @@
         </li>
       </ul>
     {{/each}}
-  </div>
 
+  </div>
   {{> components_loading_indicator_background state=updating}}
 </template>
