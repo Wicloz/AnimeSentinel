@@ -103,8 +103,8 @@ Episodes.flagsWithAddOnPreference = ['flash', 'mixed-content'];
 Episodes.flagsWithAddOnNever = [];
 
 if (Meteor.isDevelopment) {
-  Episodes.timeUntilRecache = 8000;
-  Episodes.maxUpdateTime = 8000;
+  Episodes.timeUntilRecache = 10000;
+  Episodes.maxUpdateTime = 30000;
 }
 
 // Helpers

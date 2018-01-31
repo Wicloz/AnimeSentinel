@@ -32,8 +32,8 @@ Searches.timeUntilRecache = 86400000; // 1 day
 Searches.maxSearchTime = 60000; // 1 minute
 
 if (Meteor.isDevelopment) {
-  Searches.timeUntilRecache = 8000;
-  Searches.maxSearchTime = 8000;
+  Searches.timeUntilRecache = 10000;
+  Searches.maxSearchTime = 30000;
 }
 
 // Helpers
