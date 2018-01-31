@@ -8,21 +8,49 @@ Template.pages_search.onCreated(function() {
   Session.set('BreadCrumbs', JSON.stringify([]));
   Session.set('PageTitle', 'Browse Anime');
 
-  // Create local variables
+  // Local variables
   this.searchQuery = new ReactiveVar(undefined);
   this.searchLimit = new ReactiveVar(10);
+  this.noMoreShows = new ReactiveVar(false);
+  this.lastShowCount = 0;
 
-  // Subscribe based on search options and limit
+  // Local functions
+  this.isSearching = function() {
+    let currentSearch = Searches.queryWithQuery(this.searchQuery.get()).fetch()[0];
+    return currentSearch && currentSearch.busy();
+  };
+
+  // Subscribe to searches based on search options
+  this.autorun(() => {
+    this.lastShowCount = 0;
+    this.searchLimit.set(10);
+    this.noMoreShows.set(false);
+    this.subscribe('searches.withQuery', this.searchQuery.get());
+  });
+
+  // Subscribe to shows based on search options and limit
   this.autorun(() => {
     this.subscribe('shows.search', this.searchQuery.get(), this.searchLimit.get());
   });
 
-  // Subscribe based on search options
+  // Check if more shows were added
   this.autorun(() => {
-    this.subscribe('searches.withQuery', this.searchQuery.get());
+    if (this.subscriptionsReady()) {
+      let currentShowCount = Shows.querySearch(this.searchQuery.get(), this.searchLimit.get()).count();
+
+      console.log(this.lastShowCount, currentShowCount);
+
+      if (this.lastShowCount === currentShowCount || currentShowCount < this.searchLimit.get()) {
+        this.noMoreShows.set(true);
+      } else {
+        this.noMoreShows.set(false);
+      }
+
+      this.lastShowCount = currentShowCount;
+    }
   });
 
-  // When the subscriptions are ready
+  // Search when the subscription is ready
   this.autorun(() => {
     if (this.subscriptionsReady() && this.searchQuery.get()) {
       Meteor.call('searches.startSearch', this.searchQuery.get());
@@ -40,8 +68,11 @@ Template.pages_search.helpers({
   },
 
   searching() {
-    let currentSearch = Searches.queryWithQuery(Template.instance().searchQuery.get()).fetch()[0];
-    return currentSearch && currentSearch.busy();
+    return Template.instance().isSearching();
+  },
+
+  showsLoading() {
+    return !Template.instance().noMoreShows.get() || Template.instance().isSearching() || !Template.instance().subscriptionsReady();
   }
 });
 
