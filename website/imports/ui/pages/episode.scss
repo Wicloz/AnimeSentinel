@@ -1,6 +1,6 @@
 @import "../../../client/_vars.scss";
 
-#player-container-collection {
+#player-container-panel {
   padding: 0;
 }
 
@@ -27,6 +27,11 @@
   width: 100%;
   height: 100%;
   border: none;
+}
+
+.under-player-container {
+  padding: $spacer;
+  border-top: 1px solid color("grey", "lighten-2");
 }
 
 .disable-mixed-protection-image {

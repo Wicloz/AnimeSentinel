@@ -100,19 +100,17 @@
       {{/if}}
     {{/each}}
 
-    <ul class="collection {{#if iframeErrors}}removed{{/if}}">
-      <li class="collection-item" id="player-container-collection">
-        <div id="player-container-outer">
-          <div id="player-container-inner">
-            <iframe id="episode-frame" src="{{selectedSource.url}}" allowfullscreen></iframe>
-          </div>
+    <div class="card-panel {{#if iframeErrors}}removed{{/if}}" id="player-container-panel">
+      <div id="player-container-outer">
+        <div id="player-container-inner">
+          <iframe id="episode-frame" src="{{selectedSource.url}}" allowfullscreen></iframe>
         </div>
-      </li>
-      <li class="collection-item">
+      </div>
+      <div class="under-player-container">
         <a class="waves-effect waves-light btn btn-not-working">Video not working?</a>
         Try another video first.
-      </li>
-    </ul>
+      </div>
+    </div>
 
     <div class="card-panel">
       {{#each episode in episodes}}
