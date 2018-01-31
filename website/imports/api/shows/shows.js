@@ -209,6 +209,8 @@ Shows.helpers({
 });
 
 Shows.addPartialShow = function(show) {
+  let ids = [];
+
   // Grab matching shows from database
   let others = Shows.queryMatchingAltsMalId(show.altNames, show.malId);
 
@@ -234,13 +236,16 @@ Shows.addPartialShow = function(show) {
         otherFull.mergePartialShow(otherPartial);
       });
       otherFull.mergePartialShow(show);
+      ids.push(otherFull._id);
     });
   }
 
   // Insert otherwise
   else {
-    Shows.insert(show);
+    ids.push(Shows.insert(show));
   }
+
+  return ids;
 };
 
 Shows.prepareAltForMatching = function(altName) {

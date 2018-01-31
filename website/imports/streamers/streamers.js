@@ -117,7 +117,7 @@ export default class Streamers {
   static processSearchPage(html, streamer, logData) {
     let results = {
       partials: [],
-      episodes: []
+      fulls: []
     };
 
     if (!html) {
@@ -134,11 +134,10 @@ export default class Streamers {
       // Check if we have a show page
       if (streamer.show.checkIfPage(page)) {
         let result = this.processShowPage(html, streamer, logData);
-        results.episodes = results.episodes.concat(result.episodes);
         results.partials = results.partials.concat(result.partials);
         if (result.full) {
-          result.full.fromShowPage = true;
-          results.partials.push(result.full);
+          result.full.episodes = result.episodes;
+          results.fulls.push(result.full);
         }
       }
 
@@ -277,7 +276,7 @@ export default class Streamers {
     }
   }
 
-  static doSearch(query, doneCallback, partialCallback, episodeCallback, streamersExcluded=[]) {
+  static doSearch(query, doneCallback, partialCallback, fullCallback, streamersExcluded=[]) {
     // Filter streamers
     let filteredStreamers = streamers.filter((streamer) => {
       return !streamersExcluded.includes(streamer.id);
@@ -302,9 +301,9 @@ export default class Streamers {
           partialCallback(partial);
         });
 
-        // Return episodes
-        results.episodes.forEach((episode) => {
-          episodeCallback(episode);
+        // Return fulls
+        results.fulls.forEach((full) => {
+          fullCallback(full);
         });
 
         // Check if done

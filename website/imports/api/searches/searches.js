@@ -1,6 +1,7 @@
 import SimpleSchema from 'simpl-schema';
 import Streamers from "../../streamers/streamers";
 import {Shows} from "../shows/shows";
+import {Episodes} from "../episodes/episodes";
 
 // Schema
 Schemas.Search = new SimpleSchema({
@@ -70,11 +71,15 @@ Searches.helpers({
       // For each search result
       Shows.addPartialShow(partial);
 
-    }, (episode) => {
+    }, (full) => {
 
-      // For each found episode
-      // Episodes.addEpisode(episode);
-      // TODO: Somehow store episodes here
+      // For each search result with episodes
+      Shows.addPartialShow(full).forEach((id) => {
+        full.episodes.forEach((episode) => {
+          episode.showId = id;
+          Episodes.addEpisode(episode);
+        })
+      });
 
     });
   }
