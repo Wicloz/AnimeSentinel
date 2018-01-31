@@ -1,63 +1,89 @@
 <template name="pages_show">
   <div class="container">
-    <h1>Information:</h1>
-    <ul class="collection">
-      <li class="collection-item">
-        <p>Name:</p>
-        <p>{{show.name}}</p>
-      </li>
-      <li class="collection-item">
-        <p>Alternative Names:</p>
-        <p>
-          <ul>
-            {{#each show.altNames}}
-              <li>{{this}}</li>
-            {{/each}}
-          </ul>
-        </p>
-      </li>
-      <li class="collection-item">
-        <p>Description:</p>
-        <p>{{{show.description}}}</p>
-      </li>
-      <li class="collection-item">
-        <p>MAL ID:</p>
-        <p>{{show.malId}}</p>
-      </li>
-      <li class="collection-item">
-        <p>Type:</p>
-        <p>{{show.type}}</p>
-      </li>
-      <li class="collection-item">
-        <p>Streamers:</p>
-        <p>
-          <ul>
-            {{#each show.streamerUrls}}
-              <li>
-                <a target="_blank" href="{{url}}">{{streamerId}} ({{type}})</a>
-              </li>
-            {{/each}}
-          </ul>
-        </p>
-      </li>
-      <li class="collection-item">
-        <p>Update State:</p>
-        <p>
-          Last Start - {{show.lastUpdateStart}}
-          <br>
-          Last End - {{show.lastUpdateEnd}}
-        </p>
-      </li>
-    </ul>
 
-    <h1>Subbed:</h1>
-    {{> pages_show_episodes episodes 'sub'}}
-    <h1>Dubbed:</h1>
-    {{> pages_show_episodes episodes 'dub'}}
-    <h1>Raw:</h1>
-    {{> pages_show_episodes episodes 'raw'}}
+    <div class="card-panel">
+      <!--TODO: Make this display better-->
+      <span class="card-title">
+        <h2>Information:</h2>
+      </span>
+      <ul class="collection">
+        <li class="collection-item">
+          <p>Name:</p>
+          <p>{{show.name}}</p>
+        </li>
+        <li class="collection-item">
+          <p>Alternative Names:</p>
+          <p>
+            <ul>
+              {{#each show.altNames}}
+                <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          </p>
+        </li>
+        <li class="collection-item">
+          <p>Description:</p>
+          <p>{{{show.description}}}</p>
+        </li>
+        <li class="collection-item">
+          <p>MAL ID:</p>
+          <p>{{show.malId}}</p>
+        </li>
+        <li class="collection-item">
+          <p>Type:</p>
+          <p>{{show.type}}</p>
+        </li>
+        <li class="collection-item">
+          <p>Streamers:</p>
+          <p>
+            <ul>
+              {{#each show.streamerUrls}}
+                <li>
+                  <a target="_blank" href="{{url}}">{{streamerId}} ({{type}})</a>
+                </li>
+              {{/each}}
+            </ul>
+          </p>
+        </li>
+        <li class="collection-item">
+          <p>Update State:</p>
+          <p>
+            Last Start - {{show.lastUpdateStart}}
+            <br>
+            Last End - {{show.lastUpdateEnd}}
+          </p>
+        </li>
+      </ul>
+    </div>
+
+    {{#if episodes 'sub'}}
+      <div class="card-panel">
+        <span class="card-title">
+          <h2>Subbed:</h2>
+        </span>
+        {{> pages_show_episodes episodes 'sub'}}
+      </div>
+    {{/if}}
+
+    {{#if episodes 'dub'}}
+      <div class="card-panel">
+        <span class="card-title">
+          <h2>Dubbed:</h2>
+        </span>
+        {{> pages_show_episodes episodes 'dub'}}
+      </div>
+    {{/if}}
+
+    {{#if episodes 'raw'}}
+      <div class="card-panel">
+        <span class="card-title">
+          <h2>Raw:</h2>
+        </span>
+        {{> pages_show_episodes episodes 'raw'}}
+      </div>
+    {{/if}}
+
   </div>
-
   {{> components_loading_indicator_background state=updating}}
 </template>
 
@@ -70,7 +96,9 @@
         {{pathFor 'episodeDouble' showId=showId translationType=translationType episodeNumStart=episodeNumStart episodeNumEnd=episodeNumEnd}}
       {{/if}}" class="collection-item">
         <div class="row">
-          <div class="col s6">Episode {{episodeNumStart}}{{#if $neq episodeNumStart episodeNumEnd}} - {{episodeNumEnd}}{{/if}}</div>
+          <div class="col s6">
+            Episode {{episodeNumStart}}{{#if $neq episodeNumStart episodeNumEnd}} - {{episodeNumEnd}}{{/if}}
+          </div>
           <div class="col s6">
             <ul class="right episode-streamer-list">
               {{#each streamers}}
