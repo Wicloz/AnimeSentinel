@@ -17,3 +17,6 @@ $spacer: 15px !default;
 //////////////////////////
 
 @import "../node_modules/materialize-css/sass/components/variables";
+
+// Missing Media Query Ranges
+$large-only: "only screen and (min-width : #{$medium-screen-up}) and (max-width : #{$large-screen})" !default;

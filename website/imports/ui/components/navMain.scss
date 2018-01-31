@@ -1,5 +1,9 @@
 @import "../../../client/_vars.scss";
 
+.navbar-fixed {
+  margin-bottom: $spacer;
+}
+
 #navMainSearchForm {
   width: 25%;
   .red-text {
@@ -8,33 +12,26 @@
   }
 }
 
-.navbar-fixed {
-  margin-bottom: $spacer;
-}
-
-.nav-wrapper .brand-logo.center {
-  @media #{$large-and-up} {
-    width: 50%;
+#navMainBreadcrumbs {
+  @media #{$extra-large-and-up} {
+    width: calc(75% - 403.86px);
+    height: 64px;
+  }
+  @media #{$large-only} {
+    width: calc(75% - 397.02px);
+    height: 64px;
   }
   @media #{$medium-only} {
     width: calc(100% - 64px - #{$spacer});
-    margin-left: 32px - $spacer/2;
-  }
-  @media #{$small-and-down} {
-    width: calc(100% - 56px - #{$spacer});
-    margin-left: 28px - $spacer/2;
-  }
-}
-
-#navMainBreadcrumbs {
-  @media #{$medium-and-up} {
     height: 64px;
   }
   @media #{$small-and-down} {
+    width: calc(100% - 56px - #{$spacer});
     height: 56px;
   }
 
-  font-size: 18px;
+  display: inline-block;
+  text-align: center;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;

@@ -1,2 +1,10 @@
 @import "vars";
 @import "../node_modules/materialize-css/sass/materialize";
+
+.collection-item > .row {
+  margin-bottom: 0;
+}
+
+.side-nav li i {
+  line-height: $sidenav-line-height;
+}

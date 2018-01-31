@@ -1,13 +1,5 @@
 @import "vars";
 
-.pointer {
-  cursor: pointer;
-}
-
-.collection-item > .row {
-  margin-bottom: 0;
-}
-
 .primary-color {
   background-color: $primary-color !important;
 }
@@ -22,6 +14,10 @@
 
 .secondary-color {
   background-color: $secondary-color !important;
+}
+
+.pointer {
+  cursor: pointer;
 }
 
 .removed {

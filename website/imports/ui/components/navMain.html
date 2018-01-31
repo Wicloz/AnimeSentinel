@@ -2,14 +2,6 @@
   <div class="navbar-fixed">
     <nav>
       <div class="nav-wrapper">
-        <span id="navMainBreadcrumbs" class="brand-logo center">
-          {{#each breadCrumbs}}
-            <a href="{{url}}" class="breadcrumb">{{name}}</a>
-          {{/each}}
-          <a class="breadcrumb">{{pageTitle}}</a>
-          <span class="hidden"> x</span>
-        </span>
-
         <a data-activates="navMainSide" class="button-collapse pointer">
           <i class="material-icons">menu</i>
         </a>
@@ -17,6 +9,14 @@
         <ul class="left hide-on-med-and-down">
           {{> components_nav_main_linksPublic}}
         </ul>
+
+        <div id="navMainBreadcrumbs">
+          {{#each breadCrumbs}}
+            <a href="{{url}}" class="breadcrumb">{{name}}</a>
+          {{/each}}
+          <a class="breadcrumb">{{pageTitle}}</a>
+          <span class="hidden"> x</span>
+        </div>
 
         {{#autoForm schema='Schemas.animeSearch' id='navMainSearchForm' class='right hide-on-med-and-down'}}
           {{> afQuickField name='query'}}
@@ -31,12 +31,23 @@
 </template>
 
 <template name="components_nav_main_linksPublic">
-  {{> components_nav_main_link routeName='welcome' routeTitle='Home' activeWhen='welcome'}}
-  {{> components_nav_main_link routeName='search' routeTitle='Anime' activeWhen='search|show|episodeSingle|episodeDouble'}}
+  {{> components_nav_main_link_internal routeName='welcome' routeTitle='Home' activeWhen='welcome'}}
+  {{> components_nav_main_link_internal routeName='search' routeTitle='Anime' activeWhen='search|show|episodeSingle|episodeDouble'}}
+  {{> components_nav_main_link_external href='https://github.com/Wicloz/AnimeSentinel/tree/meteor' title='GitHub'}}
+  {{> components_nav_main_link_external href='https://animeold.wilcodeboer.me' title='Old Version'}}
 </template>
 
-<template name="components_nav_main_link">
+<template name="components_nav_main_link_internal">
   <li class="{{isActiveRoute regex=activeWhen}}">
     <a href="{{pathFor routeName}}">{{routeTitle}}</a>
+  </li>
+</template>
+
+<template name="components_nav_main_link_external">
+  <li>
+    <a target="_blank" href="{{href}}">
+      {{title}}
+      {{>tooltippedIcon icon='link' iconClass='right' text='External Link' position='bottom'}}
+    </a>
   </li>
 </template>
