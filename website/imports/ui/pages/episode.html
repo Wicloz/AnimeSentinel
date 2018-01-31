@@ -19,84 +19,70 @@
 
     {{#each iframeError in iframeErrors}}
       {{#if $eq iframeError 'unknown'}}
-        <ul class="collection with-header">
-          <li class="collection-header">
-            <h4>This video is not working for an unknown reason.</h4>
-          </li>
-          <li class="collection-item">
-            This is most likely because the video is no longer available.
-          </li>
-          <li class="collection-item">
-            Please try another video.
-          </li>
-        </ul>
+        <div class="card-panel">
+          <h4 class="card-title">This video is not working for an unknown reason.</h4>
+          <p class="flow-text">
+            This is most likely because the video is no longer available. Please try another video.
+          </p>
+        </div>
       {{/if}}
+
       {{#if $eq iframeError 'cloudflare'}}
-        <ul class="collection with-header">
-          <li class="collection-header">
-            <h4>Disable the Cloudflare filter once to watch this video.</h4>
-          </li>
-          <li class="collection-item">
-            You will have to wait for this to complete:<br>
-            <img class="disable-cloudflare-filter-image" src="/media/images/cloudflare-challenge-simple.png">
-          </li>
-          <li class="collection-item">
+        <div class="card-panel">
+          <h4 class="card-title">Disable the Cloudflare filter once to watch this video.</h4>
+          <p class="flow-text">
             <a href="{{selectedEpisode.streamer.homepage}}" target="_blank">Click here to disable the filter.</a>
-            <strong>Return here</strong> once the loading is done.
-          </li>
-          <li class="collection-item">Close the new tab and reload this page once the filter is disabled.</li>
-        </ul>
+            This will open a new tab.
+            There, you will have to wait for this to complete:<br>
+            <img class="disable-cloudflare-filter-image" src="/media/images/cloudflare-challenge-simple.png">
+            <strong>Return here</strong> once the loading is done and reload this page.
+            You can close the new tab once you are done.
+          </p>
+        </div>
       {{/if}}
+
       {{#if $eq iframeError 'mixed-content'}}
-        <ul class="collection with-header">
-          <li class="collection-header">
-            <h4>Disable mixed content protection to watch this video.</h4>
-          </li>
-          {{#if $eq $.BrowserDetect.browser 'Firefox'}}
-            <li class="collection-item">
+        <div class="card-panel">
+          <h4 class="card-title">Disable mixed content protection to watch this video.</h4>
+          <p class="flow-text">
+            {{#if $eq $.BrowserDetect.browser 'Firefox'}}
               <img class="disable-mixed-protection-image" src="/media/images/firefox-unsafe-1.png">
               <img class="disable-mixed-protection-image" src="/media/images/firefox-unsafe-2.png">
-            </li>
-          {{/if}}
-          {{#if $eq $.BrowserDetect.browser 'Chrome'}}
-            <li class="collection-item">
+            {{/if}}
+            {{#if $eq $.BrowserDetect.browser 'Chrome'}}
               <img class="disable-mixed-protection-image" src="/media/images/chrome-unsafe-1.png">
               <img class="disable-mixed-protection-image" src="/media/images/chrome-unsafe-2.png">
-            </li>
-          {{/if}}
-        </ul>
+            {{/if}}
+          </p>
+        </div>
       {{/if}}
+
       {{#if $eq iframeError 'flash'}}
-        <ul class="collection with-header">
-          <li class="collection-header">
-            <h4>This video requires Adobe Flash Player to be played.</h4>
-          </li>
-          <li class="collection-item"><a href="https://get.adobe.com/flashplayer/" target="_blank">You can get it here.</a></li>
-          <li class="collection-item">Make sure to uncheck the optional offers.</li>
-        </ul>
+        <div class="card-panel">
+          <h4 class="card-title">This video requires Adobe Flash Player to be played.</h4>
+          <p class="flow-text">
+            <a href="https://get.adobe.com/flashplayer/" target="_blank">You can get it here.</a>
+            Make sure to uncheck the optional offers.
+          </p>
+        </div>
       {{/if}}
+
       {{#if $eq iframeError 'x-frame-options'}}
-        <ul class="collection with-header">
-          <li class="collection-header">
-            <h4>This video cannot be watched without the companion browser add-on.</h4>
-          </li>
-        </ul>
+        <div class="card-panel">
+          <h4 class="card-title">This video cannot be watched without the companion browser add-on.</h4>
+          <p class="flow-text">
+            {{>pages_episode_get_addon}}
+          </p>
+        </div>
       {{/if}}
+
       {{#if $eq iframeError 'add-on'}}
-        <ul class="collection with-header">
-          <li class="collection-header">
-            <h4>Most issues related to videos not working will be solved by installing the companion browser add-on.</h4>
-          </li>
-          {{#if $eq $.BrowserDetect.browser 'Firefox'}}
-            <li class="collection-item">
-              <a class="waves-effect waves-light btn" href="https://addons.mozilla.org/en-US/firefox/addon/animesentinel-companion-addon/" target="_blank">Get it here!</a>
-            </li>
-          {{else}}
-            <li class="collection-item">
-              Unfortunately your browser is not supported yet.
-            </li>
-          {{/if}}
-        </ul>
+        <div class="card-panel">
+          <h4 class="card-title">Most issues related to videos not working will be solved by installing the companion browser add-on.</h4>
+          <p class="flow-text">
+            {{>pages_episode_get_addon}}
+          </p>
+        </div>
       {{/if}}
     {{/each}}
 
@@ -147,4 +133,12 @@
 
   </div>
   {{> components_loading_indicator_background state=updating}}
+</template>
+
+<template name="pages_episode_get_addon">
+  {{#if $eq $.BrowserDetect.browser 'Firefox'}}
+    <a class="waves-effect waves-light btn" href="https://addons.mozilla.org/en-US/firefox/addon/animesentinel-companion-addon/" target="_blank">Get it here!</a>
+  {{else}}
+    Unfortunately your browser is not supported yet.
+  {{/if}}
 </template>
