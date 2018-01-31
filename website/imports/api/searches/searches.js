@@ -71,16 +71,6 @@ Searches.helpers({
       // For each search result
       Shows.addPartialShow(partial);
 
-    }, (full) => {
-
-      // For each search result with episodes
-      Shows.addPartialShow(full).forEach((id) => {
-        full.episodes.forEach((episode) => {
-          episode.showId = id;
-          Episodes.addEpisode(episode);
-        })
-      });
-
     });
   }
 });

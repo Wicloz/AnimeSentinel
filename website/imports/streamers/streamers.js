@@ -116,8 +116,7 @@ export default class Streamers {
 
   static processSearchPage(html, streamer, logData) {
     let results = {
-      partials: [],
-      fulls: []
+      partials: []
     };
 
     if (!html) {
@@ -136,8 +135,9 @@ export default class Streamers {
         let result = this.processShowPage(html, streamer, logData);
         results.partials = results.partials.concat(result.partials);
         if (result.full) {
+          result.full.fromShowPage = true;
           result.full.episodes = result.episodes;
-          results.fulls.push(result.full);
+          results.partials.push(result.full);
         }
       }
 
@@ -276,7 +276,7 @@ export default class Streamers {
     }
   }
 
-  static doSearch(query, doneCallback, partialCallback, fullCallback, streamersExcluded=[]) {
+  static doSearch(query, doneCallback, partialCallback, streamersExcluded=[]) {
     // Filter streamers
     let filteredStreamers = streamers.filter((streamer) => {
       return !streamersExcluded.includes(streamer.id);
@@ -299,11 +299,6 @@ export default class Streamers {
         // Return partials
         results.partials.forEach((partial) => {
           partialCallback(partial);
-        });
-
-        // Return fulls
-        results.fulls.forEach((full) => {
-          fullCallback(full);
         });
 
         // Check if done

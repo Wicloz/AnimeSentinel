@@ -245,7 +245,15 @@ Shows.addPartialShow = function(show) {
     ids.push(Shows.insert(show));
   }
 
-  return ids;
+  // Add any episodes
+  if (show.episodes && !show.episodes.empty()) {
+    ids.forEach((id) => {
+      show.episodes.forEach((episode) => {
+        episode.showId = id;
+        Episodes.addEpisode(episode);
+      });
+    });
+  }
 };
 
 Shows.prepareAltForMatching = function(altName) {
