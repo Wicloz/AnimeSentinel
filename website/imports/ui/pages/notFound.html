@@ -1,5 +1,22 @@
 <template name="pages_notFound">
   <div class="container">
-    <img src="/media/images/404.jpg">
+    <div class="card-panel">
+
+      <span class="card-title">
+        <h1>Page Not Found</h1>
+      </span>
+
+      {{#if breadCrumbsWithUrl}}
+        <p class="flow-text">
+          Try going back to one of the following pages:
+        </p>
+        <div class="collection">
+          {{#each breadCrumbsWithUrl}}
+            <a href="{{url}}" class="collection-item">{{name}}</a>
+          {{/each}}
+        </div>
+      {{/if}}
+
+    </div>
   </div>
 </template>
