@@ -78,7 +78,9 @@ Searches.helpers({
 
 Searches.startSearch = function(query) {
   // Clean and validate query
-  query = query.cleanQuery();
+  if (query) {
+    query = query.cleanQuery();
+  }
   Schemas.animeSearch.validate({query});
 
   if (query) {
