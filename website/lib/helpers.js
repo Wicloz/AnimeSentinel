@@ -1,5 +1,5 @@
 RegExp.escape = function(string) {
-  return string.replace(/[-\/\\^$*+?.()|[\]{}!=:,]/g, '\\$&')
+  return string.replace(/[-\/\\^$*+?.()|[\]{}!=:,]/g, '\\$&');
 };
 
 String.prototype.cleanWhitespace = function() {
@@ -28,29 +28,26 @@ Array.prototype.empty = function() {
 };
 
 Array.prototype.hasPartialObjects = function(object) {
-  for (let i = 0; i < this.length; i++) {
-    if (Object.keys(object).reduce((total, key) => {
-      return total && this[i][key] === object[key];
-    }, true)) {
-      return true;
-    }
-  }
-  return false;
+  return this.some((value) => {
+    return Object.keys(object).every((key) => {
+      return value[key] === object[key];
+    });
+  });
 };
 
 Array.prototype.getPartialObjects = function(object) {
   return this.filter((value) => {
-    return Object.keys(object).reduce((total, key) => {
-      return total && value[key] === object[key];
-    }, true);
+    return Object.keys(object).every((key) => {
+      return value[key] === object[key];
+    });
   });
 };
 
 Array.prototype.removePartialObjects = function(object) {
   return this.filter((value) => {
-    return !Object.keys(object).reduce((total, key) => {
-      return total && value[key] === object[key];
-    }, true);
+    return Object.keys(object).some((key) => {
+      return value[key] !== object[key];
+    });
   });
 };
 
