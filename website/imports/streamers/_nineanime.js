@@ -10,7 +10,7 @@ export let nineanime = {
   // General data
   id: 'nineanime',
   name: '9anime',
-  homepage: 'https://9anime.ch',
+  homepage: 'https://9anime.is',
   minimalPageTypes: ['sub', 'dub'],
 
   isInvalidPage(page) {
