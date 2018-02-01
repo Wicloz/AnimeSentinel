@@ -75,7 +75,6 @@ export let kissanime = {
       },
       type: function(partial, full) {
         let genres = [];
-
         partial.find('.bigBarContainer .barContent div:nth-of-type(2) p').each((index, element) => {
           let paragraph = partial.find(element);
           if (paragraph.find('span:first-of-type').text() === 'Genres:') {
@@ -86,13 +85,9 @@ export let kissanime = {
         });
 
         let types = ['OVA', 'Movie', 'Special', 'ONA'];
-        for (let i = 0; i < types.length; i++) {
-          if (genres.includes(types[i])) {
-            return types[i];
-          }
-        }
-
-        return undefined;
+        return types.find((type) => {
+          return genres.includes(type);
+        });
       },
     },
   },

@@ -116,9 +116,9 @@ Template.pages_episode.onCreated(function() {
         if (!this.selectedEpisode.get() || !this.selectedSource.get()) {
           Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).forEach((episode) => {
             episode.sources.forEach((source) => {
-              if ((!this.selectedEpisode.get() || !this.selectedSource.get()) && source.flags.reduce((total, flag) => {
-                  return total && !flagsNever.includes(flag) && !flagsPreference.slice(0, i).includes(flag);
-                }, true)) {
+              if ((!this.selectedEpisode.get() || !this.selectedSource.get()) && source.flags.every((flag) => {
+                  return !flagsNever.includes(flag) && !flagsPreference.slice(0, i).includes(flag);
+                })) {
                 this.selectedEpisode.set(episode._id);
                 this.selectedSource.set(source.name);
               }
@@ -155,9 +155,9 @@ Template.pages_episode.helpers({
   },
 
   updating() {
-    return Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd()).fetch().reduce((total, episode) => {
-      return total || episode.locked();
-    }, false);
+    return Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd()).fetch().some((episode) => {
+      return episode.locked();
+    });
   },
 
   showIcon(flag) {
@@ -165,9 +165,9 @@ Template.pages_episode.helpers({
   },
 
   flagsDisabled(flags) {
-    return flags.reduce((total, flag) => {
-      return total || (!Session.get('AddOnInstalled') && Episodes.flagsWithoutAddOnNever.includes(flag)) || (Session.get('AddOnInstalled') && Episodes.flagsWithAddOnNever.includes(flag));
-    }, false);
+    return flags.some((flag) => {
+      return (!Session.get('AddOnInstalled') && Episodes.flagsWithoutAddOnNever.includes(flag)) || (Session.get('AddOnInstalled') && Episodes.flagsWithAddOnNever.includes(flag));
+    });
   },
 
   iframeErrors() {

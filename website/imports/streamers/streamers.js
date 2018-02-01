@@ -9,23 +9,21 @@ let streamers = [myanimelist, kissanime, nineanime];
 
 export default class Streamers {
   static getStreamerById(id) {
-    for (let i = 0; i < streamers.length; i++) {
-      if (streamers[i].id === id) {
-        return streamers[i];
-      }
-    }
+    return streamers.find((streamer) => {
+      return streamer.id === id;
+    });
   }
 
   static getSimpleStreamerById(id) {
-    for (let i = 0; i < streamers.length; i++) {
-      if (streamers[i].id === id) {
-        return {
-          id: streamers[i].id,
-          name: streamers[i].name,
-          homepage: streamers[i].homepage
-        };
-      }
+    let streamer = this.getStreamerById(id);
+    if (streamer) {
+      return {
+        id: streamer.id,
+        name: streamer.name,
+        homepage: streamer.homepage
+      };
     }
+    return undefined;
   }
 
   static convertCheerioToShow(cheerioRow, cheerioPage, streamer, type) {
