@@ -82,7 +82,7 @@ export let nineanime = {
 
   // Related shows data
   showRelated: {
-    rowSelector: 'div.widget.simple-film-list div.widget-body div.item',
+    rowSelector: 'div.widget.simple-film-list div.widget-body div.item, div.list-film div.item',
     rowIgnore: function(partial) {
       return false;
     },
@@ -91,12 +91,24 @@ export let nineanime = {
     attributes: {
       streamerUrls: function(partial, full) {
         return [{
-          type: getTypeFromName(partial.find('div.info a.name').text()),
-          url: partial.find('div.info a.name').attr('href')
+          type: getTypeFromName(partial.find('a.name').text()),
+          url: partial.find('a.name').attr('href')
         }];
       },
       name: function(partial, full) {
-        return cleanName(partial.find('div.info a.name').text());
+        return cleanName(partial.find('a.name').text());
+      },
+      type: function(partial, full) {
+        let types = ['OVA', 'Movie', 'Special', 'ONA'];
+        let found = undefined;
+
+        partial.find('a.poster div.status div').each((index, element) => {
+          if (!found && types.includes(partial.find(element).text())) {
+            found = partial.find(element).text();
+          }
+        });
+
+        return found;
       },
     },
   },
