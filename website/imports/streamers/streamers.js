@@ -64,6 +64,14 @@ export default class Streamers {
       show.malId = streamer[type].attributes.malId(cheerioRow, cheerioPage);
     }
 
+    // Get thumbnail urls
+    if (streamer[type].thumbnails) {
+      show.thumbnails = [];
+      cheerioRow.find(streamer[type].thumbnails.rowSelector).each((index, element) => {
+        show.thumbnails.push(streamer[type].thumbnails.getUrl(cheerioRow.find(element), cheerioPage));
+      });
+    }
+
     // Clean and validate show
     Shows.simpleSchema().clean(show, {
       mutate: true

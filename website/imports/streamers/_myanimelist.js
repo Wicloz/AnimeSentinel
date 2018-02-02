@@ -47,6 +47,14 @@ export let myanimelist = {
         return getMalIdFromUrl(partial.find('td a.hoverinfo_trigger').attr('href'));
       },
     },
+
+    // Search page thumbnail data
+    thumbnails: {
+      rowSelector: 'div.picSurround img',
+      getUrl: function (partial, full) {
+        return partial.attr('data-src').replace(/^.*\/images\/anime\/(\d+\/\d+\.[A-Za-z]+).*$/, 'https://myanimelist.cdn-dena.com/images/anime/$1');
+      },
+    },
   },
 
   // Show page data
@@ -112,6 +120,14 @@ export let myanimelist = {
       },
       malId: function(partial, full) {
         return getMalIdFromUrl(partial.find('div#horiznav_nav ul li:first-of-type a').attr('href'));
+      },
+    },
+
+    // Show page thumbnail data
+    thumbnails: {
+      rowSelector: 'div.picSurround a.js-picture-gallery img, img.ac',
+      getUrl: function (partial, full) {
+        return partial.attr('src');
       },
     },
   },

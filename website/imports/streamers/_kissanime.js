@@ -43,6 +43,14 @@ export let kissanime = {
         return ScrapingHelpers.replaceDescriptionCutoff(Cheerio.load(partial.find('td:first-of-type').attr('title'))('div p').text(), /\s\.\.\.\n\s*/);
       },
     },
+
+    // Search page thumbnail data
+    thumbnails: {
+      rowSelector: 'td:first-of-type',
+      getUrl: function (partial, full) {
+        return Cheerio.load(partial.attr('title'))('img').attr('src');
+      },
+    },
   },
 
   // Show page data
@@ -88,6 +96,14 @@ export let kissanime = {
         return types.find((type) => {
           return genres.includes(type);
         });
+      },
+    },
+
+    // Show page thumbnail data
+    thumbnails: {
+      rowSelector: 'div#rightside div.barContent div[style="text-align: center"] img',
+      getUrl: function (partial, full) {
+        return partial.attr('src');
       },
     },
   },

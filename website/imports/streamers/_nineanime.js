@@ -49,6 +49,14 @@ export let nineanime = {
         return found;
       },
     },
+
+    // Search page thumbnail data
+    thumbnails: {
+      rowSelector: 'img',
+      getUrl: function (partial, full) {
+        return partial.attr('src');
+      },
+    },
   },
 
   // Show page data
@@ -76,6 +84,14 @@ export let nineanime = {
       },
       type: function(partial, full) {
         return partial.find('div.info div.row dl:first-of-type dd:first-of-type').text().split(' ')[0]
+      },
+    },
+
+    // Show page thumbnail data
+    thumbnails: {
+      rowSelector: 'div.info div.row div.thumb img',
+      getUrl: function (partial, full) {
+        return partial.attr('src');
       },
     },
   },
@@ -109,6 +125,14 @@ export let nineanime = {
         });
 
         return found;
+      },
+    },
+
+    // Related shows thumbnail data
+    thumbnails: {
+      rowSelector: 'img',
+      getUrl: function (partial, full) {
+        return partial.attr('src');
       },
     },
   },
