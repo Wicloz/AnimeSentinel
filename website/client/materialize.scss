@@ -20,3 +20,11 @@
   border-bottom: 1px solid color("grey", "lighten-2");
   padding-bottom: 5px;
 }
+
+.responsive-img {
+  width: 100%;
+}
+
+.carousel .carousel-item {
+  height: auto;
+}

@@ -10,19 +10,28 @@
     <div class="card-panel">
       <ul class="collection">
         {{#each shows}}
+
           <!--TODO: Make this display better-->
           <li class="collection-item">
-            <a href="{{pathFor 'show' showId=_id}}">{{name}}</a>
-            <p>[{{altNames}}]</p>
-            <p>{{{description}}}</p>
-            <p>MAL ID: {{malId}}</p>
-            <p>Type: {{type}}</p>
-            <p>
-              {{#each streamerUrls}}
-                <a target="_blank" rel="noopener" href="{{url}}">{{streamerId}} ({{type}})</a>;
-              {{/each}}
-            </p>
+            <div class="row">
+              <div class="col s12 m2">
+                <img src="{{getThumbnailUrl this}}" class="responsive-img materialboxed" data-caption="{{name}}">
+              </div>
+              <div class="col s12 m10">
+                <a href="{{pathFor 'show' showId=_id}}">{{name}}</a>
+                <p>[{{altNames}}]</p>
+                <p>{{{description}}}</p>
+                <p>MAL ID: {{malId}}</p>
+                <p>Type: {{type}}</p>
+                <p>
+                  {{#each streamerUrls}}
+                    <a target="_blank" rel="noopener" href="{{url}}">{{streamerId}} ({{type}})</a>;
+                  {{/each}}
+                </p>
+              </div>
+            </div>
           </li>
+
         {{else}}
           <li class="collection-item center">
             <p class="flow-text">

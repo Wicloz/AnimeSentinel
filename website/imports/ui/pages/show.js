@@ -31,6 +31,18 @@ Template.pages_show.onCreated(function() {
       Meteor.call('shows.attemptUpdate', FlowRouter.getParam('showId'));
     }
   });
+
+  // Apply material scripts when the show changes
+  this.autorun(() => {
+    if (this.subscriptionsReady()) {
+      Shows.findOne(FlowRouter.getParam('showId'));
+      Tracker.afterFlush(function() {
+        let carouselElements = $('.carousel');
+        carouselElements.carousel('destroy');
+        carouselElements.carousel();
+      });
+    }
+  });
 });
 
 Template.pages_show.helpers({
@@ -68,5 +80,13 @@ Template.pages_show.helpers({
     });
 
     return episodes;
+  },
+
+  getThumbNailUrls(show) {
+    if (!show.thumbnails.empty()) {
+      return show.thumbnails;
+    } else {
+      return ['/media/images/unknown.gif'];
+    }
   }
 });

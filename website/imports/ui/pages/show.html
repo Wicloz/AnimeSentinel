@@ -54,6 +54,15 @@
       </ul>
     </div>
 
+    <div class="card-panel">
+      <h2 class="card-title">Thumbnails:</h2>
+      <div class="carousel">
+        {{#each getThumbNailUrls show}}
+          <img src="{{this}}" class="carousel-item">
+        {{/each}}
+      </div>
+    </div>
+
     {{#if episodes 'sub'}}
       <div class="card-panel">
         <h2 class="card-title">Subbed:</h2>
