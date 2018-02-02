@@ -31,7 +31,7 @@
         <div class="card-panel">
           <h4 class="card-title">Disable the Cloudflare filter once to watch this video.</h4>
           <p class="flow-text">
-            <a href="{{selectedEpisode.streamer.homepage}}" target="_blank">Click here to disable the filter.</a>
+            <a href="{{selectedEpisode.streamer.homepage}}" target="_blank" rel="noopener">Click here to disable the filter.</a>
             This will open a new tab.
             There, you will have to wait for this to complete:<br>
             <img class="disable-cloudflare-filter-image" src="/media/images/cloudflare-challenge-simple.png">
@@ -61,7 +61,7 @@
         <div class="card-panel">
           <h4 class="card-title">This video requires Adobe Flash Player to be played.</h4>
           <p class="flow-text">
-            <a href="https://get.adobe.com/flashplayer/" target="_blank">You can get it here.</a>
+            <a href="https://get.adobe.com/flashplayer/" target="_blank" rel="noopener">You can get it here.</a>
             Make sure to uncheck the optional offers.
           </p>
         </div>
@@ -137,7 +137,7 @@
 
 <template name="pages_episode_get_addon">
   {{#if $eq $.BrowserDetect.browser 'Firefox'}}
-    <a class="waves-effect waves-light btn" href="https://addons.mozilla.org/en-US/firefox/addon/animesentinel-companion-addon/" target="_blank">Get it here!</a>
+    <a class="waves-effect waves-light btn" href="https://addons.mozilla.org/en-US/firefox/addon/animesentinel-companion-addon/" target="_blank" rel="noopener">Get it here!</a>
   {{else}}
     Unfortunately your browser is not supported yet.
   {{/if}}
