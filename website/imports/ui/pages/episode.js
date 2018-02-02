@@ -39,7 +39,9 @@ Template.pages_episode.onCreated(function() {
       problemFlags.push('unknown');
     }
 
-    problemFlags.push('add-on');
+    if (!Session.get('AddOnInstalled')) {
+      problemFlags.push('add-on');
+    }
 
     this.iframeErrors.set(problemFlags);
   };
