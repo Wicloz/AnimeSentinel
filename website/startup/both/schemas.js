@@ -18,7 +18,7 @@ Schemas.id = new SimpleSchema({
   id: {
     type: String
   }
-});
+}, { tracker: Tracker });
 
 Schemas.episodeSelection = new SimpleSchema({
   episodeNumber: {
