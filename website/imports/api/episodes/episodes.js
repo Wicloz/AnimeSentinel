@@ -43,6 +43,8 @@ Schemas.Episode = new SimpleSchema({
     optional: true,
     autoValue: function() {
       if (!this.isSet) {
+        return undefined;
+      } else if (!this.value) {
         return [];
       }
       return this.value.reduce((total, value) => {
@@ -73,6 +75,8 @@ Schemas.Episode = new SimpleSchema({
     optional: true,
     autoValue: function() {
       if (!this.isSet) {
+        return undefined;
+      } else if (!this.value) {
         return [];
       }
       return this.value.reduce((total, value) => {
