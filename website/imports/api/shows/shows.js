@@ -144,6 +144,14 @@ Shows.helpers({
     Shows.remove(this._id);
   },
 
+  getThumbnailUrls() {
+    if (this.thumbnails && !this.thumbnails.empty()) {
+      return this.thumbnails;
+    } else {
+      return ['/media/images/unknown.gif'];
+    }
+  },
+
   expired() {
     let now = moment();
     return (!this.locked() && (!this.lastUpdateStart || moment(this.lastUpdateEnd).add(Shows.timeUntilRecache) < now)) ||

@@ -80,13 +80,5 @@ Template.pages_show.helpers({
     });
 
     return episodes;
-  },
-
-  getThumbNailUrls(show) {
-    if (!show.thumbnails.empty()) {
-      return show.thumbnails;
-    } else {
-      return ['/media/images/unknown.gif'];
-    }
   }
 });
