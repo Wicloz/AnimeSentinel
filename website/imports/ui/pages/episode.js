@@ -3,7 +3,7 @@ import {Episodes} from "../../api/episodes/episodes";
 import Streamers from "../../streamers/streamers";
 import {Shows} from "../../api/shows/shows";
 import '/imports/ui/components/loadingIndicatorBackground.js';
-import '/imports/ui/components/img.js';
+import '/imports/ui/components/image.js';
 
 Template.pages_episode.onCreated(function() {
   // Getters for the episode numbers

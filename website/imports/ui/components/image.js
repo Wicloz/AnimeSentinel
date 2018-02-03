@@ -1,12 +1,12 @@
-import './img.html';
+import './image.html';
 
-Template.components_img.helpers({
+Template.components_image.helpers({
   loaded() {
     return Template.instance().loaded.get();
   }
 });
 
-Template.components_img.events({
+Template.components_image.events({
   'appear .image-detector'(event) {
     if ($(event.target).attr('id') === 'image-detector-' + Template.instance().data.id) {
       Template.instance().loaded.set(true);
@@ -14,7 +14,7 @@ Template.components_img.events({
   }
 });
 
-Template.components_img.onCreated(function () {
+Template.components_image.onCreated(function () {
   this.loaded = new ReactiveVar(false);
 
   if (!this.data.id) {
@@ -32,7 +32,7 @@ Template.components_img.onCreated(function () {
   });
 });
 
-Template.components_img.onRendered(function () {
+Template.components_image.onRendered(function () {
   $('#image-detector-' + this.data.id).appear();
   $.force_appear();
 });

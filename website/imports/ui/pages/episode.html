@@ -34,7 +34,7 @@
             <a href="{{selectedEpisode.streamer.homepage}}" target="_blank" rel="noopener">Click here to disable the filter.</a>
             This will open a new tab.
             There, you will have to wait for this to complete:<br>
-            {{>components_img src="/media/images/cloudflare-challenge-simple.png" caption="Cloudflare's Loading Indicator" class="disable-cloudflare-filter-image"}}
+            {{>components_image src="/media/images/cloudflare-challenge-simple.png" caption="Cloudflare's Loading Indicator" class="disable-cloudflare-filter-image"}}
             <strong>Return here</strong> once the loading is done and reload this page.
             You can close the new tab once you are done.
           </p>
@@ -46,12 +46,12 @@
           <h4 class="card-title">Disable mixed content protection to watch this video.</h4>
           <p class="flow-text">
             {{#if $eq $.BrowserDetect.browser 'Firefox'}}
-              {{>components_img src="/media/images/firefox-unsafe-1.png" caption="Firefox - Step 1" class="disable-mixed-protection-image"}}
-              {{>components_img src="/media/images/firefox-unsafe-2.png" caption="Firefox - Step 2" class="disable-mixed-protection-image"}}
+              {{>components_image src="/media/images/firefox-unsafe-1.png" caption="Firefox - Step 1" class="disable-mixed-protection-image"}}
+              {{>components_image src="/media/images/firefox-unsafe-2.png" caption="Firefox - Step 2" class="disable-mixed-protection-image"}}
             {{/if}}
             {{#if $eq $.BrowserDetect.browser 'Chrome'}}
-              {{>components_img src="/media/images/chrome-unsafe-1.png" caption="Chrome - Step 1" class="disable-mixed-protection-image"}}
-              {{>components_img src="/media/images/chrome-unsafe-2.png" caption="Chrome - Step 2" class="disable-mixed-protection-image"}}
+              {{>components_image src="/media/images/chrome-unsafe-1.png" caption="Chrome - Step 1" class="disable-mixed-protection-image"}}
+              {{>components_image src="/media/images/chrome-unsafe-2.png" caption="Chrome - Step 2" class="disable-mixed-protection-image"}}
             {{/if}}
           </p>
         </div>

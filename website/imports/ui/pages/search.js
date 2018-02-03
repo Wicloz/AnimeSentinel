@@ -2,7 +2,7 @@ import './search.html';
 import { Shows } from '/imports/api/shows/shows.js';
 import {Searches} from "../../api/searches/searches";
 import '/imports/ui/components/loadingIndicatorBackground.js';
-import '/imports/ui/components/img.js';
+import '/imports/ui/components/image.js';
 
 Template.pages_search.onCreated(function() {
   // Set page variables
