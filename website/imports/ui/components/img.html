@@ -1,0 +1,21 @@
+<template name="components_img">
+  {{#if loaded}}
+    <img src="{{src}}" class="{{class}}" data-caption="{{caption}}" alt="{{caption}}" id="{{id}}">
+  {{else}}
+    <div class="image-detector" id="image-detector-{{id}}" data-appear-top-offset="200" data-appear-left-offset="200">
+      <div class="preloader-wrapper small active">
+        <div class="spinner-layer">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div>
+          <div class="gap-patch">
+            <div class="circle"></div>
+          </div>
+          <div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+</template>

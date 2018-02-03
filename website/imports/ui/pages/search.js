@@ -2,6 +2,7 @@ import './search.html';
 import { Shows } from '/imports/api/shows/shows.js';
 import {Searches} from "../../api/searches/searches";
 import '/imports/ui/components/loadingIndicatorBackground.js';
+import '/imports/ui/components/img.js';
 
 Template.pages_search.onCreated(function() {
   // Set page variables
@@ -35,16 +36,6 @@ Template.pages_search.onCreated(function() {
       Meteor.call('searches.startSearch', this.searchQuery.get());
     }
   });
-
-  // Apply material scripts after the subscriptions are ready
-  this.autorun(() => {
-    if (this.subscriptionsReady()) {
-      Shows.querySearch(Template.instance().searchQuery.get(), Template.instance().searchLimit.get()).fetch();
-      Tracker.afterFlush(function() {
-        $('.materialboxed').materialbox();
-      });
-    }
-  });
 });
 
 Template.pages_search.onRendered(function() {
@@ -63,14 +54,6 @@ Template.pages_search.helpers({
   showsLoading() {
     return Template.instance().isSearching() || !Template.instance().subscriptionsReady() ||
       Shows.querySearch(Template.instance().searchQuery.get(), Template.instance().searchLimit.get()).count() >= Template.instance().searchLimit.get();
-  },
-
-  getThumbnailUrl(show) {
-    if (!show.thumbnails.empty()) {
-      return show.thumbnails[0];
-    } else {
-      return '/media/images/unknown.gif'
-    }
   }
 });
 
