@@ -1,6 +1,7 @@
 aldeed:autoform@6.2.0
 aldeed:collection2-core@2.1.2
 aldeed:schema-index@2.1.2
+aldeed:template-extension@4.1.0
 allow-deny@1.1.0
 arillo:flow-router-helpers@0.5.2
 autoupdate@1.4.0
@@ -63,6 +64,7 @@ mongo-dev-server@1.1.0
 mongo-id@1.0.6
 mongo-livedata@1.0.12
 mozfet:autoform-materialize@3.5.2
+mozfet:autoform-nouislider@0.1.12
 mozfet:materialize-icons@0.0.4
 npm-mongo@2.2.34
 observe-sequence@1.0.16

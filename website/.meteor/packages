@@ -25,6 +25,7 @@ arillo:flow-router-helpers
 session@1.1.7
 mozfet:materialize-icons
 mozfet:autoform-materialize
+mozfet:autoform-nouislider
 aldeed:autoform
 aldeed:collection2-core
 dburles:collection-helpers
