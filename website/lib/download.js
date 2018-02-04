@@ -19,6 +19,10 @@ downloadWithCallback = function(url, callback, tries=1) {
     }
 
     cloudkicker.get(url).then(({options, response}) => {
+      if (Meteor.isDevelopment) {
+        console.log('Downloaded: url \'' + response.request.href + '\', status \'' + response.statusCode + ' ' + response.statusMessage + '\'');
+      }
+
       callback(response.body.toString());
     },
 
