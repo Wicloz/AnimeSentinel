@@ -56,11 +56,7 @@
 
     <div class="card-panel">
       <h2 class="card-title">Thumbnails:</h2>
-      <div class="carousel">
-        {{#each show.getThumbnailUrls}}
-          <img src="{{this}}" class="carousel-item">
-        {{/each}}
-      </div>
+      {{>components_carousel images=show.getThumbnailUrls}}
     </div>
 
     {{#if episodes 'sub'}}

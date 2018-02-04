@@ -34,12 +34,10 @@ Template.components_image.onCreated(function () {
   });
 
   this.autorun(() => {
-    let classes = Template.currentData().class.split(' ');
-    if (this.state.get('loaded')) {
+    if (this.state.get('loaded') && Template.currentData().class.split(' ').includes('materialboxed')) {
+      let temp = Template.currentData().caption;
       Tracker.afterFlush(() => {
-        if (classes.includes('materialboxed')) {
-          $('#' + this.state.get('id')).materialbox();
-        }
+        $('#' + this.state.get('id')).materialbox();
       });
     }
   });

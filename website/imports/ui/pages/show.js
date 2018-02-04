@@ -3,6 +3,7 @@ import {Shows} from '/imports/api/shows/shows.js';
 import '/imports/ui/components/loadingIndicatorBackground.js';
 import {Episodes} from "../../api/episodes/episodes";
 import Streamers from "../../streamers/streamers";
+import '/imports/ui/components/carousel.js';
 
 Template.pages_show.onCreated(function() {
   // Set page variables
@@ -29,18 +30,6 @@ Template.pages_show.onCreated(function() {
     if (Shows.findOne(FlowRouter.getParam('showId'))) {
       Session.set('PageTitle', Shows.findOne(FlowRouter.getParam('showId')).name);
       Meteor.call('shows.attemptUpdate', FlowRouter.getParam('showId'));
-    }
-  });
-
-  // Apply material scripts when the show changes
-  this.autorun(() => {
-    if (this.subscriptionsReady()) {
-      Shows.findOne(FlowRouter.getParam('showId'));
-      Tracker.afterFlush(function() {
-        let carouselElements = $('.carousel');
-        carouselElements.carousel('destroy');
-        carouselElements.carousel();
-      });
     }
   });
 });
