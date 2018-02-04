@@ -64,10 +64,6 @@ Schemas.Episode = new SimpleSchema({
   'sources.$.url': {
     type: String
   },
-  'sources.$.js': {
-    type: String,
-    optional: true
-  },
   'sources.$.flags': {
     type: Array,
     optional: true,
