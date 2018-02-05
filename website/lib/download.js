@@ -3,6 +3,11 @@ import request from 'request';
 
 const cloudkicker = new CloudKicker();
 
+function isStatusCodeSuccess(statusCode) {
+  statusCode = statusCode.toString();
+  return statusCode.length === 3 && (statusCode.startsWith('1') || statusCode.startsWith('2') || statusCode.startsWith('3'));
+}
+
 downloadWithCallback = function(url, callback, tries=1) {
   // TODO: Fix database stuff so the client can download too
   // if (Meteor.isServer || Session.get('AddOnInstalled')) {
@@ -21,19 +26,22 @@ downloadWithCallback = function(url, callback, tries=1) {
     }
 
     cloudkicker.get(url).then(({options, response}) => {
-      if (Meteor.isDevelopment) {
-        console.log('Downloaded: url \'' + response.request.href + '\', status \'' + response.statusCode + ' ' + response.statusMessage + '\'');
+      if (isStatusCodeSuccess(response.statusCode)) {
+        callback(response.body.toString());
       }
-      callback(response.body.toString());
+
+      else {
+        tryNextDownloadWithCallback(url, callback, tries, response.statusCode + ' ' + response.statusMessage);
+      }
     },
 
     (err) => {
-      maybeNextDownload(url, callback, tries, err);
+      tryNextDownloadWithCallback(url, callback, tries, err);
     }).
 
     catch((err) => {
       if (err === 'Download Failed!') {
-        maybeNextDownload(url, callback, tries, err);
+        tryNextDownloadWithCallback(url, callback, tries, err);
       } else {
         console.error(err);
       }
@@ -41,7 +49,7 @@ downloadWithCallback = function(url, callback, tries=1) {
   }
 };
 
-function maybeNextDownload(url, callback, tries, err) {
+function tryNextDownloadWithCallback(url, callback, tries, err) {
   if (tries >= 3) {
     console.error('Failed downloading ' + url + ' after ' + tries + ' tries.');
     console.error(err);
@@ -66,16 +74,26 @@ downloadToStream = function(url, callback, tries=1) {
   request.get(options).
 
   on('response', Meteor.bindEnvironment((response) => {
-    callback(response, response.headers['content-type'].split('; ')[0]);
+    if (isStatusCodeSuccess(response.statusCode)) {
+      callback(response, response.headers['content-type'].split('; ')[0]);
+    }
+
+    else {
+      tryNextDownloadToStream(url, callback, tries, response.statusCode + ' ' + response.statusMessage);
+    }
   })).
 
   on('error', Meteor.bindEnvironment((err) => {
-    if (tries >= 3) {
-      console.error('Failed downloading ' + url + ' after ' + tries + ' tries.');
-      console.error(err);
-      callback(false, false);
-    } else {
-      downloadToStream(url, callback, tries + 1);
-    }
+    tryNextDownloadToStream(url, callback, tries, err);
   }));
 };
+
+function tryNextDownloadToStream(url, callback, tries, err) {
+  if (tries >= 3) {
+    console.error('Failed downloading ' + url + ' after ' + tries + ' tries.');
+    console.error(err);
+    callback(false, false);
+  } else {
+    downloadToStream(url, callback, tries + 1);
+  }
+}
