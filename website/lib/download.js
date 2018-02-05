@@ -22,8 +22,7 @@ downloadWithCallback = function(url, callback, tries=1) {
       if (Meteor.isDevelopment) {
         console.log('Downloaded: url \'' + response.request.href + '\', status \'' + response.statusCode + ' ' + response.statusMessage + '\'');
       }
-
-      callback(response.body.toString());
+      callback(response.body.toString(), response);
     },
 
     (err) => {
