@@ -13,10 +13,6 @@ export let nineanime = {
   homepage: 'https://9anime.is',
   minimalPageTypes: ['sub', 'dub'],
 
-  isInvalidPage(page) {
-    return false;
-  },
-
   // Search page data
   search: {
     createUrl: function(query) {

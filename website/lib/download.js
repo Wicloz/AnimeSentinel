@@ -40,11 +40,7 @@ downloadWithCallback = function(url, callback, tries=1) {
     }).
 
     catch((err) => {
-      if (err === 'Download Failed!') {
-        tryNextDownloadWithCallback(url, callback, tries, err);
-      } else {
-        console.error(err);
-      }
+      console.error(err);
     });
   }
 };
@@ -61,6 +57,10 @@ function tryNextDownloadWithCallback(url, callback, tries, err) {
 
 downloadToStream = function(url, callback, tries=1) {
   url = encodeURI(url).replace(/%25/g, '%');
+
+  if (Meteor.isDevelopment) {
+    console.log('Downloading: url \'' + url + '\', try \'' + tries + '\'');
+  }
 
   let options = {
     encoding: null,

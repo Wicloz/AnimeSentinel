@@ -5,10 +5,6 @@ export let template = {
   homepage: '',
   minimalPageTypes: [],
 
-  isInvalidPage(page) {
-    return false;
-  },
-
   // Search page data
   search: {
     createUrl: function(query) {

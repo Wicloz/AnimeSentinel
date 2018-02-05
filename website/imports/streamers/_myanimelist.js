@@ -11,10 +11,6 @@ export let myanimelist = {
   homepage: 'https://myanimelist.net',
   minimalPageTypes: ['details'],
 
-  isInvalidPage(page) {
-    return page.text() === 'Too Many Requests';
-  },
-
   // Search page data
   search: {
     createUrl: function(query) {

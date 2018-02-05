@@ -16,10 +16,6 @@ export let kissanime = {
   homepage: 'http://kissanime.ru',
   minimalPageTypes: ['sub', 'dub'],
 
-  isInvalidPage(page) {
-    return false;
-  },
-
   // Search page data
   search: {
     createUrl: function(query) {

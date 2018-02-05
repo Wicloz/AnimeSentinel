@@ -128,13 +128,10 @@ export default class Streamers {
       return results;
     }
 
-    // Load page
-    let page = Cheerio.load(html);
-    if (streamer.isInvalidPage(page)) {
-      throw 'Download Failed!';
-    }
-
     try {
+      // Load page
+      let page = Cheerio.load(html);
+
       // Check if we have a show page
       if (streamer.show.checkIfPage(page)) {
         let showResult = this.processShowPage(html, streamer, logData);
@@ -200,13 +197,10 @@ export default class Streamers {
       return results;
     }
 
-    // Load page
-    let page = Cheerio.load(html);
-    if (streamer.isInvalidPage(page)) {
-      throw 'Download Failed!';
-    }
-
     try {
+      // Load page
+      let page = Cheerio.load(html);
+
       // Create and store show
       let result = this.convertCheerioToShow(page('html'), page('html'), streamer, 'show');
       if (result) {
