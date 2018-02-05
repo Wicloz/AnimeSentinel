@@ -4,6 +4,9 @@ import Streamers from "../../streamers/streamers";
 import {Episodes} from "../episodes/episodes";
 import {Thumbnails} from '../thumbnails/thumbnails';
 
+// Collection
+export const Shows = new Mongo.Collection('shows');
+
 // Schema
 Schemas.Show = new SimpleSchema({
   _id: {
@@ -118,12 +121,10 @@ Schemas.Show = new SimpleSchema({
   type: {
     type: String,
     optional: true,
-    allowedValues: ['TV', 'OVA', 'Movie', 'Special', 'ONA']
+    allowedValues: Shows.validTypes
   }
 }, { tracker: Tracker });
 
-// Collection
-export const Shows = new Mongo.Collection('shows');
 Shows.attachSchema(Schemas.Show);
 
 // Constants
@@ -133,6 +134,7 @@ Shows.arrayKeys = Shows.simpleSchema()._schemaKeys.filter((key) => {
 Shows.descriptionCutoff = '&#x2026; (read more)';
 Shows.timeUntilRecache = 86400000; // 1 day
 Shows.maxUpdateTime = 600000; // 10 minutes
+Shows.validTypes = ['TV', 'OVA', 'Movie', 'Special', 'ONA'];
 
 if (Meteor.isDevelopment) {
   Shows.timeUntilRecache = 10000;

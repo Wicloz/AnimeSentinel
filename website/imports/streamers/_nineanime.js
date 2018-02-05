@@ -1,3 +1,5 @@
+import {Shows} from '../api/shows/shows';
+
 function cleanName(name) {
   return name.replace(/ \(Dub\)$/, '').replace(/ \(Sub\)$/, '');
 }
@@ -33,15 +35,12 @@ export let nineanime = {
         return cleanName(partial.find('a.name').text());
       },
       type: function(partial, full) {
-        let types = ['OVA', 'Movie', 'Special', 'ONA'];
         let found = undefined;
-
         partial.find('a.poster div.status div').each((index, element) => {
-          if (!found && types.includes(partial.find(element).text())) {
+          if (!found && Shows.validTypes.includes(partial.find(element).text())) {
             found = partial.find(element).text();
           }
         });
-
         return found;
       },
     },
@@ -111,15 +110,12 @@ export let nineanime = {
         return cleanName(partial.find('a.name').text());
       },
       type: function(partial, full) {
-        let types = ['OVA', 'Movie', 'Special', 'ONA'];
         let found = undefined;
-
         partial.find('a.poster div.status div').each((index, element) => {
-          if (!found && types.includes(partial.find(element).text())) {
+          if (!found && Shows.validTypes.includes(partial.find(element).text())) {
             found = partial.find(element).text();
           }
         });
-
         return found;
       },
     },

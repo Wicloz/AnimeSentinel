@@ -1,5 +1,6 @@
 import Cheerio from 'cheerio';
 import ScrapingHelpers from "./scrapingHelpers";
+import {Shows} from '../api/shows/shows';
 
 function cleanName(name) {
   return name.replace(/ \(Dub\)$/, '').replace(/ \(Sub\)$/, '');
@@ -87,9 +88,7 @@ export let kissanime = {
             }).get();
           }
         });
-
-        let types = ['OVA', 'Movie', 'Special', 'ONA'];
-        return types.find((type) => {
+        return Shows.validTypes.find((type) => {
           return genres.includes(type);
         });
       },

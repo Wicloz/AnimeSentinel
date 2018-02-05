@@ -1,6 +1,9 @@
 import SimpleSchema from 'simpl-schema';
 import Streamers from "../../streamers/streamers";
 
+// Collection
+export const Episodes = new Mongo.Collection('episodes');
+
 // Schema
 Schemas.Episode = new SimpleSchema({
   _id: {
@@ -86,8 +89,6 @@ Schemas.Episode = new SimpleSchema({
   }
 }, { tracker: Tracker });
 
-// Collection
-export const Episodes = new Mongo.Collection('episodes');
 Episodes.attachSchema(Schemas.Episode);
 
 // Constants

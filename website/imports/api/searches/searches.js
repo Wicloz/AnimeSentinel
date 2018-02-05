@@ -3,6 +3,9 @@ import Streamers from "../../streamers/streamers";
 import {Shows} from "../shows/shows";
 import {Episodes} from "../episodes/episodes";
 
+// Collection
+export const Searches = new Mongo.Collection('searches');
+
 // Schema
 Schemas.Search = new SimpleSchema({
   _id: {
@@ -23,8 +26,6 @@ Schemas.Search = new SimpleSchema({
   }
 }, { tracker: Tracker });
 
-// Collection
-export const Searches = new Mongo.Collection('searches');
 Searches.attachSchema(Schemas.Search);
 
 // Constants
