@@ -10,36 +10,39 @@ Template.pages_search.onCreated(function() {
   Session.set('PageTitle', 'Browse Anime');
 
   // Local variables
-  this.searchQuery = new ReactiveVar(undefined);
-  this.searchLimit = new ReactiveVar(10);
+  this.state = new ReactiveDict();
+  this.state.setDefault({
+    searchQuery: undefined,
+    searchLimit: 10
+  });
 
   // Local functions
   this.isSearching = function() {
-    let currentSearch = Searches.queryWithQuery(this.searchQuery.get()).fetch()[0];
+    let currentSearch = Searches.queryWithQuery(this.state.get('searchQuery')).fetch()[0];
     return currentSearch && currentSearch.busy();
   };
 
   // Subscribe to shows based on search options and limit
   this.autorun(() => {
-    this.subscribe('shows.search', this.searchQuery.get(), this.searchLimit.get());
+    this.subscribe('shows.search', this.state.get('searchQuery'), this.state.get('searchLimit'));
   });
 
   // Subscribe to searches based on search options
   this.autorun(() => {
-    this.subscribe('searches.withQuery', this.searchQuery.get());
-    this.searchLimit.set(10);
+    this.subscribe('searches.withQuery', this.state.get('searchQuery'));
+    this.state.set('searchLimit', 10);
   });
 
   // Search when the subscription is ready
   this.autorun(() => {
-    if (this.searchQuery.get() && (this.subscriptionsReady() || Searches.queryWithQuery(this.searchQuery.get()).count())) {
-      Meteor.call('searches.startSearch', this.searchQuery.get());
+    if (this.state.get('searchQuery') && (this.subscriptionsReady() || Searches.queryWithQuery(this.state.get('searchQuery')).count())) {
+      Meteor.call('searches.startSearch', this.state.get('searchQuery'));
     }
   });
 
   // Subscribe to thumbnails for all shows
   this.autorun(() => {
-    this.subscribe('thumbnails.withHashes', Shows.querySearch(this.searchQuery.get(), this.searchLimit.get()).fetch().reduce((total, show) => {
+    this.subscribe('thumbnails.withHashes', Shows.querySearch(this.state.get('searchQuery'), this.state.get('searchLimit')).fetch().reduce((total, show) => {
       return total.concat(show.thumbnails);
     }, []));
   });
@@ -51,7 +54,7 @@ Template.pages_search.onRendered(function() {
 
 Template.pages_search.helpers({
   shows() {
-    return Shows.querySearch(Template.instance().searchQuery.get(), Template.instance().searchLimit.get());
+    return Shows.querySearch(Template.instance().state.get('searchQuery'), Template.instance().state.get('searchLimit'));
   },
 
   searching() {
@@ -60,13 +63,13 @@ Template.pages_search.helpers({
 
   showsLoading() {
     return Template.instance().isSearching() || !Template.instance().subscriptionsReady() ||
-      Shows.querySearch(Template.instance().searchQuery.get(), Template.instance().searchLimit.get()).count() >= Template.instance().searchLimit.get();
+      Shows.querySearch(Template.instance().state.get('searchQuery'), Template.instance().state.get('searchLimit')).count() >= Template.instance().state.get('searchLimit');
   }
 });
 
 Template.pages_search.events({
   'appear #load-more-results'(event) {
-    Template.instance().searchLimit.set(Template.instance().searchLimit.get() + 10);
+    Template.instance().state.set('searchLimit', Template.instance().state.get('searchLimit') + 10);
   }
 });
 
@@ -76,7 +79,7 @@ AutoForm.hooks({
       if (insertDoc.query) {
         insertDoc.query = insertDoc.query.cleanQuery();
       }
-      this.template.view.parentView.parentView._templateInstance.searchQuery.set(insertDoc.query);
+      this.template.view.parentView.parentView._templateInstance.state.set('searchQuery', insertDoc.query);
       this.done();
       return false;
     }
