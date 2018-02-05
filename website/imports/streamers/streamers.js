@@ -558,6 +558,10 @@ class TempShow {
       return streamerUrlStarted;
     }));
 
+    Thumbnails.removeWithHashes(this.oldShow.thumbnails.filter((thumbnail) => {
+      return !this.newShow.thumbnails.includes(thumbnail);
+    }));
+
     this.showCallback(this.newShow);
 
     if (Meteor.isDevelopment) {

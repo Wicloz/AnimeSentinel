@@ -43,6 +43,14 @@ Thumbnails.addThumbnail = function(url) {
   return hash;
 };
 
+Thumbnails.removeWithHashes = function(hashes) {
+  Thumbnails.remove({
+    'original.name': {
+      $in: hashes
+    }
+  });
+};
+
 // Queries
 Thumbnails.queryWithHashes = function(hashes) {
   Shows.simpleSchema().validate({
