@@ -68,26 +68,17 @@ export let kissanime = {
         return cleanName(partial.find('a.bigChar').text());
       },
       altNames: function(partial, full) {
-        if (partial.find('.bigBarContainer .barContent div:nth-of-type(2) p:first-of-type').find('span.info').text() !== 'Other name:') {
-          return [];
-        }
-        return partial.find('.bigBarContainer .barContent div:nth-of-type(2) p:first-of-type').find('a').map((index, element) => {
+        return partial.find('div.bigBarContainer div.barContent div:nth-of-type(2) p:has(span:contains("Other name:")) a').map((index, element) => {
           return partial.find(element).text();
         }).get();
       },
       description: function(partial, full) {
-        return partial.find('.bigBarContainer .barContent div:nth-of-type(2) p:nth-last-of-type(2)').html();
+        return partial.find('div.bigBarContainer div.barContent div:nth-of-type(2) p:nth-last-of-type(2)').html();
       },
       type: function(partial, full) {
-        let genres = [];
-        partial.find('.bigBarContainer .barContent div:nth-of-type(2) p').each((index, element) => {
-          let paragraph = partial.find(element);
-          if (paragraph.find('span:first-of-type').text() === 'Genres:') {
-            genres = paragraph.find('a').map((index, element) => {
-              return partial.find(element).text();
-            }).get();
-          }
-        });
+        let genres = partial.find('div.bigBarContainer div.barContent div:nth-of-type(2) p:has(span:contains("Genres:")) a').map((index, element) => {
+          return partial.find(element).text();
+        }).get();
         return Shows.validTypes.find((type) => {
           return genres.includes(type);
         });

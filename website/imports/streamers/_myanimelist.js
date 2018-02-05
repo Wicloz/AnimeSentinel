@@ -104,15 +104,7 @@ export let myanimelist = {
         return partial.find('td span[itemprop=description]').html();
       },
       type: function(partial, full) {
-        let type = undefined;
-        partial.find('td.borderClass div.js-scrollfix-bottom div').each((index, element) => {
-          let row = partial.find(element);
-          if (row.find('span').text() === 'Type:') {
-            row.find('span').remove();
-            type = row.text().replace(/Unknown/g, '');
-          }
-        });
-        return type;
+        return partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Type:") a').text();
       },
       malId: function(partial, full) {
         return getMalIdFromUrl(partial.find('div#horiznav_nav ul li:first-of-type a').attr('href'));
