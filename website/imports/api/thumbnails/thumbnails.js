@@ -30,10 +30,11 @@ Thumbnails.addThumbnail = function(url) {
   let hash = createWeakHash(url);
 
   if (!Thumbnails.queryWithHashes([hash]).count()) {
-    downloadToStream(url, (readStream, contentType) => {
+    downloadToStream(url, (readStream, contentType, contentLength) => {
       if (readStream) {
         let newFile = new FS.File();
         newFile.attachData(readStream, {type: contentType});
+        newFile.size(contentLength);
         newFile.name(hash);
         Thumbnails.insert(newFile);
       }

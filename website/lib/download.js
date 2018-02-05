@@ -75,7 +75,7 @@ downloadToStream = function(url, callback, tries=1) {
 
   on('response', Meteor.bindEnvironment((response) => {
     if (isStatusCodeSuccess(response.statusCode)) {
-      callback(response, response.headers['content-type'].split('; ')[0]);
+      callback(response, response.headers['content-type'].split('; ')[0], Number(response.headers['content-length']));
     }
 
     else {
@@ -92,7 +92,7 @@ function tryNextDownloadToStream(url, callback, tries, err) {
   if (tries >= 4) {
     console.error('Failed downloading ' + url + ' after ' + tries + ' tries.');
     console.error(err);
-    callback(false, false);
+    callback(false, false, false);
   } else {
     _.delay(Meteor.bindEnvironment(downloadToStream), 200, url, callback, tries + 1);
   }
