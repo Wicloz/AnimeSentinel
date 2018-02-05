@@ -107,7 +107,6 @@
           <li class="collection-item source-button-container">
             {{#each source in episode.sources}}
               <a class="waves-effect waves-light btn btn-source {{#if flagsDisabled source.flags}}disabled{{/if}} {{#if $eq selectedSource.name source.name}}{{#if $eq selectedEpisode._id episode._id}}primary-color{{/if}}{{/if}}" data-episode="{{episode._id}}" data-source="{{source.name}}">
-                {{source.name}}
                 {{#each flag in source.flags}}
                   {{#if showIcon flag}}
                     {{#if $eq flag 'x-frame-options'}}
@@ -124,6 +123,7 @@
                     {{/if}}
                   {{/if}}
                 {{/each}}
+                {{source.name}}
               </a>
             {{/each}}
           </li>
