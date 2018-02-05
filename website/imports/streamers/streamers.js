@@ -287,6 +287,7 @@ export default class Streamers {
     if (streamer.episode) {
       // TODO: Implement this when needed
       console.error('Scraping episode pages has not been implemented yet!');
+      resultCallback([]);
     } else {
       resultCallback([]);
     }
