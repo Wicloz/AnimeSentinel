@@ -80,6 +80,13 @@ export let nineanime = {
       type: function(partial, full) {
         return partial.find('div.info div.row dl:first-of-type dd:first-of-type').text().split(' ')[0]
       },
+      genres: function(partial, full) {
+        return partial.find('div.info div.row dl:first-of-type dd:nth-of-type(5) a').map((index, element) => {
+          return partial.find(element).text();
+        }).get().filter((genre) => {
+          return genre !== 'add some';
+        });
+      },
     },
 
     // Show page thumbnail data

@@ -106,6 +106,11 @@ export let myanimelist = {
       type: function(partial, full) {
         return partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Type:") a').text();
       },
+      genres: function(partial, full) {
+        return partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Genres:") a').map((index, element) => {
+          return partial.find(element).text();
+        }).get();
+      },
       malId: function(partial, full) {
         return getMalIdFromUrl(partial.find('div#horiznav_nav ul li:first-of-type a').attr('href'));
       },

@@ -33,6 +33,9 @@ export let template = {
       type: function(partial, full) {
         return '';
       },
+      genres: function(partial, full) {
+        return [];
+      },
       malId: function(partial, full) {
         return '';
       },
@@ -72,6 +75,9 @@ export let template = {
       },
       type: function(partial, full) {
         return '';
+      },
+      genres: function(partial, full) {
+        return [];
       },
       malId: function(partial, full) {
         return '';
@@ -113,6 +119,9 @@ export let template = {
       },
       type: function(partial, full) {
         return '';
+      },
+      genres: function(partial, full) {
+        return [];
       },
       malId: function(partial, full) {
         return '';

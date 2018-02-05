@@ -32,6 +32,16 @@
           <p>{{show.type}}</p>
         </li>
         <li class="collection-item">
+          <p>Genres:</p>
+          <p>
+            <ul>
+              {{#each show.genres}}
+                <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          </p>
+        </li>
+        <li class="collection-item">
           <p>Streamers:</p>
           <p>
             <ul>

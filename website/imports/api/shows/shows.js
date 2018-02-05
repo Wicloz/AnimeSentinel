@@ -122,6 +122,28 @@ Schemas.Show = new SimpleSchema({
     type: String,
     optional: true,
     allowedValues: Shows.validTypes
+  },
+  genres: {
+    type: Array,
+    optional: true,
+    autoValue: function() {
+      if (!this.isSet) {
+        return undefined;
+      } else if (!this.value) {
+        return [];
+      }
+      return this.value.reduce((total, value) => {
+        value = value.trim();
+        if (value && !total.includes(value)) {
+          total.push(value);
+        }
+        return total;
+      }, []);
+    }
+  },
+  'genres.$': {
+    type: String,
+    allowedValues: Shows.validGenres
   }
 }, { tracker: Tracker });
 
@@ -135,6 +157,11 @@ Shows.descriptionCutoff = '&#x2026; (read more)';
 Shows.timeUntilRecache = 86400000; // 1 day
 Shows.maxUpdateTime = 600000; // 10 minutes
 Shows.validTypes = ['TV', 'OVA', 'Movie', 'Special', 'ONA'];
+Shows.validGenres = ['Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demons', 'Mystery', 'Drama', 'Ecchi',
+  'Fantasy', 'Game', 'Historical', 'Horror', 'Kids', 'Magic', 'Martial Arts', 'Mecha', 'Music', 'Parody', 'Samurai',
+  'Romance', 'School', 'Sci-Fi', 'Shoujo', 'Shoujo Ai', 'Shounen', 'Shounen Ai', 'Space', 'Sports', 'Super Power',
+  'Vampire', 'Yaoi', 'Yuri', 'Harem', 'Slice of Life', 'Supernatural', 'Military', 'Police', 'Psychological',
+  'Thriller', 'Seinen', 'Josei'];
 
 if (Meteor.isDevelopment) {
   Shows.timeUntilRecache = 10000;

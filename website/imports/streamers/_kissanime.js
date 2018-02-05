@@ -83,6 +83,13 @@ export let kissanime = {
           return genres.includes(type);
         });
       },
+      genres: function(partial, full) {
+        return partial.find('div.bigBarContainer div.barContent div:nth-of-type(2) p:has(span:contains("Genres:")) a').map((index, element) => {
+          return partial.find(element).text();
+        }).get().filter((genre) => {
+          return !Shows.validTypes.includes(genre);
+        });
+      },
     },
 
     // Show page thumbnail data

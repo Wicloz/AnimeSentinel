@@ -39,6 +39,16 @@ export default class Streamers {
       }
     }
 
+    // Get 'genres'
+    if (streamer[type].attributes.genres) {
+      show.genres = streamer[type].attributes.genres(cheerioRow, cheerioPage);
+      if (show.genres && show.genres.map((genre) => {
+        return genre.cleanWhitespace();
+        }).includes('Hentai')) {
+        return false; // Reject hentai shows
+      }
+    }
+
     // Get 'streamerUrls'
     show.streamerUrls = streamer[type].attributes.streamerUrls(cheerioRow, cheerioPage);
     show.streamerUrls = show.streamerUrls.map((streamerUrl) => {
