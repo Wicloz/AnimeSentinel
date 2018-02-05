@@ -5,6 +5,7 @@ const cloudkicker = new CloudKicker();
 downloadWithCallback = function(url, callback, tries=1) {
   // TODO: Fix database stuff so the client can download too
   // if (Meteor.isServer || Session.get('AddOnInstalled')) {
+
   if (Meteor.isServer) {
     url = encodeURI(url).replace(/%25/g, '%');
 
