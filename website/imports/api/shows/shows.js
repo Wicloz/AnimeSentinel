@@ -31,7 +31,7 @@ Schemas.Show = new SimpleSchema({
         return undefined;
       }
       return this.value.reduce((total, value) => {
-        if (!total.hasPartialObjects({
+        if (value && !total.hasPartialObjects({
             streamerId: value.streamerId,
             type: value.type
           })) {
@@ -71,7 +71,7 @@ Schemas.Show = new SimpleSchema({
       }
       return this.value.reduce((total, value) => {
         value = value.trim();
-        if (!total.includes(value)) {
+        if (value && !total.includes(value)) {
           total.push(value);
         }
         return total;
@@ -105,7 +105,7 @@ Schemas.Show = new SimpleSchema({
       }
       return this.value.reduce((total, value) => {
         value = value.trim();
-        if (!total.includes(value)) {
+        if (value && !total.includes(value)) {
           total.push(value);
         }
         return total;

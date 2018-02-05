@@ -46,7 +46,7 @@ Schemas.Episode = new SimpleSchema({
         return [];
       }
       return this.value.reduce((total, value) => {
-        if (!total.hasPartialObjects({
+        if (value && !total.hasPartialObjects({
             name: value.name
           })) {
           total.push(value);
@@ -73,7 +73,7 @@ Schemas.Episode = new SimpleSchema({
       }
       return this.value.reduce((total, value) => {
         value = value.trim();
-        if (!total.includes(value)) {
+        if (value && !total.includes(value)) {
           total.push(value);
         }
         return total;
