@@ -154,7 +154,7 @@ Shows.helpers({
         return urls;
       }
     }
-    return ['/media/images/unknown.gif'];
+    return ['/media/unknown.gif'];
   },
 
   expired() {
