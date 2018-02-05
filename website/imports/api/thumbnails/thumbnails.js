@@ -1,13 +1,39 @@
 import {Shows} from '../shows/shows';
+import gm from 'gm';
 
 // Collection
-let options = {};
+let options = {
+  beforeWrite(fileObj) {
+    return {
+      extension: 'webp',
+      type: 'image/webp '
+    };
+  },
+  transformWrite(fileObj, readStream, writeStream) {
+    gm(readStream).stream('WEBP').pipe(writeStream);
+  }
+};
+
 if (Meteor.isProduction && Meteor.isServer) {
   options.path = '~/as-thumbnails';
 }
 
 export const Thumbnails = new FS.Collection('thumbnails', {
-  stores: [new FS.Store.FileSystem('thumbnails', options)]
+  stores: [
+    new FS.Store.FileSystem('thumbnails', options)
+  ],
+  filter: {
+    allow: {
+      contentTypes: ['image/*']
+    },
+    onInvalid(message) {
+      if (Meteor.isClient) {
+        alert(message);
+      } else {
+        console.error(message);
+      }
+    }
+  }
 });
 
 Thumbnails.allow({
