@@ -36,6 +36,13 @@ Template.pages_search.onCreated(function() {
       Meteor.call('searches.startSearch', this.searchQuery.get());
     }
   });
+
+  // Subscribe to thumbnails for all shows
+  this.autorun(() => {
+    this.subscribe('thumbnails.withHashes', Shows.querySearch(this.searchQuery.get(), this.searchLimit.get()).fetch().reduce((total, show) => {
+      return total.concat(show.thumbnails);
+    }, []));
+  });
 });
 
 Template.pages_search.onRendered(function() {

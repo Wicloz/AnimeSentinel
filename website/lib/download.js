@@ -1,4 +1,5 @@
 import {CloudKicker} from "cloudkicker/lib/index";
+import request from 'request';
 
 const cloudkicker = new CloudKicker();
 
@@ -49,3 +50,32 @@ function maybeNextDownload(url, callback, tries, err) {
     downloadWithCallback(url, callback, tries + 1);
   }
 }
+
+downloadToStream = function(url, callback, tries=1) {
+  url = encodeURI(url).replace(/%25/g, '%');
+
+  let options = {
+    encoding: null,
+    jar: cloudkicker.cookieJar,
+    headers: {
+      'User-Agent': cloudkicker.options.userAgent
+    },
+    url: url,
+  };
+
+  request.get(options).
+
+  on('response', Meteor.bindEnvironment((response) => {
+    callback(response, response.headers['content-type'].split('; ')[0]);
+  })).
+
+  on('error', Meteor.bindEnvironment((err) => {
+    if (tries >= 3) {
+      console.error('Failed downloading ' + url + ' after ' + tries + ' tries.');
+      console.error(err);
+      callback(false, false);
+    } else {
+      downloadToStream(url, callback, tries + 1);
+    }
+  }));
+};

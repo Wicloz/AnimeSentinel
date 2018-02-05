@@ -40,3 +40,6 @@ aldeed:autoform
 momentjs:moment
 johnantoni:meteor-appear
 awatson1978:browser-detection
+
+cfs:standard-packages
+cfs:filesystem

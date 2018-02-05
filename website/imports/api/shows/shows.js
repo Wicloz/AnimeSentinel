@@ -2,6 +2,7 @@ import Cheerio from 'cheerio';
 import SimpleSchema from 'simpl-schema';
 import Streamers from "../../streamers/streamers";
 import {Episodes} from "../episodes/episodes";
+import {Thumbnails} from '../thumbnails/thumbnails';
 
 // Schema
 Schemas.Show = new SimpleSchema({
@@ -146,10 +147,14 @@ Shows.helpers({
 
   getThumbnailUrls() {
     if (this.thumbnails && !this.thumbnails.empty()) {
-      return this.thumbnails;
-    } else {
-      return ['/media/images/unknown.gif'];
+      let urls = Thumbnails.queryWithHashes(this.thumbnails).fetch().filterMap((thumbnail) => {
+        return thumbnail.url();
+      });
+      if (!urls.empty()) {
+        return urls;
+      }
     }
+    return ['/media/images/unknown.gif'];
   },
 
   expired() {

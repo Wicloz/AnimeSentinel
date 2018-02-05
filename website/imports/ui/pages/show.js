@@ -32,6 +32,12 @@ Template.pages_show.onCreated(function() {
       Meteor.call('shows.attemptUpdate', FlowRouter.getParam('showId'));
     }
   });
+
+  // Subscribe to thumbnails for this show
+  this.autorun(() => {
+    let show = Shows.findOne(FlowRouter.getParam('showId'));
+    this.subscribe('thumbnails.withHashes', show ? show.thumbnails : []);
+  });
 });
 
 Template.pages_show.helpers({

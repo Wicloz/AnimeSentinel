@@ -12,6 +12,7 @@
     "crypto-js": "^3.1.9-1",
     "materialize-css": "^0.100.2",
     "meteor-node-stubs": "^0.3.2",
+    "request": "^2.83.0",
     "simpl-schema": "^1.4.1"
   },
   "postcss": {

@@ -86,3 +86,7 @@ String.prototype.replaceStart = function(from, to, caseInsensitive=false) {
 
   return this.replace(regex, to);
 };
+
+Array.prototype.filterMap = function(callback) {
+  return this.filter(callback).map(callback);
+};

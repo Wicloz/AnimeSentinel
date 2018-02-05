@@ -4,6 +4,7 @@ import { myanimelist } from './_myanimelist';
 import { kissanime } from './_kissanime';
 import { nineanime } from './_nineanime';
 import {Episodes} from "../api/episodes/episodes";
+import {Thumbnails} from '../api/thumbnails/thumbnails';
 
 let streamers = [myanimelist, kissanime, nineanime];
 
@@ -68,7 +69,7 @@ export default class Streamers {
     if (streamer[type].thumbnails) {
       show.thumbnails = [];
       cheerioRow.find(streamer[type].thumbnails.rowSelector).each((index, element) => {
-        show.thumbnails.push(streamer[type].thumbnails.getUrl(cheerioRow.find(element), cheerioPage));
+        show.thumbnails.push(Thumbnails.addThumbnail(streamer[type].thumbnails.getUrl(cheerioRow.find(element), cheerioPage)));
       });
     }
 
