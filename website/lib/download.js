@@ -46,12 +46,12 @@ downloadWithCallback = function(url, callback, tries=1) {
 };
 
 function tryNextDownloadWithCallback(url, callback, tries, err) {
-  if (tries >= 3) {
+  if (tries >= 4) {
     console.error('Failed downloading ' + url + ' after ' + tries + ' tries.');
     console.error(err);
     callback(false);
   } else {
-    downloadWithCallback(url, callback, tries + 1);
+    _.delay(Meteor.bindEnvironment(downloadWithCallback), 200, url, callback, tries + 1);
   }
 }
 
@@ -89,11 +89,11 @@ downloadToStream = function(url, callback, tries=1) {
 };
 
 function tryNextDownloadToStream(url, callback, tries, err) {
-  if (tries >= 3) {
+  if (tries >= 4) {
     console.error('Failed downloading ' + url + ' after ' + tries + ' tries.');
     console.error(err);
     callback(false, false);
   } else {
-    downloadToStream(url, callback, tries + 1);
+    _.delay(Meteor.bindEnvironment(downloadToStream), 200, url, callback, tries + 1);
   }
 }
