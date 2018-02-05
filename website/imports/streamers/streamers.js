@@ -69,7 +69,10 @@ export default class Streamers {
     if (streamer[type].thumbnails) {
       show.thumbnails = [];
       cheerioRow.find(streamer[type].thumbnails.rowSelector).each((index, element) => {
-        show.thumbnails.push(Thumbnails.addThumbnail(streamer[type].thumbnails.getUrl(cheerioRow.find(element), cheerioPage)));
+        let url = streamer[type].thumbnails.getUrl(cheerioRow.find(element), cheerioPage);
+        if (url) {
+          show.thumbnails.push(Thumbnails.addThumbnail(url));
+        }
       });
     }
 
