@@ -20,7 +20,10 @@
     {{#each iframeError in iframeErrors}}
       {{#if $eq iframeError 'unknown'}}
         <div class="card-panel">
-          <h4 class="card-title">This video is not working for an unknown reason.</h4>
+          <h4 class="card-title">
+            <i class="material-icons">priority_high</i>
+            This video is not working for an unknown reason.
+          </h4>
           <p class="flow-text">
             This is most likely because the video is no longer available. Please try another video.
           </p>
@@ -29,7 +32,10 @@
 
       {{#if $eq iframeError 'cloudflare'}}
         <div class="card-panel">
-          <h4 class="card-title">Disable the Cloudflare filter once to watch this video.</h4>
+          <h4 class="card-title">
+            <i class="material-icons">cloud_off</i>
+            Disable the Cloudflare filter once to watch this video.
+          </h4>
           <p class="flow-text">
             <a href="{{selectedEpisode.streamer.homepage}}" target="_blank" rel="noopener">Click here to disable the filter.</a>
             This will open a new tab.
@@ -43,7 +49,10 @@
 
       {{#if $eq iframeError 'mixed-content'}}
         <div class="card-panel">
-          <h4 class="card-title">Disable mixed content protection to watch this video.</h4>
+          <h4 class="card-title">
+            <i class="material-icons">lock_open</i>
+            Disable mixed content protection to watch this video.
+          </h4>
           <p class="flow-text">
             {{#if $eq $.BrowserDetect.browser 'Firefox'}}
               {{>components_image src="/media/firefox-unsafe-1.png" caption="Firefox - Step 1" class="disable-mixed-protection-image"}}
@@ -59,7 +68,10 @@
 
       {{#if $eq iframeError 'flash'}}
         <div class="card-panel">
-          <h4 class="card-title">This video requires Adobe Flash Player to be played.</h4>
+          <h4 class="card-title">
+            <i class="material-icons">flash_off</i>
+            This video requires Adobe Flash Player to be played.
+          </h4>
           <p class="flow-text">
             <a href="https://get.adobe.com/flashplayer/" target="_blank" rel="noopener">You can get it here.</a>
             Make sure to uncheck the optional offers.
@@ -69,7 +81,10 @@
 
       {{#if $eq iframeError 'x-frame-options'}}
         <div class="card-panel">
-          <h4 class="card-title">This video cannot be watched without the companion browser add-on.</h4>
+          <h4 class="card-title">
+            <i class="material-icons">block</i>
+            This video cannot be watched without the companion browser add-on.
+          </h4>
           <p class="flow-text">
             {{>pages_episode_get_addon}}
           </p>
@@ -78,7 +93,10 @@
 
       {{#if $eq iframeError 'add-on'}}
         <div class="card-panel">
-          <h4 class="card-title">Most issues related to videos not working will be solved by installing the companion browser add-on.</h4>
+          <h4 class="card-title">
+            <i class="material-icons">extension</i>
+            Most issues related to videos not working will be solved by installing the companion browser add-on.
+          </h4>
           <p class="flow-text">
             {{>pages_episode_get_addon}}
           </p>
