@@ -15,7 +15,7 @@ downloadWithCallback = function(url, callback, tries=1) {
 
     if (Meteor.isClient && url.startsWith('http://')) {
       // TODO: Fix http downloads on the client
-      callback(false);
+      callback(false, false);
       return;
     }
 
@@ -44,7 +44,7 @@ function maybeNextDownload(url, callback, tries, err) {
   if (tries >= 3) {
     console.error('Failed downloading ' + url + ' after ' + tries + ' tries.');
     console.error(err);
-    callback(false);
+    callback(false, false);
   } else {
     downloadWithCallback(url, callback, tries + 1);
   }
