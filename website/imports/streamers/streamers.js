@@ -542,8 +542,12 @@ class TempShow {
     }
 
     // Store as partial show
-    if (Shows.simpleSchema().newContext().validate(this.newShow)) {
-      this.partialCallback(this.newShow);
+    try {
+      if (Shows.simpleSchema().newContext().validate(this.newShow)) {
+        this.partialCallback(this.newShow);
+      }
+    } catch (err) {
+      console.error(err);
     }
 
     // Mark streamerUrl as done

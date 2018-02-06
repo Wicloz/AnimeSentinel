@@ -7,6 +7,14 @@ import {Thumbnails} from '../thumbnails/thumbnails';
 // Collection
 export const Shows = new Mongo.Collection('shows');
 
+// Constants
+Shows.validTypes = ['TV', 'OVA', 'Movie', 'Special', 'ONA'];
+Shows.validGenres = ['Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demons', 'Mystery', 'Drama', 'Ecchi',
+  'Fantasy', 'Game', 'Historical', 'Horror', 'Kids', 'Magic', 'Martial Arts', 'Mecha', 'Music', 'Parody', 'Samurai',
+  'Romance', 'School', 'Sci-Fi', 'Shoujo', 'Shoujo Ai', 'Shounen', 'Shounen Ai', 'Space', 'Sports', 'Super Power',
+  'Vampire', 'Yaoi', 'Yuri', 'Harem', 'Slice of Life', 'Supernatural', 'Military', 'Police', 'Psychological',
+  'Thriller', 'Seinen', 'Josei'];
+
 // Schema
 Schemas.Show = new SimpleSchema({
   _id: {
@@ -156,12 +164,6 @@ Shows.arrayKeys = Shows.simpleSchema()._schemaKeys.filter((key) => {
 Shows.descriptionCutoff = '&#x2026; (read more)';
 Shows.timeUntilRecache = 86400000; // 1 day
 Shows.maxUpdateTime = 600000; // 10 minutes
-Shows.validTypes = ['TV', 'OVA', 'Movie', 'Special', 'ONA'];
-Shows.validGenres = ['Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demons', 'Mystery', 'Drama', 'Ecchi',
-  'Fantasy', 'Game', 'Historical', 'Horror', 'Kids', 'Magic', 'Martial Arts', 'Mecha', 'Music', 'Parody', 'Samurai',
-  'Romance', 'School', 'Sci-Fi', 'Shoujo', 'Shoujo Ai', 'Shounen', 'Shounen Ai', 'Space', 'Sports', 'Super Power',
-  'Vampire', 'Yaoi', 'Yuri', 'Harem', 'Slice of Life', 'Supernatural', 'Military', 'Police', 'Psychological',
-  'Thriller', 'Seinen', 'Josei'];
 
 if (Meteor.isDevelopment) {
   Shows.timeUntilRecache = 10000;
