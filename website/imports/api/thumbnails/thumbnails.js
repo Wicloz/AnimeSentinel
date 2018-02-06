@@ -1,18 +1,7 @@
 import {Shows} from '../shows/shows';
-import gm from 'gm';
 
 // Collection
-let options = {
-  beforeWrite(fileObj) {
-    return {
-      extension: 'jpg',
-      type: 'image/jpeg '
-    };
-  },
-  transformWrite(fileObj, readStream, writeStream) {
-    gm(readStream).stream('JPEG').pipe(writeStream);
-  }
-};
+let options = {};
 
 if (Meteor.isProduction && Meteor.isServer) {
   options.path = '~/as-thumbnails';
@@ -62,6 +51,7 @@ Thumbnails.addThumbnail = function(url) {
         newFile.attachData(readStream, {type: contentType});
         newFile.size(contentLength);
         newFile.name(hash);
+        newFile.extension('jpg');
         Thumbnails.insert(newFile);
       }
     });
