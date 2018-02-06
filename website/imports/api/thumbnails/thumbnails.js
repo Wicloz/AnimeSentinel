@@ -5,12 +5,12 @@ import gm from 'gm';
 let options = {
   beforeWrite(fileObj) {
     return {
-      extension: 'webp',
-      type: 'image/webp '
+      extension: 'jpg',
+      type: 'image/jpeg '
     };
   },
   transformWrite(fileObj, readStream, writeStream) {
-    gm(readStream).stream('WEBP').pipe(writeStream);
+    gm(readStream).stream('JPEG').pipe(writeStream);
   }
 };
 
