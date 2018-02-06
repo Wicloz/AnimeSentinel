@@ -8,7 +8,7 @@ function isStatusCodeSuccess(statusCode) {
   return statusCode.length === 3 && (statusCode.startsWith('1') || statusCode.startsWith('2') || statusCode.startsWith('3'));
 }
 
-downloadWithCallback = function(url, callback, tries=1) {
+downloadWithCallback = async function(url, callback, tries=1) {
   // TODO: Fix database stuff so the client can download too
   // if (Meteor.isServer || Session.get('AddOnInstalled')) {
 
@@ -55,7 +55,7 @@ function tryNextDownloadWithCallback(url, callback, tries, err) {
   }
 }
 
-downloadToStream = function(url, callback, tries=1) {
+downloadToStream = async function(url, callback, tries=1) {
   url = encodeURI(url).replace(/%25/g, '%');
 
   if (Meteor.isDevelopment) {
