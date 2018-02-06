@@ -128,11 +128,13 @@ Schemas.Show = new SimpleSchema({
   },
   type: {
     type: String,
+    index: true,
     optional: true,
     allowedValues: Shows.validTypes
   },
   genres: {
     type: Array,
+    index: true,
     optional: true,
     autoValue: function() {
       if (!this.isSet) {
