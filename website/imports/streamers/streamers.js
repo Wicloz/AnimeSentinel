@@ -3,7 +3,6 @@ import { Shows } from '/imports/api/shows/shows.js';
 import { myanimelist } from './_myanimelist';
 import { kissanime } from './_kissanime';
 import { nineanime } from './_nineanime';
-import {Episodes} from "../api/episodes/episodes";
 import {Thumbnails} from '../api/thumbnails/thumbnails';
 
 let streamers = [myanimelist, kissanime, nineanime];
@@ -87,10 +86,10 @@ export default class Streamers {
     }
 
     // Clean and validate show
-    Shows.simpleSchema().clean(show, {
+    Schemas.Show.clean(show, {
       mutate: true
     });
-    Shows.simpleSchema().validate(show);
+    Schemas.Show.validate(show);
 
     // Return the show
     return show;
@@ -125,10 +124,10 @@ export default class Streamers {
     }
 
     // Clean and validate episode
-    Episodes.simpleSchema().clean(episode, {
+    Schemas.Episode.clean(episode, {
       mutate: true
     });
-    Episodes.simpleSchema().validate(episode);
+    Schemas.Episode.validate(episode);
 
     // Return the episode
     return episode;
@@ -543,7 +542,7 @@ class TempShow {
 
     // Store as partial show
     try {
-      if (Shows.simpleSchema().newContext().validate(this.newShow)) {
+      if (Schemas.Show.newContext().validate(this.newShow)) {
         this.partialCallback(this.newShow);
       }
     } catch (err) {

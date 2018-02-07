@@ -160,8 +160,8 @@ Schemas.Show = new SimpleSchema({
 Shows.attachSchema(Schemas.Show);
 
 // Constants
-Shows.arrayKeys = Shows.simpleSchema()._schemaKeys.filter((key) => {
-  return !key.includes('.') && Shows.simpleSchema()._schema[key].type.definitions[0].type.toString().includes('Array()');
+Shows.arrayKeys = Schemas.Show._schemaKeys.filter((key) => {
+  return !key.includes('.') && Schemas.Show._schema[key].type.definitions[0].type.toString().includes('Array()');
 });
 Shows.descriptionCutoff = '&#x2026; (read more)';
 Shows.timeUntilRecache = 86400000; // 1 day
@@ -221,7 +221,7 @@ Shows.helpers({
       _id: this._id,
       lastUpdateStart: this.lastUpdateStart
     }, {
-      $set: Shows.simpleSchema().clean(this, {
+      $set: Schemas.Show.clean(this, {
         mutate: true
       })
     });
@@ -278,7 +278,7 @@ Shows.helpers({
           _id: this._id,
           lastUpdateStart: this.lastUpdateStart
         }, {
-          $set: Shows.simpleSchema().clean(this, {
+          $set: Schemas.Show.clean(this, {
             mutate: true
           })
         });

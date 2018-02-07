@@ -1,4 +1,3 @@
-import {Shows} from '../shows/shows';
 import gm from 'gm';
 
 // Stores
@@ -95,7 +94,7 @@ Thumbnails.removeWithHashes = function(hashes) {
 
 // Queries
 Thumbnails.queryWithHashes = function(hashes) {
-  Shows.simpleSchema().validate({
+  Schemas.Show.validate({
     thumbnails: hashes
   }, {
     keys: ['thumbnails']

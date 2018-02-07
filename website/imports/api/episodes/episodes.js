@@ -143,7 +143,7 @@ Episodes.helpers({
           _id: this._id,
           lastUpdateStart: this.lastUpdateStart
         }, {
-          $set: Episodes.simpleSchema().clean(this, {
+          $set: Schemas.Episode.clean(this, {
             mutate: true
           })
         });
@@ -167,7 +167,7 @@ Episodes.helpers({
       _id: this._id,
       lastUpdateStart: this.lastUpdateStart
     }, {
-      $set: Episodes.simpleSchema().clean(this, {
+      $set: Schemas.Episode.clean(this, {
         mutate: true
       })
     });
@@ -242,7 +242,7 @@ Meteor.methods({
 // Queries
 Episodes.queryForShow = function(showId) {
   // Validate
-  Episodes.simpleSchema().validate({
+  Schemas.Episode.validate({
     showId: showId,
   }, {
     keys: ['showId']
@@ -261,7 +261,7 @@ Episodes.queryForShow = function(showId) {
 
 Episodes.queryForTranslationType = function(showId, translationType) {
   // Validate
-  Episodes.simpleSchema().validate({
+  Schemas.Episode.validate({
     showId: showId,
     translationType: translationType
   }, {
@@ -282,7 +282,7 @@ Episodes.queryForTranslationType = function(showId, translationType) {
 
 Episodes.queryForEpisode = function (showId, translationType, episodeNumStart, episodeNumEnd) {
   // Validate
-  Episodes.simpleSchema().validate({
+  Schemas.Episode.validate({
     showId: showId,
     translationType: translationType,
     episodeNumStart: episodeNumStart,
@@ -302,7 +302,7 @@ Episodes.queryForEpisode = function (showId, translationType, episodeNumStart, e
 
 Episodes.queryUnique = function (showId, translationType, episodeNumStart, episodeNumEnd, streamerId) {
   // Validate
-  Episodes.simpleSchema().validate({
+  Schemas.Episode.validate({
     showId: showId,
     translationType: translationType,
     episodeNumStart: episodeNumStart,
