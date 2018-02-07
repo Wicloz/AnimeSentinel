@@ -181,7 +181,7 @@ Shows.helpers({
   getThumbnailUrls() {
     if (this.thumbnails && !this.thumbnails.empty()) {
       let urls = Thumbnails.queryWithHashes(this.thumbnails).fetch().filterMap((thumbnail) => {
-        return thumbnail.url();
+        return thumbnail.url({store: Session.get('FeatureSupportWebP') ? 'thumbnailsWEBP' : 'thumbnailsJPEG'});
       });
       if (!urls.empty()) {
         return urls;

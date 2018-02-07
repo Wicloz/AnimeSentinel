@@ -1,12 +1,36 @@
 import {Shows} from '../shows/shows';
+import gm from 'gm';
 
 // Stores
-let thumbnailStore = new FS.Store.GridFS('thumbnails', {});
+let thumbnailStoreJpeg = new FS.Store.GridFS('thumbnailsJPEG', {
+  beforeSave(fileObj) {
+    return {
+      extension: 'jpg',
+      type: 'image/jpeg'
+    };
+  },
+  transformWrite(fileObj, readStream, writeStream) {
+    gm(readStream).stream('JPEG').pipe(writeStream);
+  }
+});
+
+let thumbnailStoreWebp = new FS.Store.GridFS('thumbnailsWEBP', {
+  beforeSave(fileObj) {
+    return {
+      extension: 'webp',
+      type: 'image/webp'
+    };
+  },
+  transformWrite(fileObj, readStream, writeStream) {
+    gm(readStream).stream('WEBP').pipe(writeStream);
+  }
+});
 
 // Collection
 export const Thumbnails = new FS.Collection('thumbnails', {
   stores: [
-    thumbnailStore
+    thumbnailStoreJpeg,
+    thumbnailStoreWebp
   ],
   filter: {
     allow: {
