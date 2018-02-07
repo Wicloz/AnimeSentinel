@@ -50,5 +50,26 @@
 
     {{> Template.dynamic template=content}}
 
+    <div class="fixed-action-btn toolbar" id="fabSearchFormButton">
+      <a class="btn-floating btn-large primary-color">
+        <i class="material-icons">search</i>
+      </a>
+      <ul>
+        <li>
+          <nav>
+            <div class="nav-wrapper">
+              <form id="fabSearchForm">
+                <div class="input-field">
+                  <input id="fabSearchFormQuery" type="search">
+                  <label class="label-icon" for="fabSearchFormQuery">
+                    <i class="material-icons">search</i>
+                  </label>
+                </div>
+              </form>
+            </div>
+          </nav>
+        </li>
+      </ul>
+    </div>
   </main>
 </template>
