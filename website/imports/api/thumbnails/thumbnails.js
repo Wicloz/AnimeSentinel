@@ -1,15 +1,12 @@
 import {Shows} from '../shows/shows';
 
+// Stores
+let thumbnailStore = new FS.Store.GridFS('thumbnails', {});
+
 // Collection
-let options = {};
-
-if (Meteor.isProduction && Meteor.isServer) {
-  options.path = '~/as-thumbnails';
-}
-
 export const Thumbnails = new FS.Collection('thumbnails', {
   stores: [
-    new FS.Store.FileSystem('thumbnails', options)
+    thumbnailStore
   ],
   filter: {
     allow: {
@@ -46,12 +43,12 @@ Thumbnails.addThumbnail = function(url) {
 
   if (!Thumbnails.queryWithHashes([hash]).count()) {
     downloadToStream(url, (readStream, contentType, contentLength) => {
-      if (readStream) {
+      if (readStream && contentType && contentLength) {
         let newFile = new FS.File();
         newFile.attachData(readStream, {type: contentType});
         newFile.size(contentLength);
         newFile.name(hash);
-        newFile.extension('jpg');
+        newFile.extension('pict');
         Thumbnails.insert(newFile);
       }
     });
@@ -61,6 +58,10 @@ Thumbnails.addThumbnail = function(url) {
 };
 
 Thumbnails.removeWithHashes = function(hashes) {
+  hashes = hashes.map((hash) => {
+    return hash + '.pict';
+  });
+
   Thumbnails.remove({
     'original.name': {
       $in: hashes
@@ -74,6 +75,10 @@ Thumbnails.queryWithHashes = function(hashes) {
     thumbnails: hashes
   }, {
     keys: ['thumbnails']
+  });
+
+  hashes = hashes.map((hash) => {
+    return hash + '.pict';
   });
 
   return Thumbnails.find({

@@ -43,4 +43,4 @@ awatson1978:browser-detection
 meteorhacks:inject-initial
 
 cfs:standard-packages
-cfs:filesystem
+cfs:gridfs
