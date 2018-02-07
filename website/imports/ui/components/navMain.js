@@ -19,17 +19,3 @@ Template.components_nav_main.helpers({
     return JSON.parse(Session.get('BreadCrumbs'));
   }
 });
-
-AutoForm.hooks({
-  navMainSearchForm: {
-    onSubmit(insertDoc) {
-      FlowRouter.go('search');
-      let animeSearchFormQueryField = $('#animeSearchFormQuery').find('input[name="query"]');
-      animeSearchFormQueryField.val(insertDoc.query);
-      animeSearchFormQueryField.focus();
-      animeSearchFormQueryField.submit();
-      this.done();
-      return false;
-    }
-  }
-});

@@ -4,21 +4,13 @@
   margin-bottom: $spacer;
 }
 
-#navMainSearchForm {
-  width: 25%;
-  .red-text {
-    margin-top: -90px;
-    padding-left: 45px;
-  }
-}
-
 #navMainBreadcrumbs {
   @media #{$extra-large-and-up} {
-    width: calc(75% - 403.86px);
+    width: calc(100% - 403.86px);
     height: 64px;
   }
   @media #{$large-only} {
-    width: calc(75% - 397.02px);
+    width: calc(100% - 397.02px);
     height: 64px;
   }
   @media #{$medium-only} {
