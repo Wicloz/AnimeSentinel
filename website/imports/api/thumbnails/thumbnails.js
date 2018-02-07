@@ -3,9 +3,9 @@ import gm from 'gm';
 
 // Stores
 let thumbnailStoreJpeg = new FS.Store.GridFS('thumbnailsJPEG', {
-  beforeSave(fileObj) {
+  beforeWrite(fileObj) {
     return {
-      extension: 'jpg',
+      extension: 'jpeg',
       type: 'image/jpeg'
     };
   },
@@ -15,7 +15,7 @@ let thumbnailStoreJpeg = new FS.Store.GridFS('thumbnailsJPEG', {
 });
 
 let thumbnailStoreWebp = new FS.Store.GridFS('thumbnailsWEBP', {
-  beforeSave(fileObj) {
+  beforeWrite(fileObj) {
     return {
       extension: 'webp',
       type: 'image/webp'
