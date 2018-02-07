@@ -37,7 +37,7 @@ Template.layouts_main.events({
   'click #fabSearchFormButton'(event) {
     setTimeout(() => {
       $('#fabSearchFormQuery').focus();
-    }, 30);
+    }, 100);
   },
 
   'submit #fabSearchForm'(event) {
