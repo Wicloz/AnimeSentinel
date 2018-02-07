@@ -300,7 +300,7 @@ export default class Streamers {
     }
   }
 
-  static doSearch(query, doneCallback, resultCallback, streamersIdsExcluded=[]) {
+  static doSearch(search, doneCallback, resultCallback, streamersIdsExcluded=[]) {
     // Filter streamers
     let filteredStreamers = streamers.filter((streamer) => {
       return !streamersIdsExcluded.includes(streamer.id);
@@ -318,7 +318,7 @@ export default class Streamers {
     // For each not excluded streamer
     filteredStreamers.forEach((streamer) => {
       // Download and process search results
-      this.getSearchResults(streamer.search.createUrl(query), streamer, query, (results) => {
+      this.getSearchResults(streamer.search.createUrl(search), streamer, search.query, (results) => {
 
         // Return results
         results.forEach((result) => {
@@ -439,7 +439,7 @@ class TempShow {
     this.searchWithCurrentAltLooping = true;
 
     // Search all the pending streamers with the current altName
-    Streamers.doSearch(this.altNames[this.currentAltNameIndex], () => {
+    Streamers.doSearch({query: this.altNames[this.currentAltNameIndex]}, () => {
 
       // Increment alt index
       this.currentAltNameIndex++;

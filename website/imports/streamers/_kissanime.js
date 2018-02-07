@@ -10,6 +10,8 @@ function getTypeFromName(name) {
   return name.endsWith(' (Dub)') ? 'dub' : 'sub';
 }
 
+const validTypes = ['OVA', 'Movie', 'Special', 'ONA'];
+
 export let kissanime = {
   // General data
   id: 'kissanime',
@@ -19,8 +21,24 @@ export let kissanime = {
 
   // Search page data
   search: {
-    createUrl: function(query) {
-      return kissanime.homepage + '/Search/Anime?keyword=' + encodeURIComponentReplaceSpaces(query, '+');
+    createUrl: function(search) {
+      if (search.query) {
+        let filler = search.query.length < 2 ? search.query : '';
+        return kissanime.homepage + '/Search/Anime?keyword=' + encodeURIComponentReplaceSpaces(search.query + filler, '+');
+      }
+
+      // TODO: Advanced anime searching
+      // else if (search.includeTypes && search.types && search.types.length === 1 && validTypes.includes(search.types[0])) {
+      //   return kissanime.homepage + '/Genre/' + search.types[0];
+      // }
+      //
+      // else if (search.includeGenres && search.genres && search.genres.length === 1 && search.genres[0] !== 'Unknown') {
+      //   return kissanime.homepage + '/Genre/' + search.genres[0].replace(/\s/g, '-');
+      // }
+
+      else {
+        return kissanime.homepage + '/AnimeList';
+      }
     },
     rowSelector: 'table.listing tbody tr',
     rowSkips: 2,

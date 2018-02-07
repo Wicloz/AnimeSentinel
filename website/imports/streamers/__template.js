@@ -7,7 +7,7 @@ export let template = {
 
   // Search page data
   search: {
-    createUrl: function(query) {
+    createUrl: function(search) {
       return '';
     },
     rowSelector: '',

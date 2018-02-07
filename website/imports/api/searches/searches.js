@@ -126,7 +126,7 @@ Searches.helpers({
       }
     });
 
-    Streamers.doSearch(this.query, () => {
+    Streamers.doSearch(this, () => {
 
       // When done
       this.lastSearchEnd = moment().toDate();

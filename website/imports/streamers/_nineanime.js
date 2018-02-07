@@ -17,8 +17,9 @@ export let nineanime = {
 
   // Search page data
   search: {
-    createUrl: function(query) {
-      return nineanime.homepage + '/search?keyword=' + encodeURIComponentReplaceSpaces(query, '+');
+    createUrl: function(search) {
+      // TODO: Advanced anime searching
+      return nineanime.homepage + '/search?keyword=' + encodeURIComponentReplaceSpaces(search.query ? search.query : '', '+');
     },
     rowSelector: 'div.film-list div.item',
     rowSkips: 0,

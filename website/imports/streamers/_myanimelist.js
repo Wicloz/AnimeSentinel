@@ -4,6 +4,13 @@ function getMalIdFromUrl(url) {
   return url.replace(/^.*\/(\d+)\/.*$/, '$1');
 }
 
+const validTypes = ['TV', 'OVA', 'Movie', 'Special', 'ONA'];
+const validGenres = ['Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demons', 'Mystery', 'Drama', 'Ecchi',
+  'Fantasy', 'Game', 'Hentai', 'Historical', 'Horror', 'Kids', 'Magic', 'Martial Arts', 'Mecha', 'Music', 'Parody', 'Samurai',
+  'Romance', 'School', 'Sci-Fi', 'Shoujo', 'Shoujo Ai', 'Shounen', 'Shounen Ai', 'Space', 'Sports', 'Super Power',
+  'Vampire', 'Yaoi', 'Yuri', 'Harem', 'Slice of Life', 'Supernatural', 'Military', 'Police', 'Psychological',
+  'Thriller', 'Seinen', 'Josei'];
+
 export let myanimelist = {
   // General data
   id: 'myanimelist',
@@ -13,8 +20,38 @@ export let myanimelist = {
 
   // Search page data
   search: {
-    createUrl: function(query) {
-      return myanimelist.homepage + '/anime.php?q=' + encodeURIComponentReplaceSpaces(query, '+') + '&type=0&score=0&status=0&p=0&r=0&sm=0&sd=0&sy=0&em=0&ed=0&ey=0&c[]=a&c[]=b&c[]=c&c[]=d&c[]=e&c[]=f&c[]=g&gx=1&genre[]=12';
+    createUrl: function(search) {
+      let query = '';
+      if (search.query && search.query.length >= 1) {
+        let filler = search.query.length < 3 ? ' '.repeat(3 - search.query.length) : '';
+        query = '&q=' + encodeURIComponentReplaceSpaces(search.query + filler, '+');
+      }
+
+      let type = '';
+      if (search.includeTypes && search.types && search.types.length === 1 && search.types[0] !== 'Unknown') {
+        type = '&type=' + validTypes.indexOf(search.types[0]) + 1;
+      }
+      else if (!search.includeTypes && search.types.length === validTypes.length && search.types.includes('Unknown')) {
+        type = '&type=' + validTypes.findIndex((type) => {
+          return !search.types.includes(type);
+        }) + 1;
+      }
+
+      let exclude = '&gx=1';
+      let genres = [12];
+      if (search.includeGenres && search.genres && search.genres.length === 1 && search.genres[0] !== 'Unknown') {
+        exclude = '';
+        genres = [validGenres.indexOf(search.genres[0]) + 1];
+      }
+      else if (!search.includeGenres && search.genres && !search.genres.empty()) {
+        genres = genres.concat(search.genres.filter((genre) => {
+          return genre !== 'Unknown';
+        }).map((genre) => {
+          return validGenres.indexOf(genre) + 1;
+        }));
+      }
+
+      return myanimelist.homepage + '/anime.php?c[]=a&c[]=b&c[]=c&c[]=d&c[]=e&c[]=f&c[]=g' + query + type + exclude + '&genre[]=' + genres.join('&genre[]=');
     },
     rowSelector: '.js-block-list.list table tbody tr',
     rowSkips: 1,
