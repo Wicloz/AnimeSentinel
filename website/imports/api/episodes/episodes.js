@@ -45,8 +45,11 @@ Schemas.Episode = new SimpleSchema({
     type: Array,
     optional: true,
     autoValue: function() {
-      if (!this.isSet || !this.value) {
+      if ((!this.isSet || !this.value) && !this.isUpdate) {
         return [];
+      }
+      if (!this.isSet) {
+        return undefined;
       }
       return this.value.reduce((total, value) => {
         if (value && !total.hasPartialObjects({
@@ -71,8 +74,11 @@ Schemas.Episode = new SimpleSchema({
     type: Array,
     optional: true,
     autoValue: function() {
-      if (!this.isSet || !this.value) {
+      if ((!this.isSet || !this.value) && !this.isUpdate) {
         return [];
+      }
+      if (!this.isSet) {
+        return undefined;
       }
       return this.value.reduce((total, value) => {
         value = value.trim();

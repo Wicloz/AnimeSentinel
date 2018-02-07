@@ -109,10 +109,11 @@ Schemas.Show = new SimpleSchema({
     type: Array,
     optional: true,
     autoValue: function() {
+      if ((!this.isSet || !this.value) && !this.isUpdate) {
+        return [];
+      }
       if (!this.isSet) {
         return undefined;
-      } else if (!this.value) {
-        return [];
       }
       return this.value.reduce((total, value) => {
         value = value.trim();
@@ -137,10 +138,11 @@ Schemas.Show = new SimpleSchema({
     index: true,
     optional: true,
     autoValue: function() {
+      if ((!this.isSet || !this.value) && !this.isUpdate) {
+        return [];
+      }
       if (!this.isSet) {
         return undefined;
-      } else if (!this.value) {
-        return [];
       }
       return this.value.reduce((total, value) => {
         value = value.trim();
