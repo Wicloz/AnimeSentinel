@@ -1,7 +1,6 @@
 import SimpleSchema from 'simpl-schema';
 import Streamers from "../../streamers/streamers";
 import {Shows} from "../shows/shows";
-import {Episodes} from "../episodes/episodes";
 
 // Collection
 export const Searches = new Mongo.Collection('searches');
