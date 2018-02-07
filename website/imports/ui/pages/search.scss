@@ -1,0 +1,13 @@
+@import "../../../client/_vars.scss";
+
+#animeSearchFormOptions .af-checkbox-group p {
+  display: inline-block;
+  margin-right: $spacer;
+  width: 120px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+#animeSearchFormOptions .af-checkbox-group p:first-of-type {
+  margin-top: 10px;
+}

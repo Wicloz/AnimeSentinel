@@ -24,7 +24,7 @@ AutoForm.hooks({
   navMainSearchForm: {
     onSubmit(insertDoc) {
       FlowRouter.go('search');
-      let animeSearchFormQueryField = $('#animeSearchForm').find('input[name="query"]');
+      let animeSearchFormQueryField = $('#animeSearchFormQuery').find('input[name="query"]');
       animeSearchFormQueryField.val(insertDoc.query);
       animeSearchFormQueryField.focus();
       animeSearchFormQueryField.submit();

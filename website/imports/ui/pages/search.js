@@ -13,36 +13,43 @@ Template.pages_search.onCreated(function() {
   this.state = new ReactiveDict();
   this.state.setDefault({
     searchQuery: undefined,
+    searchOptions: {},
     searchLimit: 10
   });
 
   // Local functions
+  this.getCombinedSearchOptions = function() {
+    let combinedSearchOptions = this.state.get('searchOptions');
+    combinedSearchOptions.query = this.state.get('searchQuery');
+    return combinedSearchOptions;
+  };
+
   this.isSearching = function() {
-    let currentSearch = Searches.queryWithQuery(this.state.get('searchQuery')).fetch()[0];
+    let currentSearch = Searches.queryWithSearch(this.getCombinedSearchOptions()).fetch()[0];
     return currentSearch && currentSearch.busy();
   };
 
   // Subscribe to shows based on search options and limit
   this.autorun(() => {
-    this.subscribe('shows.search', this.state.get('searchQuery'), this.state.get('searchLimit'));
+    this.subscribe('shows.search', this.getCombinedSearchOptions(), this.state.get('searchLimit'));
   });
 
   // Subscribe to searches based on search options
   this.autorun(() => {
-    this.subscribe('searches.withQuery', this.state.get('searchQuery'));
+    this.subscribe('searches.withSearch', this.getCombinedSearchOptions());
     this.state.set('searchLimit', 10);
   });
 
   // Search when the subscription is ready
   this.autorun(() => {
-    if (this.state.get('searchQuery') && (this.subscriptionsReady() || Searches.queryWithQuery(this.state.get('searchQuery')).count())) {
-      Meteor.call('searches.startSearch', this.state.get('searchQuery'));
+    if (this.subscriptionsReady() || Searches.queryWithSearch(this.getCombinedSearchOptions()).count()) {
+      Meteor.call('searches.startSearch', this.getCombinedSearchOptions());
     }
   });
 
   // Subscribe to thumbnails for all shows
   this.autorun(() => {
-    this.subscribe('thumbnails.withHashes', Shows.querySearch(this.state.get('searchQuery'), this.state.get('searchLimit')).fetch().reduce((total, show) => {
+    this.subscribe('thumbnails.withHashes', Shows.querySearch(this.getCombinedSearchOptions(), this.state.get('searchLimit')).fetch().reduce((total, show) => {
       return total.concat(show.thumbnails);
     }, []));
   });
@@ -54,7 +61,7 @@ Template.pages_search.onRendered(function() {
 
 Template.pages_search.helpers({
   shows() {
-    return Shows.querySearch(Template.instance().state.get('searchQuery'), Template.instance().state.get('searchLimit'));
+    return Shows.querySearch(Template.instance().getCombinedSearchOptions(), Template.instance().state.get('searchLimit'));
   },
 
   searching() {
@@ -63,7 +70,7 @@ Template.pages_search.helpers({
 
   showsLoading() {
     return Template.instance().isSearching() || !Template.instance().subscriptionsReady() ||
-      Shows.querySearch(Template.instance().state.get('searchQuery'), Template.instance().state.get('searchLimit')).count() >= Template.instance().state.get('searchLimit');
+      Shows.querySearch(Template.instance().getCombinedSearchOptions(), Template.instance().state.get('searchLimit')).count() >= Template.instance().state.get('searchLimit');
   }
 });
 
@@ -74,12 +81,17 @@ Template.pages_search.events({
 });
 
 AutoForm.hooks({
-  animeSearchForm: {
+  animeSearchFormQuery: {
     onSubmit(insertDoc) {
-      if (insertDoc.query) {
-        insertDoc.query = insertDoc.query.cleanQuery();
-      }
       this.template.view.parentView.parentView._templateInstance.state.set('searchQuery', insertDoc.query);
+      this.done();
+      return false;
+    }
+  },
+
+  animeSearchFormOptions: {
+    onSubmit(insertDoc) {
+      this.template.view.parentView.parentView._templateInstance.state.set('searchOptions', insertDoc);
       this.done();
       return false;
     }

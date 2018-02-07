@@ -1,5 +1,5 @@
 import { Searches } from './searches.js';
 
-Meteor.publish('searches.withQuery', function(query) {
-  return Searches.queryWithQuery(query);
+Meteor.publish('searches.withSearch', function(search) {
+  return Searches.queryWithSearch(search);
 });

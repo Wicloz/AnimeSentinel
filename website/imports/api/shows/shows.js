@@ -372,9 +372,14 @@ Meteor.methods({
 });
 
 // Queries
-Shows.querySearch = function(query, limit) { // TODO: Improve searching
+Shows.querySearch = function(search, limit) { // TODO: Improve searching
+  // Clean
+  Schemas.Search.clean(search, {
+    mutate: true
+  });
+
   // Validate
-  Schemas.animeSearch.validate({query});
+  Schemas.Search.validate(search);
   new SimpleSchema({
     limit: {
       type: Number
@@ -387,11 +392,54 @@ Shows.querySearch = function(query, limit) { // TODO: Improve searching
     limit: limit
   };
 
+  // Search on types
+  if (search.types.includes('Unknown')) {
+    search.types.push(undefined);
+  }
+  if (search.includeTypes) {
+    selector.type = {
+      $in: search.types
+    };
+  } else {
+    selector.type = {
+      $nin: search.types
+    };
+  }
+
+  // Search on genres
+  if (search.includeGenres) {
+    if (search.genres.includes('Unknown')) {
+      selector.$or = [{
+        genres: {$in: search.genres}
+      }, {
+        genres: {$exists: false}
+      }, {
+        genres: []
+      }];
+    } else {
+      selector.genres = {
+        $in: search.genres
+      };
+    }
+  } else {
+    if (search.genres.includes('Unknown')) {
+      selector.genres = {
+        $nin: search.genres,
+        $exists: true,
+        $ne: []
+      };
+    } else {
+      selector.genres = {
+        $nin: search.genres
+      };
+    }
+  }
+
   // Do text search if query is specified
-  if (query) {
+  if (search.query) {
     if (Meteor.isServer) {
       selector.$text = {
-        $search: '"' + query.replace(/\s-([^\s])/g, ' $1') + '"',
+        $search: '"' + search.query.replace(/\s-([^\s])/g, ' $1') + '"',
         $language: 'english',
       };
       options.fields = {

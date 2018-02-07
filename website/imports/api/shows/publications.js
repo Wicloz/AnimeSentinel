@@ -1,7 +1,7 @@
 import { Shows } from './shows.js';
 
-Meteor.publish('shows.search', function(query, limit) {
-  return Shows.querySearch(query, limit);
+Meteor.publish('shows.search', function(search, limit) {
+  return Shows.querySearch(search, limit);
 });
 
 Meteor.publish('shows.withId', function(id) {

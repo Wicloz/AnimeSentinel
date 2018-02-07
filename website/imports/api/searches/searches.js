@@ -19,9 +19,78 @@ Schemas.Search = new SimpleSchema({
     type: Date,
     optional: true
   },
+
   query: {
     type: String,
-    index: true
+    index: true,
+    optional: true,
+    autoValue: function() {
+      if (!this.isSet || !this.value) {
+        this.unset();
+        return undefined;
+      }
+      return this.value.cleanQuery();
+    },
+    autoform: {
+      icon: 'search',
+      label: 'Search Anime',
+      autocomplete: 'off',
+      type: 'search'
+    }
+  },
+
+  types: {
+    type: Array,
+    index: true,
+    optional: true,
+    defaultValue: [],
+    autoform: {
+      options: 'allowed',
+      type: 'select-checkbox',
+      class: 'filled-in'
+    }
+  },
+  'types.$': {
+    type: String,
+    allowedValues: Shows.validTypes.concat(['Unknown'])
+  },
+  includeTypes: {
+    type: Boolean,
+    index: true,
+    optional: true,
+    defaultValue: false,
+    autoform: {
+      type: 'switch',
+      trueLabel: 'Include',
+      falseLabel: 'Exclude'
+    }
+  },
+
+  genres: {
+    type: Array,
+    index: true,
+    optional: true,
+    defaultValue: [],
+    autoform: {
+      options: 'allowed',
+      type: 'select-checkbox',
+      class: 'filled-in'
+    }
+  },
+  'genres.$': {
+    type: String,
+    allowedValues: Shows.validGenres.concat(['Unknown'])
+  },
+  includeGenres: {
+    type: Boolean,
+    index: true,
+    optional: true,
+    defaultValue: false,
+    autoform: {
+      type: 'switch',
+      trueLabel: 'Include',
+      falseLabel: 'Exclude'
+    }
   }
 }, { tracker: Tracker });
 
@@ -48,7 +117,7 @@ Searches.helpers({
     return this.lastSearchStart && (!this.lastSearchEnd || this.lastSearchStart > this.lastSearchEnd);
   },
 
-  doSearch(query) {
+  doSearch() {
     // Mark search as started
     this.lastSearchStart = moment().toDate();
     Searches.update(this._id, {
@@ -57,7 +126,7 @@ Searches.helpers({
       }
     });
 
-    Streamers.doSearch(query, () => {
+    Streamers.doSearch(this.query, () => {
 
       // When done
       this.lastSearchEnd = moment().toDate();
@@ -76,46 +145,41 @@ Searches.helpers({
   }
 });
 
-Searches.startSearch = function(query) {
-  // Clean and validate query
-  if (query) {
-    query = query.cleanQuery();
+Searches.startSearch = function(search) {
+  Schemas.Search.clean(search, {
+    mutate: true
+  });
+  Schemas.Search.validate(search);
+
+  let result = Searches.findOne(search);
+  if (!result) {
+    result = Searches.findOne(
+      Searches.insert(search)
+    );
   }
-  Schemas.animeSearch.validate({query});
 
-  if (query) {
-    let search = Searches.findOne({
-      query: query
-    });
-
-    if (!search) {
-      search = Searches.findOne(
-        Searches.insert({
-          query: query
-        })
-      );
-    }
-
-    if (search.expired()) {
-      search.doSearch(query);
-    }
+  if (result.expired()) {
+    result.doSearch();
   }
 };
 
 // Methods
 Meteor.methods({
-  'searches.startSearch'(query) {
-    Searches.startSearch(query);
+  'searches.startSearch'(search) {
+    Searches.startSearch(search);
   }
 });
 
 // Queries
-Searches.queryWithQuery = function(query) {
+Searches.queryWithSearch = function(search) {
+  // Clean
+  Schemas.Search.clean(search, {
+    mutate: true
+  });
+
   // Validate
-  Schemas.animeSearch.validate({query});
+  Schemas.Search.validate(search);
 
   // Return results cursor
-  return Searches.find({
-    query: query
-  });
+  return Searches.find(search);
 };

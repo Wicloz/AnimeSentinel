@@ -31,5 +31,33 @@
 
 .material-icons {
   font-size: inherit;
-  line-height: inherit;
+}
+
+.collapsible.card-panel {
+  padding: 0;
+  border: none;
+  overflow: hidden;
+  .collapsible-header {
+    border-bottom: none;
+  }
+  .collapsible-body {
+    border-top: 1px solid $collapsible-border-color;
+    border-bottom: none;
+  }
+}
+
+.af-checkbox-group > p > label {
+  pointer-events: unset;
+  transition: unset;
+  transform: unset;
+  transform-origin: unset;
+  text-align: unset;
+  top: unset;
+}
+
+.collapsible-header-dropdown i {
+  transition: transform 0.3s;
+}
+.collapsible-header-dropdown:not(.active) i {
+  transform: rotate(-90deg);
 }

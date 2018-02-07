@@ -2,10 +2,27 @@
   <div class="container">
 
     <div class="card-panel">
-      {{#autoForm schema='Schemas.animeSearch' id='animeSearchForm' autosave=true autosaveOnKeyup=true}}
+      {{#autoForm schema='Schemas.Search' id='animeSearchFormQuery' autosave=true autosaveOnKeyup=true}}
         {{> afQuickField name='query'}}
       {{/autoForm}}
     </div>
+
+    <ul class="collapsible card-panel" data-collapsible="expandable">
+      <li>
+        <div class="collapsible-header collapsible-header-dropdown">
+          <i class="material-icons">arrow_drop_down</i>
+          More Search Options
+        </div>
+        <div class="collapsible-body">
+          {{#autoForm schema='Schemas.Search' id='animeSearchFormOptions' autosave=true}}
+            {{> afQuickField name='types'}}
+            {{> afQuickField name='includeTypes'}}
+            {{> afQuickField name='genres'}}
+            {{> afQuickField name='includeGenres'}}
+          {{/autoForm}}
+        </div>
+      </li>
+    </ul>
 
     <div class="card-panel">
       <ul class="collection">
