@@ -55,7 +55,7 @@ function tryNextDownloadWithCallback(url, callback, tries, err) {
     console.error(err);
     callback(false);
   } else {
-    _.delay(Meteor.bindEnvironment(downloadWithCallback), 1000, url, callback, tries + 1);
+    _.delay(Meteor.bindEnvironment(downloadWithCallback), 200 + Math.random() * 800, url, callback, tries + 1);
   }
 }
 
@@ -102,6 +102,6 @@ function tryNextDownloadToStream(url, callback, tries, err) {
     console.error(err);
     callback(false, false, false);
   } else {
-    _.delay(Meteor.bindEnvironment(downloadToStream), 1000, url, callback, tries + 1);
+    _.delay(Meteor.bindEnvironment(downloadToStream), 200 + Math.random() * 800, url, callback, tries + 1);
   }
 }
