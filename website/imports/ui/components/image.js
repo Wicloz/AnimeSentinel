@@ -30,10 +30,6 @@ Template.components_image.onCreated(function () {
     id: undefined
   });
 
-  this.afterLoad = () => {
-    this.state.set('loaded', true);
-  };
-
   this.autorun(() => {
     if (Template.currentData().id) {
       this.state.set('id', Template.currentData().id);
@@ -44,12 +40,16 @@ Template.components_image.onCreated(function () {
 
   this.autorun(() => {
     if (this.state.get('appeared')) {
+      let temp = Template.currentData().src;
       Tracker.afterFlush(() => {
-        let img  = $('#' + this.state.get('id')).get(0);
+        let img = $('#' + this.state.get('id')).get(0);
         if (img.complete) {
-          this.afterLoad();
+          this.state.set('loaded', true);
         } else {
-          img.addEventListener('load', this.afterLoad);
+          this.state.set('loaded', false);
+          img.addEventListener('load', () => {
+            this.state.set('loaded', true);
+          });
         }
       });
     }
