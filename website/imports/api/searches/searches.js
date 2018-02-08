@@ -145,18 +145,23 @@ Searches.helpers({
   }
 });
 
-Searches.startSearch = function(search) {
-  Schemas.Search.clean(search, {
-    mutate: true
-  });
-  Schemas.Search.validate(search);
-
+Searches.getOrInsertSearch = function(search) {
   let result = Searches.findOne(search);
   if (!result) {
     result = Searches.findOne(
       Searches.insert(search)
     );
   }
+  return result;
+};
+
+Searches.startSearch = function(search) {
+  Schemas.Search.clean(search, {
+    mutate: true
+  });
+  Schemas.Search.validate(search);
+
+  let result = Searches.getOrInsertSearch(search);
 
   if (result.expired()) {
     result.doSearch();

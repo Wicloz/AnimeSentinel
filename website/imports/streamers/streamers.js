@@ -4,6 +4,7 @@ import { myanimelist } from './_myanimelist';
 import { kissanime } from './_kissanime';
 import { nineanime } from './_nineanime';
 import {Thumbnails} from '../api/thumbnails/thumbnails';
+import {Searches} from '../api/searches/searches';
 
 let streamers = [myanimelist, kissanime, nineanime];
 
@@ -438,8 +439,18 @@ class TempShow {
   searchWithCurrentAlt() {
     this.searchWithCurrentAltLooping = true;
 
+    // Create a full search object
+    let search = {
+      query: this.altNames[this.currentAltNameIndex]
+    };
+    Schemas.Search.clean(search, {
+      mutate: true
+    });
+    Schemas.Search.validate(search);
+    let result = Searches.getOrInsertSearch(search);
+
     // Search all the pending streamers with the current altName
-    Streamers.doSearch({query: this.altNames[this.currentAltNameIndex]}, () => {
+    Streamers.doSearch(result, () => {
 
       // Increment alt index
       this.currentAltNameIndex++;
