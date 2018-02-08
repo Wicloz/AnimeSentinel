@@ -52,7 +52,7 @@ Schemas.Search = new SimpleSchema({
   },
   'types.$': {
     type: String,
-    allowedValues: Shows.validTypes.concat(['Unknown'])
+    allowedValues: Shows.validTypes.sort().concat(['Unknown'])
   },
   includeTypes: {
     type: Boolean,
@@ -79,7 +79,7 @@ Schemas.Search = new SimpleSchema({
   },
   'genres.$': {
     type: String,
-    allowedValues: Shows.validGenres.concat(['Unknown'])
+    allowedValues: Shows.validGenres.sort().concat(['Unknown'])
   },
   includeGenres: {
     type: Boolean,
@@ -115,6 +115,73 @@ Searches.helpers({
 
   busy() {
     return this.lastSearchStart && (!this.lastSearchEnd || this.lastSearchStart > this.lastSearchEnd);
+  },
+
+  completeQuery(length, string) {
+    let filler = this.query.length < length ? string.repeat(length - this.query.length) : '';
+    return this.query + filler;
+  },
+
+  getTypesAsIncludes(validTypes) {
+    if (this.includeTypes) {
+      if (this.types.includes('Unknown')) {
+        return undefined;
+      }
+      return validTypes.filter((type) => {
+        return this.types.includes(type);
+      });
+    }
+    else {
+      if (!this.types.includes('Unknown')) {
+        return undefined;
+      }
+      return validTypes.filter((type) => {
+        return !this.types.includes(type);
+      });
+    }
+  },
+
+  getGenresAsIncludes(validGenres) {
+    if (this.includeGenres) {
+      if (this.genres.includes('Unknown')) {
+        return undefined;
+      }
+      return validGenres.filter((genre) => {
+        return this.genres.includes(genre);
+      });
+    }
+    else {
+      if (!this.genres.includes('Unknown')) {
+        return undefined;
+      }
+      return validGenres.filter((genre) => {
+        return !this.genres.includes(genre);
+      });
+    }
+  },
+
+  getSingleType(validTypes) {
+    if (this.includeTypes && this.types.length === 1 && validTypes.includes(this.types[0])) {
+      return this.types[0];
+    }
+    if (!this.includeTypes && this.types.length === Shows.validTypes.length) {
+      return validTypes.find((type) => {
+        return !this.types.includes(type);
+      });
+    }
+    return undefined;
+  },
+
+  getSingleGenre(validGenres) {
+    if (this.includeGenres && this.genres.length === 1 && validGenres.includes(this.genres[0])) {
+      return this.genres[0];
+    }
+    if (!this.includeGenres && this.genres.length === Shows.validGenres.length) {
+      return validGenres.find((genre) => {
+        return !this.genres.includes(genre);
+      });
+    }
+    return undefined;
   },
 
   doSearch() {

@@ -8,6 +8,13 @@ function getTypeFromName(name) {
   return name.endsWith(' (Dub)') ? 'dub' : 'sub';
 }
 
+const validTypes = ['TV', 'OVA', 'Movie', 'Special', 'ONA'];
+const validGenres = ['Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demons', 'Drama', 'Ecchi', 'Fantasy', 'Game',
+  'Harem', 'Hentai', 'Historical', 'Horror', 'Josei', 'Kids', 'Magic', 'Martial Arts', 'Mecha', 'Military', 'Music', 'Mystery',
+  'Parody', 'Police', 'Psychological', 'Romance', 'Samurai', 'School', 'Sci-Fi', 'Seinen', 'Shoujo', 'Shoujo Ai',
+  'Shounen', 'Shounen Ai', 'Slice of Life', 'Space', 'Sports', 'Super Power', 'Supernatural', 'Thriller', 'Vampire',
+  'Yaoi', 'Yuri'];
+
 export let nineanime = {
   // General data
   id: 'nineanime',
@@ -18,8 +25,30 @@ export let nineanime = {
   // Search page data
   search: {
     createUrl: function(search) {
-      // TODO: Advanced anime searching
-      return nineanime.homepage + '/search?keyword=' + encodeURIComponentReplaceSpaces(search.query ? search.query : '', '+');
+      let query = '';
+      if (search.query) {
+        query = '&keyword=' + encodeURIComponentReplaceSpaces(search.query, '+');
+      }
+
+      let types = search.getTypesAsIncludes(validTypes);
+      if (types) {
+        types = types.map((type) => {
+          return '&type[]=' + type.toLowerCase().replace('tv', 'series');
+        }).join('');
+      } else {
+        types = '';
+      }
+
+      let genres = search.getGenresAsIncludes(validGenres);
+      if (genres) {
+        genres = genres.map((genre) => {
+          return '&genre[]=' + (validGenres.indexOf(genre) + 1);
+        }).join('');
+      } else {
+        genres = '';
+      }
+
+      return nineanime.homepage + '/filter?sort=title%3Aasc' + query + types + genres;
     },
     rowSelector: 'div.film-list div.item',
     rowSkips: 0,

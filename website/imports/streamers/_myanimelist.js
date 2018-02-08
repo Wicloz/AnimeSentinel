@@ -23,29 +23,23 @@ export let myanimelist = {
     createUrl: function(search) {
       let query = '';
       if (search.query) {
-        let filler = search.query.length < 3 ? ' '.repeat(3 - search.query.length) : '';
-        query = '&q=' + encodeURIComponentReplaceSpaces(search.query + filler, '+');
+        query = '&q=' + encodeURIComponentReplaceSpaces(search.completeQuery(3, ' '), '+');
       }
 
       let type = '';
-      if (search.includeTypes && search.types && search.types.length === 1 && search.types[0] !== 'Unknown') {
-        type = '&type=' + (validTypes.indexOf(search.types[0]) + 1);
-      }
-      else if (!search.includeTypes && search.types.length === validTypes.length && search.types.includes('Unknown')) {
-        type = '&type=' + (validTypes.findIndex((type) => {
-          return !search.types.includes(type);
-        }) + 1);
+      if (search.getSingleType(validTypes)) {
+        type = '&type=' + (validTypes.indexOf(search.getSingleType(validTypes)) + 1);
       }
 
       let exclude = '&gx=1';
       let genres = [12];
-      if (search.includeGenres && search.genres && search.genres.length === 1 && search.genres[0] !== 'Unknown') {
+      if (search.includeGenres && search.getSingleGenre(validGenres)) {
         exclude = '';
-        genres = [validGenres.indexOf(search.genres[0]) + 1];
+        genres = [validGenres.indexOf(search.getSingleGenre(validGenres)) + 1];
       }
-      else if (!search.includeGenres && search.genres && !search.genres.empty()) {
+      else if (!search.includeGenres && !search.genres.empty()) {
         genres = genres.concat(search.genres.filter((genre) => {
-          return genre !== 'Unknown';
+          return validGenres.includes(genre);
         }).map((genre) => {
           return validGenres.indexOf(genre) + 1;
         }));

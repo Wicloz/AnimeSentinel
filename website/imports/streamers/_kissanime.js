@@ -11,6 +11,11 @@ function getTypeFromName(name) {
 }
 
 const validTypes = ['OVA', 'Movie', 'Special', 'ONA'];
+const validGenres = ['Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demons', 'Mystery', 'Drama', 'Ecchi',
+  'Fantasy', 'Game', 'Historical', 'Horror', 'Kids', 'Magic', 'Martial Arts', 'Mecha', 'Music', 'Parody', 'Samurai',
+  'Romance', 'School', 'Sci-Fi', 'Shoujo', 'Shoujo Ai', 'Shounen', 'Shounen Ai', 'Space', 'Sports', 'Super Power',
+  'Vampire', 'Yaoi', 'Yuri', 'Harem', 'Slice of Life', 'Supernatural', 'Military', 'Police', 'Psychological',
+  'Thriller', 'Seinen', 'Josei'];
 
 export let kissanime = {
   // General data
@@ -23,18 +28,16 @@ export let kissanime = {
   search: {
     createUrl: function(search) {
       if (search.query) {
-        let filler = search.query.length < 2 ? search.query : '';
-        return kissanime.homepage + '/Search/Anime?keyword=' + encodeURIComponentReplaceSpaces(search.query + filler, '+');
+        return kissanime.homepage + '/Search/Anime?keyword=' + encodeURIComponentReplaceSpaces(search.completeQuery(2, search.query), '+');
       }
 
-      // TODO: Advanced anime searching
-      // else if (search.includeTypes && search.types && search.types.length === 1 && validTypes.includes(search.types[0])) {
-      //   return kissanime.homepage + '/Genre/' + search.types[0];
-      // }
-      //
-      // else if (search.includeGenres && search.genres && search.genres.length === 1 && search.genres[0] !== 'Unknown') {
-      //   return kissanime.homepage + '/Genre/' + search.genres[0].replace(/\s/g, '-');
-      // }
+      else if (search.getSingleType(validTypes)) {
+        return kissanime.homepage + '/Genre/' + search.getSingleType(validTypes);
+      }
+
+      else if (search.getSingleGenre(validGenres)) {
+        return kissanime.homepage + '/Genre/' + search.getSingleGenre(validGenres).replace(/\s/g, '-');
+      }
 
       else {
         return kissanime.homepage + '/AnimeList';
