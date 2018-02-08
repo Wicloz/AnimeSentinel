@@ -3,6 +3,7 @@ import SimpleSchema from 'simpl-schema';
 import Streamers from "../../streamers/streamers";
 import {Episodes} from "../episodes/episodes";
 import {Thumbnails} from '../thumbnails/thumbnails';
+import ScrapingHelpers from '../../streamers/scrapingHelpers';
 
 // Collection
 export const Shows = new Mongo.Collection('shows');
@@ -285,8 +286,14 @@ Shows.helpers({
           })
         });
 
-        // TODO: Merge and remove duplicate shows
-        // TODO: Move episodes
+        // Merge duplicate shows
+        let others = ScrapingHelpers.queryMatchingShows(Shows, this);
+        others.forEach((other) => {
+          if (other._id !== this._id) {
+            console.log(other);
+            this.mergePartialShow(other);
+          }
+        })
 
       }, (partial, episodes) => {
 
@@ -307,7 +314,7 @@ Shows.addPartialShow = function(show, episodes) {
   let ids = [];
 
   // Grab matching shows from database
-  let others = Shows.queryMatchingAltsMalId(show.altNames, show.malId);
+  let others = ScrapingHelpers.queryMatchingShows(Shows, show);
 
   // Merge if shows were found
   if (others.count()) {
@@ -352,15 +359,6 @@ Shows.addPartialShow = function(show, episodes) {
 
   // Return ids
   return ids;
-};
-
-Shows.prepareAltForMatching = function(altName) {
-  // allow matching of 'and', 'to' and 'und' to each other
-  // allow matching of '&' to synonymous words
-  // allow matching of ': ' to ' '
-  let regex = '^' + RegExp.escape(altName).replace(/((?:\\:)? ?)\band\b((?:\\:)? ?)|((?:\\:)? ?)\bund\b((?:\\:)? ?)|((?:\\:)? ?)\bto\b((?:\\:)? ?)|((?:\\:)? ?)&((?:\\:)? ?)/g, '(?:$1$3$5$7 ?and ?$2$4$6$8|$1$3$5$7 ?und ?$2$4$6$8|$1$3$5$7 ?to ?$2$4$6$8|(?:$1$3$5$7)?&(?:$2$4$6$8)?)').replace(/\\: | /g, '(?:\\: | )') + '$';
-  // allow case insensitive matching
-  return new RegExp(regex, 'i');
 };
 
 // Methods
@@ -462,49 +460,4 @@ Shows.querySearch = function(search, limit) { // TODO: Improve searching
 
   // Return results cursor
   return Shows.find(selector, options);
-};
-
-Shows.queryMatchingAltsMalId = function(names, malId) {
-  // Validate
-  new SimpleSchema({
-    names: {
-      type: Array,
-      minCount: 1
-    },
-    'names.$': {
-      type: String
-    },
-    malId: {
-      type: SimpleSchema.Integer,
-      optional: true
-    }
-  }).validate({
-    names: names,
-    malId: malId
-  });
-
-  // Process names to regex
-  names = names.map((name) => {
-    return Shows.prepareAltForMatching(name);
-  });
-
-  // Return results cursor
-  if (typeof malId === 'undefined') {
-    return Shows.find({
-      altNames: {
-        $in: names
-      }
-    });
-  } else {
-    return Shows.find({
-      $or: [{
-        altNames: {
-          $in: names
-        },
-        malId: undefined
-      }, {
-        malId: malId
-      }]
-    });
-  }
 };

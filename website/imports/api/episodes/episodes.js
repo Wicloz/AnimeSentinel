@@ -186,11 +186,8 @@ Episodes.helpers({
 
   moveToShow(showId) {
     this.showId = showId;
-    Episodes.update(this._id, {
-      $set: {
-        showId: this.showId
-      }
-    });
+    Episodes.addEpisode(this);
+    Episodes.remove(this._id);
   }
 });
 

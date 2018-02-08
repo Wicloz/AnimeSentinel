@@ -5,6 +5,7 @@ import { kissanime } from './_kissanime';
 import { nineanime } from './_nineanime';
 import {Thumbnails} from '../api/thumbnails/thumbnails';
 import {Searches} from '../api/searches/searches';
+import ScrapingHelpers from './scrapingHelpers';
 
 let streamers = [myanimelist, kissanime, nineanime];
 
@@ -357,6 +358,8 @@ class TempShow {
     this.altNames = oldShow.altNames;
     this.currentAltNameIndex = 0;
     this.searchWithCurrentAltLooping = false;
+
+    this.tempResultStorage = new Mongo.Collection(null);
   }
 
   isStreamerDone(streamer) {
@@ -389,6 +392,10 @@ class TempShow {
     }).map((streamer) => {
       return streamer.id;
     });
+  }
+
+  isShowValid() {
+    return Schemas.Show.newContext().validate(this.newShow);
   }
 
   start() {
@@ -471,13 +478,11 @@ class TempShow {
 
     }, (partial, episodes, fromShowPage) => {
 
+      // Add result to temporary storage
+      let tempId = this.tempResultStorage.insert(partial);
+
       // If the partial matches this show
-      if (partial.altNames.some((resultAltName) => {
-          resultAltName = Shows.prepareAltForMatching(resultAltName);
-          return this.altNames.some((thisAltName) => {
-            return thisAltName.match(resultAltName);
-          });
-        })) {
+      if (this.isShowValid() && ScrapingHelpers.queryMatchingShows(this.tempResultStorage, this.newShow).count()) {
 
         if (fromShowPage) {
           // Mark as started and process
@@ -500,6 +505,9 @@ class TempShow {
       else {
         this.partialCallback(partial, episodes);
       }
+
+      // Remove temporary result from storage
+      this.tempResultStorage.remove(tempId);
 
     }, this.getStreamerIdsDone());
   }
@@ -553,7 +561,7 @@ class TempShow {
 
     // Store as partial show
     try {
-      if (Schemas.Show.newContext().validate(this.newShow)) {
+      if (this.isShowValid()) {
         this.partialCallback(this.newShow);
       }
     } catch (err) {
