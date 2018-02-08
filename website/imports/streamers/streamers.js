@@ -42,7 +42,7 @@ export default class Streamers {
     if (streamer[type].attributes.genres) {
       show.genres = streamer[type].attributes.genres(cheerioRow, cheerioPage);
       if (show.genres && show.genres.map((genre) => {
-        return genre.cleanWhitespace();
+          return genre.cleanWhitespace();
         }).includes('Hentai')) {
         return false; // Reject hentai shows
       }
