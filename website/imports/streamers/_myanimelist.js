@@ -22,19 +22,19 @@ export let myanimelist = {
   search: {
     createUrl: function(search) {
       let query = '';
-      if (search.query && search.query.length >= 1) {
+      if (search.query) {
         let filler = search.query.length < 3 ? ' '.repeat(3 - search.query.length) : '';
         query = '&q=' + encodeURIComponentReplaceSpaces(search.query + filler, '+');
       }
 
       let type = '';
       if (search.includeTypes && search.types && search.types.length === 1 && search.types[0] !== 'Unknown') {
-        type = '&type=' + validTypes.indexOf(search.types[0]) + 1;
+        type = '&type=' + (validTypes.indexOf(search.types[0]) + 1);
       }
       else if (!search.includeTypes && search.types.length === validTypes.length && search.types.includes('Unknown')) {
-        type = '&type=' + validTypes.findIndex((type) => {
+        type = '&type=' + (validTypes.findIndex((type) => {
           return !search.types.includes(type);
-        }) + 1;
+        }) + 1);
       }
 
       let exclude = '&gx=1';
