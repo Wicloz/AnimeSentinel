@@ -280,13 +280,13 @@ export default class Streamers {
   }
 
   static getSearchResults(url, streamer, logData, resultCallback) {
-    downloadWithCallback(url, (html) => {
+    startDownloadWithCallback(url, (html) => {
       resultCallback(this.processSearchPage(html, streamer, logData));
     });
   }
 
   static getShowResults(url, streamer, logData, resultCallback) {
-    downloadWithCallback(url, (html) => {
+    startDownloadWithCallback(url, (html) => {
       resultCallback(this.processShowPage(html, streamer, logData));
     });
   }

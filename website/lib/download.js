@@ -8,7 +8,11 @@ function isStatusCodeSuccess(statusCode) {
   return statusCode.length === 3 && (statusCode.startsWith('1') || statusCode.startsWith('2') || statusCode.startsWith('3'));
 }
 
-downloadWithCallback = async function(url, callback, tries=1) {
+startDownloadWithCallback = async function(url, callback) {
+  _.delay(Meteor.bindEnvironment(downloadWithCallback), Math.random() * 200, url, callback);
+};
+
+function downloadWithCallback(url, callback, tries=1) {
   // TODO: Fix database stuff so the client can download too
   // if (Meteor.isServer || Session.get('AddOnInstalled')) {
 
@@ -43,7 +47,7 @@ downloadWithCallback = async function(url, callback, tries=1) {
       console.error(err);
     });
   }
-};
+}
 
 function tryNextDownloadWithCallback(url, callback, tries, err) {
   if (tries >= 4) {
@@ -51,11 +55,15 @@ function tryNextDownloadWithCallback(url, callback, tries, err) {
     console.error(err);
     callback(false);
   } else {
-    _.delay(Meteor.bindEnvironment(downloadWithCallback), 200, url, callback, tries + 1);
+    _.delay(Meteor.bindEnvironment(downloadWithCallback), 1000, url, callback, tries + 1);
   }
 }
 
-downloadToStream = async function(url, callback, tries=1) {
+startDownloadToStream = async function(url, callback) {
+  _.delay(Meteor.bindEnvironment(downloadToStream), Math.random() * 200, url, callback);
+};
+
+function downloadToStream(url, callback, tries=1) {
   url = encodeURI(url).replace(/%25/g, '%');
 
   if (Meteor.isDevelopment) {
@@ -86,7 +94,7 @@ downloadToStream = async function(url, callback, tries=1) {
   on('error', Meteor.bindEnvironment((err) => {
     tryNextDownloadToStream(url, callback, tries, err);
   }));
-};
+}
 
 function tryNextDownloadToStream(url, callback, tries, err) {
   if (tries >= 4) {
@@ -94,6 +102,6 @@ function tryNextDownloadToStream(url, callback, tries, err) {
     console.error(err);
     callback(false, false, false);
   } else {
-    _.delay(Meteor.bindEnvironment(downloadToStream), 200, url, callback, tries + 1);
+    _.delay(Meteor.bindEnvironment(downloadToStream), 1000, url, callback, tries + 1);
   }
 }
