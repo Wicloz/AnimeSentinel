@@ -1,5 +1,5 @@
 <template name="components_image">
-  {{#if getLoaded}}
+  {{#if getAppeared}}
     <img src="{{src}}" class="{{class}}" data-caption="{{caption}}" alt="{{caption}}" id="{{getId}}">
   {{else}}
     <div class="image-detector" id="image-detector-{{getId}}" data-appear-top-offset="200" data-appear-left-offset="200">

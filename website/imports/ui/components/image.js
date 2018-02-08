@@ -1,8 +1,8 @@
 import './image.html';
 
 Template.components_image.helpers({
-  getLoaded() {
-    return Template.instance().state.get('loaded');
+  getAppeared() {
+    return Template.instance().state.get('appeared');
   },
 
   getId() {
@@ -13,7 +13,7 @@ Template.components_image.helpers({
 Template.components_image.events({
   'appear .image-detector'(event) {
     if ($(event.target).attr('id') === 'image-detector-' + Template.instance().state.get('id')) {
-      Template.instance().state.set('loaded', true);
+      Template.instance().state.set('appeared', true);
     }
   }
 });
@@ -21,7 +21,7 @@ Template.components_image.events({
 Template.components_image.onCreated(function () {
   this.state = new ReactiveDict();
   this.state.setDefault({
-    loaded: false,
+    appeared: false,
     id: undefined
   });
 
@@ -34,7 +34,7 @@ Template.components_image.onCreated(function () {
   });
 
   this.autorun(() => {
-    if (this.state.get('loaded') && Template.currentData().class.split(' ').includes('materialboxed')) {
+    if (this.state.get('appeared') && Template.currentData().class.split(' ').includes('materialboxed')) {
       let temp = Template.currentData().caption;
       Tracker.afterFlush(() => {
         $('#' + this.state.get('id')).materialbox();

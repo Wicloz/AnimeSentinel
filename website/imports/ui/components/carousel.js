@@ -1,8 +1,8 @@
 import './carousel.html';
 
 Template.components_carousel.helpers({
-  getLoaded() {
-    return Template.instance().state.get('loaded');
+  getAppeared() {
+    return Template.instance().state.get('appeared');
   },
 
   getId() {
@@ -13,7 +13,7 @@ Template.components_carousel.helpers({
 Template.components_carousel.events({
   'appear .carousel-detector'(event) {
     if ($(event.target).attr('id') === 'carousel-detector-' + Template.instance().state.get('id')) {
-      Template.instance().state.set('loaded', true);
+      Template.instance().state.set('appeared', true);
     }
   }
 });
@@ -21,7 +21,7 @@ Template.components_carousel.events({
 Template.components_carousel.onCreated(function () {
   this.state = new ReactiveDict();
   this.state.setDefault({
-    loaded: false,
+    appeared: false,
     id: undefined
   });
 
@@ -34,7 +34,7 @@ Template.components_carousel.onCreated(function () {
   });
 
   this.autorun(() => {
-    if (this.state.get('loaded')) {
+    if (this.state.get('appeared')) {
       let temp = Template.currentData().images;
       Tracker.afterFlush(() => {
         let carouselElement = $('#' + this.state.get('id'));
