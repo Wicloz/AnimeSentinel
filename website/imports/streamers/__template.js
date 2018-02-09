@@ -15,6 +15,9 @@ export let template = {
 
     // Search page attribute data
     attributes: {
+      malId: function(partial, full) {
+        return '';
+      },
       streamerUrls: function(partial, full) {
         return [{
           type: '',
@@ -35,9 +38,6 @@ export let template = {
       },
       genres: function(partial, full) {
         return [];
-      },
-      malId: function(partial, full) {
-        return '';
       },
     },
 
@@ -58,6 +58,9 @@ export let template = {
 
     // Show page attribute data
     attributes: {
+      malId: function(partial, full) {
+        return '';
+      },
       streamerUrls: function(partial, full) {
         return [{
           type: '',
@@ -78,9 +81,6 @@ export let template = {
       },
       genres: function(partial, full) {
         return [];
-      },
-      malId: function(partial, full) {
-        return '';
       },
     },
 
@@ -102,6 +102,9 @@ export let template = {
 
     // Related shows attribute data
     attributes: {
+      malId: function(partial, full) {
+        return '';
+      },
       streamerUrls: function(partial, full) {
         return [{
           type: '',
@@ -122,9 +125,6 @@ export let template = {
       },
       genres: function(partial, full) {
         return [];
-      },
-      malId: function(partial, full) {
-        return '';
       },
     },
 

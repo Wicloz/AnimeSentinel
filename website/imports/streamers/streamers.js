@@ -57,6 +57,11 @@ export default class Streamers {
       return streamerUrl;
     });
 
+    // Get 'malId'
+    if (streamer[type].attributes.malId) {
+      show.malId = streamer[type].attributes.malId(cheerioRow, cheerioPage);
+    }
+
     // Get 'name'
     show.name = streamer[type].attributes.name(cheerioRow, cheerioPage);
     // Get 'altNames'
@@ -70,10 +75,6 @@ export default class Streamers {
     // Get 'description'
     if (streamer[type].attributes.description) {
       show.description = streamer[type].attributes.description(cheerioRow, cheerioPage);
-    }
-    // Get 'malId'
-    if (streamer[type].attributes.malId) {
-      show.malId = streamer[type].attributes.malId(cheerioRow, cheerioPage);
     }
 
     // Get thumbnail urls

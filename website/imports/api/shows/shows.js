@@ -30,11 +30,13 @@ Schemas.Show = new SimpleSchema({
     type: Date,
     optional: true
   },
+
   malId: {
     type: SimpleSchema.Integer,
     optional: true,
     index: true
   },
+
   streamerUrls: {
     type: Array,
     minCount: 1,
@@ -70,6 +72,7 @@ Schemas.Show = new SimpleSchema({
     optional: true,
     defaultValue: false
   },
+
   name: {
     type: String
   },

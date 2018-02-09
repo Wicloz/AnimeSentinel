@@ -52,6 +52,9 @@ export let myanimelist = {
 
     // Search page attribute data
     attributes: {
+      malId: function(partial, full) {
+        return getMalIdFromUrl(partial.find('td a.hoverinfo_trigger').attr('href'));
+      },
       streamerUrls: function(partial, full) {
         return [{
           type: 'details',
@@ -69,9 +72,6 @@ export let myanimelist = {
       },
       type: function(partial, full) {
         return partial.find('td[width=45]').text().replace(/Unknown/g, '');
-      },
-      malId: function(partial, full) {
-        return getMalIdFromUrl(partial.find('td a.hoverinfo_trigger').attr('href'));
       },
     },
 
@@ -92,6 +92,9 @@ export let myanimelist = {
 
     // Show page attribute data
     attributes: {
+      malId: function(partial, full) {
+        return getMalIdFromUrl(partial.find('div#horiznav_nav ul li:first-of-type a').attr('href'));
+      },
       streamerUrls: function(partial, full) {
         let urls = [{
           type: 'details',
@@ -142,9 +145,6 @@ export let myanimelist = {
           return partial.find(element).text();
         }).get();
       },
-      malId: function(partial, full) {
-        return getMalIdFromUrl(partial.find('div#horiznav_nav ul li:first-of-type a').attr('href'));
-      },
     },
 
     // Show page thumbnail data
@@ -165,6 +165,9 @@ export let myanimelist = {
 
     // Related shows attribute data
     attributes: {
+      malId: function(partial, full) {
+        return getMalIdFromUrl(partial.attr('href'));
+      },
       streamerUrls: function(partial, full) {
         return [{
           type: 'details',
@@ -176,9 +179,6 @@ export let myanimelist = {
       },
       name: function(partial, full) {
         return partial.text();
-      },
-      malId: function(partial, full) {
-        return getMalIdFromUrl(partial.attr('href'));
       },
     },
   },
