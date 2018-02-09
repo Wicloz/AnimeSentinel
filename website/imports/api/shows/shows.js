@@ -4,6 +4,7 @@ import Streamers from "../../streamers/streamers";
 import {Episodes} from "../episodes/episodes";
 import {Thumbnails} from '../thumbnails/thumbnails';
 import ScrapingHelpers from '../../streamers/scrapingHelpers';
+import moment from 'moment-timezone';
 
 // Collection
 export const Shows = new Mongo.Collection('shows');

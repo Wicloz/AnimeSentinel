@@ -13,6 +13,7 @@
     "gm": "^1.23.1",
     "materialize-css": "^0.100.2",
     "meteor-node-stubs": "^0.3.2",
+    "moment-timezone": "^0.5.14",
     "request": "^2.83.0",
     "simpl-schema": "^1.4.2",
     "spawn-sync": "^1.0.15",

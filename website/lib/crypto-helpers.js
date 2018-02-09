@@ -5,5 +5,5 @@ createWeakHash = function (data) {
 };
 
 createUniqueId = function() {
-  return createWeakHash(moment().valueOf() + Math.random());
+  return createWeakHash(Date.now() + Math.random());
 };
