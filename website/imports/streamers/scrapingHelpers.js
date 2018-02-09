@@ -33,9 +33,7 @@ export default class ScrapingHelpers {
       }
     });
     orBits.push({
-      altNames: {
-        $regex: name
-      }
+      altNames: name
     });
 
     if (typeof show.malId !== 'undefined') {
