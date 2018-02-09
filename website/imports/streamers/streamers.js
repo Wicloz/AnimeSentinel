@@ -77,7 +77,7 @@ export default class Streamers {
       show.description = streamer[type].attributes.description(cheerioRow, cheerioPage);
     }
 
-    // Get thumbnail urls
+    // Get 'thumbnails'
     if (streamer[type].thumbnails) {
       show.thumbnails = [];
       cheerioRow.find(streamer[type].thumbnails.rowSelector).each((index, element) => {

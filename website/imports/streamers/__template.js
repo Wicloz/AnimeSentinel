@@ -3,7 +3,7 @@ export let template = {
   id: '',
   name: '',
   homepage: '',
-  minimalPageTypes: [],
+  minimalPageTypes: [''],
 
   // Search page data
   search: {
@@ -16,7 +16,7 @@ export let template = {
     // Search page attribute data
     attributes: {
       malId: function(partial, full) {
-        return '';
+        return 0;
       },
       streamerUrls: function(partial, full) {
         return [{
@@ -28,7 +28,7 @@ export let template = {
         return '';
       },
       altNames: function(partial, full) {
-        return [];
+        return [''];
       },
       description: function(partial, full) {
         return '';
@@ -37,7 +37,7 @@ export let template = {
         return '';
       },
       genres: function(partial, full) {
-        return [];
+        return [''];
       },
     },
 
@@ -59,7 +59,7 @@ export let template = {
     // Show page attribute data
     attributes: {
       malId: function(partial, full) {
-        return '';
+        return 0;
       },
       streamerUrls: function(partial, full) {
         return [{
@@ -71,7 +71,7 @@ export let template = {
         return '';
       },
       altNames: function(partial, full) {
-        return [];
+        return [''];
       },
       description: function(partial, full) {
         return '';
@@ -80,7 +80,7 @@ export let template = {
         return '';
       },
       genres: function(partial, full) {
-        return [];
+        return [''];
       },
     },
 
@@ -103,7 +103,7 @@ export let template = {
     // Related shows attribute data
     attributes: {
       malId: function(partial, full) {
-        return '';
+        return 0;
       },
       streamerUrls: function(partial, full) {
         return [{
@@ -115,7 +115,7 @@ export let template = {
         return '';
       },
       altNames: function(partial, full) {
-        return [];
+        return [''];
       },
       description: function(partial, full) {
         return '';
@@ -124,7 +124,7 @@ export let template = {
         return '';
       },
       genres: function(partial, full) {
-        return [];
+        return [''];
       },
     },
 
@@ -146,10 +146,10 @@ export let template = {
     // Episode list attribute data
     attributes: {
       episodeNumStart: function(partial, full) {
-        return '';
+        return 0;
       },
       episodeNumEnd: function(partial, full) {
-        return '';
+        return 0;
       },
       translationType: function(partial, full) {
         return '';
@@ -161,7 +161,7 @@ export let template = {
         return [{
           name: '',
           url: '',
-          flags: []
+          flags: ['']
         }];
       },
     },
