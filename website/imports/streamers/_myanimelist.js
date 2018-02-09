@@ -128,7 +128,7 @@ export let myanimelist = {
         return partial.find('div#contentWrapper div:first-of-type h1 span').text();
       },
       altNames: function(partial, full) {
-        return partial.find('td.borderClass div.js-scrollfix-bottom').find('div.spaceit_pad').map((index, element) => {
+        return partial.find('td.borderClass div.js-scrollfix-bottom div.spaceit_pad').map((index, element) => {
           let altNames = partial.find(element);
           altNames.find('span').remove();
           return altNames.text().split(', ');
