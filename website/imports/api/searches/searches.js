@@ -58,7 +58,7 @@ Schemas.Search = new SimpleSchema({
     type: Boolean,
     index: true,
     optional: true,
-    defaultValue: false,
+    defaultValue: true,
     autoform: {
       type: 'switch',
       trueLabel: 'Include',
@@ -85,7 +85,7 @@ Schemas.Search = new SimpleSchema({
     type: Boolean,
     index: true,
     optional: true,
-    defaultValue: false,
+    defaultValue: true,
     autoform: {
       type: 'switch',
       trueLabel: 'Include',
