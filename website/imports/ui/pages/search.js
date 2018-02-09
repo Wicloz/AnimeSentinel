@@ -57,6 +57,7 @@ Template.pages_search.onCreated(function() {
 
 Template.pages_search.onRendered(function() {
   $('#load-more-results').appear();
+  $('.collapsible').collapsible();
 });
 
 Template.pages_search.helpers({
