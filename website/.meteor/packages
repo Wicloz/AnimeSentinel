@@ -37,9 +37,10 @@ mozfet:materialize-icons
 mozfet:autoform-materialize
 aldeed:autoform
 
+cfs:standard-packages
+cfs:gridfs
+
 johnantoni:meteor-appear
 awatson1978:browser-detection
 meteorhacks:inject-initial
-
-cfs:standard-packages
-cfs:gridfs
+mixmax:smart-disconnect

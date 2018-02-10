@@ -19,6 +19,7 @@ Schemas.Episode = new SimpleSchema({
     type: Date,
     optional: true
   },
+
   showId: {
     type: String,
     index: true
@@ -37,8 +38,10 @@ Schemas.Episode = new SimpleSchema({
     index: true
   },
   streamerId: {
-    type: String
+    type: String,
+    index: true
   },
+
   sourceUrl: {
     type: String
   },
