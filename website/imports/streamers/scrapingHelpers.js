@@ -15,27 +15,34 @@ export default class ScrapingHelpers {
   }
 
   static queryMatchingShows(collection, show, id=undefined) {
-    // Validate
-    Schemas.Show.validate(show);
-
-    // Process names to regex
-    let altNames = show.altNames.map((altName) => {
-      return this.prepareAltForMatching(altName);
-    });
-    let name = this.prepareAltForMatching(show.name);
-
     // Create query bits
-    let orBits = [];
+    let orBits = [{
+      $and: [{
+        _id: {$exists: false}
+      }, {
+        _id: {$exists: true}
+      }]
+    }];
 
-    orBits.push({
-      name: {
-        $in: altNames
-      }
-    });
-    orBits.push({
-      altNames: name
-    });
+    // Test with 'altNames'
+    if (show.altNames) {
+      orBits.push({
+        name: {
+          $in: show.altNames.map((altName) => {
+            return this.prepareAltForMatching(altName);
+          })
+        }
+      });
+    }
 
+    // Test with 'name'
+    if (show.name) {
+      orBits.push({
+        altNames: this.prepareAltForMatching(show.name)
+      });
+    }
+
+    // Test with 'malId'
     if (typeof show.malId !== 'undefined') {
       orBits = orBits.map((orBit) => {
         orBit.malId = {

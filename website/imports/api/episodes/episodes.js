@@ -187,8 +187,8 @@ Episodes.helpers({
 
   moveToShow(showId) {
     this.showId = showId;
-    Episodes.addEpisode(this);
     Episodes.remove(this._id);
+    Episodes.addEpisode(this);
   }
 });
 
