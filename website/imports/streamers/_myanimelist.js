@@ -71,7 +71,7 @@ export let myanimelist = {
         return ScrapingHelpers.replaceDescriptionCutoff(partial.find('td div.pt4').text(), '...read more.');
       },
       type: function(partial, full) {
-        return partial.find('td[width=45]').text().replace(/Unknown/g, '');
+        return partial.find('td:nth-of-type(3)').text().replace(/Unknown/g, '');
       },
     },
 
