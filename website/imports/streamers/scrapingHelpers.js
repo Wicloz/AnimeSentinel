@@ -1,8 +1,86 @@
 import {Shows} from "../api/shows/shows";
+import moment from 'moment-timezone';
 
 export default class ScrapingHelpers {
   static replaceDescriptionCutoff(description, oldCutoff) {
     return description.replaceEnd(oldCutoff, Shows.descriptionCutoff);
+  }
+
+  static buildAiringDate(timezone, build) {
+    let airingDateResult = {};
+    let airingDateMoment = moment.tz(timezone);
+
+    build(airingDateResult, airingDateMoment);
+
+    if (airingDateResult.hour) {
+      airingDateMoment.tz('UTC');
+    }
+
+    Object.keys(airingDateResult).forEach((key) => {
+      if (airingDateResult[key]) {
+        airingDateResult[key] = airingDateMoment.get(key);
+        if (key === 'month') {
+          airingDateResult[key]++;
+        }
+      }
+    });
+
+    return airingDateResult;
+  }
+
+  static buildAiringDateFromStandardStrings(timezone, index, stringDates, stringSeason, stringDay, stringTime) {
+    if (!timezone) {
+      timezone = 'UTC';
+    }
+
+    return ScrapingHelpers.buildAiringDate(timezone, (airingDateResult, airingDateMoment) => {
+
+      if (stringDates) {
+        let stringDatesBits = stringDates.cleanWhitespace().split(' to ');
+        if (stringDatesBits[0]) {
+          let stringDatesBitsBits = stringDatesBits[stringDatesBits.length === 2 ? index : 0].replace(/,/g, '').split(' ');
+          if (stringDatesBitsBits.length >= 1 && !stringDatesBitsBits[stringDatesBitsBits.length - 1].includes('?')) {
+            airingDateMoment.year(stringDatesBitsBits[stringDatesBitsBits.length - 1]);
+            airingDateResult.year = true;
+          }
+          if (stringDatesBitsBits.length >= 2 && !stringDatesBitsBits[0].includes('?')) {
+            airingDateMoment.month(stringDatesBitsBits[0]);
+            airingDateResult.month = true;
+          }
+          if (stringDatesBitsBits.length >= 3 && !stringDatesBitsBits[1].includes('?')) {
+            airingDateMoment.date(stringDatesBitsBits[1]);
+            airingDateResult.date = true;
+          }
+        }
+      }
+
+      if (stringSeason && index === 0) {
+        let stringSeasonBits = stringSeason.cleanWhitespace().split(' ');
+        if (stringSeasonBits.length === 2) {
+          if (!airingDateResult.year) {
+            airingDateMoment.year(stringSeasonBits[1]);
+            airingDateResult.year = true;
+          }
+          if (!airingDateResult.month) {
+            airingDateMoment.quarter(Shows.validQuarters.indexOf(stringSeasonBits[0]) + 1);
+            airingDateResult.month = true;
+          }
+        }
+      }
+
+      if (stringDay && !airingDateResult.date && airingDateResult.month && airingDateResult.year) {
+        airingDateMoment.day(stringDay);
+        airingDateResult.date = true;
+      }
+
+      if (stringTime && airingDateResult.date && airingDateResult.month && airingDateResult.year) {
+        airingDateMoment.hour(stringTime.split(':')[0]);
+        airingDateResult.hour = true;
+        airingDateMoment.minute(stringTime.split(':')[1]);
+        airingDateResult.minute = true;
+      }
+
+    });
   }
 
   static prepareAltForMatching(altName) {

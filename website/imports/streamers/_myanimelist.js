@@ -1,7 +1,50 @@
 import ScrapingHelpers from "./scrapingHelpers";
+import moment from 'moment-timezone';
 
 function getMalIdFromUrl(url) {
   return url.replace(/^.*\/(\d+)\/.*$/, '$1');
+}
+
+function determineAiringDateShowPage(partial, index) {
+  let stringDay = undefined;
+  let stringTime = undefined;
+  let broadcastBits = partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Broadcast:")').text().replace('Broadcast:', '').cleanWhitespace().split(' ');
+  if (broadcastBits.length === 4) {
+    stringDay = broadcastBits[0];
+    stringTime = broadcastBits[2];
+  }
+
+  return ScrapingHelpers.buildAiringDateFromStandardStrings(
+    'Asia/Tokyo',
+    index,
+    partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Aired:")').text().replace('Aired:', ''),
+    partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Premiered:") a').text(),
+    stringDay,
+    stringTime
+  );
+}
+
+function determineAiringDateSearchPage(string) {
+  let airingDateResult = {};
+
+  let dateBits = string.split('-');
+  if (dateBits.length === 3) {
+    if (!dateBits[0].includes('?')) {
+      airingDateResult.month = dateBits[0];
+    }
+    if (!dateBits[1].includes('?')) {
+      airingDateResult.date = dateBits[1];
+    }
+    if (!dateBits[2].includes('?')) {
+      let prepend = Math.floor(moment().year() / 100);
+      if (dateBits[2] > moment().year() % 100 + 10) {
+        prepend--;
+      }
+      airingDateResult.year = prepend + dateBits[2];
+    }
+  }
+
+  return airingDateResult;
 }
 
 const validTypes = ['TV', 'OVA', 'Movie', 'Special', 'ONA'];
@@ -72,6 +115,12 @@ export let myanimelist = {
       },
       type: function(partial, full) {
         return partial.find('td:nth-of-type(3)').text().replace(/Unknown/g, '');
+      },
+      airedStart: function(partial, full) {
+        return determineAiringDateSearchPage(partial.find('td:nth-of-type(6)').text());
+      },
+      airedEnd: function(partial, full) {
+        return determineAiringDateSearchPage(partial.find('td:nth-of-type(7)').text());
       },
     },
 
@@ -144,6 +193,22 @@ export let myanimelist = {
         return partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Genres:") a').map((index, element) => {
           return partial.find(element).text();
         }).get();
+      },
+      airedStart: function(partial, full) {
+        return determineAiringDateShowPage(partial, 0);
+      },
+      airedEnd: function(partial, full) {
+        return determineAiringDateShowPage(partial, 1);
+      },
+      season: function(partial, full) {
+        let bits = partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Premiered:") a').text().split(' ');
+        if (bits.length === 2) {
+          return {
+            quarter: bits[0],
+            year: bits[1]
+          };
+        }
+        return undefined;
       },
     },
 

@@ -1,4 +1,5 @@
 import {Shows} from '../api/shows/shows';
+import ScrapingHelpers from './scrapingHelpers';
 
 function cleanName(name) {
   return name.replace(/ \(Dub\)$/, '').replace(/ \(Sub\)$/, '');
@@ -6,6 +7,25 @@ function cleanName(name) {
 
 function getTypeFromName(name) {
   return name.endsWith(' (Dub)') ? 'dub' : 'sub';
+}
+
+function determineAiringDateShowPage(partial, index) {
+  let stringTime = undefined;
+  let episodes = partial.find('div.widget.servers div.widget-body div.server.active ul li a');
+  if (index) {
+    stringTime = episodes.last().attr('data-title').split(' - ')[1];
+  } else {
+    stringTime = episodes.first().attr('data-title').split(' - ')[1];
+  }
+
+  return ScrapingHelpers.buildAiringDateFromStandardStrings(
+    'EST',
+    index,
+    partial.find('div.info div.row dl:first-of-type dt:contains("Date aired:")').next().text().replace('Date aired:', ''),
+    partial.find('div.info div.row dl:last-of-type dt:contains("Premiered:")').next().find('a').text(),
+    undefined,
+    stringTime
+  );
 }
 
 const validTypes = ['TV', 'OVA', 'Movie', 'Special', 'ONA'];
@@ -116,6 +136,22 @@ export let nineanime = {
         }).get().filter((genre) => {
           return genre !== 'add some';
         });
+      },
+      airedStart: function(partial, full) {
+        return determineAiringDateShowPage(partial, 0);
+      },
+      airedEnd: function(partial, full) {
+        return determineAiringDateShowPage(partial, 1);
+      },
+      season: function(partial, full) {
+        let bits = partial.find('div.info div.row dl:last-of-type dt:contains("Premiered:")').next().find('a').text().split(' ');
+        if (bits.length === 2) {
+          return {
+            quarter: bits[0],
+            year: bits[1]
+          };
+        }
+        return undefined;
       },
     },
 

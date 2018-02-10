@@ -10,6 +10,17 @@ function getTypeFromName(name) {
   return name.endsWith(' (Dub)') ? 'dub' : 'sub';
 }
 
+function determineAiringDateShowPage(partial, index) {
+  return ScrapingHelpers.buildAiringDateFromStandardStrings(
+    undefined,
+    index,
+    partial.find('div.bigBarContainer div.barContent div:nth-of-type(2) p:has(span:contains("Date aired:"))').text().replace('Date aired:', ''),
+    undefined,
+    undefined,
+    undefined
+  );
+}
+
 const validTypes = ['OVA', 'Movie', 'Special', 'ONA'];
 const validGenres = ['Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demons', 'Mystery', 'Drama', 'Ecchi',
   'Fantasy', 'Game', 'Historical', 'Horror', 'Kids', 'Magic', 'Martial Arts', 'Mecha', 'Music', 'Parody', 'Samurai',
@@ -110,6 +121,12 @@ export let kissanime = {
         }).get().filter((genre) => {
           return !Shows.validTypes.includes(genre) && genre !== 'Dub' && genre !== 'Cartoon';
         });
+      },
+      airedStart: function(partial, full) {
+        return determineAiringDateShowPage(partial, 0);
+      },
+      airedEnd: function(partial, full) {
+        return determineAiringDateShowPage(partial, 1);
       },
     },
 
