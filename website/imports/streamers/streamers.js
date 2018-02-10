@@ -6,6 +6,7 @@ import { nineanime } from './_nineanime';
 import {Thumbnails} from '../api/thumbnails/thumbnails';
 import {Searches} from '../api/searches/searches';
 import ScrapingHelpers from './scrapingHelpers';
+import moment from 'moment-timezone';
 
 let streamers = [myanimelist, kissanime, nineanime];
 
@@ -75,6 +76,26 @@ export default class Streamers {
     // Get 'description'
     if (streamer[type].attributes.description) {
       show.description = streamer[type].attributes.description(cheerioRow, cheerioPage);
+    }
+
+    // Get 'airedStart'
+    if (streamer[type].attributes.airedStart) {
+      show.airedStart = streamer[type].attributes.airedStart(cheerioRow, cheerioPage);
+    }
+    // Get 'airedEnd'
+    if (streamer[type].attributes.airedEnd) {
+      show.airedEnd = streamer[type].attributes.airedEnd(cheerioRow, cheerioPage);
+    }
+
+    // Get 'season'
+    if (streamer[type].attributes.season) {
+      show.season = streamer[type].attributes.season(cheerioRow, cheerioPage);
+    }
+    if (!show.season && show.airedStart && typeof show.airedStart.year !== 'undefined' && typeof show.airedStart.month !== 'undefined') {
+      show.season = {
+        quarter: Shows.validQuarters[moment().month(show.airedStart.month).quarter() - 1],
+        year: show.airedStart.year
+      };
     }
 
     // Get 'thumbnails'
@@ -532,13 +553,14 @@ class TempShow {
 
       // Merge result into the new show
       Object.keys(result.full).forEach((key) => {
-        if (typeof this.newShow[key] === 'undefined') {
+        if ((typeof this.newShow[key] === 'undefined' && !['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key))
+          || (Shows.objectKeys.includes(key) && Object.countNonEmptyValues(result.full[key]) > Object.countNonEmptyValues(this.newShow[key]))) {
           this.newShow[key] = result.full[key];
         }
         else if (Shows.arrayKeys.includes(key)) {
           this.newShow[key] = this.newShow[key].concat(result.full[key]);
         }
-        else if (streamer.id === 'myanimelist') {
+        else if (streamer.id === 'myanimelist' && !Shows.objectKeys.includes(key) && !Shows.arrayKeys.includes(key)) {
           this.newShow[key] = result.full[key];
         }
       });

@@ -16,6 +16,7 @@ Shows.validGenres = ['Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demon
   'Romance', 'School', 'Sci-Fi', 'Shoujo', 'Shoujo Ai', 'Shounen', 'Shounen Ai', 'Space', 'Sports', 'Super Power',
   'Vampire', 'Yaoi', 'Yuri', 'Harem', 'Slice of Life', 'Supernatural', 'Military', 'Police', 'Psychological',
   'Thriller', 'Seinen', 'Josei'];
+Shows.validQuarters = ['Winter', 'Spring', 'Summer', 'Fall'];
 
 // Schema
 Schemas.Show = new SimpleSchema({
@@ -161,6 +162,70 @@ Schemas.Show = new SimpleSchema({
   'genres.$': {
     type: String,
     allowedValues: Shows.validGenres
+  },
+  airedStart: {
+    type: Object,
+    index: true,
+    optional: true,
+    defaultValue: {}
+  },
+  'airedStart.year': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'airedStart.month': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'airedStart.date': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'airedStart.hour': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'airedStart.minute': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  airedEnd: {
+    type: Object,
+    index: true,
+    optional: true,
+    defaultValue: {}
+  },
+  'airedEnd.year': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'airedEnd.month': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'airedEnd.date': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'airedEnd.hour': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'airedEnd.minute': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  season: {
+    type: Object,
+    index: true,
+    optional: true
+  },
+  'season.quarter': {
+    type: String,
+    allowedValues: Shows.validQuarters
+  },
+  'season.year': {
+    type: SimpleSchema.Integer
   }
 }, { tracker: Tracker });
 
@@ -170,6 +235,7 @@ Shows.attachSchema(Schemas.Show);
 Shows.arrayKeys = Schemas.Show._schemaKeys.filter((key) => {
   return !key.includes('.') && Schemas.Show._schema[key].type.definitions[0].type.toString().includes('Array()');
 });
+Shows.objectKeys = ['airedStart', 'airedEnd'];
 Shows.descriptionCutoff = '&#x2026; (read more)';
 Shows.timeUntilRecache = 86400000; // 1 day
 Shows.maxUpdateTime = 600000; // 10 minutes
@@ -210,7 +276,8 @@ Shows.helpers({
   mergePartialShow(other) {
     // Copy and merge attributes
     Object.keys(other).forEach((key) => {
-      if (typeof this[key] === 'undefined' && !['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key)) {
+      if ((typeof this[key] === 'undefined' && !['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key))
+        || (Shows.objectKeys.includes(key) && Object.countNonEmptyValues(other[key]) > Object.countNonEmptyValues(this[key]))) {
         this[key] = other[key];
       }
       else if (Shows.arrayKeys.includes(key)) {

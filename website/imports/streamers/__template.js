@@ -39,6 +39,30 @@ export let template = {
       genres: function(partial, full) {
         return [''];
       },
+      airedStart: function(partial, full) {
+        return {
+          year: 0,
+          month: 0,
+          date: 0,
+          hour: 0,
+          minute: 0
+        };
+      },
+      airedEnd: function(partial, full) {
+        return {
+          year: 0,
+          month: 0,
+          date: 0,
+          hour: 0,
+          minute: 0
+        };
+      },
+      season: function(partial, full) {
+        return {
+          quarter: '',
+          year: 0
+        };
+      },
     },
 
     // Search page thumbnail data
@@ -81,6 +105,30 @@ export let template = {
       },
       genres: function(partial, full) {
         return [''];
+      },
+      airedStart: function(partial, full) {
+        return {
+          year: 0,
+          month: 0,
+          date: 0,
+          hour: 0,
+          minute: 0
+        };
+      },
+      airedEnd: function(partial, full) {
+        return {
+          year: 0,
+          month: 0,
+          date: 0,
+          hour: 0,
+          minute: 0
+        };
+      },
+      season: function(partial, full) {
+        return {
+          quarter: '',
+          year: 0
+        };
       },
     },
 
@@ -125,6 +173,30 @@ export let template = {
       },
       genres: function(partial, full) {
         return [''];
+      },
+      airedStart: function(partial, full) {
+        return {
+          year: 0,
+          month: 0,
+          date: 0,
+          hour: 0,
+          minute: 0
+        };
+      },
+      airedEnd: function(partial, full) {
+        return {
+          year: 0,
+          month: 0,
+          date: 0,
+          hour: 0,
+          minute: 0
+        };
+      },
+      season: function(partial, full) {
+        return {
+          quarter: '',
+          year: 0
+        };
       },
     },
 
