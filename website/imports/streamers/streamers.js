@@ -479,11 +479,11 @@ class TempShow {
 
     }, (partial, episodes, fromShowPage) => {
 
-      // Add result to temporary storage
+      // Add partial to temporary storage
       let tempId = this.tempResultStorage.insert(partial);
 
       // If the partial matches this show
-      if (this.isShowValid() && ScrapingHelpers.queryMatchingShows(this.tempResultStorage, this.newShow).count()) {
+      if (ScrapingHelpers.queryMatchingShows(this.tempResultStorage, this.newShow, tempId).count()) {
 
         if (fromShowPage) {
           // Mark as started and process

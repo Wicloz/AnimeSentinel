@@ -14,7 +14,7 @@ export default class ScrapingHelpers {
     return new RegExp(regex, 'i');
   }
 
-  static queryMatchingShows(collection, show) {
+  static queryMatchingShows(collection, show, id=undefined) {
     // Validate
     Schemas.Show.validate(show);
 
@@ -49,8 +49,18 @@ export default class ScrapingHelpers {
     }
 
     // Return results cursor
-    return collection.find({
-      $or: orBits
-    });
+    if (id) {
+      return collection.find({
+        $and: [{
+          $or: orBits
+        }, {
+          _id: id
+        }]
+      });
+    } else {
+      return collection.find({
+        $or: orBits
+      });
+    }
   }
 }
