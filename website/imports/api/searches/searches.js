@@ -253,6 +253,8 @@ Searches.queryWithSearch = function(search) {
   // Validate
   Schemas.Search.validate(search);
 
+  // TODO: Fix quering for searches and use it
+
   // Return results cursor
   return Searches.find(search);
 };

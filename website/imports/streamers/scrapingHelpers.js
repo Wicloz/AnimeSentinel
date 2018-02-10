@@ -133,6 +133,8 @@ export default class ScrapingHelpers {
       });
     }
 
+    // TODO: Use date information for better matching
+
     // Return results cursor
     if (id) {
       return collection.find({
