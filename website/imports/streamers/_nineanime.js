@@ -108,10 +108,10 @@ export let nineanime = {
         return partial.find('div.info div.desc').text()
       },
       type: function(partial, full) {
-        return partial.find('div.info div.row dl:first-of-type dd:first-of-type').text().split(' ')[0]
+        return partial.find('div.info div.row dl:first-of-type dt:contains("Type:")').next().text().split(' ')[0];
       },
       genres: function(partial, full) {
-        return partial.find('div.info div.row dl:first-of-type dd:nth-of-type(5) a').map((index, element) => {
+        return partial.find('div.info div.row dl:first-of-type dt:contains("Genre:")').next().find('a').map((index, element) => {
           return partial.find(element).text();
         }).get().filter((genre) => {
           return genre !== 'add some';

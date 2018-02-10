@@ -108,7 +108,7 @@ export let kissanime = {
         return partial.find('div.bigBarContainer div.barContent div:nth-of-type(2) p:has(span:contains("Genres:")) a').map((index, element) => {
           return partial.find(element).text();
         }).get().filter((genre) => {
-          return !Shows.validTypes.includes(genre) && genre !== 'Dub';
+          return !Shows.validTypes.includes(genre) && genre !== 'Dub' && genre !== 'Cartoon';
         });
       },
     },
