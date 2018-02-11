@@ -361,7 +361,6 @@ Shows.helpers({
         let others = ScrapingHelpers.queryMatchingShows(Shows, this);
         others.forEach((other) => {
           if (other._id !== this._id) {
-            console.log(other);
             this.mergePartialShow(other);
           }
         })
