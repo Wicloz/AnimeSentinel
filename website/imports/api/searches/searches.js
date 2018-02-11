@@ -214,7 +214,7 @@ Searches.helpers({
 });
 
 Searches.getOrInsertSearch = function(search) {
-  let result = Searches.findOne(search);
+  let result = Searches.queryWithSearch(search).fetch()[0];
   if (!result) {
     result = Searches.findOne(
       Searches.insert(search)
@@ -250,10 +250,19 @@ Searches.queryWithSearch = function(search) {
     mutate: true
   });
 
+  delete search._id;
+  delete search.lastSearchStart;
+  delete search.lastSearchEnd;
+
   // Validate
   Schemas.Search.validate(search);
 
-  // TODO: Fix quering for searches and use it
+  // Properly search for empty queries
+  if (!search.query) {
+    search.query = {
+      $exists: false
+    }
+  }
 
   // Return results cursor
   return Searches.find(search);
