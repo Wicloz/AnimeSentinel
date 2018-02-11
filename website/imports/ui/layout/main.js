@@ -14,7 +14,7 @@ Template.layouts_main.onCreated(function() {
 
 Template.layouts_main.onRendered(function() {
   window.addEventListener('message', (event) => {
-    if (event.source === window && event.data && event.data.direction === 'from-content-script' && event.data.message === 'ready') {
+    if (event.data && event.data.direction === 'from-content-script' && event.data.message === 'ready') {
       Session.set('AddOnInstalled', true)
     }
   });

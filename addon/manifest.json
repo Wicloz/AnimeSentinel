@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "AnimeSentinel Companion AddOn",
-  "version": "0.7",
+  "version": "0.8",
 
   "description": "Companion AddOn for AnimeSentinel. Improves performance and allows certain otherwise resticted features to be used.",
 
@@ -20,6 +20,7 @@
       "*://development.wilcodeboer.me/*",
       "*://anime.wilcodeboer.me/*"
     ],
-    "js": ["notifyEnabled.js"]
+    "js": ["notifyEnabled.js"],
+    "run_at": "document_start"
   }]
 }
