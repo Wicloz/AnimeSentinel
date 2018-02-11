@@ -372,12 +372,12 @@ class TempShow {
     this.episodeCallback = episodeCallback;
 
     this.oldShow = oldShow;
+    this.mergedShow = oldShow;
     this.newShow = {};
 
     this.streamerUrlsStarted = [];
     this.streamerUrlsDone = [];
 
-    this.altNames = oldShow.altNames;
     this.currentAltNameIndex = 0;
     this.searchWithCurrentAltLooping = false;
 
@@ -403,7 +403,7 @@ class TempShow {
   }
 
   areStreamersOrAltsDone() {
-    return this.currentAltNameIndex >= this.altNames.length || streamers.every((streamer) => {
+    return this.currentAltNameIndex >= this.mergedShow.altNames.length || streamers.every((streamer) => {
       return this.isStreamerDone(streamer);
     });
   }
@@ -418,6 +418,21 @@ class TempShow {
 
   isShowValid() {
     return Schemas.Show.newContext().validate(this.newShow);
+  }
+
+  mergeShows(intoShow, withShow, streamer) {
+    Object.keys(withShow).forEach((key) => {
+      if ((typeof intoShow[key] === 'undefined' && !['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key))
+        || (Shows.objectKeys.includes(key) && Object.countNonEmptyValues(withShow[key]) > Object.countNonEmptyValues(intoShow[key]))) {
+        intoShow[key] = withShow[key];
+      }
+      else if (Shows.arrayKeys.includes(key)) {
+        intoShow[key] = intoShow[key].concat(withShow[key]);
+      }
+      else if (streamer.id === 'myanimelist' && !Shows.objectKeys.includes(key) && !Shows.arrayKeys.includes(key)) {
+        intoShow[key] = withShow[key];
+      }
+    });
   }
 
   start() {
@@ -470,7 +485,7 @@ class TempShow {
 
     // Create a full search object
     let search = {
-      query: this.altNames[this.currentAltNameIndex]
+      query: this.mergedShow.altNames[this.currentAltNameIndex]
     };
     Schemas.Search.clean(search, {
       mutate: true
@@ -504,7 +519,7 @@ class TempShow {
       let tempId = this.tempResultStorage.insert(partial);
 
       // If the partial matches this show
-      if (ScrapingHelpers.queryMatchingShows(this.tempResultStorage, this.newShow, tempId).count()) {
+      if (ScrapingHelpers.queryMatchingShows(this.tempResultStorage, this.mergedShow, tempId).count()) {
 
         if (fromShowPage) {
           // Mark as started and process
@@ -544,26 +559,16 @@ class TempShow {
     let streamer = Streamers.getStreamerById(streamerUrl.streamerId);
 
     if (result.full) {
-      // Merge altNames into working set
-      result.full.altNames.forEach((altName) => {
-        if (!this.altNames.includes(altName)) {
-          this.altNames.push(altName);
-        }
+      // Merge result into the working show
+      this.mergeShows(this.mergedShow, result.full, streamer);
+
+      // Clean working show
+      Schemas.Show.clean(this.mergedShow, {
+        mutate: true
       });
 
       // Merge result into the new show
-      Object.keys(result.full).forEach((key) => {
-        if ((typeof this.newShow[key] === 'undefined' && !['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key))
-          || (Shows.objectKeys.includes(key) && Object.countNonEmptyValues(result.full[key]) > Object.countNonEmptyValues(this.newShow[key]))) {
-          this.newShow[key] = result.full[key];
-        }
-        else if (Shows.arrayKeys.includes(key)) {
-          this.newShow[key] = this.newShow[key].concat(result.full[key]);
-        }
-        else if (streamer.id === 'myanimelist' && !Shows.objectKeys.includes(key) && !Shows.arrayKeys.includes(key)) {
-          this.newShow[key] = result.full[key];
-        }
-      });
+      this.mergeShows(this.newShow, result.full, streamer);
     }
 
     // Store partial results from show page
