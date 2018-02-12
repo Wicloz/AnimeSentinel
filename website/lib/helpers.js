@@ -96,3 +96,9 @@ Object.countNonEmptyValues = function(object) {
     return (object[key] || object[key] === false || object[key] === 0) && (typeof object[key].length === 'undefined' || object[key].length !== 0);
   }).length;
 };
+
+Array.prototype.pluck = function(key) {
+  return this.map((value) => {
+    return value[key];
+  });
+};

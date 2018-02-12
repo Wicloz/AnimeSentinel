@@ -93,61 +93,73 @@ export default class ScrapingHelpers {
   }
 
   static queryMatchingShows(collection, show, id=undefined) {
-    // Create query bits
-    let orBits = [{
-      $and: [{
-        _id: {$exists: false}
+    // Validate
+    Schemas.Show.validate(show, {
+      keys: ['name', 'altNames', 'streamerUrls', 'malId', 'season']
+    });
+
+    // Match based on names/altNames
+    let selector = {
+      $or: [{
+        $nor: show.streamerUrls.map((streamerUrl) => {
+          return {
+            streamerUrls: {
+              $elemMatch: {
+                streamerId: streamerUrl.streamerId,
+                type: streamerUrl.type,
+                url: {$ne: streamerUrl.url}
+              }
+            }
+          };
+        }),
+        $or: [{
+          name: {
+            $in: show.altNames.map((altName) => {
+              return this.prepareAltForMatching(altName);
+            })
+          }
+        }, {
+          altNames: this.prepareAltForMatching(show.name)
+        }]
       }, {
-        _id: {$exists: true}
+        $or: show.streamerUrls.map((streamerUrl) => {
+          return {
+            streamerUrls: {
+              $elemMatch: {
+                streamerId: streamerUrl.streamerId,
+                type: streamerUrl.type,
+                url: streamerUrl.url
+              }
+            }
+          };
+        })
       }]
-    }];
+    };
 
-    // Test with 'altNames'
-    if (show.altNames) {
-      orBits.push({
-        name: {
-          $in: show.altNames.map((altName) => {
-            return this.prepareAltForMatching(altName);
-          })
-        }
-      });
+    // Restrict based on season
+    if (show.season) {
+      selector.$or[0].season = {
+        $in: [show.season, undefined]
+      }
     }
 
-    // Test with 'name'
-    if (show.name) {
-      orBits.push({
-        altNames: this.prepareAltForMatching(show.name)
-      });
-    }
-
-    // Test with 'malId'
+    // Restrict and match based on MAL id
     if (typeof show.malId !== 'undefined') {
-      orBits = orBits.map((orBit) => {
-        orBit.malId = {
-          $exists: false
-        };
-        return orBit;
-      });
-      orBits.push({
+      selector.$or[0].malId = {
+        $exists: false
+      };
+      selector.$or.push({
         malId: show.malId
       });
     }
 
-    // TODO: Use date information for better matching
+    // Restrict based on supplied id
+    if (id) {
+      selector._id = id;
+    }
 
     // Return results cursor
-    if (id) {
-      return collection.find({
-        $and: [{
-          $or: orBits
-        }, {
-          _id: id
-        }]
-      });
-    } else {
-      return collection.find({
-        $or: orBits
-      });
-    }
+    console.log(JSON.stringify(selector));
+    return collection.find(selector);
   }
 }
