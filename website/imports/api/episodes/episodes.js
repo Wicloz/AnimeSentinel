@@ -1,6 +1,4 @@
 import SimpleSchema from 'simpl-schema';
-import Streamers from "../../streamers/streamers";
-import moment from 'moment-timezone';
 
 // Collection
 export const Episodes = new Mongo.Collection('episodes');
