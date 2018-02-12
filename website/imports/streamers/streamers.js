@@ -314,16 +314,6 @@ export default class Streamers {
     });
   }
 
-  static getEpisodeResults(url, streamer, logData, resultCallback) {
-    if (streamer.episode) {
-      // TODO: Implement this when needed
-      console.error('Scraping episode pages has not been implemented yet!');
-      resultCallback([]);
-    } else {
-      resultCallback([]);
-    }
-  }
-
   static doSearch(search, doneCallback, resultCallback, streamersIdsExcluded=[]) {
     // Filter streamers
     let filteredStreamers = streamers.filter((streamer) => {

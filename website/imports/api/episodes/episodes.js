@@ -11,14 +11,6 @@ Schemas.Episode = new SimpleSchema({
     type: String,
     optional: true
   },
-  lastUpdateStart: {
-    type: Date,
-    optional: true
-  },
-  lastUpdateEnd: {
-    type: Date,
-    optional: true
-  },
 
   showId: {
     type: String,
@@ -102,64 +94,15 @@ Schemas.Episode = new SimpleSchema({
 Episodes.attachSchema(Schemas.Episode);
 
 // Constants
-Episodes.timeUntilRecache = 86400000; // 1 day
-Episodes.maxUpdateTime = 60000; // 1 minute
 Episodes.flagsWithoutAddOnPreference = ['cloudflare', 'mixed-content', 'flash'];
 Episodes.flagsWithoutAddOnNever = ['x-frame-options'];
 Episodes.flagsWithAddOnPreference = ['flash', 'mixed-content'];
 Episodes.flagsWithAddOnNever = [];
 
-if (Meteor.isDevelopment) {
-  Episodes.timeUntilRecache = 10000;
-  Episodes.maxUpdateTime = 30000;
-}
-
 // Helpers
 Episodes.helpers({
   remove() {
     Episodes.remove(this._id);
-  },
-
-  expired() {
-    let now = moment();
-    return (!this.locked() && (!this.lastUpdateStart || moment(this.lastUpdateEnd).add(Episodes.timeUntilRecache) < now)) ||
-           (this.locked() && moment(this.lastUpdateStart).add(Episodes.maxUpdateTime) < now);
-  },
-
-  locked() {
-    return this.lastUpdateStart && (!this.lastUpdateEnd || this.lastUpdateStart > this.lastUpdateEnd);
-  },
-
-  attemptUpdate() {
-    if (this.expired()) {
-      // Mark update as started
-      this.lastUpdateStart = moment().toDate();
-      Episodes.update(this._id, {
-        $set: {
-          lastUpdateStart: this.lastUpdateStart
-        }
-      });
-
-      Streamers.getEpisodeResults(this.sourceUrl, Streamers.getStreamerById(this.streamerId), this._id, (sources) => {
-
-        // Replace existing sources
-        if (!sources.empty()) {
-          this.sources = sources;
-        }
-
-        // Update result
-        this.lastUpdateEnd = moment().toDate();
-        Episodes.update({
-          _id: this._id,
-          lastUpdateStart: this.lastUpdateStart
-        }, {
-          $set: Schemas.Episode.clean(this, {
-            mutate: true
-          })
-        });
-
-      });
-    }
   },
 
   mergeEpisode(other) {
@@ -240,10 +183,7 @@ Episodes.isFlagProblematic = function(flag) {
 
 // Methods
 Meteor.methods({
-  'episodes.attemptUpdate'(id) {
-    Schemas.id.validate({id});
-    Episodes.findOne(id).attemptUpdate();
-  }
+
 });
 
 // Queries

@@ -2,7 +2,6 @@ import './episode.html';
 import {Episodes} from "../../api/episodes/episodes";
 import Streamers from "../../streamers/streamers";
 import {Shows} from "../../api/shows/shows";
-import '/imports/ui/components/loadingIndicatorBackground.js';
 import '/imports/ui/components/image.js';
 
 Template.pages_episode.onCreated(function() {
@@ -99,15 +98,6 @@ Template.pages_episode.onCreated(function() {
     }
   });
 
-  // When the episodes are found
-  this.autorun(() => {
-    if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count()) {
-      Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).forEach((episode) => {
-        Meteor.call('episodes.attemptUpdate', episode._id);
-      });
-    }
-  });
-
   // When the episodes are found and the selection needs to change
   this.autorun(() => {
     if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count() && (!this.state.get('selectedEpisode') || !this.state.get('selectedSource'))) {
@@ -157,12 +147,6 @@ Template.pages_episode.helpers({
     return Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd()).fetch().map((episode) =>{
       episode.streamer = Streamers.getSimpleStreamerById(episode.streamerId);
       return episode;
-    });
-  },
-
-  updating() {
-    return Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd()).fetch().some((episode) => {
-      return episode.locked();
     });
   },
 
