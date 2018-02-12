@@ -90,8 +90,7 @@ export let myanimelist = {
 
       return myanimelist.homepage + '/anime.php?c[]=a&c[]=b&c[]=c&c[]=d&c[]=e&c[]=f&c[]=g' + query + type + exclude + '&genre[]=' + genres.join('&genre[]=');
     },
-    rowSelector: '.js-block-list.list table tbody tr',
-    rowSkips: 1,
+    rowSelector: '.js-block-list.list table tbody tr:has(td a.hoverinfo_trigger)',
 
     // Search page attribute data
     attributes: {
@@ -223,10 +222,7 @@ export let myanimelist = {
 
   // Related shows data
   showRelated: {
-    rowSelector: 'table.anime_detail_related_anime tbody a',
-    rowIgnore: function(partial) {
-      return partial.attr('href').startsWith('/manga/');
-    },
+    rowSelector: 'table.anime_detail_related_anime tbody a[href^="/anime/"]',
 
     // Related shows attribute data
     attributes: {
@@ -250,8 +246,7 @@ export let myanimelist = {
 
   // Episode list data
   showEpisodes: {
-    rowSelector: 'table.episode_list.ascend tbody tr',
-    rowSkips: 1,
+    rowSelector: 'table.episode_list.ascend tbody tr:has(td.episode-video a img)',
     cannotCount: false,
 
     // Episode list attribute data

@@ -11,7 +11,6 @@ export let template = {
       return '';
     },
     rowSelector: '',
-    rowSkips: 0,
 
     // Search page attribute data
     attributes: {
@@ -144,9 +143,6 @@ export let template = {
   // Related shows data
   showRelated: {
     rowSelector: '',
-    rowIgnore: function(partial) {
-      return false;
-    },
 
     // Related shows attribute data
     attributes: {
@@ -212,7 +208,6 @@ export let template = {
   // Episode list data
   showEpisodes: {
     rowSelector: '',
-    rowSkips: 0,
     cannotCount: false,
 
     // Episode list attribute data

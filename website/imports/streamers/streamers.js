@@ -193,15 +193,13 @@ export default class Streamers {
         // For each row of data
         page(streamer.search.rowSelector).each((index, element) => {
           try {
-            if (index >= streamer.search.rowSkips) {
-              // Create and add show
-              let result = this.convertCheerioToShow(page(element), page('html'), streamer, 'search');
-              if (result) {
-                results.push({
-                  partial: result,
-                  episodes: []
-                });
-              }
+            // Create and add show
+            let result = this.convertCheerioToShow(page(element), page('html'), streamer, 'search');
+            if (result) {
+              results.push({
+                partial: result,
+                episodes: []
+              });
             }
           }
 
@@ -246,12 +244,10 @@ export default class Streamers {
       // For each related show
       page(streamer.showRelated.rowSelector).each((index, element) => {
         try {
-          if (!streamer.showRelated.rowIgnore(page(element))) {
-            // Create and add related show
-            let result = this.convertCheerioToShow(page(element), page('html'), streamer, 'showRelated');
-            if (result) {
-              results.partials.push(result);
-            }
+          // Create and add related show
+          let result = this.convertCheerioToShow(page(element), page('html'), streamer, 'showRelated');
+          if (result) {
+            results.partials.push(result);
           }
         }
 
@@ -265,13 +261,11 @@ export default class Streamers {
       // For each episode
       page(streamer.showEpisodes.rowSelector).each((index, element) => {
         try {
-          if (index >= streamer.showEpisodes.rowSkips) {
             // Create and add episode
             let result = this.convertCheerioToEpisode(page(element), page('html'), streamer, 'showEpisodes');
             if (result) {
               results.episodes.push(result);
             }
-          }
         }
 
         catch(err) {

@@ -71,7 +71,6 @@ export let nineanime = {
       return nineanime.homepage + '/filter?sort=title%3Aasc' + query + types + genres;
     },
     rowSelector: 'div.film-list div.item',
-    rowSkips: 0,
 
     // Search page attribute data
     attributes: {
@@ -167,9 +166,6 @@ export let nineanime = {
   // Related shows data
   showRelated: {
     rowSelector: 'div.widget.simple-film-list div.widget-body div.item, div.list-film div.item',
-    rowIgnore: function(partial) {
-      return false;
-    },
 
     // Related shows attribute data
     attributes: {
@@ -205,7 +201,6 @@ export let nineanime = {
   // Episode list data
   showEpisodes: {
     rowSelector: 'div.widget.servers div.widget-body div.server.active ul li a',
-    rowSkips: 0,
     cannotCount: false,
 
     // Episode list attribute data

@@ -54,8 +54,7 @@ export let kissanime = {
         return kissanime.homepage + '/AnimeList';
       }
     },
-    rowSelector: 'table.listing tbody tr',
-    rowSkips: 2,
+    rowSelector: 'table.listing tbody tr:has(td)',
 
     // Search page attribute data
     attributes: {
@@ -141,10 +140,7 @@ export let kissanime = {
 
   // Related shows data
   showRelated: {
-    rowSelector: 'div#rightside div:nth-of-type(3) div.barContent div:nth-of-type(2) a',
-    rowIgnore: function(partial) {
-      return partial.attr('href').count('/') > 2;
-    },
+    rowSelector: 'div#rightside div:nth-of-type(3) div.barContent div:nth-of-type(2) a:not([title])',
 
     // Related shows attribute data
     attributes: {
@@ -162,8 +158,7 @@ export let kissanime = {
 
   // Episode list data
   showEpisodes: {
-    rowSelector: 'table.listing tbody tr',
-    rowSkips: 2,
+    rowSelector: 'table.listing tbody tr:has(td)',
     cannotCount: true,
 
     // Episode list attribute data
