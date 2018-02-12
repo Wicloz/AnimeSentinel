@@ -121,18 +121,18 @@ export default class ScrapingHelpers {
         }, {
           altNames: this.prepareAltForMatching(show.name)
         }]
-      }, {
-        $or: show.streamerUrls.map((streamerUrl) => {
-          return {
-            streamerUrls: {
-              $elemMatch: {
-                streamerId: streamerUrl.streamerId,
-                type: streamerUrl.type,
-                url: streamerUrl.url
-              }
-            }
-          };
-        })
+      // }, {
+      //   $or: show.streamerUrls.map((streamerUrl) => {
+      //     return {
+      //       streamerUrls: {
+      //         $elemMatch: {
+      //           streamerId: streamerUrl.streamerId,
+      //           type: streamerUrl.type,
+      //           url: streamerUrl.url
+      //         }
+      //       }
+      //     };
+      //   })
       }]
     };
 
@@ -159,7 +159,6 @@ export default class ScrapingHelpers {
     }
 
     // Return results cursor
-    console.log(JSON.stringify(selector));
     return collection.find(selector);
   }
 }
