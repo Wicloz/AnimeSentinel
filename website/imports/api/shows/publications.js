@@ -8,3 +8,7 @@ Meteor.publish('shows.withId', function(id) {
   Schemas.id.validate({id});
   return Shows.find(id);
 });
+
+Meteor.publish('shows.withIds', function(ids) {
+  return Shows.queryWithIds(ids);
+});

@@ -1,0 +1,54 @@
+<template name="pages_recent">
+  <div class="container">
+
+    <div class="card-panel">
+      <ul class="collection">
+        {{#each episodeJoined in episodesJoined}}
+
+          <!--TODO: Make this display better-->
+          <li class="collection-item">
+            <div class="row">
+              <div class="col s12 m2">
+                {{>components_image src=episodeJoined.show.getThumbnailUrls.[0] caption=episodeJoined.show.name class="responsive-img materialboxed"}}
+              </div>
+              <div class="col s12 m10">
+                <p>
+                  <a href="{{pathFor 'show' showId=episodeJoined.show._id}}">{{episodeJoined.show.name}}</a>
+                </p>
+                <p>
+                  <a href="{{#if $eq episodeJoined.episodeNumStart episodeJoined.episodeNumEnd}}
+                    {{pathFor 'episodeSingle' showId=episodeJoined.showId translationType=episodeJoined.translationType episodeNumBoth=episodeJoined.episodeNumStart}}
+                  {{else}}
+                    {{pathFor 'episodeDouble' showId=episodeJoined.showId translationType=episodeJoined.translationType episodeNumStart=episodeJoined.episodeNumStart episodeNumEnd=episodeJoined.episodeNumEnd}}
+                  {{/if}}">
+                    Episode
+                    {{episodeJoined.episodeNumStart}}{{#if $neq episodeJoined.episodeNumStart episodeJoined.episodeNumEnd}} - {{episodeJoined.episodeNumEnd}}{{/if}}
+                    ({{episodeJoined.translationTypeExpanded}})
+                  </a>
+                </p>
+                <p>
+                  {{episodeJoined.uploadDate.date}}/{{episodeJoined.uploadDate.month}}/{{episodeJoined.uploadDate.year}} - {{episodeJoined.uploadDate.hour}}:{{episodeJoined.uploadDate.minute}}
+                </p>
+              </div>
+            </div>
+          </li>
+
+        {{else}}
+          <li class="collection-item center">
+            <p class="flow-text">
+              No Episodes Available
+            </p>
+          </li>
+        {{/each}}
+
+        <li class="collection-item center {{#unless episodesLoading}}removed{{/unless}}" id="load-more-episodes">
+          <div class="progress">
+            <div class="indeterminate"></div>
+          </div>
+          <span>Loading More Episodes ...</span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</template>

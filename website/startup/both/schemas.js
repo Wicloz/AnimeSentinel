@@ -8,6 +8,15 @@ Schemas.id = new SimpleSchema({
   }
 }, { tracker: Tracker });
 
+Schemas.ids = new SimpleSchema({
+  ids: {
+    type: Array
+  },
+  'ids.$': {
+    type: String
+  }
+}, { tracker: Tracker });
+
 Schemas.episodeSelection = new SimpleSchema({
   episodeNumber: {
     type: String,

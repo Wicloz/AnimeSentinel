@@ -11,3 +11,7 @@ Meteor.publish('episodes.forTranslationType', function(showId, translationType) 
 Meteor.publish('episodes.forEpisode', function(showId, translationType, episodeNumStart, episodeNumEnd) {
   return Episodes.queryForEpisode(showId, translationType, episodeNumStart, episodeNumEnd);
 });
+
+Meteor.publish('episodes.latest', function(limit) {
+  return Episodes.queryLatest(limit);
+});

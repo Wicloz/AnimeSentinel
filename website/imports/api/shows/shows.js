@@ -557,3 +557,15 @@ Shows.querySearch = function(search, limit) { // TODO: Improve searching
   // Return results cursor
   return Shows.find(selector, options);
 };
+
+Shows.queryWithIds = function(ids) {
+  // Validate
+  Schemas.ids.validate({ids});
+
+  // Return results cursor
+  return Shows.find({
+    _id: {
+      $in: ids
+    }
+  });
+};

@@ -105,6 +105,10 @@ Episodes.helpers({
     Episodes.remove(this._id);
   },
 
+  translationTypeExpanded() {
+    return this.translationType.replace('dub', 'dubbed').replace('sub', 'subbed').capitalize();
+  },
+
   mergeEpisode(other) {
     // Copy and merge attributes
     Object.keys(other).forEach((key) => {
@@ -281,4 +285,25 @@ Episodes.queryUnique = function (showId, translationType, episodeNumStart, episo
     streamerId: streamerId,
     sourceName: sourceName
   });
+};
+
+Episodes.queryLatest = function(limit) {
+  // Validate
+  new SimpleSchema({
+    limit: {
+      type: Number
+    }
+  }).validate({limit});
+
+  // Return results cursor
+  return Episodes.find({}, {
+    limit: limit,
+    sort: {
+      'uploadDate.year': -1,
+      'uploadDate.month': -1,
+      'uploadDate.date': -1,
+      'uploadDate.hour': -1,
+      'uploadDate.minute': -1
+    }
+  })
 };
