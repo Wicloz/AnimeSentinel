@@ -420,8 +420,11 @@ class TempShow {
     });
   }
 
-  isShowValid() {
-    return Schemas.Show.newContext().validate(this.newShow);
+  doesShowMatchMerged(tempShow) {
+    let tempId = this.tempResultStorage.insert(tempShow);
+    let result = ScrapingHelpers.queryMatchingShows(this.tempResultStorage, this.mergedShow, tempId).count();
+    this.tempResultStorage.remove(tempId);
+    return result;
   }
 
   mergeShows(intoShow, withShow, streamer) {
@@ -519,11 +522,8 @@ class TempShow {
 
     }, (partial, episodes, fromShowPage) => {
 
-      // Add partial to temporary storage
-      let tempId = this.tempResultStorage.insert(partial);
-
       // If the partial matches this show
-      if (ScrapingHelpers.queryMatchingShows(this.tempResultStorage, this.mergedShow, tempId).count()) {
+      if (this.doesShowMatchMerged(partial)) {
 
         if (fromShowPage) {
           // Mark as started and process
@@ -546,9 +546,6 @@ class TempShow {
       else {
         this.partialCallback(partial, episodes);
       }
-
-      // Remove temporary result from storage
-      this.tempResultStorage.remove(tempId);
 
     }, this.getStreamerIdsDone());
   }
@@ -577,7 +574,9 @@ class TempShow {
 
     // Store partial results from show page
     result.partials.forEach((partial) => {
-      this.partialCallback(partial);
+      if (!this.doesShowMatchMerged(partial)) {
+        this.partialCallback(partial);
+      }
     });
 
     // Handle episodes
@@ -592,9 +591,7 @@ class TempShow {
     }
 
     // Store as partial show
-    if (this.isShowValid()) {
-      this.fullCallback(this.newShow);
-    }
+    this.fullCallback(this.newShow);
 
     // Mark streamerUrl as done
     this.streamerUrlsDone.push(streamerUrl);
