@@ -113,7 +113,7 @@ export default class ScrapingHelpers {
   static queryMatchingShows(collection, show, id=undefined) {
     // Validate
     Schemas.Show.validate(show, {
-      keys: ['name', 'altNames', 'streamerUrls', 'malId', 'season', 'thumbnails']
+      keys: ['name', 'altNames', 'streamerUrls', 'malId', 'season', 'thumbnails', 'type']
     });
 
     // Match based on names/altNames, thumbnails, or streamerUrls
@@ -162,6 +162,19 @@ export default class ScrapingHelpers {
     if (show.season) {
       selector.$or[0].season = {
         $in: [show.season, undefined]
+      }
+    }
+
+    // Restrict based on type
+    if (show.type) {
+      if (show.type === 'TV') {
+        selector.$or[0].type = {
+          $in: ['TV', undefined]
+        }
+      } else {
+        selector.$or[0].type = {
+          $ne: 'TV'
+        }
       }
     }
 
