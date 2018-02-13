@@ -362,16 +362,17 @@ export default class Streamers {
     });
   }
 
-  static createFullShow(oldShow, showCallback, partialCallback, episodeCallback) {
-    let tempShow = new TempShow(oldShow, showCallback, partialCallback, episodeCallback);
+  static createFullShow(oldShow, doneCallback, partialCallback, fullCallback, episodeCallback) {
+    let tempShow = new TempShow(oldShow, doneCallback, partialCallback, fullCallback, episodeCallback);
     tempShow.start();
   }
 }
 
 class TempShow {
-  constructor(oldShow, showCallback, partialCallback, episodeCallback) {
-    this.showCallback = showCallback;
+  constructor(oldShow, doneCallback, partialCallback, fullCallback, episodeCallback) {
+    this.doneCallback = doneCallback;
     this.partialCallback = partialCallback;
+    this.fullCallback = fullCallback;
     this.episodeCallback = episodeCallback;
 
     this.oldShow = oldShow;
@@ -591,12 +592,8 @@ class TempShow {
     }
 
     // Store as partial show
-    try {
-      if (this.isShowValid()) {
-        this.partialCallback(this.newShow);
-      }
-    } catch (err) {
-      console.error(err);
+    if (this.isShowValid()) {
+      this.fullCallback(this.newShow);
     }
 
     // Mark streamerUrl as done
@@ -622,7 +619,7 @@ class TempShow {
       return !this.newShow.thumbnails.includes(thumbnail);
     }));
 
-    this.showCallback(this.newShow);
+    this.doneCallback(this.newShow);
 
     if (Meteor.isDevelopment) {
       console.log('Done creating full show with name: \'' + this.oldShow.name + '\'');

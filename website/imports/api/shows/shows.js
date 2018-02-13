@@ -370,6 +370,23 @@ Shows.helpers({
         // Insert any partial results found in the process
         Shows.addPartialShow(partial, episodes);
 
+      }, (full) => {
+
+        // Replace existing fields
+        Object.keys(full).forEach((key) => {
+          this[key] = full[key];
+        });
+
+        // Update result
+        Shows.update({
+          _id: this._id,
+          lastUpdateStart: this.lastUpdateStart
+        }, {
+          $set: Schemas.Show.clean(this, {
+            mutate: true
+          })
+        });
+
       }, (episode) => {
 
         // Add found episodes
