@@ -27,16 +27,12 @@ Template.pages_show.onCreated(function() {
 
   // When a show is found
   this.autorun(() => {
-    if (Shows.findOne(FlowRouter.getParam('showId'))) {
-      Session.set('PageTitle', Shows.findOne(FlowRouter.getParam('showId')).name);
-      Meteor.call('shows.attemptUpdate', FlowRouter.getParam('showId'));
-    }
-  });
-
-  // Subscribe to thumbnails for this show
-  this.autorun(() => {
     let show = Shows.findOne(FlowRouter.getParam('showId'));
-    this.subscribe('thumbnails.withHashes', show ? show.thumbnails : []);
+    if (show) {
+      Meteor.call('shows.attemptUpdate', FlowRouter.getParam('showId'));
+      Session.set('PageTitle', show.name);
+      this.subscribe('thumbnails.withHashes', show.thumbnails);
+    }
   });
 });
 
@@ -50,7 +46,7 @@ Template.pages_show.helpers({
     return show && show.locked();
   },
 
-  episodes(translationType) {
+  episodesJoined(translationType) {
     let episodes = [];
 
     Episodes.queryForTranslationType(FlowRouter.getParam('showId'), translationType).forEach((episode) => {

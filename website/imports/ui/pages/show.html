@@ -81,24 +81,24 @@
       {{>components_carousel images=show.getThumbnailUrls}}
     </div>
 
-    {{#if episodes 'sub'}}
+    {{#if episodesJoined 'sub'}}
       <div class="card-panel">
         <h2 class="card-title">Subbed:</h2>
-        {{> pages_show_episodes episodes 'sub'}}
+        {{> pages_show_episodes episodesJoined 'sub'}}
       </div>
     {{/if}}
 
-    {{#if episodes 'dub'}}
+    {{#if episodesJoined 'dub'}}
       <div class="card-panel">
         <h2 class="card-title">Dubbed:</h2>
-        {{> pages_show_episodes episodes 'dub'}}
+        {{> pages_show_episodes episodesJoined 'dub'}}
       </div>
     {{/if}}
 
-    {{#if episodes 'raw'}}
+    {{#if episodesJoined 'raw'}}
       <div class="card-panel">
         <h2 class="card-title">Raw:</h2>
-        {{> pages_show_episodes episodes 'raw'}}
+        {{> pages_show_episodes episodesJoined 'raw'}}
       </div>
     {{/if}}
 

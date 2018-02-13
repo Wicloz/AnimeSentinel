@@ -5,104 +5,102 @@
       {{#autoForm schema='Schemas.episodeSelection' id='episodeSelectionForm' autosave=true}}
         <div class="row">
           <div class="col s2">
-            <button class="waves-effect waves-teal btn btn-select-prev">{{>tooltippedIcon icon='chevron_left' iconClass='left' text='Previous Episode' position='right'}}</button>
+            <button class="waves-effect waves-teal btn btn-select-prev">{{>tooltippedIcon icon='chevron_left' text='Previous Episode' position='right'}}</button>
           </div>
           <div class="col s8">
             {{> afQuickField name='episodeNumber' options=episodeSelectionOptions defaultValue=episodeSelectionDefaultValue id='episodeNumberSelection'}}
           </div>
           <div class="col s2">
-            <button class="waves-effect waves-teal btn btn-select-next">{{>tooltippedIcon icon='chevron_right' iconClass='right' text='Next Episode' position='right'}}</button>
+            <button class="waves-effect waves-teal btn btn-select-next">{{>tooltippedIcon icon='chevron_right' text='Next Episode' position='right'}}</button>
           </div>
         </div>
       {{/autoForm}}
     </div>
 
-    {{#each iframeError in iframeErrors}}
-      {{#if $eq iframeError 'unknown'}}
-        <div class="card-panel">
-          <h4 class="card-title">
-            <i class="material-icons">priority_high</i>
-            This video is not working for an unknown reason.
-          </h4>
-          <p class="flow-text">
-            This is most likely because the video is no longer available. Please try another video.
-          </p>
-        </div>
-      {{/if}}
+    {{#if $in 'unknown' iframeErrors}}
+      <div class="card-panel">
+        <h4 class="card-title">
+          <i class="material-icons">priority_high</i>
+          This video is not working for an unknown reason.
+        </h4>
+        <p class="flow-text">
+          This is most likely because the video is no longer available. Please try another video.
+        </p>
+      </div>
+    {{/if}}
 
-      {{#if $eq iframeError 'cloudflare'}}
-        <div class="card-panel">
-          <h4 class="card-title">
-            <i class="material-icons">cloud_off</i>
-            Disable the Cloudflare filter once to watch this video.
-          </h4>
-          <p class="flow-text">
-            <a href="{{selectedEpisode.streamer.homepage}}" target="_blank" rel="noopener">Click here to disable the filter.</a>
-            This will open a new tab.
-            There, you will have to wait for this to complete:<br>
-            {{>components_image src="/media/cloudflare-challenge-simple.png" caption="Cloudflare's Loading Indicator" class="disable-cloudflare-filter-image"}}
-            <strong>Return here</strong> once the loading is done and reload this page.
-            You can close the new tab once you are done.
-          </p>
-        </div>
-      {{/if}}
+    {{#if $in 'cloudflare' iframeErrors}}
+      <div class="card-panel">
+        <h4 class="card-title">
+          <i class="material-icons">cloud_off</i>
+          Disable the Cloudflare filter once to watch this video.
+        </h4>
+        <p class="flow-text">
+          <a href="{{selectedStreamerHomepage}}" target="_blank" rel="noopener">Click here to disable the filter.</a>
+          This will open a new tab.
+          There, you will have to wait for this to complete:<br>
+          {{>components_image src="/media/cloudflare-challenge-simple.png" caption="Cloudflare's Loading Indicator" class="disable-cloudflare-filter-image"}}
+          <strong>Return here</strong> once the loading is done and reload this page.
+          You can close the new tab once you are done.
+        </p>
+      </div>
+    {{/if}}
 
-      {{#if $eq iframeError 'mixed-content'}}
-        <div class="card-panel">
-          <h4 class="card-title">
-            <i class="material-icons">lock_open</i>
-            Disable mixed content protection to watch this video.
-          </h4>
-          <p class="flow-text">
-            {{#if $eq $.BrowserDetect.browser 'Firefox'}}
-              {{>components_image src="/media/firefox-unsafe-1.png" caption="Firefox - Step 1" class="disable-mixed-protection-image"}}
-              {{>components_image src="/media/firefox-unsafe-2.png" caption="Firefox - Step 2" class="disable-mixed-protection-image"}}
-            {{/if}}
-            {{#if $eq $.BrowserDetect.browser 'Chrome'}}
-              {{>components_image src="/media/chrome-unsafe-1.png" caption="Chrome - Step 1" class="disable-mixed-protection-image"}}
-              {{>components_image src="/media/chrome-unsafe-2.png" caption="Chrome - Step 2" class="disable-mixed-protection-image"}}
-            {{/if}}
-          </p>
-        </div>
-      {{/if}}
+    {{#if $in 'mixed-content' iframeErrors}}
+      <div class="card-panel">
+        <h4 class="card-title">
+          <i class="material-icons">lock_open</i>
+          Disable mixed content protection to watch this video.
+        </h4>
+        <p class="flow-text">
+          {{#if $eq $.BrowserDetect.browser 'Firefox'}}
+            {{>components_image src="/media/firefox-unsafe-1.png" caption="Firefox - Step 1" class="disable-mixed-protection-image"}}
+            {{>components_image src="/media/firefox-unsafe-2.png" caption="Firefox - Step 2" class="disable-mixed-protection-image"}}
+          {{/if}}
+          {{#if $eq $.BrowserDetect.browser 'Chrome'}}
+            {{>components_image src="/media/chrome-unsafe-1.png" caption="Chrome - Step 1" class="disable-mixed-protection-image"}}
+            {{>components_image src="/media/chrome-unsafe-2.png" caption="Chrome - Step 2" class="disable-mixed-protection-image"}}
+          {{/if}}
+        </p>
+      </div>
+    {{/if}}
 
-      {{#if $eq iframeError 'flash'}}
-        <div class="card-panel">
-          <h4 class="card-title">
-            <i class="material-icons">flash_off</i>
-            This video requires Adobe Flash Player to be played.
-          </h4>
-          <p class="flow-text">
-            <a href="https://get.adobe.com/flashplayer/" target="_blank" rel="noopener">You can get it here.</a>
-            Make sure to uncheck the optional offers.
-          </p>
-        </div>
-      {{/if}}
+    {{#if $in 'flash' iframeErrors}}
+      <div class="card-panel">
+        <h4 class="card-title">
+          <i class="material-icons">flash_off</i>
+          This video requires Adobe Flash Player to be played.
+        </h4>
+        <p class="flow-text">
+          <a href="https://get.adobe.com/flashplayer/" target="_blank" rel="noopener">You can get it here.</a>
+          Make sure to uncheck the optional offers.
+        </p>
+      </div>
+    {{/if}}
 
-      {{#if $eq iframeError 'x-frame-options'}}
-        <div class="card-panel">
-          <h4 class="card-title">
-            <i class="material-icons">block</i>
-            This video cannot be watched without the companion browser add-on.
-          </h4>
-          <p class="flow-text">
-            {{>pages_episode_get_addon}}
-          </p>
-        </div>
-      {{/if}}
+    {{#if $in 'x-frame-options' iframeErrors}}
+      <div class="card-panel">
+        <h4 class="card-title">
+          <i class="material-icons">block</i>
+          This video cannot be watched without the companion browser add-on.
+        </h4>
+        <p class="flow-text">
+          {{>pages_episode_get_addon}}
+        </p>
+      </div>
+    {{/if}}
 
-      {{#if $eq iframeError 'add-on'}}
-        <div class="card-panel">
-          <h4 class="card-title">
-            <i class="material-icons">extension</i>
-            Most issues related to videos not working will be solved by installing the companion browser add-on.
-          </h4>
-          <p class="flow-text">
-            {{>pages_episode_get_addon}}
-          </p>
-        </div>
-      {{/if}}
-    {{/each}}
+    {{#if $in 'add-on' iframeErrors}}
+      <div class="card-panel">
+        <h4 class="card-title">
+          <i class="material-icons">extension</i>
+          Most issues related to videos not working will be solved by installing the companion browser add-on.
+        </h4>
+        <p class="flow-text">
+          {{>pages_episode_get_addon}}
+        </p>
+      </div>
+    {{/if}}
 
     <div class="card-panel {{#if iframeErrors}}removed{{/if}}" id="player-container-panel">
       <div id="player-container-outer">

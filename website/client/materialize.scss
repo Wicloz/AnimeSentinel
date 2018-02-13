@@ -1,7 +1,7 @@
 @import "vars";
 @import "../node_modules/materialize-css/sass/materialize";
 
-.side-nav li i {
+.side-nav li .material-icons {
   line-height: inherit;
 }
 
@@ -55,9 +55,9 @@
   top: unset;
 }
 
-.collapsible-header-dropdown i {
+.collapsible-header-dropdown .material-icons {
   transition: transform 0.3s;
 }
-.collapsible-header-dropdown:not(.active) i {
+.collapsible-header-dropdown:not(.active) .material-icons {
   transform: rotate(-90deg);
 }

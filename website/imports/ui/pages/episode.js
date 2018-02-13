@@ -46,6 +46,16 @@ Template.pages_episode.onCreated(function() {
     this.state.set('iframeErrors', problemFlags);
   };
 
+  this.startErrorsDelay = function() {
+    this.iframeErrorsTimeout = setTimeout(() => {
+      this.setIframeErrors();
+    }, 5000);
+  };
+
+  this.stopErrorsDelay = function() {
+    clearTimeout(this.iframeErrorsTimeout);
+  };
+
   // Create local variables
   this.state = new ReactiveDict();
   this.state.setDefault({
@@ -53,8 +63,9 @@ Template.pages_episode.onCreated(function() {
     selectedSource: undefined,
     iframeErrors: []
   });
+  this.iframeErrorsTimeout = undefined;
 
-  // Set page title based on getEpisodeNumBoth()
+  // Set page title based on the episode numbers and translation type
   this.autorun(() => {
     Session.set('PageTitle', 'Episode ' + this.getEpisodeNumBoth() + ' (' + FlowRouter.getParam('translationType').capitalize() + ')');
   });
@@ -93,7 +104,7 @@ Template.pages_episode.onCreated(function() {
 
   // Check if the episodes exists
   this.autorun(() => {
-    if (this.subscriptionsReady() && (isNaN(this.getEpisodeNumStart()) || isNaN(this.getEpisodeNumEnd()) || !Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count())) {
+    if (isNaN(this.getEpisodeNumStart()) || isNaN(this.getEpisodeNumEnd()) || (this.subscriptionsReady() && !Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count())) {
       FlowRouter.go('notFound');
     }
   });
@@ -124,6 +135,9 @@ Template.pages_episode.onCreated(function() {
       }
     }
   });
+
+  // Start the error daley now that everything is ready
+  this.startErrorsDelay();
 });
 
 Template.pages_episode.helpers({
@@ -198,10 +212,17 @@ Template.pages_episode.events({
     Template.instance().state.set('selectedEpisode', event.target.dataset.episode);
     Template.instance().state.set('selectedSource', event.target.dataset.source);
     Template.instance().state.set('iframeErrors', []);
+
+    Template.instance().startErrorsDelay();
   },
 
   'error #episode-frame'(event) {
+    Template.instance().stopErrorsDelay();
     Template.instance().setIframeErrors();
+  },
+
+  'load #episode-frame'(event) {
+    Template.instance().stopErrorsDelay();
   },
 
   'click a.btn-not-working'(event) {
@@ -238,6 +259,7 @@ AutoForm.hooks({
 
       this.template.view.parentView.parentView._templateInstance.state.set('selectedEpisode', undefined);
       this.template.view.parentView.parentView._templateInstance.state.set('selectedSource', undefined);
+      this.template.view.parentView.parentView._templateInstance.state.set('iframeErrors', []);
 
       this.done();
       return false;
