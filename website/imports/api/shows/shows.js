@@ -372,9 +372,15 @@ Shows.helpers({
 
       }, (full) => {
 
-        // Replace existing fields
+        // Copy and merge attributes
         Object.keys(full).forEach((key) => {
-          this[key] = full[key];
+          if ((typeof this[key] === 'undefined' && !['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key))
+            || (Shows.objectKeys.includes(key) && Object.countNonEmptyValues(full[key]) > Object.countNonEmptyValues(this[key]))) {
+            this[key] = full[key];
+          }
+          else if (Shows.arrayKeys.includes(key)) {
+            this[key] = this[key].concat(full[key]);
+          }
         });
 
         // Update result
