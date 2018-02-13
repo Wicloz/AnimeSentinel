@@ -153,7 +153,7 @@ Template.pages_episode.helpers({
   },
 
   selectedSourceUrl() {
-    if (!Template.instance().state.get('selectedStreamerId') || !Template.instance().state.get('selectedSourceName')) {
+    if (!Template.instance().state.get('selectedStreamerId') || !Template.instance().state.get('selectedSourceName') || !Template.instance().state.get('iframeErrors').empty()) {
       return undefined;
     }
     return Episodes.queryUnique(
