@@ -221,14 +221,20 @@ export let template = {
       translationType: function(partial, full) {
         return '';
       },
-      sourceUrl: function(partial, full) {
-        return '';
+      flags: function(partial, full) {
+        return [''];
       },
       sources: function(partial, full) {
         return [{
-          name: '',
-          url: '',
-          flags: ['']
+          sourceName: '',
+          sourceUrl: '',
+          uploadDate: {
+            year: 0,
+            month: 0,
+            date: 0,
+            hour: 0,
+            minute: 0
+          }
         }];
       },
     },

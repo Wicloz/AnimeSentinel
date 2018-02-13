@@ -24,14 +24,15 @@ Template.pages_episode.onCreated(function() {
   };
 
   // Other functions
-  this.getSelectedSource = function() {
-    return Episodes.findOne(this.state.get('selectedEpisode')).sources.getPartialObjects({
-      name: this.state.get('selectedSource')
-    })[0];
-  };
-
   this.setIframeErrors = function() {
-    let problemFlags = this.getSelectedSource().flags.filter((flag) => {
+    let problemFlags = Episodes.queryUnique(
+      FlowRouter.getParam('showId'),
+      FlowRouter.getParam('translationType'),
+      this.getEpisodeNumStart(),
+      this.getEpisodeNumEnd(),
+      this.state.get('selectedStreamerId'),
+      this.state.get('selectedSourceName')
+    ).fetch()[0].flags.filter((flag) => {
       return Episodes.isFlagProblematic(flag);
     });
 
@@ -59,8 +60,8 @@ Template.pages_episode.onCreated(function() {
   // Create local variables
   this.state = new ReactiveDict();
   this.state.setDefault({
-    selectedEpisode: undefined,
-    selectedSource: undefined,
+    selectedStreamerId: undefined,
+    selectedSourceName: undefined,
     iframeErrors: []
   });
   this.iframeErrorsTimeout = undefined;
@@ -111,7 +112,7 @@ Template.pages_episode.onCreated(function() {
 
   // When the episodes are found and the selection needs to change
   this.autorun(() => {
-    if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count() && (!this.state.get('selectedEpisode') || !this.state.get('selectedSource'))) {
+    if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count() && (!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName'))) {
       let flagsPreference = Episodes.flagsWithoutAddOnPreference;
       let flagsNever = Episodes.flagsWithoutAddOnNever;
       if (Session.get('AddOnInstalled')) {
@@ -120,16 +121,14 @@ Template.pages_episode.onCreated(function() {
       }
 
       for (let i = flagsPreference.length; i >= 0; i--) {
-        if (!this.state.get('selectedEpisode') || !this.state.get('selectedSource')) {
+        if (!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName')) {
           Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).forEach((episode) => {
-            episode.sources.forEach((source) => {
-              if ((!this.state.get('selectedEpisode') || !this.state.get('selectedSource')) && source.flags.every((flag) => {
-                  return !flagsNever.includes(flag) && !flagsPreference.slice(0, i).includes(flag);
-                })) {
-                this.state.set('selectedEpisode', episode._id);
-                this.state.set('selectedSource', source.name);
-              }
-            });
+            if ((!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName')) && episode.flags.every((flag) => {
+                return !flagsNever.includes(flag) && !flagsPreference.slice(0, i).includes(flag);
+              })) {
+              this.state.set('selectedStreamerId', episode.streamerId);
+              this.state.set('selectedSourceName', episode.sourceName);
+            }
           });
         }
       }
@@ -141,27 +140,53 @@ Template.pages_episode.onCreated(function() {
 });
 
 Template.pages_episode.helpers({
-  selectedEpisode() {
-    if (!Template.instance().state.get('selectedEpisode')) {
-      return undefined;
-    }
-    let episode = Episodes.findOne(Template.instance().state.get('selectedEpisode'));
-    episode.streamer = Streamers.getSimpleStreamerById(episode.streamerId);
-    return episode;
+  selectedStreamerId() {
+    return Template.instance().state.get('selectedStreamerId');
   },
 
-  selectedSource() {
-    if (!Template.instance().state.get('selectedEpisode') || !Template.instance().state.get('selectedSource')) {
-      return undefined;
-    }
-    return Template.instance().getSelectedSource();
+  selectedStreamerHomepage() {
+    return Streamers.getSimpleStreamerById(Template.instance().state.get('selectedStreamerId')).homepage;
   },
 
-  episodes() {
-    return Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd()).fetch().map((episode) =>{
-      episode.streamer = Streamers.getSimpleStreamerById(episode.streamerId);
-      return episode;
+  selectedSourceName() {
+    return Template.instance().state.get('selectedSourceName');
+  },
+
+  selectedSourceUrl() {
+    if (!Template.instance().state.get('selectedStreamerId') || !Template.instance().state.get('selectedSourceName')) {
+      return undefined;
+    }
+    return Episodes.queryUnique(
+      FlowRouter.getParam('showId'),
+      FlowRouter.getParam('translationType'),
+      Template.instance().getEpisodeNumStart(),
+      Template.instance().getEpisodeNumEnd(),
+      Template.instance().state.get('selectedStreamerId'),
+      Template.instance().state.get('selectedSourceName')
+    ).fetch()[0].sourceUrl;
+  },
+
+  episodesByStreamer() {
+    let results = [];
+
+    Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd()).forEach((episode) => {
+      let done = false;
+      results = results.map((result) => {
+        if (result.streamer.id === episode.streamerId) {
+          result.episodes.push(episode);
+          done = true;
+        }
+        return result;
+      });
+      if (!done) {
+        results.push({
+          streamer: Streamers.getSimpleStreamerById(episode.streamerId),
+          episodes: [episode]
+        });
+      }
     });
+
+    return results;
   },
 
   showIcon(flag) {
@@ -209,8 +234,8 @@ Template.pages_episode.events({
       event.target = event.target.parentElement.parentElement;
     }
 
-    Template.instance().state.set('selectedEpisode', event.target.dataset.episode);
-    Template.instance().state.set('selectedSource', event.target.dataset.source);
+    Template.instance().state.set('selectedStreamerId', event.target.dataset.streamerid);
+    Template.instance().state.set('selectedSourceName', event.target.dataset.sourcename);
     Template.instance().state.set('iframeErrors', []);
 
     Template.instance().startErrorsDelay();
@@ -257,8 +282,8 @@ AutoForm.hooks({
         });
       }
 
-      this.template.view.parentView.parentView._templateInstance.state.set('selectedEpisode', undefined);
-      this.template.view.parentView.parentView._templateInstance.state.set('selectedSource', undefined);
+      this.template.view.parentView.parentView._templateInstance.state.set('selectedStreamerId', undefined);
+      this.template.view.parentView.parentView._templateInstance.state.set('selectedSourceName', undefined);
       this.template.view.parentView.parentView._templateInstance.state.set('iframeErrors', []);
 
       this.done();

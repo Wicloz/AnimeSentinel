@@ -214,9 +214,6 @@ export let nineanime = {
       translationType: function(partial, full) {
         return getTypeFromName(full.find('div.widget.player div.widget-title h1.title').text());
       },
-      sourceUrl: function(partial, full) {
-        return nineanime.homepage + partial.attr('href');
-      },
       sources: function(partial, full) {
         let episodeString = partial.text();
         let found = [];
@@ -236,9 +233,18 @@ export let nineanime = {
 
           server.find('ul li a').each((index, element) => {
             if (full.find(element).text() === episodeString) {
+              let dateBits = full.find(element).attr('data-title').split(' - ');
               found.push({
-                name: name,
-                url: nineanime.homepage + full.find(element).attr('href')
+                sourceName: name,
+                sourceUrl: nineanime.homepage + full.find(element).attr('href'),
+                uploadDate: ScrapingHelpers.buildAiringDateFromStandardStrings(
+                  'EST',
+                  undefined,
+                  dateBits[0],
+                  undefined,
+                  undefined,
+                  dateBits[1]
+                )
               });
             }
           });

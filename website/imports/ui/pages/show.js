@@ -4,6 +4,7 @@ import '/imports/ui/components/loadingIndicatorBackground.js';
 import {Episodes} from "../../api/episodes/episodes";
 import Streamers from "../../streamers/streamers";
 import '/imports/ui/components/carousel.js';
+import ScrapingHelpers from '../../streamers/scrapingHelpers';
 
 Template.pages_show.onCreated(function() {
   // Set page variables
@@ -59,7 +60,15 @@ Template.pages_show.helpers({
 
       if (episodes.hasPartialObjects(selector)) {
         let other = episodes.getPartialObjects(selector)[0];
-        other.streamers.push(Streamers.getSimpleStreamerById(episode.streamerId));
+
+        if (other.streamers.every((streamer) => {
+            return streamer.id !== episode.streamerId;
+          })) {
+          other.streamers.push(Streamers.getSimpleStreamerById(episode.streamerId));
+        }
+
+        other.uploadDate = ScrapingHelpers.determineEarliestAiringDate(other.uploadDate, episode.uploadDate);
+
         episodes = episodes.removePartialObjects(selector);
         episodes.push(other);
       }

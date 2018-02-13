@@ -28,6 +28,24 @@ export default class ScrapingHelpers {
     return airingDateResult;
   }
 
+  static determineEarliestAiringDate(dateA, dateB) {
+    if (Object.countNonEmptyValues(dateA) > Object.countNonEmptyValues(dateB)) {
+      let temp = dateB;
+      dateB = dateA;
+      dateA = temp;
+    }
+
+    if (dateA.year < dateB.year || (dateA.year === dateB.year
+        && (dateA.month < dateB.month || (dateA.month === dateB.month
+          && (dateA.date < dateB.date || (dateA.date === dateB.date
+            && (dateA.hour < dateB.hour || (dateA.hour === dateB.hour
+              && dateA.minute < dateB.minute)))))))) {
+      return dateA;
+    }
+
+    return dateB;
+  }
+
   static buildAiringDateFromStandardStrings(timezone, index, stringDates, stringSeason, stringDay, stringTime) {
     if (!timezone) {
       timezone = 'UTC';

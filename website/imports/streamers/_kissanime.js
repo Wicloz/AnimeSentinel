@@ -181,27 +181,44 @@ export let kissanime = {
       translationType: function(partial, full) {
         return getTypeFromName(full.find('a.bigChar').text());
       },
-      sourceUrl: function(partial, full) {
-        return kissanime.homepage + partial.find('td:first-of-type a').attr('href');
+      flags: function(partial, full) {
+        return ['cloudflare', 'mixed-content'];
       },
       sources: function(partial, full) {
         let sourceUrl = kissanime.homepage + partial.find('td:first-of-type a').attr('href');
+        let dateBits = partial.find('td:last-of-type').text().split('/');
         return [{
-          name: 'Openload',
-          url: sourceUrl + '&s=openload',
-          flags: ['cloudflare', 'mixed-content']
+          sourceName: 'Openload',
+          sourceUrl: sourceUrl + '&s=openload',
+          uploadDate: {
+            year: dateBits[2],
+            month: dateBits[0],
+            date: dateBits[1]
+          }
         }, {
-          name: 'RapidVideo',
-          url: sourceUrl + '&s=rapidvideo',
-          flags: ['cloudflare', 'mixed-content']
+          sourceName: 'RapidVideo',
+          sourceUrl: sourceUrl + '&s=rapidvideo',
+          uploadDate: {
+            year: dateBits[2],
+            month: dateBits[0],
+            date: dateBits[1]
+          }
         }, {
-          name: 'Streamango',
-          url: sourceUrl + '&s=streamango',
-          flags: ['cloudflare', 'mixed-content']
+          sourceName: 'Streamango',
+          sourceUrl: sourceUrl + '&s=streamango',
+          uploadDate: {
+            year: dateBits[2],
+            month: dateBits[0],
+            date: dateBits[1]
+          }
         }, {
-          name: 'Beta Server',
-          url: sourceUrl + '&s=beta',
-          flags: ['cloudflare', 'mixed-content']
+          sourceName: 'Beta Server',
+          sourceUrl: sourceUrl + '&s=beta',
+          uploadDate: {
+            year: dateBits[2],
+            month: dateBits[0],
+            date: dateBits[1]
+          }
         }];
       },
     },

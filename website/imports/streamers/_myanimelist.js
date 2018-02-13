@@ -260,14 +260,22 @@ export let myanimelist = {
       translationType: function(partial, full) {
         return 'sub';
       },
-      sourceUrl: function(partial, full) {
-        return partial.find('td.episode-title a').attr('href');
+      flags: function(partial, full) {
+        return ['flash'];
       },
       sources: function(partial, full) {
+        let uploadDate = {};
+        let dateBits = partial.find('td.episode-aired').text().replace(/,/g, '').split(' ');
+        if (dateBits.length === 3) {
+          uploadDate.year = dateBits[2];
+          uploadDate.month = moment().month(dateBits[0]).month() + 1;
+          uploadDate.date = dateBits[1];
+        }
+
         return [{
-          name: 'Crunchyroll',
-          url: partial.find('td.episode-title a').attr('href') + '?provider_id=1',
-          flags: ['flash']
+          sourceName: 'Crunchyroll',
+          sourceUrl: partial.find('td.episode-title a').attr('href') + '?provider_id=1',
+          uploadDate: uploadDate
         }];
       },
     },

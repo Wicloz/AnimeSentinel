@@ -119,42 +119,64 @@ export default class Streamers {
     return show;
   }
 
-  static convertCheerioToEpisode(cheerioRow, cheerioPage, streamer, type) {
-    // Create empty episode
-    let episode = {
-      showId: 'undefined',
-      streamerId: streamer.id
-    };
+  static convertCheerioToEpisodes(cheerioRow, cheerioPage, streamer, type) {
+    // Get the different sources as base episodes
+    let episodes = streamer[type].attributes.sources(cheerioRow, cheerioPage);
+
+    // Set some default variables on the episodes
+    episodes = episodes.map((episode) => {
+      episode.showId = 'undefined';
+      episode.streamerId = streamer.id;
+      return episode;
+    });
 
     // Get 'episodeNumStart'
-    episode.episodeNumStart = streamer[type].attributes.episodeNumStart(cheerioRow, cheerioPage);
-    if (episode.episodeNumStart && !isNumeric(episode.episodeNumStart)) {
-      episode.episodeNumStart = 1;
+    let episodeNumStart = streamer[type].attributes.episodeNumStart(cheerioRow, cheerioPage);
+    if (typeof episodeNumStart !== 'undefined' && !isNumeric(episodeNumStart)) {
+      episodeNumStart = 1;
     }
+    episodes = episodes.map((episode) => {
+      episode.episodeNumStart = episodeNumStart;
+      return episode;
+    });
+
     // Get 'episodeNumEnd'
-    episode.episodeNumEnd = streamer[type].attributes.episodeNumEnd(cheerioRow, cheerioPage);
-    if (episode.episodeNumEnd && !isNumeric(episode.episodeNumEnd)) {
-      episode.episodeNumEnd = 1;
+    let episodeNumEnd = streamer[type].attributes.episodeNumStart(cheerioRow, cheerioPage);
+    if (typeof episodeNumEnd !== 'undefined' && !isNumeric(episodeNumEnd)) {
+      episodeNumEnd = 1;
     }
-    // Get 'sourceUrl'
-    episode.sourceUrl = streamer[type].attributes.sourceUrl(cheerioRow, cheerioPage);
+    episodes = episodes.map((episode) => {
+      episode.episodeNumEnd = episodeNumEnd;
+      return episode;
+    });
 
     // Get 'translationType'
-    episode.translationType = streamer[type].attributes.translationType(cheerioRow, cheerioPage);
+    let translationType = streamer[type].attributes.translationType(cheerioRow, cheerioPage);
+    episodes = episodes.map((episode) => {
+      episode.translationType = translationType;
+      return episode;
+    });
 
-    // Get 'sources'
-    if (streamer[type].attributes.sources) {
-      episode.sources = streamer[type].attributes.sources(cheerioRow, cheerioPage);
+    // Get 'flags'
+    if (streamer[type].attributes.flags) {
+      let flags = streamer[type].attributes.flags(cheerioRow, cheerioPage);
+      episodes = episodes.map((episode) => {
+        episode.flags = flags;
+        return episode;
+      });
     }
 
-    // Clean and validate episode
-    Schemas.Episode.clean(episode, {
-      mutate: true
+    // Clean and validate episodes
+    episodes = episodes.map((episode) => {
+      Schemas.Episode.clean(episode, {
+        mutate: true
+      });
+      Schemas.Episode.validate(episode);
+      return episode;
     });
-    Schemas.Episode.validate(episode);
 
-    // Return the episode
-    return episode;
+    // Return the episodes
+    return episodes;
   }
 
   static processSearchPage(html, streamer, logData) {
@@ -261,11 +283,8 @@ export default class Streamers {
       // For each episode
       page(streamer.showEpisodes.rowSelector).each((index, element) => {
         try {
-            // Create and add episode
-            let result = this.convertCheerioToEpisode(page(element), page('html'), streamer, 'showEpisodes');
-            if (result) {
-              results.episodes.push(result);
-            }
+          // Create and add episodes
+          results.episodes = results.episodes.concat(this.convertCheerioToEpisodes(page(element), page('html'), streamer, 'showEpisodes'));
         }
 
         catch(err) {

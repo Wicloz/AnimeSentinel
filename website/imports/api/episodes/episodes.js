@@ -31,40 +31,15 @@ Schemas.Episode = new SimpleSchema({
     type: String,
     index: true
   },
+  sourceName: {
+    type: String,
+    index: true
+  },
 
   sourceUrl: {
     type: String
   },
-  sources: {
-    type: Array,
-    optional: true,
-    autoValue: function() {
-      if ((!this.isSet || !this.value) && !this.isUpdate) {
-        return [];
-      }
-      if (!this.isSet) {
-        return undefined;
-      }
-      return this.value.reduce((total, value) => {
-        if (value && !total.hasPartialObjects({
-            name: value.name
-          })) {
-          total.push(value);
-        }
-        return total;
-      }, []);
-    }
-  },
-  'sources.$': {
-    type: Object
-  },
-  'sources.$.name': {
-    type: String
-  },
-  'sources.$.url': {
-    type: String
-  },
-  'sources.$.flags': {
+  flags: {
     type: Array,
     optional: true,
     autoValue: function() {
@@ -83,9 +58,35 @@ Schemas.Episode = new SimpleSchema({
       }, []);
     }
   },
-  'sources.$.flags.$': {
+  'flags.$': {
     type: String,
     allowedValues: ['flash', 'cloudflare', 'x-frame-options', 'mixed-content']
+  },
+  uploadDate: {
+    type: Object,
+    index: true,
+    optional: true,
+    defaultValue: {}
+  },
+  'uploadDate.year': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'uploadDate.month': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'uploadDate.date': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'uploadDate.hour': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'uploadDate.minute': {
+    type: SimpleSchema.Integer,
+    optional: true
   }
 }, { tracker: Tracker });
 
@@ -96,6 +97,7 @@ Episodes.flagsWithoutAddOnPreference = ['cloudflare', 'mixed-content', 'flash'];
 Episodes.flagsWithoutAddOnNever = ['x-frame-options'];
 Episodes.flagsWithAddOnPreference = ['flash', 'mixed-content'];
 Episodes.flagsWithAddOnNever = [];
+Episodes.informationKeys = ['sourceUrl', 'flags', 'uploadDate'];
 
 // Helpers
 Episodes.helpers({
@@ -104,20 +106,15 @@ Episodes.helpers({
   },
 
   mergeEpisode(other) {
-    // Overwrite and merge attributes
+    // Copy and merge attributes
     Object.keys(other).forEach((key) => {
-      if (key === 'sources' && typeof this[key] !== 'undefined') {
-        this[key] = this[key].concat(other[key]);
-      } else if (!['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key)) {
+      if (Episodes.informationKeys.includes(key)) {
         this[key] = other[key];
       }
     });
 
     // Update database
-    Episodes.update({
-      _id: this._id,
-      lastUpdateStart: this.lastUpdateStart
-    }, {
+    Episodes.update(this._id, {
       $set: Schemas.Episode.clean(this, {
         mutate: true
       })
@@ -140,7 +137,7 @@ Episodes.addEpisode = function(episode) {
   let id = undefined;
 
   // Get episodes which are the same
-  let others = Episodes.queryUnique(episode.showId, episode.translationType, episode.episodeNumStart, episode.episodeNumEnd, episode.streamerId);
+  let others = Episodes.queryUnique(episode.showId, episode.translationType, episode.episodeNumStart, episode.episodeNumEnd, episode.streamerId, episode.sourceName);
 
   // Merge episodes if found
   if (others.count()) {
@@ -178,11 +175,6 @@ Episodes.moveEpisodes = function(fromId, toId) {
 Episodes.isFlagProblematic = function(flag) {
   return !Session.get('AddOnInstalled') || Episodes.flagsWithAddOnPreference.includes(flag) || Episodes.flagsWithAddOnNever.includes(flag);
 };
-
-// Methods
-Meteor.methods({
-
-});
 
 // Queries
 Episodes.queryForShow = function(showId) {
@@ -245,7 +237,7 @@ Episodes.queryForEpisode = function (showId, translationType, episodeNumStart, e
   });
 };
 
-Episodes.queryUnique = function (showId, translationType, episodeNumStart, episodeNumEnd, streamerId) {
+Episodes.queryForStreamer = function (showId, translationType, episodeNumStart, episodeNumEnd, streamerId) {
   // Validate
   Schemas.Episode.validate({
     showId: showId,
@@ -264,5 +256,29 @@ Episodes.queryUnique = function (showId, translationType, episodeNumStart, episo
     episodeNumEnd: episodeNumEnd,
     translationType: translationType,
     streamerId: streamerId
+  });
+};
+
+Episodes.queryUnique = function (showId, translationType, episodeNumStart, episodeNumEnd, streamerId, sourceName) {
+  // Validate
+  Schemas.Episode.validate({
+    showId: showId,
+    translationType: translationType,
+    episodeNumStart: episodeNumStart,
+    episodeNumEnd: episodeNumEnd,
+    streamerId: streamerId,
+    sourceName: sourceName
+  }, {
+    keys: ['showId', 'translationType', 'episodeNumStart', 'episodeNumEnd', 'streamerId', 'sourceName']
+  });
+
+  // Return results cursor
+  return Episodes.find({
+    showId: showId,
+    episodeNumStart: episodeNumStart,
+    episodeNumEnd: episodeNumEnd,
+    translationType: translationType,
+    streamerId: streamerId,
+    sourceName: sourceName
   });
 };
