@@ -113,10 +113,10 @@ export default class ScrapingHelpers {
   static queryMatchingShows(collection, show, id=undefined) {
     // Validate
     Schemas.Show.validate(show, {
-      keys: ['name', 'altNames', 'streamerUrls', 'malId', 'season']
+      keys: ['name', 'altNames', 'streamerUrls', 'malId', 'season', 'thumbnails']
     });
 
-    // Match based on names/altNames
+    // Match based on names/altNames, thumbnails, or streamerUrls
     let selector = {
       $or: [{
         $nor: show.streamerUrls.map((streamerUrl) => {
@@ -139,6 +139,10 @@ export default class ScrapingHelpers {
         }, {
           altNames: this.prepareAltForMatching(show.name)
         }]
+      // }, {
+      //   thumbnails: {
+      //     $in: show.thumbnails
+      //   }
       // }, {
       //   $or: show.streamerUrls.map((streamerUrl) => {
       //     return {
