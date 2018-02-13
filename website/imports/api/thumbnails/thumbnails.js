@@ -63,8 +63,9 @@ Thumbnails.allow({
 // Helpers
 Thumbnails.addThumbnail = function(url) {
   let hash = createWeakHash(url);
+  let thumbnails = Thumbnails.queryWithHashes([hash]);
 
-  if (!Thumbnails.queryWithHashes([hash]).count()) {
+  if (!thumbnails.count()) {
     startDownloadToStream(url, (readStream, contentType, contentLength) => {
       if (readStream && contentType && contentLength) {
         let newFile = new FS.File();
@@ -74,10 +75,25 @@ Thumbnails.addThumbnail = function(url) {
         newFile.extension('pict');
         Thumbnails.insert(newFile);
       }
+      if (thumbnails.count() > 1) {
+        Thumbnails.cleanForHash(hash);
+      }
     });
   }
 
+  else if (thumbnails.count() > 1) {
+    Thumbnails.cleanForHash(hash);
+  }
+
   return hash;
+};
+
+Thumbnails.cleanForHash = function(hash) {
+  Thumbnails.queryWithHashes([hash]).forEach((thumbnail, index) => {
+    if (index > 0) {
+      Thumbnails.remove(thumbnail._id);
+    }
+  });
 };
 
 Thumbnails.removeWithHashes = function(hashes) {
