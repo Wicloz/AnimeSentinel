@@ -61,3 +61,7 @@
 .collapsible-header-dropdown:not(.active) .material-icons {
   transform: rotate(-90deg);
 }
+
+.collapsible-header-dropdown, .btn, .btn-large, .btn-flat, .btn-floating {
+  user-select: none;
+}
