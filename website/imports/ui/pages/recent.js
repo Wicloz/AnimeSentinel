@@ -43,7 +43,9 @@ Template.pages_recent.helpers({
     Episodes.queryLatest(Template.instance().state.get('episodesLimit')).forEach((episode) => {
       if (!episodes.hasPartialObjects({
           showId: episode.showId,
-          translationType: episode.translationType
+          translationType: episode.translationType,
+          episodeNumStart: episode.episodeNumStart,
+          episodeNumEnd: episode.episodeNumEnd
         })) {
         episode.show = Shows.findOne(episode.showId);
         episode.streamer = Streamers.getSimpleStreamerById(episode.streamerId);
