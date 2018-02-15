@@ -50,7 +50,7 @@ Template.pages_episode.onCreated(function() {
   this.startErrorsDelay = function() {
     this.iframeErrorsTimeout = setTimeout(() => {
       this.setIframeErrors();
-    }, 5000);
+    }, 10000);
   };
 
   this.stopErrorsDelay = function() {
