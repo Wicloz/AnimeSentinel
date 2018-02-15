@@ -130,6 +130,23 @@ export default class Streamers {
       return episode;
     });
 
+    // Set the upload time to now on some episodes
+    episodes = episodes.map((episode) => {
+      Schemas.Episode.clean(episode, {
+        mutate: true
+      });
+
+      let now = moment();
+
+      if (episode.uploadDate.year === now.year() && episode.uploadDate.month === now.month() + 1 && episode.uploadDate.date === now.date()
+        && typeof episode.uploadDate.hour === 'undefined' && typeof episode.uploadDate.minute === 'undefined') {
+        episode.uploadDate.hour = now.hour();
+        episode.uploadDate.minute = now.minute();
+      }
+
+      return episode;
+    });
+
     // Get 'episodeNumStart'
     let episodeNumStart = streamer[type].attributes.episodeNumStart(cheerioRow, cheerioPage);
     if (typeof episodeNumStart !== 'undefined' && !isNumeric(episodeNumStart)) {

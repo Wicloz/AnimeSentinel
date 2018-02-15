@@ -97,7 +97,7 @@ Episodes.flagsWithoutAddOnPreference = ['cloudflare', 'mixed-content', 'flash'];
 Episodes.flagsWithoutAddOnNever = ['x-frame-options'];
 Episodes.flagsWithAddOnPreference = ['flash', 'mixed-content'];
 Episodes.flagsWithAddOnNever = [];
-Episodes.informationKeys = ['sourceUrl', 'flags', 'uploadDate'];
+Episodes.informationKeys = ['sourceUrl', 'flags'];
 
 // Helpers
 Episodes.helpers({
@@ -112,7 +112,7 @@ Episodes.helpers({
   mergeEpisode(other) {
     // Copy and merge attributes
     Object.keys(other).forEach((key) => {
-      if (Episodes.informationKeys.includes(key)) {
+      if (Episodes.informationKeys.includes(key) || (key === 'uploadDate' && Object.countNonEmptyValues(other[key]) > Object.countNonEmptyValues(this[key]))) {
         this[key] = other[key];
       }
     });
