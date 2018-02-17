@@ -19,9 +19,6 @@ export default class ScrapingHelpers {
     Object.keys(airingDateResult).forEach((key) => {
       if (airingDateResult[key]) {
         airingDateResult[key] = airingDateMoment.get(key);
-        if (key === 'month') {
-          airingDateResult[key]++;
-        }
       }
     });
 

@@ -192,7 +192,7 @@ export let kissanime = {
           sourceUrl: sourceUrl + '&s=openload',
           uploadDate: {
             year: dateBits[2],
-            month: dateBits[0],
+            month: dateBits[0] - 1,
             date: dateBits[1]
           }
         }, {
@@ -200,7 +200,7 @@ export let kissanime = {
           sourceUrl: sourceUrl + '&s=rapidvideo',
           uploadDate: {
             year: dateBits[2],
-            month: dateBits[0],
+            month: dateBits[0] - 1,
             date: dateBits[1]
           }
         }, {
@@ -208,7 +208,7 @@ export let kissanime = {
           sourceUrl: sourceUrl + '&s=streamango',
           uploadDate: {
             year: dateBits[2],
-            month: dateBits[0],
+            month: dateBits[0] - 1,
             date: dateBits[1]
           }
         }, {
@@ -216,7 +216,7 @@ export let kissanime = {
           sourceUrl: sourceUrl + '&s=beta',
           uploadDate: {
             year: dateBits[2],
-            month: dateBits[0],
+            month: dateBits[0] - 1,
             date: dateBits[1]
           }
         }];

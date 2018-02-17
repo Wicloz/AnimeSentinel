@@ -138,7 +138,7 @@ export default class Streamers {
 
       let now = moment();
 
-      if (episode.uploadDate.year === now.year() && episode.uploadDate.month === now.month() + 1 && episode.uploadDate.date === now.date()
+      if (episode.uploadDate.year === now.year() && episode.uploadDate.month === now.month() && episode.uploadDate.date === now.date()
         && typeof episode.uploadDate.hour === 'undefined' && typeof episode.uploadDate.minute === 'undefined') {
         episode.uploadDate.hour = now.hour();
         episode.uploadDate.minute = now.minute();
