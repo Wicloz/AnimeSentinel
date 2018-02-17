@@ -44,14 +44,12 @@
         <li class="collection-item">
           <p>Airing:</p>
           <p>
-            {{show.airedStart.date}}/{{show.airedStart.month}}/{{show.airedStart.year}} {{show.airedStart.hour}}:{{show.airedStart.minute}}
-                                   -
-            {{show.airedEnd.date}}/{{show.airedEnd.month}}/{{show.airedEnd.year}} {{show.airedEnd.hour}}:{{show.airedEnd.minute}}
+            {{displayAiringDate show.airedStart}} - {{displayAiringDate show.airedEnd}}
           </p>
         </li>
         <li class="collection-item">
           <p>Season:</p>
-          <p>{{show.season.quarter}} {{show.season.year}}</p>
+          <p>{{displaySeason show.season}}</p>
         </li>
         <li class="collection-item">
           <p>Streamers:</p>
@@ -118,7 +116,7 @@
           <div class="col s6">
             Episode {{episodeNumStart}}{{#if $neq episodeNumStart episodeNumEnd}} - {{episodeNumEnd}}{{/if}}
             <br>
-            {{uploadDate.date}}/{{uploadDate.month}}/{{uploadDate.year}} - {{uploadDate.hour}}:{{uploadDate.minute}}
+            {{displayUploadDate uploadDate}}
           </div>
           <div class="col s6">
             <ul class="right episode-streamer-list">

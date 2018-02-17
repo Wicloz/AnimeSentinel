@@ -53,11 +53,9 @@
                 <p>Genres: [{{genres}}]</p>
                 <p>
                   Airing:
-                  {{airedStart.date}}/{{airedStart.month}}/{{airedStart.year}} {{airedStart.hour}}:{{airedStart.minute}}
-                  -
-                  {{airedEnd.date}}/{{airedEnd.month}}/{{airedEnd.year}} {{airedEnd.hour}}:{{airedEnd.minute}}
+                  {{displayAiringDate airedStart}} - {{displayAiringDate airedEnd}}
                 </p>
-                <p>Season: {{season.quarter}} {{season.year}}</p>
+                <p>Season: {{displaySeason season}}</p>
                 <p>
                   {{#each streamerUrls}}
                     <a target="_blank" rel="noopener" href="{{url}}">{{streamerId}} ({{type}})</a>;
