@@ -16,7 +16,7 @@ Template.registerHelper('displayAiringDate', (date) => {
     return 'Unknown';
   }
 
-  let formatDate = '';
+  let formatDate = undefined;
   if (typeof date.year !== 'undefined') {
     formatDate = 'YYYY';
     if (typeof date.month !== 'undefined') {
@@ -28,12 +28,12 @@ Template.registerHelper('displayAiringDate', (date) => {
     }
   }
 
-  let formatTime = '';
+  let formatTime = undefined;
   if (typeof date.hour !== 'undefined' && typeof date.minute !== 'undefined') {
-    formatTime = 'HH:mm';
+    formatTime = 'HH:mm (z)';
   }
 
-  return moment(date).format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
+  return moment.utc(date).tz(moment.tz.guess()).format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
 });
 
 Template.registerHelper('displayUploadDate', (date) => {
@@ -46,21 +46,28 @@ Template.registerHelper('displayUploadDate', (date) => {
   }
 
   let formatDate = '';
+  if (typeof date.date !== 'undefined') {
+    formatDate += 'DD';
+  } else {
+    formatDate += '??';
+  }
+  formatDate += '/';
+  if (typeof date.month !== 'undefined') {
+    formatDate += 'MM';
+  } else {
+    formatDate += '??';
+  }
+  formatDate += '/';
   if (typeof date.year !== 'undefined') {
-    formatDate = 'YYYY';
-    if (typeof date.month !== 'undefined') {
-      if (typeof date.date !== 'undefined') {
-        formatDate = 'MMMM Do, ' + formatDate;
-      } else {
-        formatDate = 'MMMM ' + formatDate;
-      }
-    }
+    formatDate += 'YYYY';
+  } else {
+    formatDate += '????';
   }
 
-  let formatTime = '';
+  let formatTime = undefined;
   if (typeof date.hour !== 'undefined' && typeof date.minute !== 'undefined') {
-    formatTime = 'HH:mm';
+    formatTime = 'HH:mm (z)';
   }
 
-  return moment(date).format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
+  return moment.utc(date).tz(moment.tz.guess()).format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
 });
