@@ -112,7 +112,7 @@ Episodes.helpers({
   mergeEpisode(other) {
     // Copy and merge attributes
     Object.keys(other).forEach((key) => {
-      if (Episodes.informationKeys.includes(key) || (key === 'uploadDate' && Object.countNonEmptyValues(other[key]) >= Object.countNonEmptyValues(this[key]))) {
+      if (Episodes.informationKeys.includes(key) || (key === 'uploadDate' && Object.countNonEmptyValues(other[key]) > Object.countNonEmptyValues(this[key]))) {
         this[key] = other[key];
       }
     });
