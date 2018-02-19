@@ -21,6 +21,20 @@ function determineAiringDateShowPage(partial, index) {
   );
 }
 
+function getEpisodeNumbers(string) {
+  let numbers = {};
+
+  let words = string.cleanWhitespace().split(' ');
+  numbers.end = words.pop();
+  numbers.start = numbers.end;
+
+  if (isNumeric(numbers.end) && words.pop() === '-') {
+    numbers.start = words.pop();
+  }
+
+  return numbers;
+}
+
 const validTypes = ['OVA', 'Movie', 'Special', 'ONA'];
 const validGenres = ['Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demons', 'Mystery', 'Drama', 'Ecchi',
   'Fantasy', 'Game', 'Historical', 'Horror', 'Kids', 'Magic', 'Martial Arts', 'Mecha', 'Music', 'Parody', 'Samurai',
@@ -164,19 +178,10 @@ export let kissanime = {
     // Episode list attribute data
     attributes: {
       episodeNumStart: function(partial, full) {
-        let words = partial.find('td:first-of-type a').text().cleanWhitespace().split(' ');
-        let lastWord = words.pop();
-
-        if (isNumeric(lastWord)) {
-          if (words.pop() === '-') {
-            return words.pop();
-          }
-        }
-
-        return lastWord;
+        return getEpisodeNumbers(partial.find('td:first-of-type a').text()).start;
       },
       episodeNumEnd: function(partial, full) {
-        return partial.find('td:first-of-type a').text().cleanWhitespace().split(' ').pop()
+        return getEpisodeNumbers(partial.find('td:first-of-type a').text()).end;
       },
       translationType: function(partial, full) {
         return getTypeFromName(full.find('a.bigChar').text());
