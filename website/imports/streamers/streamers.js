@@ -380,17 +380,19 @@ export default class Streamers {
   }
 
   static createFullShow(oldShow, doneCallback, partialCallback, fullCallback, episodeCallback) {
-    let tempShow = new TempShow(oldShow, doneCallback, partialCallback, fullCallback, episodeCallback);
+    let tempShow = new TempShow(oldShow, doneCallback, partialCallback, fullCallback, episodeCallback, false);
     tempShow.start();
   }
 }
 
 class TempShow {
-  constructor(oldShow, doneCallback, partialCallback, fullCallback, episodeCallback) {
+  constructor(oldShow, doneCallback, partialCallback, fullCallback, episodeCallback, simpleMode) {
     this.doneCallback = doneCallback;
     this.partialCallback = partialCallback;
     this.fullCallback = fullCallback;
     this.episodeCallback = episodeCallback;
+
+    this.simpleMode = simpleMode;
 
     this.oldShow = oldShow;
     this.mergedShow = oldShow;
@@ -424,7 +426,7 @@ class TempShow {
   }
 
   areStreamersOrAltsDone() {
-    return this.currentAltNameIndex >= this.mergedShow.altNames.length || streamers.every((streamer) => {
+    return this.simpleMode || this.currentAltNameIndex >= this.mergedShow.altNames.length || streamers.every((streamer) => {
       return this.isStreamerDone(streamer);
     });
   }
@@ -468,7 +470,7 @@ class TempShow {
     this.processUnprocessedStreamerUrls(this.oldShow.streamerUrls);
 
     // Start the alt search loop
-    if (!this.areStreamersOrAltsDone() && !this.searchWithCurrentAltLooping) {
+    if (!this.simpleMode && !this.areStreamersOrAltsDone() && !this.searchWithCurrentAltLooping) {
       this.searchWithCurrentAlt();
     }
   }
@@ -493,7 +495,7 @@ class TempShow {
       this.processShowResult(result, streamerUrl);
 
       // Start the loop again if possible
-      if (!this.areStreamersOrAltsDone() && !this.searchWithCurrentAltLooping) {
+      if (!this.simpleMode && !this.areStreamersOrAltsDone() && !this.searchWithCurrentAltLooping) {
         this.searchWithCurrentAlt();
       }
 
