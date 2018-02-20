@@ -358,7 +358,7 @@ Shows.helpers({
         });
 
         // Merge duplicate shows
-        let others = ScrapingHelpers.queryMatchingShows(Shows, this);
+        let others = Shows.queryMatchingShows(this);
         others.forEach((other) => {
           if (other._id !== this._id) {
             this.mergePartialShow(other);
@@ -407,7 +407,7 @@ Shows.addPartialShow = function(show, episodes) {
   let ids = [];
 
   // Grab matching shows from database
-  let others = ScrapingHelpers.queryMatchingShows(Shows, show);
+  let others = Shows.queryMatchingShows(show);
 
   // Merge if shows were found
   if (others.count()) {
@@ -568,4 +568,8 @@ Shows.queryWithIds = function(ids) {
       $in: ids
     }
   });
+};
+
+Shows.queryMatchingShows = function(show) {
+  return ScrapingHelpers.queryMatchingShows(Shows, show);
 };
