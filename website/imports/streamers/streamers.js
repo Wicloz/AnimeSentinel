@@ -610,7 +610,9 @@ class TempShow {
     }
 
     // Store as partial show
-    this.fullCallback(this.newShow);
+    if (Schemas.Show.newContext().validate(this.newShow)) {
+      this.fullCallback(this.newShow);
+    }
 
     // Mark streamerUrl as done
     this.streamerUrlsDone.push(streamerUrl);
