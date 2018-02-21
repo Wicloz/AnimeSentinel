@@ -40,6 +40,7 @@ export let nineanime = {
   id: 'nineanime',
   name: '9anime',
   homepage: 'https://9anime.is',
+  recentPage: 'https://9anime.is/updated',
   minimalPageTypes: ['sub', 'dub'],
 
   // Search page data
@@ -251,6 +252,59 @@ export let nineanime = {
         });
 
         return found;
+      },
+    },
+  },
+
+  // Recent page data
+  recent: {
+    rowSelector: 'div.film-list div.item',
+
+    // Recent episode attribute data
+    attributes: {
+      episodeNumStart: function(partial, full) {
+        let epNum = partial.find('a.poster div.status div.ep').text().split('/')[0].replace('Ep ', '');
+        return epNum.includes('-') ? epNum.split('-')[0] : epNum;
+      },
+      episodeNumEnd: function(partial, full) {
+        let epNum = partial.find('a.poster div.status div.ep').text().split('/')[0].replace('Ep ', '');
+        return epNum.includes('-') ? epNum.split('-')[1] : epNum;
+      },
+      translationType: function(partial, full) {
+        return getTypeFromName(partial.find('a.name').text());
+      },
+    },
+  },
+
+  // Recent show data
+  recentShow: {
+    // Recent show attribute data
+    attributes: {
+      streamerUrls: function(partial, full) {
+        return [{
+          type: getTypeFromName(partial.find('a.name').text()),
+          url: partial.find('a.name').attr('href')
+        }];
+      },
+      name: function(partial, full) {
+        return cleanName(partial.find('a.name').text());
+      },
+      type: function(partial, full) {
+        let found = undefined;
+        partial.find('a.poster div.status div').each((index, element) => {
+          if (!found && Shows.validTypes.includes(partial.find(element).text())) {
+            found = partial.find(element).text();
+          }
+        });
+        return found;
+      },
+    },
+
+    // Recent show thumbnail data
+    thumbnails: {
+      rowSelector: 'img',
+      getUrl: function (partial, full) {
+        return partial.attr('src');
       },
     },
   },

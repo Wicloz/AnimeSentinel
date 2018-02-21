@@ -47,6 +47,7 @@ export let kissanime = {
   id: 'kissanime',
   name: 'KissAnime',
   homepage: 'http://kissanime.ru',
+  recentPage: 'http://kissanime.ru',
   minimalPageTypes: ['sub', 'dub'],
 
   // Search page data
@@ -225,6 +226,48 @@ export let kissanime = {
             date: dateBits[1]
           }
         }];
+      },
+    },
+  },
+
+  // Recent page data
+  recent: {
+    rowSelector: 'div.bigBarContainer div.barContent div.scrollable div.items div a',
+
+    // Recent episode attribute data
+    attributes: {
+      episodeNumStart: function(partial, full) {
+        return getEpisodeNumbers(partial.find('span').text()).start;
+      },
+      episodeNumEnd: function(partial, full) {
+        return getEpisodeNumbers(partial.find('span').text()).end;
+      },
+      translationType: function(partial, full) {
+        return getTypeFromName(partial.clone().children().remove().end().text());
+      },
+    },
+  },
+
+  // Recent show data
+  recentShow: {
+    // Recent show attribute data
+    attributes: {
+      streamerUrls: function(partial, full) {
+        return [{
+          type: getTypeFromName(partial.clone().children().remove().end().text()),
+          url: kissanime.homepage + '/' + partial.attr('href')
+        }];
+      },
+      name: function(partial, full) {
+        return cleanName(partial.clone().children().remove().end().text());
+      },
+    },
+
+    // Recent show thumbnail data
+    thumbnails: {
+      rowSelector: 'img',
+      getUrl: function (partial, full) {
+        return partial.attr('src') || partial.attr('srctemp');
       },
     },
   },

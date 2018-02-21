@@ -7,6 +7,7 @@ import {Thumbnails} from '../api/thumbnails/thumbnails';
 import {Searches} from '../api/searches/searches';
 import ScrapingHelpers from './scrapingHelpers';
 import moment from 'moment-timezone';
+import {Episodes} from '../api/episodes/episodes';
 
 let streamers = [myanimelist, kissanime, nineanime];
 
@@ -332,6 +333,74 @@ export default class Streamers {
     return results;
   }
 
+  static processRecentPage(html, streamer, logData) {
+    let results = [];
+
+    if (!html) {
+      return results;
+    }
+
+    try {
+      // Load page
+      let page = Cheerio.load(html);
+
+      // For each row of data
+      page(streamer.recent.rowSelector).each((index, element) => {
+        try {
+          // Create the show and search the db
+          let show = this.convertCheerioToShow(page(element), page('html'), streamer, 'recentShow');
+          let dbShows = Shows.queryMatchingShows(show);
+
+          // Test if the show is present
+          let missing = !dbShows.count();
+
+          if (!missing) {
+            // Get episode information
+            let episodeNumStart = streamer.recent.attributes.episodeNumStart(page(element), page('html'));
+            if (typeof episodeNumStart !== 'undefined' && !isNumeric(episodeNumStart)) {
+              episodeNumStart = 1;
+            } else {
+              episodeNumStart = Number(episodeNumStart);
+            }
+            let episodeNumEnd = streamer.recent.attributes.episodeNumEnd(page(element), page('html'));
+            if (typeof episodeNumEnd !== 'undefined' && !isNumeric(episodeNumEnd)) {
+              episodeNumEnd = 1;
+            } else {
+              episodeNumEnd = Number(episodeNumEnd);
+            }
+            let translationType = streamer.recent.attributes.translationType(page(element), page('html')).cleanWhitespace();
+
+            // TODO: Correct episode numbers for streamers which can't count
+
+            // Test if the latest episode is present
+            missing = dbShows.fetch().some((show) => {
+              return !Episodes.queryForStreamer(show._id, translationType, episodeNumStart, episodeNumEnd, streamer.id).count();
+            });
+          }
+
+          // Create and add final result
+          let result = {};
+          result.show = show;
+          result.missing = missing;
+          results.push(result);
+        }
+
+        catch(err) {
+          console.error('Failed to process recent page for streamer: \'' + streamer.id + '\'.');
+          console.error('Failed to process row number ' + index + '.');
+          console.error(err);
+        }
+      });
+    }
+
+    catch(err) {
+      console.error('Failed to process recent page for streamer: \'' + streamer.id + '\'.');
+      console.error(err);
+    }
+
+    return results;
+  }
+
   static getSearchResults(url, streamer, logData, resultCallback) {
     startDownloadWithCallback(url, (html) => {
       resultCallback(this.processSearchPage(html, streamer, logData));
@@ -341,6 +410,12 @@ export default class Streamers {
   static getShowResults(url, streamer, logData, resultCallback) {
     startDownloadWithCallback(url, (html) => {
       resultCallback(this.processShowPage(html, streamer, logData));
+    });
+  }
+
+  static getRecentResults(url, streamer, logData, resultCallback) {
+    startDownloadWithCallback(url, (html) => {
+      resultCallback(this.processRecentPage(html, streamer, logData));
     });
   }
 
@@ -382,6 +457,42 @@ export default class Streamers {
   static createFullShow(oldShow, doneCallback, partialCallback, fullCallback, episodeCallback) {
     let tempShow = new TempShow(oldShow, doneCallback, partialCallback, fullCallback, episodeCallback, false);
     tempShow.start();
+  }
+
+  static findRecentEpisodes(partialCallback, episodeCallback) {
+    // For each streamer
+    streamers.forEach((streamer) => {
+      // Download and process recent page
+      this.getRecentResults(streamer.recentPage, streamer, undefined, (results) => {
+        // For each result
+        results.forEach((result) => {
+
+          // Add as partial
+          partialCallback(result.show);
+
+          // Process show in simple mode when episodes are missing
+          if (result.missing) {
+            let tempShow = new TempShow(result.show, partialCallback, partialCallback, (partial) => {
+
+              result.show = partial;
+              partialCallback(partial);
+              delete partial._id;
+
+            }, (episode) => {
+
+              Shows.queryMatchingShows(result.show).forEach((show) => {
+                episode.showId = show._id;
+                episodeCallback(episode);
+                delete episode._id;
+              });
+
+            }, true);
+            tempShow.start();
+          }
+
+        });
+      });
+    });
   }
 }
 

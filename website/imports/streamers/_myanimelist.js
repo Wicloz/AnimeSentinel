@@ -59,6 +59,7 @@ export let myanimelist = {
   id: 'myanimelist',
   name: 'MyAnimeList',
   homepage: 'https://myanimelist.net',
+  recentPage: 'https://myanimelist.net/watch/episode',
   minimalPageTypes: ['details'],
 
   // Search page data
@@ -277,6 +278,58 @@ export let myanimelist = {
           sourceUrl: partial.find('td.episode-title a').attr('href') + '?provider_id=1',
           uploadDate: uploadDate
         }];
+      },
+    },
+  },
+
+  // Recent page data
+  recent: {
+    rowSelector: 'div.watch-anime-list div.video-block div.video-list-outer-vertical',
+
+    // Recent episode attribute data
+    attributes: {
+      episodeNumStart: function(partial, full) {
+        return partial.find('div.episode div.info-container div.title a:first-of-type').attr('href').split('/').pop();
+      },
+      episodeNumEnd: function(partial, full) {
+        return partial.find('div.episode div.info-container div.title a:first-of-type').attr('href').split('/').pop();
+      },
+      translationType: function(partial, full) {
+        return 'sub';
+      },
+    },
+  },
+
+  // Recent show data
+  recentShow: {
+    // Recent show attribute data
+    attributes: {
+      malId: function(partial, full) {
+        return getMalIdFromUrl(partial.find('div.video-info-title a:last-of-type').attr('href'));
+      },
+      streamerUrls: function(partial, full) {
+        return [{
+          type: 'details',
+          url: partial.find('div.video-info-title a:last-of-type').attr('href')
+        }, {
+          type: 'pictures',
+          url: partial.find('div.video-info-title a:last-of-type').attr('href') + '/pics'
+        }];
+      },
+      name: function(partial, full) {
+        return partial.find('div.video-info-title a:last-of-type').text();
+      },
+    },
+
+    // Recent show thumbnail data
+    thumbnails: {
+      rowSelector: 'div.episode',
+      getUrl: function (partial, full) {
+        let url = partial.css('background-image').replace('url(\'', '').replace('\')', '');
+        if (!url.includes('icon-banned-youtube-rect')) {
+          return url;
+        }
+        return undefined;
       },
     },
   },

@@ -1,4 +1,6 @@
 import SimpleSchema from 'simpl-schema';
+import Streamers from '../../streamers/streamers';
+import {Shows} from '../shows/shows';
 
 // Collection
 export const Episodes = new Mongo.Collection('episodes');
@@ -178,6 +180,20 @@ Episodes.moveEpisodes = function(fromId, toId) {
 
 Episodes.isFlagProblematic = function(flag) {
   return !Session.get('AddOnInstalled') || Episodes.flagsWithAddOnPreference.includes(flag) || Episodes.flagsWithAddOnNever.includes(flag);
+};
+
+Episodes.findRecentEpisodes = function() {
+  Streamers.findRecentEpisodes((partial, episodes) => {
+
+    // Insert any partial results found in the process
+    Shows.addPartialShow(partial, episodes);
+
+  }, (episode) => {
+
+    // Add found episodes
+    Episodes.addEpisode(episode);
+
+  });
 };
 
 // Queries

@@ -3,6 +3,7 @@ export let template = {
   id: '',
   name: '',
   homepage: '',
+  recentPage: '',
   minimalPageTypes: [''],
 
   // Search page data
@@ -236,6 +237,87 @@ export let template = {
             minute: 0
           }
         }];
+      },
+    },
+  },
+
+  // Recent page data
+  recent: {
+    rowSelector: '',
+
+    // Recent episode attribute data
+    attributes: {
+      episodeNumStart: function(partial, full) {
+        return 0;
+      },
+      episodeNumEnd: function(partial, full) {
+        return 0;
+      },
+      translationType: function(partial, full) {
+        return '';
+      },
+    },
+  },
+
+  // Recent show data
+  recentShow: {
+    // Recent show attribute data
+    attributes: {
+      malId: function(partial, full) {
+        return 0;
+      },
+      streamerUrls: function(partial, full) {
+        return [{
+          type: '',
+          url: ''
+        }];
+      },
+      name: function(partial, full) {
+        return '';
+      },
+      altNames: function(partial, full) {
+        return [''];
+      },
+      description: function(partial, full) {
+        return '';
+      },
+      type: function(partial, full) {
+        return '';
+      },
+      genres: function(partial, full) {
+        return [''];
+      },
+      airedStart: function(partial, full) {
+        return {
+          year: 0,
+          month: 0,
+          date: 0,
+          hour: 0,
+          minute: 0
+        };
+      },
+      airedEnd: function(partial, full) {
+        return {
+          year: 0,
+          month: 0,
+          date: 0,
+          hour: 0,
+          minute: 0
+        };
+      },
+      season: function(partial, full) {
+        return {
+          quarter: '',
+          year: 0
+        };
+      },
+    },
+
+    // Recent show thumbnail data
+    thumbnails: {
+      rowSelector: '',
+      getUrl: function (partial, full) {
+        return '';
       },
     },
   },
