@@ -196,6 +196,14 @@ Episodes.findRecentEpisodes = function() {
   });
 };
 
+// Methods
+Meteor.methods({
+  'episodes.findRecentEpisodes'() {
+    // TODO: Make this work better (remove / make caching + indicator work)
+    Episodes.findRecentEpisodes();
+  }
+});
+
 // Queries
 Episodes.queryForShow = function(showId) {
   // Validate

@@ -14,6 +14,10 @@ Template.pages_recent.onCreated(function () {
     episodesLimit: 100
   });
 
+  // Find all recent episodes
+  // TODO: Make this work better (remove / make caching + indicator work)
+  Meteor.call('episodes.findRecentEpisodes');
+
   // Subscribe to latest episodes
   this.autorun(() => {
     this.subscribe('episodes.latest', this.state.get('episodesLimit'));
