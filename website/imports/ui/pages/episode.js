@@ -3,6 +3,8 @@ import {Episodes} from "../../api/episodes/episodes";
 import Streamers from "../../streamers/streamers";
 import {Shows} from "../../api/shows/shows";
 import '/imports/ui/components/image.js';
+import * as RLocalStorage from 'meteor/simply:reactive-local-storage';
+import moment from 'moment-timezone';
 
 Template.pages_episode.onCreated(function() {
   // Getters for the episode numbers
@@ -55,6 +57,14 @@ Template.pages_episode.onCreated(function() {
 
   this.stopErrorsDelay = function() {
     clearTimeout(this.iframeErrorsTimeout);
+  };
+
+  this.selectSource = function(streamerId, sourceName, manual) {
+    this.state.set('selectedStreamerId', streamerId);
+    this.state.set('selectedSourceName', sourceName);
+    if (manual) {
+      RLocalStorage.setItem('SelectedSourceLastTime.' + streamerId + '.' + sourceName, moment().valueOf());
+    }
   };
 
   // Create local variables
@@ -113,23 +123,40 @@ Template.pages_episode.onCreated(function() {
   // When the episodes are found and the selection needs to change
   this.autorun(() => {
     if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count() && (!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName'))) {
-      let flagsPreference = Episodes.flagsWithoutAddOnPreference;
-      let flagsNever = Episodes.flagsWithoutAddOnNever;
-      if (Session.get('AddOnInstalled')) {
-        flagsPreference = Episodes.flagsWithAddOnPreference;
-        flagsNever = Episodes.flagsWithAddOnNever;
+      let selectSource = Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).fetch().reduce((total, episode) => {
+        let thisTime = RLocalStorage.getItem('SelectedSourceLastTime.' + episode.streamerId + '.' + episode.sourceName);
+        if (thisTime && (!total || thisTime > total.time)) {
+          total = {
+            streamerId: episode.streamerId,
+            sourceName: episode.sourceName,
+            time: thisTime
+          };
+        }
+        return total;
+      }, undefined);
+
+      if (selectSource) {
+        this.selectSource(selectSource.streamerId, selectSource.sourceName, false);
       }
 
-      for (let i = flagsPreference.length; i >= 0; i--) {
-        if (!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName')) {
-          Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).forEach((episode) => {
-            if ((!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName')) && episode.flags.every((flag) => {
-                return !flagsNever.includes(flag) && !flagsPreference.slice(0, i).includes(flag);
-              })) {
-              this.state.set('selectedStreamerId', episode.streamerId);
-              this.state.set('selectedSourceName', episode.sourceName);
-            }
-          });
+      else {
+        let flagsPreference = Episodes.flagsWithoutAddOnPreference;
+        let flagsNever = Episodes.flagsWithoutAddOnNever;
+        if (Session.get('AddOnInstalled')) {
+          flagsPreference = Episodes.flagsWithAddOnPreference;
+          flagsNever = Episodes.flagsWithAddOnNever;
+        }
+
+        for (let i = flagsPreference.length; i >= 0; i--) {
+          if (!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName')) {
+            Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).forEach((episode) => {
+              if ((!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName')) && episode.flags.every((flag) => {
+                  return !flagsNever.includes(flag) && !flagsPreference.slice(0, i).includes(flag);
+                })) {
+                this.selectSource(episode.streamerId, episode.sourceName, false);
+              }
+            });
+          }
         }
       }
     }
@@ -234,8 +261,7 @@ Template.pages_episode.events({
       event.target = event.target.parentElement.parentElement;
     }
 
-    Template.instance().state.set('selectedStreamerId', event.target.dataset.streamerid);
-    Template.instance().state.set('selectedSourceName', event.target.dataset.sourcename);
+    Template.instance().selectSource(event.target.dataset.streamerid, event.target.dataset.sourcename, true);
     Template.instance().state.set('iframeErrors', []);
 
     Template.instance().startErrorsDelay();
@@ -282,8 +308,7 @@ AutoForm.hooks({
         });
       }
 
-      this.template.view.parentView.parentView._templateInstance.state.set('selectedStreamerId', undefined);
-      this.template.view.parentView.parentView._templateInstance.state.set('selectedSourceName', undefined);
+      this.template.view.parentView.parentView._templateInstance.selectSource(undefined, undefined, false);
       this.template.view.parentView.parentView._templateInstance.state.set('iframeErrors', []);
 
       this.done();
