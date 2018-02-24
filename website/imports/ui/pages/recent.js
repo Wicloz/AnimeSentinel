@@ -45,14 +45,29 @@ Template.pages_recent.helpers({
     let episodes = [];
 
     Episodes.queryLatest(Template.instance().state.get('episodesLimit')).forEach((episode) => {
-      if (!episodes.hasPartialObjects({
-          showId: episode.showId,
-          translationType: episode.translationType,
-          episodeNumStart: episode.episodeNumStart,
-          episodeNumEnd: episode.episodeNumEnd
-        })) {
+      let selector = {
+        showId: episode.showId,
+        translationType: episode.translationType,
+        episodeNumStart: episode.episodeNumStart,
+        episodeNumEnd: episode.episodeNumEnd
+      };
+
+      if (episodes.hasPartialObjects(selector)) {
+        let other = episodes.getPartialObjects(selector)[0];
+
+        if (other.streamers.every((streamer) => {
+            return streamer.id !== episode.streamerId;
+          })) {
+          other.streamers.push(Streamers.getSimpleStreamerById(episode.streamerId));
+        }
+
+        episodes = episodes.replacePartialObjects(selector, other);
+      }
+
+      else if ((episodes.empty() || episodes[episodes.length - 1].showId !== episode.showId || episodes[episodes.length - 1].translationType !== episode.translationType)
+        && (episodes.length < 2 || episodes[episodes.length - 1].showId !== episode.showId || episodes[episodes.length - 2].showId !== episode.showId || episodes[episodes.length - 2].translationType !== episode.translationType)) {
         episode.show = Shows.findOne(episode.showId);
-        episode.streamer = Streamers.getSimpleStreamerById(episode.streamerId);
+        episode.streamers = [Streamers.getSimpleStreamerById(episode.streamerId)];
         episodes.push(episode);
       }
     });

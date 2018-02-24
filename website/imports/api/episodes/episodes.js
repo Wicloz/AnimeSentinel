@@ -324,6 +324,7 @@ Episodes.queryLatest = function(limit) {
       'uploadDate.hour': -1,
       'uploadDate.minute': -1,
       showId: -1,
+      translationType: -1,
       episodeNumEnd: -1,
       episodeNumStart: -1
     }

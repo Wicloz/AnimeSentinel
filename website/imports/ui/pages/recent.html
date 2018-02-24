@@ -11,7 +11,7 @@
               <div class="col s12 m2">
                 {{>components_image src=episodeJoined.show.getThumbnailUrls.[0] caption=episodeJoined.show.name class="responsive-img materialboxed"}}
               </div>
-              <div class="col s12 m10">
+              <div class="col s12 m8">
                 <p>
                   <a href="{{pathFor 'show' showId=episodeJoined.show._id}}">{{episodeJoined.show.name}}</a>
                 </p>
@@ -29,6 +29,13 @@
                 <p>
                   {{displayUploadDate episodeJoined.uploadDate}}
                 </p>
+              </div>
+              <div class="col s12 m2">
+                <ul class="right episode-streamer-list">
+                  {{#each streamer in episodeJoined.streamers}}
+                    <li>{{streamer.name}}</li>
+                  {{/each}}
+                </ul>
               </div>
             </div>
           </li>
