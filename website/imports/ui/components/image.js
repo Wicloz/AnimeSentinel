@@ -37,19 +37,23 @@ Template.components_image.onCreated(function () {
       this.state.set('id', createUniqueId());
     }
   });
+});
 
+Template.components_image.onRendered(function () {
   this.autorun(() => {
     if (this.state.get('appeared')) {
       let temp = Template.currentData().src;
       Tracker.afterFlush(() => {
         let img = $('#' + this.state.get('id')).get(0);
-        if (img.complete) {
-          this.state.set('loaded', true);
-        } else {
-          this.state.set('loaded', false);
-          img.addEventListener('load', () => {
+        if (img) {
+          if (img.complete) {
             this.state.set('loaded', true);
-          });
+          } else {
+            this.state.set('loaded', false);
+            img.addEventListener('load', () => {
+              this.state.set('loaded', true);
+            });
+          }
         }
       });
     }
@@ -63,9 +67,7 @@ Template.components_image.onCreated(function () {
       });
     }
   });
-});
 
-Template.components_image.onRendered(function () {
   $('#image-detector-' + this.state.get('id')).appear();
   $.force_appear();
 });

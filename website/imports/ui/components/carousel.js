@@ -32,7 +32,9 @@ Template.components_carousel.onCreated(function () {
       this.state.set('id', createUniqueId());
     }
   });
+});
 
+Template.components_carousel.onRendered(function () {
   this.autorun(() => {
     if (this.state.get('appeared')) {
       let temp = Template.currentData().images;
@@ -43,9 +45,7 @@ Template.components_carousel.onCreated(function () {
       });
     }
   });
-});
 
-Template.components_carousel.onRendered(function () {
   $('#carousel-detector-' + this.state.get('id')).appear();
   $.force_appear();
 });
