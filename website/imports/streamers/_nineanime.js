@@ -12,10 +12,12 @@ function getTypeFromName(name) {
 function determineAiringDateShowPage(partial, index) {
   let stringTime = undefined;
   let episodes = partial.find('div.widget.servers div.widget-body div.server.active ul li a');
-  if (index) {
-    stringTime = episodes.last().attr('data-title').split(' - ')[1];
-  } else {
-    stringTime = episodes.first().attr('data-title').split(' - ')[1];
+  if (episodes.length) {
+    if (index) {
+      stringTime = episodes.last().attr('data-title').split(' - ')[1];
+    } else {
+      stringTime = episodes.first().attr('data-title').split(' - ')[1];
+    }
   }
 
   return ScrapingHelpers.buildAiringDateFromStandardStrings(
