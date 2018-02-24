@@ -216,11 +216,6 @@ Episodes.queryForShow = function(showId) {
   // Return results cursor
   return Episodes.find({
     showId: showId
-  }, {
-    sort: {
-      episodeNumEnd: -1,
-      episodeNumStart: 1
-    }
   });
 };
 
@@ -240,7 +235,7 @@ Episodes.queryForTranslationType = function(showId, translationType) {
   }, {
     sort: {
       episodeNumEnd: -1,
-      episodeNumStart: 1
+      episodeNumStart: -1
     }
   });
 };
@@ -327,7 +322,10 @@ Episodes.queryLatest = function(limit) {
       'uploadDate.month': -1,
       'uploadDate.date': -1,
       'uploadDate.hour': -1,
-      'uploadDate.minute': -1
+      'uploadDate.minute': -1,
+      showId: -1,
+      episodeNumEnd: -1,
+      episodeNumStart: -1
     }
   })
 };

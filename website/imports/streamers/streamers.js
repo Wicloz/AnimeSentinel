@@ -159,7 +159,7 @@ export default class Streamers {
     });
 
     // Get 'episodeNumEnd'
-    let episodeNumEnd = streamer[type].attributes.episodeNumStart(cheerioRow, cheerioPage);
+    let episodeNumEnd = streamer[type].attributes.episodeNumEnd(cheerioRow, cheerioPage);
     if (typeof episodeNumEnd !== 'undefined' && !isNumeric(episodeNumEnd)) {
       episodeNumEnd = 1;
     }
