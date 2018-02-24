@@ -69,8 +69,7 @@ Template.pages_show.helpers({
 
         other.uploadDate = ScrapingHelpers.determineEarliestAiringDate(other.uploadDate, episode.uploadDate);
 
-        episodes = episodes.removePartialObjects(selector);
-        episodes.push(other);
+        episodes = episodes.replacePartialObjects(selector, other);
       }
 
       else {

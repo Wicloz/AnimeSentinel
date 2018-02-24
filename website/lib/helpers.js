@@ -43,11 +43,14 @@ Array.prototype.getPartialObjects = function(object) {
   });
 };
 
-Array.prototype.removePartialObjects = function(object) {
-  return this.filter((value) => {
-    return Object.keys(object).some((key) => {
-      return value[key] !== object[key];
-    });
+Array.prototype.replacePartialObjects = function(oldObject, newObject) {
+  return this.map((value) => {
+    if (Object.keys(oldObject).every((key) => {
+        return value[key] === oldObject[key];
+      })) {
+      return newObject;
+    }
+    return value;
   });
 };
 
