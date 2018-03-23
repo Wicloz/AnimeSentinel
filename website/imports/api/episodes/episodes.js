@@ -62,7 +62,7 @@ Schemas.Episode = new SimpleSchema({
   },
   'flags.$': {
     type: String,
-    allowedValues: ['flash', 'cloudflare', 'x-frame-options', 'mixed-content']
+    allowedValues: ['flash', 'cloudflare', 'x-frame-options', 'mixed-content', 'requires-plugins']
   },
   uploadDate: {
     type: Object,

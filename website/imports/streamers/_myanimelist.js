@@ -274,7 +274,7 @@ export let myanimelist = {
           sourceName: 'Crunchyroll',
           sourceUrl: partial.find('td.episode-title a').attr('href') + '?provider_id=1',
           uploadDate: uploadDate,
-          flags: ['flash']
+          flags: ['flash', 'requires-plugins']
         }];
       },
     },

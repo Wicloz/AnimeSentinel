@@ -191,26 +191,8 @@ export let kissanime = {
         let sourceUrl = kissanime.homepage + partial.find('td:first-of-type a').attr('href');
         let dateBits = partial.find('td:last-of-type').text().split('/');
         return [{
-          sourceName: 'Openload',
-          sourceUrl: sourceUrl + '&s=openload',
-          uploadDate: {
-            year: dateBits[2],
-            month: dateBits[0] - 1,
-            date: dateBits[1]
-          },
-          flags: ['cloudflare', 'mixed-content']
-        }, {
-          sourceName: 'RapidVideo',
-          sourceUrl: sourceUrl + '&s=rapidvideo',
-          uploadDate: {
-            year: dateBits[2],
-            month: dateBits[0] - 1,
-            date: dateBits[1]
-          },
-          flags: ['cloudflare', 'mixed-content']
-        }, {
-          sourceName: 'Streamango',
-          sourceUrl: sourceUrl + '&s=streamango',
+          sourceName: 'Alpha Server',
+          sourceUrl: sourceUrl + '&s=alpha',
           uploadDate: {
             year: dateBits[2],
             month: dateBits[0] - 1,
@@ -227,14 +209,32 @@ export let kissanime = {
           },
           flags: ['cloudflare', 'mixed-content']
         }, {
-          sourceName: 'Alpha Server',
-          sourceUrl: sourceUrl + '&s=alpha',
+          sourceName: 'RapidVideo',
+          sourceUrl: sourceUrl + '&s=rapidvideo',
           uploadDate: {
             year: dateBits[2],
             month: dateBits[0] - 1,
             date: dateBits[1]
           },
           flags: ['cloudflare', 'mixed-content']
+        }, {
+          sourceName: 'Openload',
+          sourceUrl: sourceUrl + '&s=openload',
+          uploadDate: {
+            year: dateBits[2],
+            month: dateBits[0] - 1,
+            date: dateBits[1]
+          },
+          flags: ['cloudflare', 'mixed-content', 'requires-plugins']
+        }, {
+          sourceName: 'Streamango',
+          sourceUrl: sourceUrl + '&s=streamango',
+          uploadDate: {
+            year: dateBits[2],
+            month: dateBits[0] - 1,
+            date: dateBits[1]
+          },
+          flags: ['cloudflare', 'mixed-content', 'requires-plugins']
         }];
       },
     },

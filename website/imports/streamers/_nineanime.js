@@ -248,7 +248,7 @@ export let nineanime = {
                   undefined,
                   dateBits[1]
                 ),
-                flags: []
+                flags: ['OpenLoad', 'Streamango'].includes(name) ? ['requires-plugins'] : []
               });
             }
           });
