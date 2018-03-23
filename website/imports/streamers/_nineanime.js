@@ -48,9 +48,8 @@ export let nineanime = {
   // Search page data
   search: {
     createUrl: function(search) {
-      let query = '';
       if (search.query) {
-        query = '&keyword=' + encodeURIComponentReplaceSpaces(search.query, '+');
+        return nineanime.homepage + '/search?keyword=' + encodeURIComponentReplaceSpaces(search.query, '+');
       }
 
       let types = search.getTypesAsIncludes(validTypes);
@@ -71,7 +70,7 @@ export let nineanime = {
         genres = '';
       }
 
-      return nineanime.homepage + '/filter?sort=title%3Aasc' + query + types + genres;
+      return nineanime.homepage + '/filter?sort=title%3Aasc' + types + genres;
     },
     rowSelector: 'div.film-list div.item',
 
