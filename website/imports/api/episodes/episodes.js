@@ -1,6 +1,7 @@
 import SimpleSchema from 'simpl-schema';
 import Streamers from '../../streamers/streamers';
 import {Shows} from '../shows/shows';
+import * as RLocalStorage from 'meteor/simply:reactive-local-storage';
 
 // Collection
 export const Episodes = new Mongo.Collection('episodes');
@@ -99,6 +100,7 @@ Episodes.flagsWithoutAddOnPreference = ['cloudflare', 'mixed-content', 'flash'];
 Episodes.flagsWithoutAddOnNever = ['x-frame-options'];
 Episodes.flagsWithAddOnPreference = ['flash', 'mixed-content'];
 Episodes.flagsWithAddOnNever = [];
+Episodes.flagsWithSandboxingNever = ['requires-plugins'];
 Episodes.informationKeys = ['sourceUrl', 'flags'];
 
 // Helpers
@@ -179,7 +181,15 @@ Episodes.moveEpisodes = function(fromId, toId) {
 };
 
 Episodes.isFlagProblematic = function(flag) {
-  return !Session.get('AddOnInstalled') || Episodes.flagsWithAddOnPreference.includes(flag) || Episodes.flagsWithAddOnNever.includes(flag);
+  return (RLocalStorage.getItem('FrameSandboxingEnabled') && Episodes.flagsWithSandboxingNever.includes(flag)) ||
+    (Session.get('AddOnInstalled') && (Episodes.flagsWithAddOnPreference.includes(flag) || Episodes.flagsWithAddOnNever.includes(flag))) ||
+    (!Session.get('AddOnInstalled') && (Episodes.flagsWithoutAddOnPreference.includes(flag) || Episodes.flagsWithoutAddOnNever.includes(flag)));
+};
+
+Episodes.isFlagDisabled = function(flag) {
+  return (RLocalStorage.getItem('FrameSandboxingEnabled') && Episodes.flagsWithSandboxingNever.includes(flag)) ||
+    (Session.get('AddOnInstalled') && Episodes.flagsWithAddOnNever.includes(flag)) ||
+    (!Session.get('AddOnInstalled') && Episodes.flagsWithoutAddOnNever.includes(flag));
 };
 
 Episodes.findRecentEpisodes = function() {

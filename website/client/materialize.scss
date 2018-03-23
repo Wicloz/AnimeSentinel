@@ -46,7 +46,7 @@
   }
 }
 
-.af-checkbox-group > p > label {
+[type="checkbox"] + label {
   pointer-events: unset;
   transition: unset;
   transform: unset;

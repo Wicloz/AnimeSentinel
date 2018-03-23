@@ -76,6 +76,11 @@ Template.pages_episode.onCreated(function() {
   });
   this.iframeErrorsTimeout = undefined;
 
+  // Enable frame sandboxing initially
+  if (RLocalStorage.getItem('FrameSandboxingEnabled') === null) {
+    RLocalStorage.setItem('FrameSandboxingEnabled', true);
+  }
+
   // Set page title based on the episode numbers and translation type
   this.autorun(() => {
     Session.set('PageTitle', 'Episode ' + this.getEpisodeNumBoth() + ' (' + FlowRouter.getParam('translationType').capitalize() + ')');
@@ -145,6 +150,9 @@ Template.pages_episode.onCreated(function() {
         if (Session.get('AddOnInstalled')) {
           flagsPreference = Episodes.flagsWithAddOnPreference;
           flagsNever = Episodes.flagsWithAddOnNever;
+        }
+        if (RLocalStorage.getItem('FrameSandboxingEnabled')) {
+          flagsNever = flagsNever.concat(Episodes.flagsWithSandboxingNever);
         }
 
         for (let i = flagsPreference.length; i >= 0; i--) {
@@ -222,7 +230,7 @@ Template.pages_episode.helpers({
 
   flagsDisabled(flags) {
     return flags.some((flag) => {
-      return (!Session.get('AddOnInstalled') && Episodes.flagsWithoutAddOnNever.includes(flag)) || (Session.get('AddOnInstalled') && Episodes.flagsWithAddOnNever.includes(flag));
+      return Episodes.isFlagDisabled(flag);
     });
   },
 
@@ -252,6 +260,10 @@ Template.pages_episode.helpers({
 
   episodeSelectionDefaultValue() {
     return Template.instance().getEpisodeNumBoth();
+  },
+
+  frameSandboxingEnabled() {
+    return RLocalStorage.getItem('FrameSandboxingEnabled');
   }
 });
 
@@ -286,6 +298,10 @@ Template.pages_episode.events({
   'click button.btn-select-next'(event) {
     $('#episodeNumberSelection').find('option:selected').prev().attr('selected', 'selected');
   },
+
+  'change #sandboxing-checkbox'(event) {
+    RLocalStorage.setItem('FrameSandboxingEnabled', event.target.checked);
+  }
 });
 
 AutoForm.hooks({
