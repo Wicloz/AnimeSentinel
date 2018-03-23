@@ -261,9 +261,6 @@ export let myanimelist = {
       translationType: function(partial, full) {
         return 'sub';
       },
-      flags: function(partial, full) {
-        return ['flash'];
-      },
       sources: function(partial, full) {
         let uploadDate = {};
         let dateBits = partial.find('td.episode-aired').text().replace(/,/g, '').split(' ');
@@ -276,7 +273,8 @@ export let myanimelist = {
         return [{
           sourceName: 'Crunchyroll',
           sourceUrl: partial.find('td.episode-title a').attr('href') + '?provider_id=1',
-          uploadDate: uploadDate
+          uploadDate: uploadDate,
+          flags: ['flash']
         }];
       },
     },

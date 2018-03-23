@@ -175,15 +175,6 @@ export default class Streamers {
       return episode;
     });
 
-    // Get 'flags'
-    if (streamer[type].attributes.flags) {
-      let flags = streamer[type].attributes.flags(cheerioRow, cheerioPage);
-      episodes = episodes.map((episode) => {
-        episode.flags = flags;
-        return episode;
-      });
-    }
-
     // Clean and validate episodes
     episodes = episodes.map((episode) => {
       Schemas.Episode.clean(episode, {

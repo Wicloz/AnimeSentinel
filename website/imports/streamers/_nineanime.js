@@ -247,7 +247,8 @@ export let nineanime = {
                   undefined,
                   undefined,
                   dateBits[1]
-                )
+                ),
+                flags: []
               });
             }
           });

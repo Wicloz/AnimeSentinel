@@ -187,9 +187,6 @@ export let kissanime = {
       translationType: function(partial, full) {
         return getTypeFromName(full.find('a.bigChar').text());
       },
-      flags: function(partial, full) {
-        return ['cloudflare', 'mixed-content'];
-      },
       sources: function(partial, full) {
         let sourceUrl = kissanime.homepage + partial.find('td:first-of-type a').attr('href');
         let dateBits = partial.find('td:last-of-type').text().split('/');
@@ -200,7 +197,8 @@ export let kissanime = {
             year: dateBits[2],
             month: dateBits[0] - 1,
             date: dateBits[1]
-          }
+          },
+          flags: ['cloudflare', 'mixed-content']
         }, {
           sourceName: 'RapidVideo',
           sourceUrl: sourceUrl + '&s=rapidvideo',
@@ -208,7 +206,8 @@ export let kissanime = {
             year: dateBits[2],
             month: dateBits[0] - 1,
             date: dateBits[1]
-          }
+          },
+          flags: ['cloudflare', 'mixed-content']
         }, {
           sourceName: 'Streamango',
           sourceUrl: sourceUrl + '&s=streamango',
@@ -216,7 +215,8 @@ export let kissanime = {
             year: dateBits[2],
             month: dateBits[0] - 1,
             date: dateBits[1]
-          }
+          },
+          flags: ['cloudflare', 'mixed-content']
         }, {
           sourceName: 'Beta Server',
           sourceUrl: sourceUrl + '&s=beta',
@@ -224,7 +224,17 @@ export let kissanime = {
             year: dateBits[2],
             month: dateBits[0] - 1,
             date: dateBits[1]
-          }
+          },
+          flags: ['cloudflare', 'mixed-content']
+        }, {
+          sourceName: 'Alpha Server',
+          sourceUrl: sourceUrl + '&s=alpha',
+          uploadDate: {
+            year: dateBits[2],
+            month: dateBits[0] - 1,
+            date: dateBits[1]
+          },
+          flags: ['cloudflare', 'mixed-content']
         }];
       },
     },

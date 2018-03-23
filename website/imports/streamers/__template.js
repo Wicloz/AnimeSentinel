@@ -222,9 +222,6 @@ export let template = {
       translationType: function(partial, full) {
         return '';
       },
-      flags: function(partial, full) {
-        return [''];
-      },
       sources: function(partial, full) {
         return [{
           sourceName: '',
@@ -235,7 +232,8 @@ export let template = {
             date: 0,
             hour: 0,
             minute: 0
-          }
+          },
+          flags: ['']
         }];
       },
     },
