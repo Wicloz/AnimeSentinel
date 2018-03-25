@@ -86,6 +86,7 @@
         </h4>
         <p class="flow-text">
           Reload the page and uncheck 'Enable Iframe Sandboxing' below the video.
+          Alternatively, use a different browser.
           Note that Iframe Sandboxing blocks popups even when not using an adblocker.
         </p>
       </div>
@@ -119,9 +120,9 @@
       <div id="player-container-outer">
         <div id="player-container-inner">
           {{#if frameSandboxingEnabled}}
-            <iframe id="episode-frame" src="{{selectedSourceUrl}}" allowfullscreen sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+            <iframe id="episode-frame" src="{{selectedSourceUrl}}" allowfullscreen referrerpolicy="no-referrer" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
           {{else}}
-            <iframe id="episode-frame" src="{{selectedSourceUrl}}" allowfullscreen></iframe>
+            <iframe id="episode-frame" src="{{selectedSourceUrl}}" allowfullscreen referrerpolicy="no-referrer"></iframe>
           {{/if}}
         </div>
       </div>

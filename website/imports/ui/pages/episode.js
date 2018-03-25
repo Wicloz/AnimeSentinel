@@ -151,7 +151,7 @@ Template.pages_episode.onCreated(function() {
           flagsPreference = Episodes.flagsWithAddOnPreference;
           flagsNever = Episodes.flagsWithAddOnNever;
         }
-        if (RLocalStorage.getItem('FrameSandboxingEnabled')) {
+        if (RLocalStorage.getItem('FrameSandboxingEnabled') && BrowserDetect.browser === 'Chrome') {
           flagsNever = flagsNever.concat(Episodes.flagsWithSandboxingNever);
         }
 

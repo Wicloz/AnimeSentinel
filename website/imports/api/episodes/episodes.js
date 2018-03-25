@@ -181,13 +181,13 @@ Episodes.moveEpisodes = function(fromId, toId) {
 };
 
 Episodes.isFlagProblematic = function(flag) {
-  return (RLocalStorage.getItem('FrameSandboxingEnabled') && Episodes.flagsWithSandboxingNever.includes(flag)) ||
+  return (RLocalStorage.getItem('FrameSandboxingEnabled') && Episodes.flagsWithSandboxingNever.includes(flag) && BrowserDetect.browser === 'Chrome') ||
     (Session.get('AddOnInstalled') && (Episodes.flagsWithAddOnPreference.includes(flag) || Episodes.flagsWithAddOnNever.includes(flag))) ||
     (!Session.get('AddOnInstalled') && (Episodes.flagsWithoutAddOnPreference.includes(flag) || Episodes.flagsWithoutAddOnNever.includes(flag)));
 };
 
 Episodes.isFlagDisabled = function(flag) {
-  return (RLocalStorage.getItem('FrameSandboxingEnabled') && Episodes.flagsWithSandboxingNever.includes(flag)) ||
+  return (RLocalStorage.getItem('FrameSandboxingEnabled') && Episodes.flagsWithSandboxingNever.includes(flag) && BrowserDetect.browser === 'Chrome') ||
     (Session.get('AddOnInstalled') && Episodes.flagsWithAddOnNever.includes(flag)) ||
     (!Session.get('AddOnInstalled') && Episodes.flagsWithoutAddOnNever.includes(flag));
 };
