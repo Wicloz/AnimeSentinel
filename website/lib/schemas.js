@@ -1,5 +1,7 @@
 import SimpleSchema from 'simpl-schema';
 
+SimpleSchema.extendOptions(['autoform']);
+
 Schemas = {};
 
 Schemas.id = new SimpleSchema({
