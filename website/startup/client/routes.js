@@ -1,4 +1,4 @@
-import '/imports/ui/layout/main.js';
+import '/imports/ui/layouts/main.js';
 import '/imports/ui/pages/welcome.js';
 import '/imports/ui/pages/search.js';
 import '/imports/ui/pages/notFound.js';
