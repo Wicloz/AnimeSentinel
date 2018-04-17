@@ -40,6 +40,10 @@ aldeed:autoform
 cfs:standard-packages
 cfs:gridfs
 
+accounts-password
+useraccounts:materialize
+useraccounts:flow-routing
+
 johnantoni:meteor-appear
 awatson1978:browser-detection
 meteorhacks:inject-initial
