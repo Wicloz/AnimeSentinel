@@ -26,11 +26,13 @@ AccountsTemplates.configure({
   negativeFeedback: true,
   positiveFeedback: true,
 
-  homeRoutePath: '/sign-in',
+  onLogoutHook: function() {
+    FlowRouter.go('logIn');
+  },
 
   texts: {
     errors: {
-      loginForbidden: 'Invalid email or password',
+      loginForbidden: 'Invalid username/email or password',
       mustBeLoggedIn: 'You must be logged in to access this page',
     }
   }
