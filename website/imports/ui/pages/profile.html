@@ -1,0 +1,34 @@
+<template name="pages_profile">
+  <div class="container">
+
+    <div class="card-panel">
+      <div class="at-form">
+        <div class="at-title">
+          <h3 class="header">Change Profile</h3>
+        </div>
+
+        {{#if updateProfileFormError}}
+          <div class="at-error card-panel red lighten-2">
+            <span><i class="mdi-alert-warning"></i> {{updateProfileFormError}}</span>
+          </div>
+        {{/if}}
+
+        <div class="at-pwd-form">
+          {{#autoForm schema='Schemas.UserClient' id='updateProfileForm' doc=currentUser validation='keyup'}}
+            {{> afQuickField name='username'}}
+            {{> afQuickField name='profile'}}
+            {{> afQuickField name='emails'}}
+            <div class="row">
+              <button type="submit" class="at-btn submit waves-effect waves-light btn">Update your profile</button>
+            </div>
+          {{/autoForm}}
+        </div>
+      </div>
+    </div>
+
+    <div class="card-panel">
+      {{> atForm state='changePwd'}}
+    </div>
+
+  </div>
+</template>
