@@ -1,23 +1,31 @@
 <template name="components_nav_main">
   <div class="navbar-fixed">
     <nav>
-      <div class="nav-wrapper">
-        <a data-activates="navMainSide" class="button-collapse pointer">
+      <div class="nav-wrapper nav-wrapper-flex">
+        <a data-activates="navMainSide" class="button-collapse pointer nav-left-flex">
           <i class="material-icons">menu</i>
         </a>
 
-        <ul class="left hide-on-med-and-down">
+        <ul class="hide-on-med-and-down nav-left-flex">
           {{> components_nav_main_linksPublic}}
           {{> components_nav_main_link_external href='https://animeold.wilcodeboer.me' title='Old Version' id='navMainOldSiteDesktop'}}
         </ul>
 
-        <div id="navMainBreadcrumbs">
+        <div class="nav-center-flex">
           {{#each breadCrumbs}}
             <a href="{{url}}" class="breadcrumb">{{name}}</a>
           {{/each}}
           <a class="breadcrumb">{{pageTitle}}</a>
           <span class="hidden"> l</span>
         </div>
+
+        <ul class="hide-on-med-and-down nav-right-flex">
+          {{#if currentUser}}
+            {{> components_nav_main_linksLoggedIn}}
+          {{else}}
+            {{> components_nav_main_linksLoggedOut}}
+          {{/if}}
+        </ul>
       </div>
     </nav>
   </div>
@@ -25,6 +33,14 @@
   <ul class="side-nav" id="navMainSide">
     {{> components_nav_main_linksPublic}}
     {{> components_nav_main_link_external href='https://animeold.wilcodeboer.me' title='Old Version' id='navMainOldSiteMobile'}}
+    <li>
+      <div class="divider"></div>
+    </li>
+    {{#if currentUser}}
+      {{> components_nav_main_linksLoggedIn}}
+    {{else}}
+      {{> components_nav_main_linksLoggedOut}}
+    {{/if}}
   </ul>
 </template>
 
@@ -33,6 +49,16 @@
   {{> components_nav_main_link_internal routeName='search' routeTitle='Anime' activeWhen='search|show|episodeSingle|episodeDouble'}}
   {{> components_nav_main_link_internal routeName='recent' routeTitle='Recent Episodes' activeWhen='recent'}}
   {{> components_nav_main_link_external href='https://github.com/Wicloz/AnimeSentinel/tree/meteor' title='GitHub'}}
+</template>
+
+<template name="components_nav_main_linksLoggedIn">
+  {{> components_nav_main_link_internal routeName='manageProfile' routeTitle='Manage Profile' activeWhen='manageProfile'}}
+  {{> components_nav_main_link_internal routeName='logOut' routeTitle='Log Out' activeWhen='logOut'}}
+</template>
+
+<template name="components_nav_main_linksLoggedOut">
+  {{> components_nav_main_link_internal routeName='logIn' routeTitle='Log In' activeWhen='logIn'}}
+  {{> components_nav_main_link_internal routeName='register' routeTitle='Register' activeWhen='register'}}
 </template>
 
 <template name="components_nav_main_link_internal">
