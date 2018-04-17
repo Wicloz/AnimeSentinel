@@ -29,12 +29,13 @@ Schemas.User = new SimpleSchema({
     type: Boolean
   },
 
+  username: {
+    type: String
+  },
+
   profile: {
     type: Object,
     optional: true
-  },
-  'profile.username': {
-    type: String
   },
   'profile.malUsername': {
     type: String,
@@ -55,8 +56,8 @@ Schemas.UserClient = new SimpleSchema({
   'emails': Schemas.User._schema['emails'],
   'emails.$': Schemas.User._schema['emails.$'],
   'emails.$.address': Schemas.User._schema['emails.$.address'],
+  'username': Schemas.User._schema['username'],
   'profile': Schemas.User._schema['profile'],
-  'profile.username': Schemas.User._schema['profile.username'],
   'profile.malUsername': Schemas.User._schema['profile.malUsername'],
   'profile.malPassword': Schemas.User._schema['profile.malPassword'],
 }, { tracker: Tracker });
