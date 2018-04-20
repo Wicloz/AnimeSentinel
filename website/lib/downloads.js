@@ -73,7 +73,10 @@ startDownloadToStream = async function(url, callback) {
 };
 
 function downloadToStream(url, callback, tries=1) {
-  if (Meteor.isServer || Session.get('AddOnInstalled')) {
+  // TODO: Fix database stuff so the client can download too
+  // if (Meteor.isServer || Session.get('AddOnInstalled')) {
+
+  if (Meteor.isServer) {
     url = preProcessUrl(url, tries);
     if (!url) {
       callback(false, false, false);
@@ -81,6 +84,7 @@ function downloadToStream(url, callback, tries=1) {
     }
 
     let options = {
+      method: 'GET',
       encoding: null,
       jar: cloudkicker.cookieJar,
       headers: {
