@@ -59,7 +59,20 @@ function downloadWithCallback(url, callback, tries=1) {
 
     cloudScraper.request(options, Meteor.bindEnvironment((error, response, body) => {
       if (error) {
-        error = error.error || 'An error has occurred in cloudscraper: ' + error.errorType;
+        switch (error.errorType) {
+          case 0:
+            error = error.error;
+            break;
+          case 1:
+            error = 'CloudFlare returned a captcha page';
+            break;
+          case 2:
+            error = 'CloudFlare error: ' + error.error;
+            break;
+          case 3:
+            error = error.error;
+            break;
+        }
       } else if (!isStatusCodeSuccess(response.statusCode)) {
         error = response.statusCode + ' ' + response.statusMessage;
       }
