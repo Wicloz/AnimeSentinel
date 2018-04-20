@@ -15,8 +15,8 @@ function preProcessUrl(url, tries) {
     console.log('Downloading: url \'' + url + '\', try \'' + tries + '\'');
   }
 
+  // TODO: Fix http downloads on the client
   if (Meteor.isClient && url.startsWith('http://')) {
-    // TODO: Fix http downloads on the client
     return false;
   }
 
