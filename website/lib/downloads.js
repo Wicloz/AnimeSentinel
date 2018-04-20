@@ -8,6 +8,21 @@ function isStatusCodeSuccess(statusCode) {
   return statusCode.length === 3 && (statusCode.startsWith('1') || statusCode.startsWith('2') || statusCode.startsWith('3'));
 }
 
+function preProcessUrl(url, tries) {
+  url = encodeURI(url).replace(/%25/g, '%');
+
+  if (Meteor.isDevelopment) {
+    console.log('Downloading: url \'' + url + '\', try \'' + tries + '\'');
+  }
+
+  if (Meteor.isClient && url.startsWith('http://')) {
+    // TODO: Fix http downloads on the client
+    return false;
+  }
+
+  return url;
+}
+
 startDownloadWithCallback = async function(url, callback) {
   _.delay(Meteor.bindEnvironment(downloadWithCallback), Math.random() * 200, url, callback);
 };
@@ -17,14 +32,8 @@ function downloadWithCallback(url, callback, tries=1) {
   // if (Meteor.isServer || Session.get('AddOnInstalled')) {
 
   if (Meteor.isServer) {
-    url = encodeURI(url).replace(/%25/g, '%');
-
-    if (Meteor.isDevelopment) {
-      console.log('Downloading: url \'' + url + '\', try \'' + tries + '\'');
-    }
-
-    if (Meteor.isClient && url.startsWith('http://')) {
-      // TODO: Fix http downloads on the client
+    url = preProcessUrl(url, tries);
+    if (!url) {
       callback(false);
       return;
     }
@@ -64,10 +73,10 @@ startDownloadToStream = async function(url, callback) {
 };
 
 function downloadToStream(url, callback, tries=1) {
-  url = encodeURI(url).replace(/%25/g, '%');
-
-  if (Meteor.isDevelopment) {
-    console.log('Downloading: url \'' + url + '\', try \'' + tries + '\'');
+  url = preProcessUrl(url, tries);
+  if (!url) {
+    callback(false, false, false);
+    return;
   }
 
   let options = {
