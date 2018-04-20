@@ -1,7 +1,8 @@
-import {CloudKicker} from "cloudkicker/lib/index";
 import request from 'request';
 
-const cloudkicker = new CloudKicker();
+const userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0";
+const cookieJar = new request.jar();
+const cloudScraper = require('cloudscraper');
 
 function isStatusCodeSuccess(statusCode) {
   statusCode = statusCode.toString();
@@ -38,23 +39,31 @@ function downloadWithCallback(url, callback, tries=1) {
       return;
     }
 
-    cloudkicker.get(url).then(({options, response}) => {
-      if (isStatusCodeSuccess(response.statusCode)) {
-        callback(response.body.toString());
+    let options = {
+      method: 'GET',
+      encoding: null,
+      jar: cookieJar,
+      headers: {
+        'User-Agent': userAgent
+      },
+      url: url,
+    };
+
+    cloudScraper.request(options, Meteor.bindEnvironment((error, response, body) => {
+      if (error) {
+        error = error.error || 'An error has occurred in cloudscraper: ' + error.errorType;
+      } else if (!isStatusCodeSuccess(response.statusCode)) {
+        error = response.statusCode + ' ' + response.statusMessage;
+      }
+
+      if (error) {
+        tryNextDownloadWithCallback(url, callback, tries, error);
       }
 
       else {
-        tryNextDownloadWithCallback(url, callback, tries, response.statusCode + ' ' + response.statusMessage);
+        callback(body.toString());
       }
-    },
-
-    (err) => {
-      tryNextDownloadWithCallback(url, callback, tries, err);
-    }).
-
-    catch((err) => {
-      console.error(err);
-    });
+    }));
   }
 }
 
@@ -86,9 +95,9 @@ function downloadToStream(url, callback, tries=1) {
     let options = {
       method: 'GET',
       encoding: null,
-      jar: cloudkicker.cookieJar,
+      jar: cookieJar,
       headers: {
-        'User-Agent': cloudkicker.options.userAgent
+        'User-Agent': userAgent
       },
       url: url,
     };
