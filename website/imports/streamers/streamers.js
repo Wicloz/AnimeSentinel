@@ -735,9 +735,11 @@ class TempShow {
       return streamerUrlStarted;
     }));
 
-    Thumbnails.removeWithHashes(this.oldShow.thumbnails.filter((thumbnail) => {
-      return !this.newShow.thumbnails.includes(thumbnail);
-    }));
+    if (typeof this.newShow.thumbnails !== 'undefined') {
+      Thumbnails.removeWithHashes(this.oldShow.thumbnails.filter((thumbnail) => {
+        return !this.newShow.thumbnails.includes(thumbnail);
+      }));
+    }
 
     this.doneCallback(this.newShow);
 
