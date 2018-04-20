@@ -97,7 +97,9 @@ function downloadToStream(url, callback, tries=1) {
       else {
         tryNextDownloadToStream(url, callback, tries, response.statusCode + ' ' + response.statusMessage);
       }
-    })).on('error', Meteor.bindEnvironment((err) => {
+    }))
+
+    .on('error', Meteor.bindEnvironment((err) => {
       tryNextDownloadToStream(url, callback, tries, err);
     }));
   }
