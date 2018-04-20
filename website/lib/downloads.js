@@ -73,36 +73,34 @@ startDownloadToStream = async function(url, callback) {
 };
 
 function downloadToStream(url, callback, tries=1) {
-  url = preProcessUrl(url, tries);
-  if (!url) {
-    callback(false, false, false);
-    return;
+  if (Meteor.isServer || Session.get('AddOnInstalled')) {
+    url = preProcessUrl(url, tries);
+    if (!url) {
+      callback(false, false, false);
+      return;
+    }
+
+    let options = {
+      encoding: null,
+      jar: cloudkicker.cookieJar,
+      headers: {
+        'User-Agent': cloudkicker.options.userAgent
+      },
+      url: url,
+    };
+
+    request.get(options).on('response', Meteor.bindEnvironment((response) => {
+      if (isStatusCodeSuccess(response.statusCode)) {
+        callback(response, response.headers['content-type'].split('; ')[0], Number(response.headers['content-length']));
+      }
+
+      else {
+        tryNextDownloadToStream(url, callback, tries, response.statusCode + ' ' + response.statusMessage);
+      }
+    })).on('error', Meteor.bindEnvironment((err) => {
+      tryNextDownloadToStream(url, callback, tries, err);
+    }));
   }
-
-  let options = {
-    encoding: null,
-    jar: cloudkicker.cookieJar,
-    headers: {
-      'User-Agent': cloudkicker.options.userAgent
-    },
-    url: url,
-  };
-
-  request.get(options).
-
-  on('response', Meteor.bindEnvironment((response) => {
-    if (isStatusCodeSuccess(response.statusCode)) {
-      callback(response, response.headers['content-type'].split('; ')[0], Number(response.headers['content-length']));
-    }
-
-    else {
-      tryNextDownloadToStream(url, callback, tries, response.statusCode + ' ' + response.statusMessage);
-    }
-  })).
-
-  on('error', Meteor.bindEnvironment((err) => {
-    tryNextDownloadToStream(url, callback, tries, err);
-  }));
 }
 
 function tryNextDownloadToStream(url, callback, tries, err) {
