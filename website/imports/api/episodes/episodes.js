@@ -206,6 +206,26 @@ Episodes.findRecentEpisodes = function() {
   });
 };
 
+Episodes.getPreviousEpisode = function(showId, translationType, episodeNumStart, episodeNumEnd) {
+  let episodes = Episodes.queryForTranslationType(showId, translationType).fetch();
+
+  for (let i = episodes.length - 1; i >= 0; i--) {
+    if (episodes[i].episodeNumStart === episodeNumStart && episodes[i].episodeNumEnd === episodeNumEnd) {
+      return episodes[i + 1];
+    }
+  }
+};
+
+Episodes.getNextEpisode = function(showId, translationType, episodeNumStart, episodeNumEnd) {
+  let episodes = Episodes.queryForTranslationType(showId, translationType).fetch();
+
+  for (let i = 0; i < episodes.length; i++) {
+    if (episodes[i].episodeNumStart === episodeNumStart && episodes[i].episodeNumEnd === episodeNumEnd) {
+      return episodes[i - 1];
+    }
+  }
+};
+
 // Methods
 Meteor.methods({
   'episodes.findRecentEpisodes'() {

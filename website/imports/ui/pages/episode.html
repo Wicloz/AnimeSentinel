@@ -5,13 +5,17 @@
       {{#autoForm schema='Schemas.episodeSelection' id='episodeSelectionForm' autosave=true}}
         <div class="row">
           <div class="col s2">
-            <button class="waves-effect waves-teal btn btn-select-prev">{{>tooltippedIcon icon='chevron_left' text='Previous Episode' position='right'}}</button>
+            {{#if previousEpisode}}
+              <button class="waves-effect waves-teal btn btn-select-prev">{{>tooltippedIcon icon='chevron_left' text='Previous Episode' position='right'}}</button>
+            {{/if}}
           </div>
           <div class="col s8">
             {{> afQuickField name='episodeNumber' options=episodeSelectionOptions defaultValue=episodeSelectionDefaultValue id='episodeNumberSelection'}}
           </div>
           <div class="col s2">
-            <button class="waves-effect waves-teal btn btn-select-next">{{>tooltippedIcon icon='chevron_right' text='Next Episode' position='right'}}</button>
+            {{#if nextEpisode}}
+              <button class="waves-effect waves-teal btn btn-select-next">{{>tooltippedIcon icon='chevron_right' text='Next Episode' position='right'}}</button>
+            {{/if}}
           </div>
         </div>
       {{/autoForm}}

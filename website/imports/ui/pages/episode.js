@@ -67,6 +67,26 @@ Template.pages_episode.onCreated(function() {
     }
   };
 
+  this.goToEpisode = function(episodeNumStart, episodeNumEnd) {
+    if (episodeNumStart === episodeNumEnd) {
+      FlowRouter.go('episodeSingle', {
+        showId: FlowRouter.getParam('showId'),
+        translationType: FlowRouter.getParam('translationType'),
+        episodeNumBoth: episodeNumStart
+      });
+    } else {
+      FlowRouter.go('episodeDouble', {
+        showId: FlowRouter.getParam('showId'),
+        translationType: FlowRouter.getParam('translationType'),
+        episodeNumStart: episodeNumStart,
+        episodeNumEnd: episodeNumEnd
+      });
+    }
+
+    this.selectSource(undefined, undefined, false);
+    this.state.set('iframeErrors', []);
+  };
+
   // Create local variables
   this.state = new ReactiveDict();
   this.state.setDefault({
@@ -264,6 +284,14 @@ Template.pages_episode.helpers({
 
   frameSandboxingEnabled() {
     return RLocalStorage.getItem('FrameSandboxingEnabled');
+  },
+
+  previousEpisode() {
+    return Episodes.getPreviousEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd());
+  },
+
+  nextEpisode() {
+    return Episodes.getNextEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd());
   }
 });
 
@@ -293,10 +321,12 @@ Template.pages_episode.events({
   },
 
   'click button.btn-select-prev'(event) {
-    $('#episodeNumberSelection').find('option:selected').next().attr('selected', 'selected');
+    let episode = Episodes.getPreviousEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd());
+    Template.instance().goToEpisode(episode.episodeNumStart, episode.episodeNumEnd);
   },
   'click button.btn-select-next'(event) {
-    $('#episodeNumberSelection').find('option:selected').prev().attr('selected', 'selected');
+    let episode = Episodes.getNextEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd());
+    Template.instance().goToEpisode(episode.episodeNumStart, episode.episodeNumEnd);
   },
 
   'change #sandboxing-checkbox'(event) {
@@ -308,25 +338,7 @@ AutoForm.hooks({
   episodeSelectionForm: {
     onSubmit(insertDoc) {
       let split = insertDoc.episodeNumber.split(' - ');
-
-      if (split.length === 2) {
-        FlowRouter.go('episodeDouble', {
-          showId: FlowRouter.getParam('showId'),
-          translationType: FlowRouter.getParam('translationType'),
-          episodeNumStart: split[0],
-          episodeNumEnd: split[1]
-        });
-      } else {
-        FlowRouter.go('episodeSingle', {
-          showId: FlowRouter.getParam('showId'),
-          translationType: FlowRouter.getParam('translationType'),
-          episodeNumBoth: insertDoc.episodeNumber
-        });
-      }
-
-      this.template.view.parentView.parentView._templateInstance.selectSource(undefined, undefined, false);
-      this.template.view.parentView.parentView._templateInstance.state.set('iframeErrors', []);
-
+      this.template.view.parentView.parentView._templateInstance.goToEpisode(split[0], split.length === 2 ? split[1] : split[0]);
       this.done();
       return false;
     }
