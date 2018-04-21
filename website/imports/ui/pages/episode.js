@@ -66,6 +66,9 @@ Template.pages_episode.onCreated(function() {
     if (manual) {
       RLocalStorage.setItem('SelectedSourceLastTime.' + streamerId + '.' + sourceName, moment().valueOf());
     }
+
+    this.state.set('iframeErrors', []);
+    this.startErrorsDelay();
   };
 
   this.goToEpisode = function(episodeNumStart, episodeNumEnd) {
@@ -83,10 +86,7 @@ Template.pages_episode.onCreated(function() {
         episodeNumEnd: episodeNumEnd
       });
     }
-
     this.selectSource(undefined, undefined, false);
-    this.state.set('iframeErrors', []);
-    this.startErrorsDelay();
   };
 
   // Create local variables
@@ -191,9 +191,6 @@ Template.pages_episode.onCreated(function() {
       }
     }
   });
-
-  // Start the error delay now that everything is ready
-  this.startErrorsDelay();
 });
 
 Template.pages_episode.helpers({
@@ -212,6 +209,7 @@ Template.pages_episode.helpers({
   selectedSourceUrl() {
     if (!Template.instance().state.get('selectedStreamerId') || !Template.instance().state.get('selectedSourceName') || !Template.instance().state.get('iframeErrors').empty()) {
       return undefined;
+      return 'about:blank';
     }
     return Episodes.queryUnique(
       FlowRouter.getParam('showId'),
@@ -302,11 +300,7 @@ Template.pages_episode.events({
     if (event.target.tagName === 'I') {
       event.target = event.target.parentElement.parentElement;
     }
-
     Template.instance().selectSource(event.target.dataset.streamerid, event.target.dataset.sourcename, true);
-    Template.instance().state.set('iframeErrors', []);
-
-    Template.instance().startErrorsDelay();
   },
 
   'error #episode-frame'(event) {
@@ -320,6 +314,7 @@ Template.pages_episode.events({
   },
 
   'click a.btn-not-working'(event) {
+    Template.instance().stopErrorsDelay();
     Template.instance().setIframeErrors();
   },
 
