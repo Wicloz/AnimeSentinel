@@ -252,15 +252,21 @@ Shows.helpers({
   },
 
   getThumbnailUrls() {
-    if (this.thumbnails && !this.thumbnails.empty()) {
-      let urls = Thumbnails.queryWithHashes(this.thumbnails).fetch().filterMap((thumbnail) => {
-        return thumbnail.url({store: Session.get('FeatureSupportWebP') ? 'thumbnailsWEBP' : 'thumbnailsJPEG'});
-      });
-      if (!urls.empty()) {
-        return urls;
-      }
+    if (!this.thumbnails || this.thumbnails.empty()) {
+      return ['/media/unknown.gif'];
     }
-    return ['/media/unknown.gif'];
+
+    let urls = Thumbnails.queryWithHashes(this.thumbnails).fetch().filterMap((thumbnail) => {
+      if (thumbnail.uploadedAt) {
+        return thumbnail.url({store: Session.get('FeatureSupportWebP') ? 'thumbnailsWEBP' : 'thumbnailsJPEG'});
+      }
+    });
+
+    while (urls.length < this.thumbnails.length) {
+      urls.push('/media/spinner.gif');
+    }
+
+    return urls;
   },
 
   expired() {
