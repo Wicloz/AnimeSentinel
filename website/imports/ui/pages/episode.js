@@ -190,7 +190,7 @@ Template.pages_episode.onCreated(function() {
     }
   });
 
-  // Start the error daley now that everything is ready
+  // Start the error delay now that everything is ready
   this.startErrorsDelay();
 });
 
