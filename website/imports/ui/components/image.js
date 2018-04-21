@@ -1,12 +1,12 @@
 import './image.html';
 
 Template.components_image.helpers({
-  getAppeared() {
-    return Template.instance().state.get('appeared');
+  showImage() {
+    return Template.instance().state.get('appeared') && Template.currentData().src !== '/media/spinner.gif';
   },
 
-  getNotLoaded() {
-    return !Template.instance().state.get('loaded');
+  showLoading() {
+    return !Template.instance().state.get('loaded') || Template.currentData().src === '/media/spinner.gif';
   },
 
   getId() {
@@ -15,7 +15,7 @@ Template.components_image.helpers({
 });
 
 Template.components_image.events({
-  'appear .image-detector'(event) {
+  'appear imgdet'(event) {
     if ($(event.target).attr('id') === 'image-detector-' + Template.instance().state.get('id')) {
       Template.instance().state.set('appeared', true);
     }

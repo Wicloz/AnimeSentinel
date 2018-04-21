@@ -1,11 +1,11 @@
 <template name="components_image">
 
-  {{#if getAppeared}}
-    <img src="{{src}}" class="{{class}} {{#if getNotLoaded}}removed{{/if}}" data-caption="{{caption}}" alt="{{caption}}" id="{{getId}}">
+  {{#if showImage}}
+    <img src="{{src}}" class="{{class}} {{#if showLoading}}removed{{/if}}" data-caption="{{caption}}" alt="{{caption}}" id="{{getId}}">
   {{/if}}
 
-  {{#if getNotLoaded}}
-    <div class="image-detector" id="image-detector-{{getId}}" data-appear-top-offset="200" data-appear-left-offset="200">
+  {{#if showLoading}}
+    <imgdet class="{{class}}" id="image-detector-{{getId}}" data-appear-top-offset="200" data-appear-left-offset="200">
       <div class="preloader-wrapper small active">
         <div class="spinner-layer">
           <div class="circle-clipper left">
@@ -19,7 +19,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </imgdet>
   {{/if}}
 
 </template>

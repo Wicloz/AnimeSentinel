@@ -1,6 +1,11 @@
 @import "../../../client/_vars.scss";
 
-.image-detector {
-  width: 100%;
+imgdet {
   height: 100%;
+  display: inline-block;
+
+  .preloader-wrapper {
+    margin: auto;
+    display: block;
+  }
 }
