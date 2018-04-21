@@ -5,6 +5,7 @@ import {Episodes} from "../episodes/episodes";
 import {Thumbnails} from '../thumbnails/thumbnails';
 import ScrapingHelpers from '../../streamers/scrapingHelpers';
 import moment from 'moment-timezone';
+const score = require('string-score');
 
 // Collection
 export const Shows = new Mongo.Collection('shows');
@@ -80,7 +81,7 @@ Schemas.Show = new SimpleSchema({
   },
   altNames: {
     type: Array,
-    index: 'text',
+    index: true,
     minCount: 1,
     autoValue: function() {
       if (!this.isSet) {
@@ -469,7 +470,7 @@ Meteor.methods({
 });
 
 // Queries
-Shows.querySearch = function(search, limit) { // TODO: Improve searching
+Shows.querySearch = function(search, limit) {
   // Clean
   Schemas.Search.clean(search, {
     mutate: true
@@ -485,9 +486,10 @@ Shows.querySearch = function(search, limit) { // TODO: Improve searching
 
   // Setup initial options
   let selector = {};
-  let options = {
-    limit: limit
-  };
+  let options = {};
+  if (Meteor.isClient || !search.query) {
+    options.limit = limit;
+  }
 
   // Search on 'types'
   if (!search.types.empty()) {
@@ -538,20 +540,24 @@ Shows.querySearch = function(search, limit) { // TODO: Improve searching
 
   // Search on 'query'
   if (search.query) {
-    if (Meteor.isServer) {
-      selector.$text = {
-        $search: '"' + search.query.replace(/\s-([^\s])/g, ' $1') + '"',
-        $language: 'english',
-      };
-      options.fields = {
-        score: {
-          $meta: 'textScore'
-        }
-      };
-    }
-    options.sort = {
-      textScore: -1
+    selector.altNames = {
+      $regex: '.*' + search.query.split('').join('.*') + '.*',
+      $options: 'i'
     };
+    if (Meteor.isClient) {
+      options.sort = function(a, b) {
+        let cleanQuery = search.query.replace(/["'「」]/g, '');
+        let scoreA = a.altNames.reduce((bestSore, altName) => {
+          if (bestSore === 1) return 1;
+          return Math.max(bestSore, score(altName.cleanQuery().replace(/["'「」]/g, ''), cleanQuery, 0.1));
+        }, 0);
+        let scoreB = b.altNames.reduce((bestSore, altName) => {
+          if (bestSore === 1) return 1;
+          return Math.max(bestSore, score(altName.cleanQuery().replace(/["'「」]/g, ''), cleanQuery, 0.1));
+        }, 0);
+        return scoreB - scoreA;
+      }
+    }
   }
 
   else {

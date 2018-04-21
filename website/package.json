@@ -18,6 +18,7 @@
     "request": "^2.83.0",
     "simpl-schema": "^1.4.2",
     "spawn-sync": "^1.0.15",
+    "string-score": "^1.0.1",
     "supports-webp": "^1.0.5",
     "thread-sleep": "^2.0.0",
     "try-thread-sleep": "^1.0.2"
