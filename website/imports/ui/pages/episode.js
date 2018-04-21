@@ -50,6 +50,7 @@ Template.pages_episode.onCreated(function() {
   };
 
   this.startErrorsDelay = function() {
+    this.stopErrorsDelay();
     this.iframeErrorsTimeout = setTimeout(() => {
       this.setIframeErrors();
     }, 10000);
@@ -85,6 +86,7 @@ Template.pages_episode.onCreated(function() {
 
     this.selectSource(undefined, undefined, false);
     this.state.set('iframeErrors', []);
+    this.startErrorsDelay();
   };
 
   // Create local variables
@@ -314,6 +316,7 @@ Template.pages_episode.events({
 
   'load #episode-frame'(event) {
     Template.instance().stopErrorsDelay();
+    Template.instance().state.set('iframeErrors', []);
   },
 
   'click a.btn-not-working'(event) {
