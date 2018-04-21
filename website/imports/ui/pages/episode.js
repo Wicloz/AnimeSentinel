@@ -208,7 +208,6 @@ Template.pages_episode.helpers({
 
   selectedSourceUrl() {
     if (!Template.instance().state.get('selectedStreamerId') || !Template.instance().state.get('selectedSourceName') || !Template.instance().state.get('iframeErrors').empty()) {
-      return undefined;
       return 'about:blank';
     }
     return Episodes.queryUnique(
@@ -303,14 +302,13 @@ Template.pages_episode.events({
     Template.instance().selectSource(event.target.dataset.streamerid, event.target.dataset.sourcename, true);
   },
 
+  'load #episode-frame'(event) {
+    Template.instance().stopErrorsDelay();
+  },
+
   'error #episode-frame'(event) {
     Template.instance().stopErrorsDelay();
     Template.instance().setIframeErrors();
-  },
-
-  'load #episode-frame'(event) {
-    Template.instance().stopErrorsDelay();
-    Template.instance().state.set('iframeErrors', []);
   },
 
   'click a.btn-not-working'(event) {
