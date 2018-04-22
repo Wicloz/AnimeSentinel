@@ -54,7 +54,23 @@
 }
 
 .btn-select-next, .btn-select-prev {
-  padding: 0 5px;
+  padding: 0 10px;
   width: 100%;
+  height: 100%;
   text-align: center;
+}
+
+.btn-select-prev-col {
+  margin-right: $spacer;
+}
+
+.btn-select-next-col {
+  margin-left: $spacer;
+}
+
+.select-episode-number-col {
+  .input-field label:not(.label-icon).active {
+    transform: translateY(12px);
+    transform-origin: 0 100%;
+  }
 }

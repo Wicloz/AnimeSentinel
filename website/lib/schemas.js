@@ -23,7 +23,8 @@ Schemas.episodeSelection = new SimpleSchema({
   episodeNumber: {
     type: String,
     autoform: {
-      label: 'Episode Number',
+      label: 'Select Episode:',
+      firstOption: false
     }
   }
 }, { tracker: Tracker });
