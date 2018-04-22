@@ -254,7 +254,7 @@ Shows.helpers({
 
   getThumbnailUrls() {
     if (!this.thumbnails || this.thumbnails.empty()) {
-      return ['/media/unknown.svg'];
+      return ['/media/unknown.png'];
     }
 
     let urls = Thumbnails.queryWithHashes(this.thumbnails).fetch().filterMap((thumbnail) => {
