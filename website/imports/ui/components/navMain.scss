@@ -4,19 +4,7 @@
   margin-bottom: $spacer;
 }
 
-.nav-wrapper-flex {
-  display: flex;
-  justify-content: space-around;
-}
-
-.nav-left-flex, .nav-right-flex {
-  flex-shrink: 0;
-  flex-grow: 0;
-}
-
-.nav-center-flex {
-  flex-basis: 100%;
-
+.nav-breadcrumbs {
   text-align: center;
   overflow-x: auto;
   overflow-y: hidden;

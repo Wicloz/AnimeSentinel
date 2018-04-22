@@ -1,17 +1,17 @@
 <template name="components_nav_main">
   <div class="navbar-fixed">
     <nav>
-      <div class="nav-wrapper nav-wrapper-flex">
-        <a data-activates="navMainSide" class="button-collapse pointer nav-left-flex">
+      <div class="nav-wrapper flex-row">
+        <a data-activates="navMainSide" class="button-collapse pointer flex-col-sides">
           <i class="material-icons">menu</i>
         </a>
 
-        <ul class="hide-on-med-and-down nav-left-flex">
+        <ul class="hide-on-med-and-down flex-col-sides">
           {{> components_nav_main_linksPublic}}
           {{> components_nav_main_link_external href='https://animeold.wilcodeboer.me' title='Old Version' id='navMainOldSiteDesktop'}}
         </ul>
 
-        <div class="nav-center-flex">
+        <div class="nav-breadcrumbs flex-col-center">
           {{#each breadCrumbs}}
             <a href="{{url}}" class="breadcrumb">{{name}}</a>
           {{/each}}
@@ -19,7 +19,7 @@
           <span class="hidden">l</span>
         </div>
 
-        <ul class="hide-on-med-and-down nav-right-flex">
+        <ul class="hide-on-med-and-down flex-col-sides">
           {{#if currentUser}}
             {{> components_nav_main_linksLoggedIn}}
           {{else}}
