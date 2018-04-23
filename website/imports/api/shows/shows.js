@@ -544,9 +544,10 @@ Shows.querySearch = function(search, limit) {
       $regex: '.*' + search.query.split('').join('.*') + '.*',
       $options: 'i'
     };
+
     if (Meteor.isClient) {
+      let cleanQuery = search.query.replace(/["'「」]/g, '');
       options.sort = function(a, b) {
-        let cleanQuery = search.query.replace(/["'「」]/g, '');
         let scoreA = a.altNames.reduce((bestSore, altName) => {
           if (bestSore === 1) return 1;
           return Math.max(bestSore, score(altName.cleanQuery().replace(/["'「」]/g, ''), cleanQuery, 0.1));
