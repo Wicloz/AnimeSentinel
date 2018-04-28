@@ -22,7 +22,7 @@ AutoForm.hooks({
   updateProfileForm: {
     onSubmit: function (insertDoc) {
       this.template.view.parentView.parentView._templateInstance.state.set('updateProfileFormError', undefined);
-      Meteor.call('users.updateCurrentUser', insertDoc, (error) => {
+      Meteor.call('users.changeCurrentUserInfo', insertDoc, (error) => {
         this.done(error);
       });
       return false;

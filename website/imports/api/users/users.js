@@ -114,7 +114,7 @@ Meteor.users.changeUserInfo = function(userId, newInfo) {
 
 // Methods
 Meteor.methods({
-  'users.updateCurrentUser'(user) {
+  'users.changeCurrentUserInfo'(user) {
     Meteor.users.changeUserInfo(this.userId, user);
   }
 });
