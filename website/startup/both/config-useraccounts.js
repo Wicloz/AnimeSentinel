@@ -39,6 +39,20 @@ AccountsTemplates.configure({
 
   preSignUpHook: function(password, info) {
     info.storage = localStorageCopy();
+  },
+
+  postSignUpHook: function(userId, info) {
+    Schemas.User.validate({
+      storage: info.storage
+    }, {
+      keys: ['storage']
+    });
+
+    Meteor.users.update(userId, {
+      $set: {
+        storage: info.storage
+      }
+    });
   }
 });
 
