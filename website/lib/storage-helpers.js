@@ -36,3 +36,31 @@ getStorageItem = function(key) {
     return value === null ? undefined : value;
   }
 };
+
+localStorageCopy = function() {
+  let index = 0;
+  let allItems = {};
+
+  while (true) {
+    let key = RLocalStorage.key(index);
+    if (key === null) {
+      break;
+    }
+
+    else if (key.startsWith(localStoragePrefix + '.')) {
+      let keyBits = key.split('.').slice(1);
+      keyBits.reduce((current, next, index) => {
+        if (index === keyBits.length - 1) {
+          current[next] = RLocalStorage.getItem(key);
+        } else if (typeof current[next] === 'undefined') {
+          current[next] = {};
+        }
+        return current[next];
+      }, allItems);
+    }
+
+    index++;
+  }
+
+  return allItems;
+};

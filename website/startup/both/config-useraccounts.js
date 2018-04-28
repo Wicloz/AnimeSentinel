@@ -35,6 +35,10 @@ AccountsTemplates.configure({
 
   onLogoutHook: function() {
     FlowRouter.go('logIn');
+  },
+
+  preSignUpHook: function(password, info) {
+    info.storage = localStorageCopy();
   }
 });
 
