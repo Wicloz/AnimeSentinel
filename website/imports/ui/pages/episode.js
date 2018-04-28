@@ -150,8 +150,8 @@ Template.pages_episode.onCreated(function() {
   // When the episodes are found and the selection needs to change
   this.autorun(() => {
     if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count() && (!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName'))) {
-      let selectSource = Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).fetch().reduce((total, episode) => {
         let thisTime = RLocalStorage.getItem('SelectedSourceLastTime.' + episode.streamerId + '.' + episode.sourceName);
+      let selectedSource = Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).fetch().reduce((total, episode) => {
         if (thisTime && (!total || thisTime > total.time)) {
           total = {
             streamerId: episode.streamerId,
@@ -162,8 +162,8 @@ Template.pages_episode.onCreated(function() {
         return total;
       }, undefined);
 
-      if (selectSource) {
-        this.selectSource(selectSource.streamerId, selectSource.sourceName, false);
+      if (selectedSource) {
+        this.selectSource(selectedSource.streamerId, selectedSource.sourceName, false);
       }
 
       else {
