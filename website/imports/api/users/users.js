@@ -108,15 +108,7 @@ Meteor.users.helpers({
   },
 
   setStorageItem(key, value) {
-    key.reduce((current, next, index) => {
-      if (index === key.length - 1) {
-        current[next] = value;
-      } else if (typeof current[next] === 'undefined') {
-        current[next] = {};
-      }
-      return current[next];
-    }, this.storage);
-
+    this.storage[key] = value;
     Meteor.users.update(this._id, {
       $set: {
         storage: this.storage
@@ -125,19 +117,7 @@ Meteor.users.helpers({
   },
 
   removeStorageItem(key) {
-    while (!key.empty()) {
-      key.reduce((current, next, index) => {
-        if (typeof current === 'undefined') {
-          return undefined;
-        }
-        if (index === key.length - 1 && (!_.isObject(current[next]) || _.isEmpty(current[next]))) {
-          delete current[next];
-        }
-        return current[next];
-      }, this.storage);
-      key.pop();
-    }
-
+    delete this.storage[key];
     Meteor.users.update(this._id, {
       $set: {
         storage: this.storage
@@ -146,9 +126,7 @@ Meteor.users.helpers({
   },
 
   getStorageItem(key) {
-    return key.reduce((current, next) => {
-      return typeof current === 'undefined' ? undefined : current[next];
-    }, this.storage);
+    return this.storage[key];
   }
 });
 
@@ -170,16 +148,14 @@ Meteor.methods({
 
   'users.setCurrentUserStorageItem'(key, value) {
     new SimpleSchema({
-      key: Array,
-      'key.$': String
+      key: String
     }).validate({key});
     Meteor.users.findOne(this.userId).setStorageItem(key, value);
   },
 
   'users.removeCurrentUserStorageItem'(key) {
     new SimpleSchema({
-      key: Array,
-      'key.$': String
+      key: String
     }).validate({key});
     Meteor.users.findOne(this.userId).removeStorageItem(key);
   }

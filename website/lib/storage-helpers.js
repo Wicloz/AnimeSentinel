@@ -1,38 +1,40 @@
 import * as RLocalStorage from 'meteor/simply:reactive-local-storage';
 
-const localStoragePrefix = '_AS';
+const localStoragePrefix = '_AS.';
 
-setStorageItem = function(key, value) {
-  if (!_.isArray(key)) {
-    key = [key];
+setStorageItem = function(key, value, localOnly=false) {
+  if (_.isArray(key)) {
+    key = key.join(' - ');
   }
 
-  if (Meteor.user()) {
+  if (Meteor.user() && !localOnly) {
     Meteor.call('users.setCurrentUserStorageItem', key, value);
+  } else {
+    RLocalStorage.setItem(localStoragePrefix + key, value);
   }
-  RLocalStorage.setItem(localStoragePrefix + '.' + key.join('.'), value);
 };
 
-removeStorageItem = function(key) {
-  if (!_.isArray(key)) {
-    key = [key];
+removeStorageItem = function(key, localOnly=false) {
+  if (_.isArray(key)) {
+    key = key.join(' - ');
   }
 
-  if (Meteor.user()) {
+  if (Meteor.user() && !localOnly) {
     Meteor.call('users.removeCurrentUserStorageItem', key);
+  } else {
+    RLocalStorage.removeItem(localStoragePrefix + key);
   }
-  RLocalStorage.removeItem(localStoragePrefix + '.' + key.join('.'));
 };
 
-getStorageItem = function(key) {
-  if (!_.isArray(key)) {
-    key = [key];
+getStorageItem = function(key, localOnly=false) {
+  if (_.isArray(key)) {
+    key = key.join(' - ');
   }
 
-  if (Meteor.user()) {
+  if (Meteor.user() && !localOnly) {
     return Meteor.user().getStorageItem(key);
   } else {
-    let value = RLocalStorage.getItem(localStoragePrefix + '.' + key.join('.'));
+    let value = RLocalStorage.getItem(localStoragePrefix + key);
     return value === null ? undefined : value;
   }
 };
@@ -47,16 +49,9 @@ localStorageCopy = function() {
       break;
     }
 
-    else if (key.startsWith(localStoragePrefix + '.')) {
-      let keyBits = key.split('.').slice(1);
-      keyBits.reduce((current, next, index) => {
-        if (index === keyBits.length - 1) {
-          current[next] = RLocalStorage.getItem(key);
-        } else if (typeof current[next] === 'undefined') {
-          current[next] = {};
-        }
-        return current[next];
-      }, allItems);
+    else if (key.startsWith(localStoragePrefix)) {
+      key = key.replace(localStoragePrefix, '');
+      allItems[key] = getStorageItem(key);
     }
 
     index++;
