@@ -17,7 +17,7 @@ Schemas.User = new SimpleSchema({
   storage: {
     type: Object,
     blackbox: true,
-    optional: true
+    defaultValue: {}
   },
 
   emails: {
@@ -41,7 +41,7 @@ Schemas.User = new SimpleSchema({
 
   profile: {
     type: Object,
-    optional: true
+    defaultValue: {}
   },
   'profile.malUsername': {
     type: String,

@@ -26,15 +26,15 @@ AccountsTemplates.configure({
   negativeFeedback: true,
   positiveFeedback: true,
 
-  onLogoutHook: function() {
-    FlowRouter.go('logIn');
-  },
-
   texts: {
     errors: {
       loginForbidden: 'Invalid username/email or password',
       mustBeLoggedIn: 'You must be logged in to access this page',
     }
+  },
+
+  onLogoutHook: function() {
+    FlowRouter.go('logIn');
   }
 });
 
