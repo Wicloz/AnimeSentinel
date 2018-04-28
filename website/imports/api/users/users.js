@@ -14,6 +14,12 @@ Schemas.User = new SimpleSchema({
     blackbox: true
   },
 
+  storage: {
+    type: Object,
+    blackbox: true,
+    optional: true
+  },
+
   emails: {
     type: Array,
     minCount: 1
@@ -99,6 +105,50 @@ Meteor.users.helpers({
         Accounts.sendVerificationEmail(this._id, email.address);
       }
     });
+  },
+
+  setStorageItem(key, value) {
+    key.reduce((current, next, index) => {
+      if (index === key.length - 1) {
+        current[next] = value;
+      } else if (typeof current[next] === 'undefined') {
+        current[next] = {};
+      }
+      return current[next];
+    }, this.storage);
+
+    Meteor.users.update(this._id, {
+      $set: {
+        storage: this.storage
+      }
+    });
+  },
+
+  removeStorageItem(key) {
+    while (!key.empty()) {
+      key.reduce((current, next, index) => {
+        if (typeof current === 'undefined') {
+          return undefined;
+        }
+        if (index === key.length - 1 && (!_.isObject(current[next]) || _.isEmpty(current[next]))) {
+          delete current[next];
+        }
+        return current[next];
+      }, this.storage);
+      key.pop();
+    }
+
+    Meteor.users.update(this._id, {
+      $set: {
+        storage: this.storage
+      }
+    });
+  },
+
+  getStorageItem(key) {
+    return key.reduce((current, next) => {
+      return typeof current === 'undefined' ? undefined : current[next];
+    }, this.storage);
   }
 });
 
@@ -116,5 +166,21 @@ Meteor.users.changeUserInfo = function(userId, newInfo) {
 Meteor.methods({
   'users.changeCurrentUserInfo'(user) {
     Meteor.users.changeUserInfo(this.userId, user);
+  },
+
+  'users.setCurrentUserStorageItem'(key, value) {
+    new SimpleSchema({
+      key: Array,
+      'key.$': String
+    }).validate({key});
+    Meteor.users.findOne(this.userId).setStorageItem(key, value);
+  },
+
+  'users.removeCurrentUserStorageItem'(key) {
+    new SimpleSchema({
+      key: Array,
+      'key.$': String
+    }).validate({key});
+    Meteor.users.findOne(this.userId).removeStorageItem(key);
   }
 });

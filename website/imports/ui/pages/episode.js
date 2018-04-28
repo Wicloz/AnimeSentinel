@@ -3,7 +3,6 @@ import {Episodes} from "../../api/episodes/episodes";
 import Streamers from "../../streamers/streamers";
 import {Shows} from "../../api/shows/shows";
 import '/imports/ui/components/image.js';
-import * as RLocalStorage from 'meteor/simply:reactive-local-storage';
 import moment from 'moment-timezone';
 
 Template.pages_episode.onCreated(function() {
@@ -64,7 +63,7 @@ Template.pages_episode.onCreated(function() {
     this.state.set('selectedStreamerId', streamerId);
     this.state.set('selectedSourceName', sourceName);
     if (manual) {
-      RLocalStorage.setItem('SelectedSourceLastTime.' + streamerId + '.' + sourceName, moment().valueOf());
+      setStorageItem(['SelectedSourceLastTime', streamerId, sourceName], moment().valueOf());
     }
 
     this.state.set('iframeErrors', []);
@@ -99,9 +98,11 @@ Template.pages_episode.onCreated(function() {
   this.iframeErrorsTimeout = undefined;
 
   // Enable frame sandboxing initially
-  if (RLocalStorage.getItem('FrameSandboxingEnabled') === null) {
-    RLocalStorage.setItem('FrameSandboxingEnabled', true);
-  }
+  this.autorun(() => {
+    if (typeof getStorageItem('FrameSandboxingEnabled') === 'undefined') {
+      setStorageItem('FrameSandboxingEnabled', true);
+    }
+  });
 
   // Set page title based on the episode numbers and translation type
   this.autorun(() => {
@@ -150,8 +151,8 @@ Template.pages_episode.onCreated(function() {
   // When the episodes are found and the selection needs to change
   this.autorun(() => {
     if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count() && (!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName'))) {
-        let thisTime = RLocalStorage.getItem('SelectedSourceLastTime.' + episode.streamerId + '.' + episode.sourceName);
       let selectedSource = Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).fetch().reduce((total, episode) => {
+        let thisTime = getStorageItem(['SelectedSourceLastTime', episode.streamerId, episode.sourceName]);
         if (thisTime && (!total || thisTime > total.time)) {
           total = {
             streamerId: episode.streamerId,
@@ -173,7 +174,7 @@ Template.pages_episode.onCreated(function() {
           flagsPreference = Episodes.flagsWithAddOnPreference;
           flagsNever = Episodes.flagsWithAddOnNever;
         }
-        if (RLocalStorage.getItem('FrameSandboxingEnabled') && BrowserDetect.browser === 'Chrome') {
+        if (getStorageItem('FrameSandboxingEnabled') && BrowserDetect.browser === 'Chrome') {
           flagsNever = flagsNever.concat(Episodes.flagsWithSandboxingNever);
         }
 
@@ -282,7 +283,7 @@ Template.pages_episode.helpers({
   },
 
   frameSandboxingEnabled() {
-    return RLocalStorage.getItem('FrameSandboxingEnabled');
+    return getStorageItem('FrameSandboxingEnabled');
   },
 
   previousEpisode() {
@@ -326,7 +327,7 @@ Template.pages_episode.events({
   },
 
   'change #sandboxing-checkbox'(event) {
-    RLocalStorage.setItem('FrameSandboxingEnabled', event.target.checked);
+    setStorageItem('FrameSandboxingEnabled', event.target.checked);
   }
 });
 

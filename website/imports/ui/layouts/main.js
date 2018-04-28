@@ -1,6 +1,5 @@
 import './main.html';
 import '/imports/ui/components/navMain.js';
-import * as RLocalStorage from 'meteor/simply:reactive-local-storage';
 
 Template.layouts_main.onCreated(function() {
   // TODO: Use a more general SEO solution
@@ -26,13 +25,13 @@ Template.layouts_main.onRendered(function() {
 
 Template.layouts_main.helpers({
   superNoteDismissed() {
-    return RLocalStorage.getItem('SuperNoteDismissed');
+    return getStorageItem('SuperNoteDismissed');
   }
 });
 
 Template.layouts_main.events({
   'click .btn-dismiss'(event) {
-    RLocalStorage.setItem('SuperNoteDismissed', true);
+    setStorageItem('SuperNoteDismissed', true);
   },
 
   'click .btn-oldsite-desktop'(event) {
