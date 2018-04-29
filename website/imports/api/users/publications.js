@@ -5,8 +5,8 @@ Meteor.publish(null, function() {
   return Meteor.users.find(this.userId, {
     fields: {
       storage: true,
-      malUsernameValid: true,
-      malPasswordValid: true
+      malCanRead: true,
+      malCanWrite: true
     }
   });
 });

@@ -64,11 +64,11 @@ Schemas.User = new SimpleSchema({
     }
   },
 
-  malUsernameValid: {
+  malCanRead: {
     type: Boolean,
     defaultValue: false
   },
-  malPasswordValid: {
+  malCanWrite: {
     type: Boolean,
     defaultValue: false
   }
