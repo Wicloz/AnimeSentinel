@@ -29,14 +29,20 @@ Schemas.User = new SimpleSchema({
   },
   'emails.$.address': {
     type: String,
-    regEx: SimpleSchema.RegEx.EmailWithTLD
+    regEx: SimpleSchema.RegEx.EmailWithTLD,
+    index: true,
+    unique: true,
+    sparse: true
   },
   'emails.$.verified': {
     type: Boolean
   },
 
   username: {
-    type: String
+    type: String,
+    index: true,
+    unique: true,
+    sparse: true
   },
 
   profile: {

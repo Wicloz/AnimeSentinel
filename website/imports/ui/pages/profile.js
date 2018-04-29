@@ -22,6 +22,9 @@ AutoForm.hooks({
   updateProfileForm: {
     onSubmit: function (insertDoc) {
       this.template.view.parentView.parentView._templateInstance.state.set('updateProfileFormError', undefined);
+      if (typeof insertDoc.profile === 'undefined') {
+        insertDoc.profile = {};
+      }
       Meteor.call('users.changeCurrentUserInfo', insertDoc, (error) => {
         this.done(error);
       });
