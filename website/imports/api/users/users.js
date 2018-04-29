@@ -1,4 +1,5 @@
 import SimpleSchema from 'simpl-schema';
+import {Searches} from '../searches/searches';
 
 // Schema
 Schemas.User = new SimpleSchema({
@@ -136,20 +137,11 @@ Meteor.users.helpers({
   }
 });
 
-Meteor.users.changeUserInfo = function(userId, newInfo) {
-  Schemas.id.validate({
-    id: userId
-  });
-  Schemas.UserClient.validate(newInfo);
-
-  let user = Meteor.users.findOne(userId);
-  user.changeInfo(newInfo);
-};
-
 // Methods
 Meteor.methods({
-  'users.changeCurrentUserInfo'(user) {
-    Meteor.users.changeUserInfo(this.userId, user);
+  'users.changeCurrentUserInfo'(newInfo) {
+    Schemas.UserClient.validate(newInfo);
+    Meteor.users.findOne(this.userId).changeInfo(newInfo);
   },
 
   'users.setCurrentUserStorageItem'(key, value) {
