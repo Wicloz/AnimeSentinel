@@ -85,7 +85,9 @@ Schemas.UserClient = new SimpleSchema({
 }, { tracker: Tracker });
 
 Meteor.users.attachSchema(Schemas.User);
-Meteor.users.deny({ update: () => true });
+Meteor.users.deny({
+  update() { return true; }
+});
 
 // Helpers
 Meteor.users.helpers({
