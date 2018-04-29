@@ -16,6 +16,19 @@
         <div class="at-pwd-form">
           {{#autoForm schema='Schemas.UserClient' id='updateProfileForm' doc=currentUser validation='keyup'}}
             {{> afQuickField name='username'}}
+            {{#if showMalUsernameError}}
+              <div class="card-panel red lighten-2">
+                Invalid MAL Username
+              </div>
+            {{else if showMalPasswordError}}
+              <div class="card-panel red lighten-2">
+                Invalid MAL Password
+              </div>
+            {{else if showMalSuccess}}
+              <div class="card-panel green lighten-2">
+                MAL Credentials Valid
+              </div>
+            {{/if}}
             {{> afQuickField name='profile'}}
             {{> afQuickField name='emails'}}
             <div class="row">

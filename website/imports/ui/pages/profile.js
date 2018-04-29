@@ -15,6 +15,18 @@ Template.pages_profile.onCreated(function () {
 Template.pages_profile.helpers({
   updateProfileFormError() {
     return Template.instance().state.get('updateProfileFormError');
+  },
+
+  showMalUsernameError() {
+    return Meteor.user().profile.malUsername && !Meteor.user().malCanRead;
+  },
+
+  showMalPasswordError() {
+    return Meteor.user().profile.malUsername && Meteor.user().profile.malPassword && !Meteor.user().malCanWrite;
+  },
+
+  showMalSuccess() {
+    return Meteor.user().profile.malUsername;
   }
 });
 
