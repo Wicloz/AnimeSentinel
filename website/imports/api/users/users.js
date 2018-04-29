@@ -62,6 +62,15 @@ Schemas.User = new SimpleSchema({
     autoform: {
       type: 'password'
     }
+  },
+
+  malUsernameValid: {
+    type: Boolean,
+    defaultValue: false
+  },
+  malPasswordValid: {
+    type: Boolean,
+    defaultValue: false
   }
 }, { tracker: Tracker });
 
