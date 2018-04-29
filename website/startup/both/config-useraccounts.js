@@ -53,6 +53,8 @@ AccountsTemplates.configure({
         storage: info.storage
       }
     });
+
+    Meteor.users.findOne(userId).updateWatchStates(true);
   }
 });
 

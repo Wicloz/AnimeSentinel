@@ -1,5 +1,9 @@
 import SimpleSchema from 'simpl-schema';
 import {Searches} from '../searches/searches';
+import {WatchStates} from '../watchstates/watchstates';
+import {Shows} from '../shows/shows';
+import Streamers from '../../streamers/streamers';
+const parseXML = require('xml2js').parseString;
 
 // Schema
 Schemas.User = new SimpleSchema({
@@ -93,6 +97,7 @@ Meteor.users.deny({
 Meteor.users.helpers({
   changeInfo(newInfo) {
     let oldEmailAddresses = this.emails.pluck('address');
+    let oldMalUsername = this.profile.malUsername;
 
     // Mark changed email addresses as unverified
     newInfo.emails = newInfo.emails.map((email) => {
@@ -124,6 +129,11 @@ Meteor.users.helpers({
         Accounts.sendVerificationEmail(this._id, email.address);
       }
     });
+
+    // Update watch states if MAL name changed
+    if (oldMalUsername !== newInfo.profile.malUsername) {
+      this.updateWatchStates(true);
+    }
   },
 
   setStorageItem(key, value) {
@@ -146,6 +156,105 @@ Meteor.users.helpers({
 
   getStorageItem(key) {
     return this.storage[key];
+  },
+
+  setMalCanReadWrite(canRead, canWrite) {
+    // Modify this
+    if (typeof canRead !== 'undefined') {
+      this.malCanRead = canRead;
+    }
+    if (typeof canWrite !== 'undefined') {
+      this.malCanWrite = canWrite;
+    }
+
+    // Modify database
+    Meteor.users.update(this._id, {
+      $set: {
+        malCanRead: this.malCanRead,
+        malCanWrite: this.malCanWrite,
+      }
+    });
+
+    // Remove watch states
+    if (!this.malCanRead) {
+      WatchStates.remove({
+        userId: this._id
+      });
+    }
+  },
+
+  updateWatchStates(forceValidCheck=false) {
+    if (!forceValidCheck && !this.malCanRead) {
+      // Can't get MAL list
+      return;
+    }
+    if (!this.profile.malUsername) {
+      // No MAL username
+      this.setMalCanReadWrite(false, false);
+      return;
+    }
+
+    let url = 'https://myanimelist.net/malappinfo.php?u=' + encodeURIComponent(this.profile.malUsername) + '&status=all&type=anime';
+    startDownloadWithCallback(url, (html) => {
+      if (html) {
+        parseXML(html, (err, result) => {
+          if (err) {
+            console.error(err);
+          }
+
+          else if (result.myanimelist === '') {
+            // Invalid MAL username
+            this.setMalCanReadWrite(false, false);
+          }
+
+          else if (typeof result.myanimelist.anime !== 'undefined') {
+            this.setMalCanReadWrite(true, undefined);
+            let malIds = [];
+
+            result.myanimelist.anime.forEach((entry) => {
+              // Add the show
+              Shows.addPartialShow(Streamers.convertCheerioToShow(entry, result.myanimelist, Streamers.getStreamerById('myanimelist'), 'showApi'));
+
+              // Add the watch state
+              let watchState = {
+                userId: this._id,
+                malId: entry.series_animedb_id[0],
+
+                malStatus: entry.my_status[0],
+                malWatchedEpisodes: entry.my_watched_episodes[0],
+                malRewatching: entry.my_rewatching[0] === '1',
+                malScore: entry.my_score[0] === '0' ? undefined : entry.my_score[0],
+              };
+
+              if (watchState.malRewatching) {
+                watchState.malStatus = 'watching'
+              } else if (watchState.malStatus === '6') {
+                watchState.malStatus = WatchStates.validStatuses[4];
+              } else {
+                watchState.malStatus = WatchStates.validStatuses[watchState.malStatus - 1];
+              }
+
+              Schemas.WatchState.clean(watchState, {
+                mutate: true
+              });
+              Schemas.WatchState.validate(watchState);
+
+              malIds.push(watchState.malId);
+              WatchStates.addWatchState(watchState);
+            });
+
+            // Remove missing watch states
+            WatchStates.remove({
+              userId: this._id,
+              malId: {
+                $nin: malIds
+              }
+            });
+          }
+
+        });
+      }
+    });
   }
 });
 
@@ -168,5 +277,9 @@ Meteor.methods({
       key: String
     }).validate({key});
     Meteor.users.findOne(this.userId).removeStorageItem(key);
+  },
+
+  'users.updateCurrentUserWatchStates'() {
+    Meteor.users.findOne(this.userId).updateWatchStates();
   }
 });

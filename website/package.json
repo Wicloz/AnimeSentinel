@@ -21,7 +21,8 @@
     "string-score": "^1.0.1",
     "supports-webp": "^1.0.5",
     "thread-sleep": "^2.0.0",
-    "try-thread-sleep": "^1.0.2"
+    "try-thread-sleep": "^1.0.2",
+    "xml2js": "^0.4.19"
   },
   "postcss": {
     "plugins": {
