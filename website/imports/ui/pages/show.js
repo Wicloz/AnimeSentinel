@@ -5,6 +5,7 @@ import {Episodes} from "../../api/episodes/episodes";
 import Streamers from "../../streamers/streamers";
 import '/imports/ui/components/carousel.js';
 import ScrapingHelpers from '../../streamers/scrapingHelpers';
+import {WatchStates} from '../../api/watchstates/watchstates';
 
 Template.pages_show.onCreated(function() {
   // Set page variables
@@ -12,6 +13,17 @@ Template.pages_show.onCreated(function() {
     name: 'Anime',
     url: FlowRouter.path('search')
   }]));
+
+  // Local functions
+  this.getWatchState = function() {
+    if (Meteor.userId()) {
+      let show = Shows.findOne(FlowRouter.getParam('showId'));
+      if (show && typeof show.malId !== 'undefined') {
+        return WatchStates.queryUnique(Meteor.userId(), show.malId).fetch()[0];
+      }
+    }
+    return undefined;
+  };
 
   // Subscribe based on the show id
   this.autorun(() => {
@@ -33,6 +45,9 @@ Template.pages_show.onCreated(function() {
       Meteor.call('shows.attemptUpdate', FlowRouter.getParam('showId'));
       Session.set('PageTitle', show.name);
       this.subscribe('thumbnails.withHashes', show.thumbnails);
+      if (typeof show.malId !== 'undefined' && Meteor.userId()) {
+        this.subscribe('watchStates.currentUserShow', show.malId);
+      }
     }
   });
 });
@@ -73,11 +88,19 @@ Template.pages_show.helpers({
       }
 
       else {
+        let watchState = Template.instance().getWatchState();
+        if (watchState) {
+          episode.watched = episode.episodeNumEnd <= watchState.malWatchedEpisodes;
+        }
         episode.streamers = [Streamers.getSimpleStreamerById(episode.streamerId)];
         episodes.push(episode);
       }
     });
 
     return episodes;
+  },
+
+  watchState() {
+    return Template.instance().getWatchState();
   }
 });
