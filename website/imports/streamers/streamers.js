@@ -102,12 +102,24 @@ export default class Streamers {
     // Get 'thumbnails'
     if (streamer[type].thumbnails) {
       show.thumbnails = [];
-      cheerioRow.find(streamer[type].thumbnails.rowSelector).each((index, element) => {
-        let url = streamer[type].thumbnails.getUrl(cheerioRow.find(element), cheerioPage);
-        if (url) {
-          show.thumbnails.push(Thumbnails.addThumbnail(url));
-        }
-      });
+
+      if (cheerioRow.find) {
+        cheerioRow.find(streamer[type].thumbnails.rowSelector).each((index, element) => {
+          let url = streamer[type].thumbnails.getUrl(cheerioRow.find(element), cheerioPage);
+          if (url) {
+            show.thumbnails.push(Thumbnails.addThumbnail(url));
+          }
+        });
+      }
+
+      else {
+        cheerioRow[streamer[type].thumbnails.rowSelector].forEach((element) => {
+          let url = streamer[type].thumbnails.getUrl(element, cheerioPage);
+          if (url) {
+            show.thumbnails.push(Thumbnails.addThumbnail(url));
+          }
+        });
+      }
     }
 
     // Clean and validate show

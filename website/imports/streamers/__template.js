@@ -141,6 +141,69 @@ export let template = {
     },
   },
 
+  // Show API page data
+  showApi: {
+    // Show API page attribute data
+    attributes: {
+      malId: function(partial, full) {
+        return 0;
+      },
+      streamerUrls: function(partial, full) {
+        return [{
+          type: '',
+          url: ''
+        }];
+      },
+      name: function(partial, full) {
+        return '';
+      },
+      altNames: function(partial, full) {
+        return [''];
+      },
+      description: function(partial, full) {
+        return '';
+      },
+      type: function(partial, full) {
+        return '';
+      },
+      genres: function(partial, full) {
+        return [''];
+      },
+      airedStart: function(partial, full) {
+        return {
+          year: 0,
+          month: 0,
+          date: 0,
+          hour: 0,
+          minute: 0
+        };
+      },
+      airedEnd: function(partial, full) {
+        return {
+          year: 0,
+          month: 0,
+          date: 0,
+          hour: 0,
+          minute: 0
+        };
+      },
+      season: function(partial, full) {
+        return {
+          quarter: '',
+          year: 0
+        };
+      },
+    },
+
+    // Show API page thumbnail data
+    thumbnails: {
+      rowSelector: '',
+      getUrl: function (partial, full) {
+        return '';
+      },
+    },
+  },
+
   // Related shows data
   showRelated: {
     rowSelector: '',
