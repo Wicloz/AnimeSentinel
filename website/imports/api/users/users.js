@@ -174,19 +174,18 @@ Meteor.users.helpers({
         malCanWrite: this.malCanWrite,
       }
     });
+  },
 
-    // Remove watch states
-    if (!this.malCanRead) {
+  updateWatchStates(userNameChanged=false) {
+    if (!userNameChanged && !this.malCanRead) {
+      // Can't get MAL list
+      return;
+    }
+    if (userNameChanged) {
+      // User name has changed
       WatchStates.remove({
         userId: this._id
       });
-    }
-  },
-
-  updateWatchStates(forceValidCheck=false) {
-    if (!forceValidCheck && !this.malCanRead) {
-      // Can't get MAL list
-      return;
     }
     if (!this.profile.malUsername) {
       // No MAL username
