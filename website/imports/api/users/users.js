@@ -210,7 +210,7 @@ Meteor.users.helpers({
             this.setMalCanReadWrite(true, undefined);
             let malIds = [];
 
-            result.myanimelist.anime.forEach((entry) => {
+            result.myanimelist.anime.reverse().forEach((entry) => {
               // Add the show
               try {
                 Shows.addPartialShow(Streamers.convertCheerioToShow(entry, result.myanimelist, Streamers.getStreamerById('myanimelist'), 'showApi'));
