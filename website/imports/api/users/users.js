@@ -212,7 +212,11 @@ Meteor.users.helpers({
 
             result.myanimelist.anime.forEach((entry) => {
               // Add the show
-              Shows.addPartialShow(Streamers.convertCheerioToShow(entry, result.myanimelist, Streamers.getStreamerById('myanimelist'), 'showApi'));
+              try {
+                Shows.addPartialShow(Streamers.convertCheerioToShow(entry, result.myanimelist, Streamers.getStreamerById('myanimelist'), 'showApi'));
+              } catch (e) {
+                console.error(e);
+              }
 
               // Add the watch state
               let watchState = {
