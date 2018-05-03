@@ -227,6 +227,14 @@ Schemas.Show = new SimpleSchema({
   },
   'season.year': {
     type: SimpleSchema.Integer
+  },
+  episodeCount: {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  broadcastIntervalMinutes: {
+    type: SimpleSchema.Integer,
+    optional: true
   }
 }, { tracker: Tracker });
 

@@ -118,13 +118,16 @@ export let myanimelist = {
         return ScrapingHelpers.replaceDescriptionCutoff(partial.find('td div.pt4').text(), '...read more.');
       },
       type: function(partial, full) {
-        return partial.find('td:nth-of-type(3)').text().replace(/Unknown/g, '');
+        return partial.find('td:nth-of-type(3)').text().replace('Unknown', '');
       },
       airedStart: function(partial, full) {
         return determineAiringDateSearchPage(partial.find('td:nth-of-type(6)').text());
       },
       airedEnd: function(partial, full) {
         return determineAiringDateSearchPage(partial.find('td:nth-of-type(7)').text());
+      },
+      episodeCount: function(partial, full) {
+        return partial.find('td:nth-of-type(4)').text().replace('-', '');
       },
     },
 
@@ -214,6 +217,14 @@ export let myanimelist = {
         }
         return undefined;
       },
+      episodeCount: function(partial, full) {
+        return partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Episodes:")').text()
+          .replace('Episodes:', '').cleanWhitespace().replace('Unknown', '');
+      },
+      broadcastIntervalMinutes: function(partial, full) {
+        let broadcast = partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Broadcast:")').text().cleanWhitespace();
+        return broadcast && /Broadcast: [A-Za-z]+ at [0-9:?]+/.test(broadcast) ? 10080 : undefined;
+      },
     },
 
     // Show page thumbnail data
@@ -254,7 +265,7 @@ export let myanimelist = {
         let splitDate = partial.series_start[0].split('-');
         return {
           year: splitDate[0] === '0000' ? undefined : splitDate[0],
-          month: splitDate[1] === '00' ? undefined : splitDate[1],
+          month: splitDate[1] === '00' ? undefined : splitDate[1] - 1,
           date: splitDate[2] === '00' ? undefined : splitDate[2]
         };
       },
@@ -262,9 +273,12 @@ export let myanimelist = {
         let splitDate = partial.series_end[0].split('-');
         return {
           year: splitDate[0] === '0000' ? undefined : splitDate[0],
-          month: splitDate[1] === '00' ? undefined : splitDate[1],
+          month: splitDate[1] === '00' ? undefined : splitDate[1] - 1,
           date: splitDate[2] === '00' ? undefined : splitDate[2]
         };
+      },
+      episodeCount: function(partial, full) {
+        return partial.series_episodes[0] ? partial.series_episodes[0] : undefined;
       },
     },
 

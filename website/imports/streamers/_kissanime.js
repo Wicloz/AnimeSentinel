@@ -142,6 +142,15 @@ export let kissanime = {
       airedEnd: function(partial, full) {
         return determineAiringDateShowPage(partial, 1);
       },
+      episodeCount: function(partial, full) {
+        if (partial.find('div.bigBarContainer div.barContent div:nth-of-type(2) p:has(span:contains("Status:"))').text().includes('Completed')) {
+          let link = partial.find('div#rightside div:nth-of-type(3) div.barContent div:nth-of-type(2) a:last-of-type');
+          if (link.attr('href') && link.attr('href').count('/') === 3) {
+            return link.text().split(' ').pop() - 1;
+          }
+        }
+        return undefined;
+      },
     },
 
     // Show page thumbnail data

@@ -37,6 +37,37 @@ const validGenres = ['Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demon
   'Shounen', 'Shounen Ai', 'Slice of Life', 'Space', 'Sports', 'Super Power', 'Supernatural', 'Thriller', 'Vampire',
   'Yaoi', 'Yuri'];
 
+const posterAttributes = {
+  streamerUrls: function(partial, full) {
+    return [{
+      type: getTypeFromName(partial.find('a.name').text()),
+      url: partial.find('a.name').attr('href')
+    }];
+  },
+  name: function(partial, full) {
+    return cleanName(partial.find('a.name').text());
+  },
+  type: function(partial, full) {
+    let found = undefined;
+    partial.find('a.poster div.status div').each((index, element) => {
+      if (!found && Shows.validTypes.includes(partial.find(element).text())) {
+        found = partial.find(element).text();
+      }
+    });
+    return found;
+  },
+  episodeCount: function(partial, full) {
+    return partial.find('a.poster div.status div.ep').text().split('/')[1];
+  },
+};
+
+const posterThumbnails = {
+  rowSelector: 'img',
+  getUrl: function (partial, full) {
+    return partial.attr('src');
+  },
+};
+
 export let nineanime = {
   // General data
   id: 'nineanime',
@@ -75,34 +106,10 @@ export let nineanime = {
     rowSelector: 'div.film-list div.item',
 
     // Search page attribute data
-    attributes: {
-      streamerUrls: function(partial, full) {
-        return [{
-          type: getTypeFromName(partial.find('a.name').text()),
-          url: partial.find('a.name').attr('href')
-        }];
-      },
-      name: function(partial, full) {
-        return cleanName(partial.find('a.name').text());
-      },
-      type: function(partial, full) {
-        let found = undefined;
-        partial.find('a.poster div.status div').each((index, element) => {
-          if (!found && Shows.validTypes.includes(partial.find(element).text())) {
-            found = partial.find(element).text();
-          }
-        });
-        return found;
-      },
-    },
+    attributes: posterAttributes,
 
     // Search page thumbnail data
-    thumbnails: {
-      rowSelector: 'img',
-      getUrl: function (partial, full) {
-        return partial.attr('src');
-      },
-    },
+    thumbnails: posterThumbnails,
   },
 
   // Show page data
@@ -154,6 +161,19 @@ export let nineanime = {
         }
         return undefined;
       },
+      episodeCount: function(partial, full) {
+        if (partial.find('div.info div.row dl:first-of-type dt:contains("Status:")').next().text() === 'Completed') {
+          let maxEpisode = 1;
+          partial.find('div.widget.servers div.widget-body div.server ul li a').each((index, element) => {
+            let episodeString = partial.find(element).text();
+            if (isNumeric(episodeString)) {
+              maxEpisode = Math.max(maxEpisode, episodeString);
+            }
+          });
+          return maxEpisode;
+        }
+        return undefined;
+      },
     },
 
     // Show page thumbnail data
@@ -170,34 +190,10 @@ export let nineanime = {
     rowSelector: 'div.widget.simple-film-list div.widget-body div.item, div.list-film div.item',
 
     // Related shows attribute data
-    attributes: {
-      streamerUrls: function(partial, full) {
-        return [{
-          type: getTypeFromName(partial.find('a.name').text()),
-          url: partial.find('a.name').attr('href')
-        }];
-      },
-      name: function(partial, full) {
-        return cleanName(partial.find('a.name').text());
-      },
-      type: function(partial, full) {
-        let found = undefined;
-        partial.find('a.poster div.status div').each((index, element) => {
-          if (!found && Shows.validTypes.includes(partial.find(element).text())) {
-            found = partial.find(element).text();
-          }
-        });
-        return found;
-      },
-    },
+    attributes: posterAttributes,
 
     // Related shows thumbnail data
-    thumbnails: {
-      rowSelector: 'img',
-      getUrl: function (partial, full) {
-        return partial.attr('src');
-      },
-    },
+    thumbnails: posterThumbnails,
   },
 
   // Episode list data
@@ -281,33 +277,9 @@ export let nineanime = {
   // Recent show data
   recentShow: {
     // Recent show attribute data
-    attributes: {
-      streamerUrls: function(partial, full) {
-        return [{
-          type: getTypeFromName(partial.find('a.name').text()),
-          url: partial.find('a.name').attr('href')
-        }];
-      },
-      name: function(partial, full) {
-        return cleanName(partial.find('a.name').text());
-      },
-      type: function(partial, full) {
-        let found = undefined;
-        partial.find('a.poster div.status div').each((index, element) => {
-          if (!found && Shows.validTypes.includes(partial.find(element).text())) {
-            found = partial.find(element).text();
-          }
-        });
-        return found;
-      },
-    },
+    attributes: posterAttributes,
 
     // Recent show thumbnail data
-    thumbnails: {
-      rowSelector: 'img',
-      getUrl: function (partial, full) {
-        return partial.attr('src');
-      },
-    },
+    thumbnails: posterThumbnails,
   },
 };

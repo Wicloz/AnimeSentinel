@@ -63,6 +63,12 @@ export let template = {
           year: 0
         };
       },
+      episodeCount: function(partial, full) {
+        return 0;
+      },
+      broadcastIntervalMinutes: function(partial, full) {
+        return 0;
+      },
     },
 
     // Search page thumbnail data
@@ -130,6 +136,12 @@ export let template = {
           year: 0
         };
       },
+      episodeCount: function(partial, full) {
+        return 0;
+      },
+      broadcastIntervalMinutes: function(partial, full) {
+        return 0;
+      },
     },
 
     // Show page thumbnail data
@@ -192,6 +204,12 @@ export let template = {
           quarter: '',
           year: 0
         };
+      },
+      episodeCount: function(partial, full) {
+        return 0;
+      },
+      broadcastIntervalMinutes: function(partial, full) {
+        return 0;
       },
     },
 
@@ -257,6 +275,12 @@ export let template = {
           quarter: '',
           year: 0
         };
+      },
+      episodeCount: function(partial, full) {
+        return 0;
+      },
+      broadcastIntervalMinutes: function(partial, full) {
+        return 0;
       },
     },
 
@@ -371,6 +395,12 @@ export let template = {
           quarter: '',
           year: 0
         };
+      },
+      episodeCount: function(partial, full) {
+        return 0;
+      },
+      broadcastIntervalMinutes: function(partial, full) {
+        return 0;
       },
     },
 
