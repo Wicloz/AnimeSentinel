@@ -86,13 +86,13 @@ Template.registerHelper('displayMinuteInterval', (minutes) => {
   let string = '';
 
   if (days) {
-    string += days + ' day' + (days > 1 ? 's' : '');
+    string += days + ' day' + (days === 1 || days === -1 ? '' : 's');
   }
   if (hours) {
-    string += (days ? ', ' : '') + hours + ' hour' + (hours > 1 ? 's' : '');
+    string += (days ? ', ' : '') + hours + ' hour' + (hours === 1 || hours === -1 ? '' : 's');
   }
   if (minutes) {
-    string += (days || hours ? ', ' : '') + minutes + ' minute' + (minutes > 1 ? 's' : '');
+    string += (days || hours ? ', ' : '') + minutes + ' minute' + (minutes === 1 || minutes === -1 ? '' : 's');
   }
 
   return string;

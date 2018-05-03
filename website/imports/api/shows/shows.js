@@ -280,6 +280,57 @@ Shows.helpers({
     return urls;
   },
 
+  airingState(translationType) {
+    let lastEpisode = Episodes.queryForTranslationType(this._id, translationType).fetch()[0];
+
+    if (!lastEpisode || lastEpisode.episodeNumEnd <= 0) {
+      return 'Not Yet Aired';
+    }
+
+    else if (lastEpisode && lastEpisode.episodeNumEnd >= this.episodeCount) {
+      return 'Completed';
+    }
+
+    else {
+      return 'Airing';
+    }
+  },
+
+  nextEpisodeDate(translationType) {
+    // Return start date if the show has not started
+    if (this.airingState(translationType) === 'Not Yet Aired') {
+      return translationType === 'dub' ? undefined : this.airedStart;
+    }
+
+    // Grab one of the last episodes
+    let lastEpisode = Episodes.queryForTranslationType(this._id, translationType).fetch()[0];
+
+    // Determine earliest upload date
+    let lastDate = {};
+    Episodes.queryForEpisode(this._id, translationType, lastEpisode.episodeNumStart, lastEpisode.episodeNumEnd).forEach((episode) => {
+      lastDate = ScrapingHelpers.determineEarliestAiringDate(lastDate, episode.uploadDate);
+    });
+
+    // Convert to moment and add the interval
+    let lastDateMoment = moment(lastDate);
+    lastDateMoment.add(this.broadcastIntervalMinutes, 'minutes');
+
+    // Convert back to object
+    Object.keys(lastDate).forEach((key) => {
+      lastDate[key] = lastDateMoment.get(key);
+    });
+
+    // Return
+    return lastDate;
+  },
+
+  nextEpisodeInterval(translationType) {
+    invalidateMinute.depend();
+    return Math.round(
+      moment.duration(moment(this.nextEpisodeDate(translationType)) - moment()).asMinutes()
+    );
+  },
+
   expired() {
     let now = moment();
     return (!this.locked() && (!this.lastUpdateStart || moment(this.lastUpdateEnd).add(Shows.timeUntilRecache) < now)) ||
