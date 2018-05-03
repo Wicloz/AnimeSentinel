@@ -71,3 +71,29 @@ Template.registerHelper('displayUploadDate', (date) => {
 
   return moment.utc(date).tz(moment.tz.guess()).format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
 });
+
+Template.registerHelper('displayMinuteInterval', (minutes) => {
+  if (!minutes) {
+    return 'unknown interval';
+  }
+
+  let dayRemainder = minutes % 1440;
+  let days = (minutes - dayRemainder) / 1440;
+  let hourRemainder = dayRemainder % 60;
+  let hours = (dayRemainder - hourRemainder) / 60;
+  minutes = hourRemainder;
+
+  let string = '';
+
+  if (days) {
+    string += days + ' day' + (days > 1 ? 's' : '');
+  }
+  if (hours) {
+    string += (days ? ', ' : '') + hours + ' hour' + (hours > 1 ? 's' : '');
+  }
+  if (minutes) {
+    string += (days || hours ? ', ' : '') + minutes + ' minute' + (minutes > 1 ? 's' : '');
+  }
+
+  return string;
+});

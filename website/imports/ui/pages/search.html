@@ -56,6 +56,8 @@
                   {{displayAiringDate airedStart}} - {{displayAiringDate airedEnd}}
                 </p>
                 <p>Season: {{displaySeason season}}</p>
+                <p>Episodes: {{episodeCount}}</p>
+                <p>Broadcast Interval: Every {{displayMinuteInterval broadcastIntervalMinutes}}</p>
                 <p>
                   {{#each streamerUrls}}
                     <a target="_blank" rel="noopener" href="{{url}}">{{streamerId}} ({{type}})</a>;

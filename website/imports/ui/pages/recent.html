@@ -25,9 +25,13 @@
                     {{episodeJoined.episodeNumStart}}{{#if $neq episodeJoined.episodeNumStart episodeJoined.episodeNumEnd}} - {{episodeJoined.episodeNumEnd}}{{/if}}
                     ({{episodeJoined.translationTypeExpanded}})
                   </a>
+                  out of {{episodeJoined.show.episodeCount}}
                 </p>
                 <p>
                   {{displayUploadDate episodeJoined.uploadDate}}
+                </p>
+                <p>
+                  Airs every {{displayMinuteInterval episodeJoined.show.broadcastIntervalMinutes}}
                 </p>
               </div>
               <div class="col s12 m2">
