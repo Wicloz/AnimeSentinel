@@ -235,7 +235,7 @@ Schemas.Show = new SimpleSchema({
   },
   broadcastIntervalMinutes: {
     type: SimpleSchema.Integer,
-    min: 1,
+    min: 0,
     optional: true
   }
 }, { tracker: Tracker });
