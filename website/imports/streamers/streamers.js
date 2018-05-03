@@ -770,6 +770,10 @@ class TempShow {
       }));
     }
 
+    if (!Schemas.Show.newContext().validate(this.newShow)) {
+      this.mergeShows(this.newShow, this.oldShow, {});
+    }
+
     this.doneCallback(this.newShow);
 
     if (Meteor.isDevelopment) {
