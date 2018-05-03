@@ -230,10 +230,12 @@ Schemas.Show = new SimpleSchema({
   },
   episodeCount: {
     type: SimpleSchema.Integer,
+    min: 1,
     optional: true
   },
   broadcastIntervalMinutes: {
     type: SimpleSchema.Integer,
+    min: 1,
     optional: true
   }
 }, { tracker: Tracker });

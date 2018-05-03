@@ -127,7 +127,7 @@ export let myanimelist = {
         return determineAiringDateSearchPage(partial.find('td:nth-of-type(7)').text());
       },
       episodeCount: function(partial, full) {
-        return partial.find('td:nth-of-type(4)').text().replace('-', '');
+        return partial.find('td:nth-of-type(4)').text().cleanWhitespace().replace('-', '');
       },
     },
 
