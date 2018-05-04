@@ -233,7 +233,27 @@ Schemas.Show = new SimpleSchema({
     min: 1,
     optional: true
   },
+
   broadcastIntervalMinutes: {
+    type: SimpleSchema.Integer,
+    min: 0,
+    optional: true
+  },
+  determinedIntervalMinutes: {
+    type: Object,
+    optional: true
+  },
+  'determinedIntervalMinutes.sub': {
+    type: SimpleSchema.Integer,
+    min: 0,
+    optional: true
+  },
+  'determinedIntervalMinutes.dub': {
+    type: SimpleSchema.Integer,
+    min: 0,
+    optional: true
+  },
+  'determinedIntervalMinutes.raw': {
     type: SimpleSchema.Integer,
     min: 0,
     optional: true
@@ -302,6 +322,17 @@ Shows.helpers({
       return translationType === 'dub' ? undefined : this.airedStart;
     }
 
+    // Determine the interval to use for the calculation
+    let intervalToUse = this.broadcastIntervalMinutes;
+    if ((!intervalToUse || translationType === 'dub') && this.determinedIntervalMinutes && this.determinedIntervalMinutes[translationType]) {
+      intervalToUse = this.determinedIntervalMinutes[translationType];
+    }
+
+    // Stop if the interval is not known
+    if (!intervalToUse) {
+      return undefined;
+    }
+
     // Grab one of the last episodes
     let lastEpisode = Episodes.queryForTranslationType(this._id, translationType).fetch()[0];
 
@@ -313,7 +344,7 @@ Shows.helpers({
 
     // Convert to moment and add the interval
     let lastDateMoment = moment(lastDate);
-    lastDateMoment.add(this.broadcastIntervalMinutes, 'minutes');
+    lastDateMoment.add(intervalToUse, 'minutes');
 
     // Convert back to object
     Object.keys(lastDate).forEach((key) => {
@@ -339,6 +370,91 @@ Shows.helpers({
 
   locked() {
     return this.lastUpdateStart && (!this.lastUpdateEnd || this.lastUpdateStart > this.lastUpdateEnd);
+  },
+
+  recalculateEpisodeInterval(translationType) {
+    // Get the earliest episode for each number combination
+    let earliestEpisodes = [];
+    Episodes.queryForTranslationType(this._id, translationType).forEach((episode) => {
+      let selector = {
+        showId: episode.showId,
+        translationType: episode.translationType,
+        episodeNumStart: episode.episodeNumStart,
+        episodeNumEnd: episode.episodeNumEnd
+      };
+
+      if (earliestEpisodes.hasPartialObjects(selector)) {
+        let other = earliestEpisodes.getPartialObjects(selector)[0];
+        other.uploadDate = ScrapingHelpers.determineEarliestAiringDate(other.uploadDate, episode.uploadDate);
+        earliestEpisodes = earliestEpisodes.replacePartialObjects(selector, other);
+      }
+
+      else {
+        selector.uploadDate = episode.uploadDate;
+        earliestEpisodes.push(selector);
+      }
+    });
+
+    // Stop if there are less than 2 distinct episodes
+    if (earliestEpisodes.length < 2) {
+      return;
+    }
+
+    // Sort episodes by upload date ascending
+    earliestEpisodes.sort((a, b) => {
+      return moment.duration(moment(a.uploadDate) - moment(b.uploadDate)).asMinutes();
+    });
+
+    // Calculate delays between episodes and sort ascending
+    let episodeDelays = [];
+    for (let i = 1; i < earliestEpisodes.length; i++) {
+      episodeDelays.push(moment.duration(moment(earliestEpisodes[i].uploadDate) - moment(earliestEpisodes[i - 1].uploadDate)).asMinutes());
+    }
+    episodeDelays = episodeDelays.sort((a, b) => {
+      return a - b;
+    });
+
+    // Spread delays among bins depending on their distance and sort by length descending
+    let episodeDelayBins = [];
+    episodeDelays.forEach((delay) => {
+      if (!episodeDelayBins.empty() && delay - episodeDelayBins.peek().peek() < 1440) {
+        episodeDelayBins.peek().push(delay);
+      } else {
+        episodeDelayBins.push([delay]);
+      }
+    });
+    episodeDelayBins = episodeDelayBins.sort((a, b) => {
+      return b.length - a.length;
+    });
+
+    // Determine the amount of maximum size bins
+    let biggestBinCount = 1;
+    while (episodeDelayBins[biggestBinCount] && episodeDelayBins[biggestBinCount].length === episodeDelayBins[biggestBinCount - 1].length) {
+      biggestBinCount++;
+    }
+
+    // Calculate the total and count for the maximum bins
+    let total = 0;
+    let count = 0;
+    for (let i = 0; i < biggestBinCount; i++) {
+      episodeDelayBins[i].forEach((delay) => {
+        total += delay;
+        count++;
+      })
+    }
+
+    // Store the average on this
+    if (!this.determinedIntervalMinutes) {
+      this.determinedIntervalMinutes = {};
+    }
+    this.determinedIntervalMinutes[translationType] = Math.round(total / count);
+
+    // Store in the database
+    Shows.update(this._id, {
+      $set: {
+        determinedIntervalMinutes: this.determinedIntervalMinutes
+      }
+    });
   },
 
   mergePartialShow(other) {

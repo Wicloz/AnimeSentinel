@@ -57,8 +57,16 @@
           <p>{{show.episodeCount}}</p>
         </li>
         <li class="collection-item">
-          <p>Broadcast Interval:</p>
-          <p>Every {{displayMinuteInterval show.broadcastIntervalMinutes}}</p>
+          <p>Broadcast Intervals:</p>
+          <p>
+            Scraped: {{displayMinuteInterval show.broadcastIntervalMinutes}}
+            <br>
+            Determined Sub: {{displayMinuteInterval show.determinedIntervalMinutes.sub}}
+            <br>
+            Determined Dub: {{displayMinuteInterval show.determinedIntervalMinutes.dub}}
+            <br>
+            Determined Raw: {{displayMinuteInterval show.determinedIntervalMinutes.raw}}
+          </p>
         </li>
         <li class="collection-item">
           <p>Streamers:</p>

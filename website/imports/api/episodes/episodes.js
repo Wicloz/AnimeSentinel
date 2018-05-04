@@ -169,6 +169,9 @@ Episodes.addEpisode = function(episode) {
     id = Episodes.insert(episode);
   }
 
+  // Recalculate the episode interval for the related show
+  Shows.findOne(episode.showId).recalculateEpisodeInterval(episode.translationType);
+
   // Return id
   return id;
 };
