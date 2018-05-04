@@ -1,8 +1,24 @@
 import moment from 'moment-timezone';
 
+Template.registerHelper('$in', (item, ...list) => {
+  list.pop();
+  if (list.length === 1 && _.isArray(list[0])) {
+    list = list[0];
+  }
+  return list.includes(item);
+});
+
+Template.registerHelper('$nin', (item, ...list) => {
+  list.pop();
+  if (list.length === 1 && _.isArray(list[0])) {
+    list = list[0];
+  }
+  return !list.includes(item);
+});
+
 Template.registerHelper('displaySeason', (season) => {
   if (!season || typeof season.quarter === 'undefined' || typeof season.year === 'undefined') {
-    return 'Unknown';
+    return 'unknown season';
   }
   return season.quarter + ' ' + season.year;
 });
@@ -13,7 +29,7 @@ Template.registerHelper('displayAiringDate', (date) => {
       && typeof date.date === 'undefined'
       && typeof date.hour === 'undefined'
       && typeof date.minute === 'undefined')) {
-    return 'Unknown';
+    return 'unknown date';
   }
 
   let formatDate = undefined;
@@ -42,7 +58,7 @@ Template.registerHelper('displayUploadDate', (date) => {
       && typeof date.date === 'undefined'
       && typeof date.hour === 'undefined'
       && typeof date.minute === 'undefined')) {
-    return 'Unknown';
+    return 'unknown date';
   }
 
   let formatDate = '';
