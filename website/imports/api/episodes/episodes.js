@@ -170,7 +170,10 @@ Episodes.addEpisode = function(episode) {
   }
 
   // Recalculate the episode interval for the related show
-  Shows.findOne(episode.showId).recalculateEpisodeInterval(episode.translationType);
+  let show = Shows.findOne(episode.showId);
+  if (show) {
+    show.recalculateEpisodeInterval(episode.translationType);
+  }
 
   // Return id
   return id;
