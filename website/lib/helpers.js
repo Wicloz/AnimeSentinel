@@ -105,3 +105,7 @@ Array.prototype.pluck = function(key) {
     return value[key];
   });
 };
+
+Array.prototype.peek = function() {
+  return this[this.length - 1];
+};
