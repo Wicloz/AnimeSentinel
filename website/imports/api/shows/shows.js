@@ -358,7 +358,7 @@ Shows.helpers({
   nextEpisodeInterval(translationType) {
     invalidateMinute.depend();
     return Math.round(
-      moment.duration(moment(this.nextEpisodeDate(translationType)) - moment()).asMinutes()
+      moment.duration(moment.utc(this.nextEpisodeDate(translationType)) - moment.utc()).asMinutes()
     );
   },
 
@@ -402,13 +402,13 @@ Shows.helpers({
 
     // Sort episodes by upload date ascending
     earliestEpisodes.sort((a, b) => {
-      return moment.duration(moment(a.uploadDate) - moment(b.uploadDate)).asMinutes();
+      return moment.duration(moment.utc(a.uploadDate) - moment.utc(b.uploadDate)).asMinutes();
     });
 
     // Calculate delays between episodes and sort ascending
     let episodeDelays = [];
     for (let i = 1; i < earliestEpisodes.length; i++) {
-      episodeDelays.push(moment.duration(moment(earliestEpisodes[i].uploadDate) - moment(earliestEpisodes[i - 1].uploadDate)).asMinutes());
+      episodeDelays.push(moment.duration(moment.utc(earliestEpisodes[i].uploadDate) - moment.utc(earliestEpisodes[i - 1].uploadDate)).asMinutes());
     }
     episodeDelays = episodeDelays.sort((a, b) => {
       return a - b;

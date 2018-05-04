@@ -112,7 +112,7 @@ export default class Streamers {
       && show.airedStart && typeof show.airedStart.year !== 'undefined' && typeof show.airedStart.month !== 'undefined' && typeof show.airedStart.date !== 'undefined'
       && show.airedEnd && typeof show.airedEnd.year !== 'undefined' && typeof show.airedEnd.month !== 'undefined' && typeof show.airedEnd.date !== 'undefined') {
       show.broadcastIntervalMinutes = Math.round(
-        moment.duration(moment(show.airedEnd) - moment(show.airedStart)).asMinutes() / (show.episodeCount - 1)
+        moment.duration(moment.utc(show.airedEnd) - moment.utc(show.airedStart)).asMinutes() / (show.episodeCount - 1)
       );
     }
 
