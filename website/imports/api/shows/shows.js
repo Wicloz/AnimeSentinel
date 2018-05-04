@@ -718,7 +718,9 @@ Shows.querySearch = function(search, limit) {
   // Search on 'query'
   if (search.query) {
     selector.altNames = {
-      $regex: '.*' + search.query.split('').join('.*') + '.*',
+      $regex: '.*' + search.query.split('').map((character) => {
+        return RegExp.escape(character);
+      }).join('.*') + '.*',
       $options: 'i'
     };
 
