@@ -210,11 +210,13 @@ Meteor.users.helpers({
             this.setMalCanReadWrite(true, undefined);
             let malIds = [];
 
-            result.myanimelist.anime.reverse().forEach((entry) => {
+            result.myanimelist.anime.reverse().forEach((entry, index) => {
               // Add the show
               try {
                 Shows.addPartialShow(Streamers.convertCheerioToShow(entry, result.myanimelist, Streamers.getStreamerById('myanimelist'), 'showApi'));
               } catch (e) {
+                console.error('Failed to process show api page for user: \'' + this.profile.malUsername + '\' and streamer: \'myanimelist\'.');
+                console.error('Failed to process entry number ' + (result.myanimelist.anime.length - index - 1) + '.');
                 console.error(e);
               }
 

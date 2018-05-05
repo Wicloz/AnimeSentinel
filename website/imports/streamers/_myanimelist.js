@@ -278,7 +278,7 @@ export let myanimelist = {
         };
       },
       episodeCount: function(partial, full) {
-        return partial.series_episodes[0] ? partial.series_episodes[0] : undefined;
+        return partial.series_episodes[0] === '0' ? undefined : partial.series_episodes[0];
       },
     },
 
@@ -286,7 +286,7 @@ export let myanimelist = {
     thumbnails: {
       rowSelector: 'series_image',
       getUrl: function (partial, full) {
-        return partial;
+        return partial === 'https://myanimelist.cdn-dena.com/images/anime//0.jpg' ? undefined : partial;
       },
     },
   },
