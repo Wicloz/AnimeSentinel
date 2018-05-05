@@ -77,7 +77,9 @@ Template.pages_search.helpers({
 
 Template.pages_search.events({
   'appear #load-more-results'(event) {
-    Template.instance().state.set('searchLimit', Template.instance().state.get('searchLimit') + 10);
+    if (Template.instance().subscriptionsReady()) {
+      Template.instance().state.set('searchLimit', Template.instance().state.get('searchLimit') + 10);
+    }
   }
 });
 

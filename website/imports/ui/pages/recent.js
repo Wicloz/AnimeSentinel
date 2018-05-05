@@ -82,6 +82,8 @@ Template.pages_recent.helpers({
 
 Template.pages_recent.events({
   'appear #load-more-episodes'(event) {
-    Template.instance().state.set('episodesLimit', Template.instance().state.get('episodesLimit') + 100);
+    if (Template.instance().subscriptionsReady()) {
+      Template.instance().state.set('episodesLimit', Template.instance().state.get('episodesLimit') + 100);
+    }
   }
 });
