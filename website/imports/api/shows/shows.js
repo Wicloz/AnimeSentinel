@@ -316,6 +316,16 @@ Shows.helpers({
     }
   },
 
+  relevantBroadcastInterval(translationType) {
+    let interval = this.broadcastIntervalMinutes;
+
+    if ((!interval || translationType === 'dub') && this.determinedIntervalMinutes && this.determinedIntervalMinutes[translationType]) {
+      interval = this.determinedIntervalMinutes[translationType];
+    }
+
+    return interval;
+  },
+
   nextEpisodeDate(translationType) {
     // Return start date if the show has not started
     if (this.airingState(translationType) === 'Not Yet Aired') {
@@ -323,10 +333,7 @@ Shows.helpers({
     }
 
     // Determine the interval to use for the calculation
-    let intervalToUse = this.broadcastIntervalMinutes;
-    if ((!intervalToUse || translationType === 'dub') && this.determinedIntervalMinutes && this.determinedIntervalMinutes[translationType]) {
-      intervalToUse = this.determinedIntervalMinutes[translationType];
-    }
+    let intervalToUse = this.relevantBroadcastInterval(translationType);
 
     // Stop if the interval is not known
     if (!intervalToUse) {
