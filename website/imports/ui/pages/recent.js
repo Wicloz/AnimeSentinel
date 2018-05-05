@@ -18,19 +18,19 @@ Template.pages_recent.onCreated(function () {
   // TODO: Make this work better (remove / make caching + indicator work)
   Meteor.call('episodes.findRecentEpisodes');
 
-  // Subscribe to latest episodes
+  // Subscribe to recent episodes
   this.autorun(() => {
-    this.subscribe('episodes.latest', this.state.get('episodesLimit'));
+    this.subscribe('episodes.recent', this.state.get('episodesLimit'));
   });
 
   // Subscribe to shows for episodes
   this.autorun(() => {
-    this.subscribe('shows.withIds', Episodes.queryLatest(this.state.get('episodesLimit')).fetch().pluck('showId'));
+    this.subscribe('shows.withIds', Episodes.queryRecent(this.state.get('episodesLimit')).fetch().pluck('showId'));
   });
 
   // Subscribe to thumbnails for all shows
   this.autorun(() => {
-    this.subscribe('thumbnails.withHashes', Shows.queryWithIds(Episodes.queryLatest(this.state.get('episodesLimit')).fetch().pluck('showId')).fetch().reduce((total, show) => {
+    this.subscribe('thumbnails.withHashes', Shows.queryWithIds(Episodes.queryRecent(this.state.get('episodesLimit')).fetch().pluck('showId')).fetch().reduce((total, show) => {
       return total.concat(show.thumbnails);
     }, []));
   });
@@ -44,7 +44,7 @@ Template.pages_recent.helpers({
   episodesJoined() {
     let episodes = [];
 
-    Episodes.queryLatest(Template.instance().state.get('episodesLimit')).forEach((episode) => {
+    Episodes.queryRecent(Template.instance().state.get('episodesLimit')).forEach((episode) => {
       let selector = {
         showId: episode.showId,
         translationType: episode.translationType,
@@ -76,7 +76,7 @@ Template.pages_recent.helpers({
   },
 
   episodesLoading() {
-    return !Template.instance().subscriptionsReady() || Episodes.queryLatest(Template.instance().state.get('episodesLimit')).count() >= Template.instance().state.get('episodesLimit');
+    return !Template.instance().subscriptionsReady() || Episodes.queryRecent(Template.instance().state.get('episodesLimit')).count() >= Template.instance().state.get('episodesLimit');
   }
 });
 

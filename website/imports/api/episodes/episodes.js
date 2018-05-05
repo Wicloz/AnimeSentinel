@@ -341,7 +341,7 @@ Episodes.queryUnique = function (showId, translationType, episodeNumStart, episo
   });
 };
 
-Episodes.queryLatest = function(limit) {
+Episodes.queryRecent = function(limit) {
   // Validate
   new SimpleSchema({
     limit: {
