@@ -23,26 +23,3 @@ Template.layouts_main.onRendered(function() {
     message: 'ready'
   }, '*');
 });
-
-Template.layouts_main.events({
-  'click #fabSearchFormButton'(event) {
-    setTimeout(() => {
-      $('#fabSearchFormQuery').focus();
-    }, 100);
-  },
-
-  'submit #fabSearchForm'(event) {
-    event.preventDefault();
-    FlowRouter.go('search');
-
-    let animeSearchFormQueryField = $('#animeSearchFormQuery').find('input[name="query"]');
-    let fabSearchFormField = $('#fabSearchFormQuery');
-
-    animeSearchFormQueryField.val(fabSearchFormField.val());
-    fabSearchFormField.val('');
-
-    animeSearchFormQueryField.focus();
-    animeSearchFormQueryField.submit();
-    $('#fabSearchFormButton.toolbar').closeToolbar();
-  }
-});
