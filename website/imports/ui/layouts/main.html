@@ -2,74 +2,12 @@
   <header>
 
     {{> components_nav_main}}
-
-    {{#unless superNoteDismissed}}
-      <div class="tap-target tap-target-desktop" data-activates="navMainOldSiteDesktop">
-        <div class="tap-target-content">
-          <h5>The old site is linked here.</h5>
-        </div>
-      </div>
-      <div class="tap-target tap-target-mobile" data-activates="navMainOldSiteMobile">
-        <div class="tap-target-content">
-          <h5>The old site is linked here.</h5>
-        </div>
-      </div>
-    {{/unless}}
+    {{> components_superNote}}
 
   </header>
   <main>
 
-    {{#unless superNoteDismissed}}
-      <div class="container">
-        <div class="card-panel primary-color">
-          <h1 class="card-title">A note to all users</h1>
-          <p class="flow-text">
-            A new year comes with a new AnimeSentinel. The site is completely rebuilt from scratch to use a fancy JavaScript framework.
-            Taking all the experience learned from developing the previous version, the new AnimeSentinel is significantly faster and more stable.
-          </p>
-          <p class="flow-text">
-            There is still a lot of work to be done however. Most importantly, there is no user system yet.
-            This means you can't link the site to your MAL account and get any of the notifications or overviews.
-            If you still want to use these features, or any other features this site does not yet have, the old site will remain available at a different location.
-          </p>
-          <div class="row">
-            <div class="col s12 m6">
-              <a class="waves-effect waves-light btn btn-oldsite-desktop hide-on-med-and-down">Give me the old site!</a>
-              <a class="waves-effect waves-light btn btn-oldsite-mobile hide-on-large-only">Give me the old site!</a>
-            </div>
-            <div class="col s12 m6">
-              <a class="waves-effect waves-teal btn-flat btn-dismiss right">
-                Dismiss
-                <i class="material-icons right">close</i>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    {{/unless}}
-
     {{> Template.dynamic template=content}}
 
-    <div class="fixed-action-btn toolbar" id="fabSearchFormButton">
-      <a class="btn-floating btn-large primary-color">
-        <i class="material-icons">search</i>
-      </a>
-      <ul>
-        <li>
-          <nav>
-            <div class="nav-wrapper">
-              <form id="fabSearchForm">
-                <div class="input-field">
-                  <input id="fabSearchFormQuery" type="search" autocomplete="off">
-                  <label class="label-icon" for="fabSearchFormQuery">
-                    <i class="material-icons">search</i>
-                  </label>
-                </div>
-              </form>
-            </div>
-          </nav>
-        </li>
-      </ul>
-    </div>
   </main>
 </template>

@@ -1,5 +1,6 @@
 import './main.html';
 import '/imports/ui/components/navMain.js';
+import '/imports/ui/components/superNote.js';
 
 Template.layouts_main.onCreated(function() {
   // TODO: Use a more general SEO solution
@@ -21,48 +22,4 @@ Template.layouts_main.onRendered(function() {
     direction: 'from-page-script',
     message: 'ready'
   }, '*');
-});
-
-Template.layouts_main.helpers({
-  superNoteDismissed() {
-    return getStorageItem('SuperNoteDismissed');
-  }
-});
-
-Template.layouts_main.events({
-  'click .btn-dismiss'(event) {
-    setStorageItem('SuperNoteDismissed', true);
-  },
-
-  'click .btn-oldsite-desktop'(event) {
-    $('.tap-target-desktop').tapTarget('open');
-  },
-
-  'click .btn-oldsite-mobile'(event) {
-    $('.button-collapse').sideNav('show');
-    setTimeout(function() {
-      $('.tap-target-mobile').tapTarget('open');
-    }, 300);
-  },
-
-  'click #fabSearchFormButton'(event) {
-    setTimeout(() => {
-      $('#fabSearchFormQuery').focus();
-    }, 100);
-  },
-
-  'submit #fabSearchForm'(event) {
-    event.preventDefault();
-    FlowRouter.go('search');
-
-    let animeSearchFormQueryField = $('#animeSearchFormQuery').find('input[name="query"]');
-    let fabSearchFormField = $('#fabSearchFormQuery');
-
-    animeSearchFormQueryField.val(fabSearchFormField.val());
-    fabSearchFormField.val('');
-
-    animeSearchFormQueryField.focus();
-    animeSearchFormQueryField.submit();
-    $('#fabSearchFormButton.toolbar').closeToolbar();
-  }
 });

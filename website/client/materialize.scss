@@ -46,7 +46,7 @@
   }
 }
 
-[type="checkbox"] + label {
+[type="checkbox"] + label, [type="radio"] + label {
   pointer-events: unset;
   transition: unset;
   transform: unset;
