@@ -772,3 +772,18 @@ Shows.queryWithIds = function(ids) {
 Shows.queryMatchingShows = function(show) {
   return ScrapingHelpers.queryMatchingShows(Shows, show);
 };
+
+Shows.queryWithMalIds = function(malIds) {
+  // Validate
+  new SimpleSchema({
+    malIds: Array,
+    'malIds.$': SimpleSchema.Integer
+  }).validate({malIds});
+
+  // Return results cursor
+  return Shows.find({
+    malId: {
+      $in: malIds
+    }
+  });
+};

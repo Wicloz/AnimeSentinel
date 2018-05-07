@@ -12,3 +12,7 @@ Meteor.publish('shows.withId', function(id) {
 Meteor.publish('shows.withIds', function(ids) {
   return Shows.queryWithIds(ids);
 });
+
+Meteor.publish('shows.withMalIds', function(malIds) {
+  return Shows.queryWithMalIds(malIds);
+});
