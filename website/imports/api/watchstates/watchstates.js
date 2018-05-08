@@ -77,20 +77,24 @@ WatchStates.helpers({
   },
 
   getStatusFancy() {
-    switch (this.malStatus) {
-      case 'watching':
-        return 'Currently Watching';
-      case 'completed':
-        return 'Completed';
-      case 'held':
-        return 'On Hold';
-      case 'dropped':
-        return 'Dropped';
-      case 'planned':
-        return 'Plan to Watch';
-    }
+    return WatchStates.makeFancyStatus(this.malStatus);
   }
 });
+
+WatchStates.makeFancyStatus = function(statusId) {
+  switch (statusId) {
+    case 'watching':
+      return 'Currently Watching';
+    case 'completed':
+      return 'Completed';
+    case 'held':
+      return 'On Hold';
+    case 'dropped':
+      return 'Dropped';
+    case 'planned':
+      return 'Plan to Watch';
+  }
+};
 
 WatchStates.addWatchState = function(watchState) {
   let others = WatchStates.queryUnique(watchState.userId, watchState.malId);

@@ -46,7 +46,7 @@ Template.pages_show.onCreated(function() {
       Session.set('PageTitle', show.name);
       this.subscribe('thumbnails.withHashes', show.thumbnails);
       if (typeof show.malId !== 'undefined' && Meteor.userId()) {
-        this.subscribe('watchStates.currentUserShow', show.malId);
+        this.subscribe('watchStates.currentUserUnique', show.malId);
       }
     }
   });

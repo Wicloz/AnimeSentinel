@@ -6,6 +6,7 @@ import '/imports/ui/pages/show.js';
 import '/imports/ui/pages/episode.js';
 import '/imports/ui/pages/recent.js';
 import '/imports/ui/pages/profile.js';
+import '/imports/ui/pages/overview.js';
 
 FlowRouter.notFound = {
   name: 'notFound',
@@ -25,6 +26,13 @@ FlowRouter.route('/anime', {
   name: 'search',
   action() {
     BlazeLayout.render('layouts_main', {content: 'pages_search'});
+  }
+});
+
+FlowRouter.route('/anime/overview', {
+  name: 'animeOverview',
+  action() {
+    BlazeLayout.render('layouts_main', {content: 'pages_overview'});
   }
 });
 

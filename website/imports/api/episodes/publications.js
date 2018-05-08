@@ -4,8 +4,8 @@ Meteor.publish('episodes.forShow', function(showId) {
   return Episodes.queryForShow(showId);
 });
 
-Meteor.publish('episodes.forTranslationType', function(showId, translationType) {
-  return Episodes.queryForTranslationType(showId, translationType);
+Meteor.publish('episodes.forTranslationType', function(showId, translationType, limit) {
+  return Episodes.queryForTranslationType(showId, translationType, limit);
 });
 
 Meteor.publish('episodes.forEpisode', function(showId, translationType, episodeNumStart, episodeNumEnd) {
@@ -14,4 +14,8 @@ Meteor.publish('episodes.forEpisode', function(showId, translationType, episodeN
 
 Meteor.publish('episodes.recent', function(limit) {
   return Episodes.queryRecent(limit);
+});
+
+Meteor.publish('episodes.toWatch', function(showId, translationType, lastWatched) {
+  return Episodes.queryToWatch(showId, translationType, lastWatched);
 });

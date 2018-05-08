@@ -1,0 +1,12 @@
+#statusesSelectionForm {
+  .af-checkbox-group p {
+    display: inline-block;
+    margin-right: $spacer;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .af-checkbox-group p:first-of-type {
+    margin-top: 10px;
+  }
+}

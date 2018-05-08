@@ -52,6 +52,7 @@
 </template>
 
 <template name="components_nav_main_linksLoggedIn">
+  {{> components_nav_main_link_internal routeName='animeOverview' routeTitle='Anime Overview' activeWhen='animeOverview'}}
   {{> components_nav_main_link_internal routeName='manageProfile' routeTitle='Manage Profile' activeWhen='manageProfile'}}
   {{> components_nav_main_link_internal routeName='logOut' routeTitle='Log Out' activeWhen='logOut'}}
 </template>
