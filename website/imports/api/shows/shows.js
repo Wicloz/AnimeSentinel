@@ -5,6 +5,7 @@ import {Episodes} from "../episodes/episodes";
 import {Thumbnails} from '../thumbnails/thumbnails';
 import ScrapingHelpers from '../../streamers/scrapingHelpers';
 import moment from 'moment-timezone';
+import {WatchStates} from '../watchstates/watchstates';
 const score = require('string-score');
 
 // Collection
@@ -367,6 +368,16 @@ Shows.helpers({
     return Math.round(
       moment.duration(moment.utc(this.nextEpisodeDate(translationType)) - moment.utc()).asMinutes()
     );
+  },
+
+  watchedEpisodes() {
+    let watchState = WatchStates.queryUnique(Meteor.userId(), this.malId).fetch()[0];
+    return watchState ? watchState.malWatchedEpisodes : 0;
+  },
+
+  availableEpisodes(translationType) {
+    let lastEpisode = Episodes.queryForTranslationType(this._id, translationType).fetch()[0];
+    return lastEpisode ? lastEpisode.episodeNumEnd : 0;
   },
 
   expired() {
