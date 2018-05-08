@@ -234,15 +234,16 @@ Schemas.Show = new SimpleSchema({
     min: 1,
     optional: true
   },
-
   broadcastIntervalMinutes: {
     type: SimpleSchema.Integer,
     min: 0,
     optional: true
   },
+
   determinedIntervalMinutes: {
     type: Object,
-    optional: true
+    optional: true,
+    defaultValue: {}
   },
   'determinedIntervalMinutes.sub': {
     type: SimpleSchema.Integer,
