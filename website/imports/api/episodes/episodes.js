@@ -377,3 +377,28 @@ Episodes.queryRecent = function(limit) {
     }
   })
 };
+
+Episodes.queryToWatch = function(showId, translationType, lastWatched) {
+  // Validate
+  Schemas.Episode.validate({
+    showId: showId,
+    translationType: translationType,
+    episodeNumEnd: lastWatched
+  }, {
+    keys: ['showId', 'translationType', 'episodeNumEnd']
+  });
+
+  // Return results cursor
+  return Episodes.find({
+    showId: showId,
+    translationType: translationType,
+    episodeNumEnd: {
+      $gt: lastWatched
+    }
+  }, {
+    sort: {
+      episodeNumEnd: -1,
+      episodeNumStart: -1
+    }
+  });
+};

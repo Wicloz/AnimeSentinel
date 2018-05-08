@@ -1,7 +1,76 @@
 <template name="pages_overview">
   <div class="container">
 
+    <div class="card-panel">
+      <a class="waves-effect waves-light btn reload-mal-list-btn">Reload MAL List</a>
+      <a class="waves-effect waves-light btn reload-all-shows-btn">Attempt All Show Updates</a>
+      {{#autoForm schema='Schemas.statusesSelection' id='statusesSelectionForm' autosave=true}}
+        {{> afQuickField name='statuses' value=($GetStorageItem 'SelectedStatuses')}}
+      {{/autoForm}}
 
+      <ul class="collection">
+        {{#each displayShows}}
+
+          <!--TODO: Make this display better-->
+          <li class="collection-item">
+            <div class="row">
+              <div class="col s12 m2">
+                {{>components_image src=this.getThumbnailUrls.[0] caption=name class="responsive-img materialboxed"}}
+              </div>
+              <div class="col s12 m5">
+                <p>
+                  <a href="{{pathFor 'show' showId=_id}}">{{name}}</a>
+                </p>
+                <p>
+                  Start: {{displayAiringDate airedStart}}
+                  <br>
+                  End: {{displayAiringDate airedEnd}}
+                  <br>
+                  Season: {{displaySeason season}}
+                  <br>
+                  {{this.availableEpisodes 'sub'}} out of {{episodeCount}} episodes available
+                  <br>
+                  Airs every {{displayMinuteInterval (relevantBroadcastInterval 'sub')}}
+                </p>
+              </div>
+              <div class="col s12 m5">
+                <ul class="collection">
+                  {{#each episodesToWatch this}}
+                    <a href="{{#if $eq episodeNumStart episodeNumEnd}}
+                      {{pathFor 'episodeSingle' showId=showId translationType=translationType episodeNumBoth=episodeNumStart}}
+                    {{else}}
+                      {{pathFor 'episodeDouble' showId=showId translationType=translationType episodeNumStart=episodeNumStart episodeNumEnd=episodeNumEnd}}
+                    {{/if}}" class="collection-item">
+                      Episode {{episodeNumStart}}{{#if $neq episodeNumStart episodeNumEnd}} - {{episodeNumEnd}}{{/if}}
+                    </a>
+                  {{/each}}
+                  {{#if $eq (airingState 'sub') 'Completed'}}
+                    <li class="collection-item">All Episodes Available</li>
+                  {{else}}
+                    <li class="collection-item">Next Episode: {{displayUploadDate (nextEpisodeDate 'sub')}}</li>
+                  {{/if}}
+                </ul>
+                <a class="waves-effect waves-light btn reload-show-btn" data-showid="{{_id}}">Attempt Show Update</a>
+              </div>
+            </div>
+          </li>
+
+        {{else}}
+          <li class="collection-item center">
+            <p class="flow-text">
+              No Items
+            </p>
+          </li>
+        {{/each}}
+
+        <li class="collection-item center {{#unless loading}}removed{{/unless}}" id="load-more-items">
+          <div class="progress">
+            <div class="indeterminate"></div>
+          </div>
+          <span>Loading More Items ...</span>
+        </li>
+      </ul>
+    </div>
 
   </div>
 </template>
