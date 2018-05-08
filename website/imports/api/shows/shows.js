@@ -551,13 +551,19 @@ Shows.helpers({
 
         // Update result
         this.lastUpdateEnd = moment().toDate();
+        Schemas.Show.clean(this, {
+          mutate: true
+        });
+        delete this.determinedIntervalMinutes;
+        delete this.nextEpisodeDate;
+        delete this.airingState;
+        delete this.availableEpisodes;
+
         Shows.update({
           _id: this._id,
           lastUpdateStart: this.lastUpdateStart
         }, {
-          $set: Schemas.Show.clean(this, {
-            mutate: true
-          })
+          $set: this
         });
 
         // Merge duplicate shows
@@ -587,13 +593,19 @@ Shows.helpers({
         });
 
         // Update result
+        Schemas.Show.clean(this, {
+          mutate: true
+        });
+        delete this.determinedIntervalMinutes;
+        delete this.nextEpisodeDate;
+        delete this.airingState;
+        delete this.availableEpisodes;
+
         Shows.update({
           _id: this._id,
           lastUpdateStart: this.lastUpdateStart
         }, {
-          $set: Schemas.Show.clean(this, {
-            mutate: true
-          })
+          $set: this
         });
 
       }, (episode) => {
