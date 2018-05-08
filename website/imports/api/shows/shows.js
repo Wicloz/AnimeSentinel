@@ -302,7 +302,7 @@ Shows.helpers({
   },
 
   airingState(translationType) {
-    let lastEpisode = Episodes.queryForTranslationType(this._id, translationType).fetch()[0];
+    let lastEpisode = Episodes.queryForTranslationType(this._id, translationType, 1).fetch()[0];
 
     if (!lastEpisode || lastEpisode.episodeNumEnd <= 0) {
       return 'Not Yet Aired';
@@ -342,7 +342,7 @@ Shows.helpers({
     }
 
     // Grab one of the last episodes
-    let lastEpisode = Episodes.queryForTranslationType(this._id, translationType).fetch()[0];
+    let lastEpisode = Episodes.queryForTranslationType(this._id, translationType, 1).fetch()[0];
 
     // Determine earliest upload date
     let lastDate = {};
@@ -376,7 +376,7 @@ Shows.helpers({
   },
 
   availableEpisodes(translationType) {
-    let lastEpisode = Episodes.queryForTranslationType(this._id, translationType).fetch()[0];
+    let lastEpisode = Episodes.queryForTranslationType(this._id, translationType, 1).fetch()[0];
     return lastEpisode ? lastEpisode.episodeNumEnd : 0;
   },
 

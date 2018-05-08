@@ -254,7 +254,7 @@ Episodes.queryForShow = function(showId) {
   });
 };
 
-Episodes.queryForTranslationType = function(showId, translationType) {
+Episodes.queryForTranslationType = function(showId, translationType, limit) {
   // Validate
   Schemas.Episode.validate({
     showId: showId,
@@ -262,15 +262,27 @@ Episodes.queryForTranslationType = function(showId, translationType) {
   }, {
     keys: ['showId', 'translationType']
   });
+  new SimpleSchema({
+    limit: {
+      type: Number,
+      optional: true
+    }
+  }).validate({limit});
 
   // Return results cursor
   return Episodes.find({
     showId: showId,
     translationType: translationType
   }, {
+    limit: limit,
     sort: {
       episodeNumEnd: -1,
-      episodeNumStart: -1
+      episodeNumStart: -1,
+      'uploadDate.year': 1,
+      'uploadDate.month': 1,
+      'uploadDate.date': 1,
+      'uploadDate.hour': 1,
+      'uploadDate.minute': 1
     }
   });
 };
