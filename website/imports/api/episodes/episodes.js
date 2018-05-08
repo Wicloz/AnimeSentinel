@@ -397,8 +397,8 @@ Episodes.queryToWatch = function(showId, translationType, lastWatched) {
     }
   }, {
     sort: {
-      episodeNumEnd: -1,
-      episodeNumStart: -1
+      episodeNumStart: 1,
+      episodeNumEnd: 1
     }
   });
 };

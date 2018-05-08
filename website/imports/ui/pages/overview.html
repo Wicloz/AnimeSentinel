@@ -45,7 +45,7 @@
                     </a>
                   {{/each}}
                   {{#if $eq (airingState 'sub') 'Completed'}}
-                    <li class="collection-item">All Episodes Available</li>
+                    <li class="collection-item">Finished Airing</li>
                   {{else}}
                     <li class="collection-item">Next Episode: {{displayUploadDate (nextEpisodeDate 'sub')}}</li>
                   {{/if}}

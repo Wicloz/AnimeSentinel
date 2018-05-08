@@ -80,10 +80,10 @@ Template.pages_overview.onCreated(function() {
         diff = 0;
       }
       else if (stateA === 'Completed') {
-        diff = -1;
+        diff = 1;
       }
       else if (stateB === 'Completed') {
-        diff = 1;
+        diff = -1;
       }
 
       else if (typeof nextA === 'undefined' && typeof nextB === 'undefined') {
@@ -98,6 +98,18 @@ Template.pages_overview.onCreated(function() {
 
       else {
         diff = moment.duration(moment.utc(nextA) - moment.utc(nextB)).asMinutes();
+      }
+
+      if (diff === 0) {
+        diff = (b.availableEpisodes('sub') - b.watchedEpisodes('sub')) - (a.availableEpisodes('sub') - a.watchedEpisodes('sub'));
+      }
+
+      if (diff === 0) {
+        diff = moment.duration(moment.utc(a.airedStart) - moment.utc(b.airedStart)).asMinutes();
+      }
+
+      if (diff === 0) {
+        diff = a.name.localeCompare(b.name);
       }
 
       return diff;
