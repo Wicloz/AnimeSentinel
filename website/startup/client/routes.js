@@ -31,6 +31,7 @@ FlowRouter.route('/anime', {
 
 FlowRouter.route('/anime/overview', {
   name: 'animeOverview',
+  triggersEnter: [AccountsTemplates.ensureSignedIn],
   action() {
     BlazeLayout.render('layouts_main', {content: 'pages_overview'});
   }
