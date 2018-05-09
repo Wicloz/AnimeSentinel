@@ -28,7 +28,7 @@
                   <br>
                   Season: {{displaySeason season}}
                   <br>
-                  {{this.availableEpisodes 'sub'}} out of {{episodeCount}} episodes available
+                  {{this.availableEpisodes.sub}} out of {{episodeCount}} episodes available
                   <br>
                   Airs every {{displayMinuteInterval (relevantBroadcastInterval 'sub')}}
                 </p>
@@ -44,7 +44,7 @@
                       Episode {{episodeNumStart}}{{#if $neq episodeNumStart episodeNumEnd}} - {{episodeNumEnd}}{{/if}}
                     </a>
                   {{/each}}
-                  {{#if $eq (airingState 'sub') 'Completed'}}
+                  {{#if $eq airingState.sub 'Completed'}}
                     <li class="collection-item">Finished Airing</li>
                   {{else}}
                     <li class="collection-item">Next Episode: {{displayUploadDate (nextEpisodeDate 'sub')}}</li>

@@ -259,6 +259,121 @@ Schemas.Show = new SimpleSchema({
     type: SimpleSchema.Integer,
     min: 0,
     optional: true
+  },
+  determinedEpisodeDate: {
+    type: Object,
+    optional: true,
+    defaultValue: {}
+  },
+  'determinedEpisodeDate.sub': {
+    type: Object,
+    optional: true,
+    defaultValue: {}
+  },
+  'determinedEpisodeDate.sub.year': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'determinedEpisodeDate.sub.month': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'determinedEpisodeDate.sub.date': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'determinedEpisodeDate.sub.hour': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'determinedEpisodeDate.sub.minute': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'determinedEpisodeDate.dub': {
+    type: Object,
+    optional: true,
+    defaultValue: {}
+  },
+  'determinedEpisodeDate.dub.year': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'determinedEpisodeDate.dub.month': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'determinedEpisodeDate.dub.date': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'determinedEpisodeDate.dub.hour': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'determinedEpisodeDate.dub.minute': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'determinedEpisodeDate.raw': {
+    type: Object,
+    optional: true,
+    defaultValue: {}
+  },
+  'determinedEpisodeDate.raw.year': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'determinedEpisodeDate.raw.month': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'determinedEpisodeDate.raw.date': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'determinedEpisodeDate.raw.hour': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  'determinedEpisodeDate.raw.minute': {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  airingState: {
+    type: Object,
+    defaultValue: {}
+  },
+  'airingState.sub': {
+    type: String,
+    allowedValues: ['Not Yet Aired', 'Completed', 'Airing'],
+    defaultValue: 'Not Yet Aired'
+  },
+  'airingState.dub': {
+    type: String,
+    allowedValues: ['Not Yet Aired', 'Completed', 'Airing'],
+    defaultValue: 'Not Yet Aired'
+  },
+  'airingState.raw': {
+    type: String,
+    allowedValues: ['Not Yet Aired', 'Completed', 'Airing'],
+    defaultValue: 'Not Yet Aired'
+  },
+  availableEpisodes: {
+    type: Object,
+    defaultValue: {}
+  },
+  'availableEpisodes.sub': {
+    type: SimpleSchema.Integer,
+    defaultValue: 0
+  },
+  'availableEpisodes.dub': {
+    type: SimpleSchema.Integer,
+    defaultValue: 0
+  },
+  'availableEpisodes.raw': {
+    type: SimpleSchema.Integer,
+    defaultValue: 0
   }
 }, { tracker: Tracker });
 
@@ -302,66 +417,24 @@ Shows.helpers({
     return urls;
   },
 
-  airingState(translationType) {
-    let lastEpisode = Episodes.queryForTranslationType(this._id, translationType, 1).fetch()[0];
-
-    if (!lastEpisode || lastEpisode.episodeNumEnd <= 0) {
-      return 'Not Yet Aired';
-    }
-
-    else if (lastEpisode && lastEpisode.episodeNumEnd >= this.episodeCount) {
-      return 'Completed';
-    }
-
-    else {
-      return 'Airing';
-    }
-  },
-
   relevantBroadcastInterval(translationType) {
-    let interval = this.broadcastIntervalMinutes;
-
-    if ((!interval || translationType === 'dub') && this.determinedIntervalMinutes && this.determinedIntervalMinutes[translationType]) {
-      interval = this.determinedIntervalMinutes[translationType];
+    if ((!this.broadcastIntervalMinutes || translationType === 'dub') && this.determinedIntervalMinutes[translationType]) {
+      return this.determinedIntervalMinutes[translationType];
+    } else {
+      return this.broadcastIntervalMinutes;
     }
-
-    return interval;
   },
 
   nextEpisodeDate(translationType) {
     // Return start date if the show has not started
-    if (this.airingState(translationType) === 'Not Yet Aired') {
+    if (this.airingState[translationType] === 'Not Yet Aired') {
       return translationType === 'dub' ? undefined : this.airedStart;
     }
 
-    // Determine the interval to use for the calculation
-    let intervalToUse = this.relevantBroadcastInterval(translationType);
-
-    // Stop if the interval is not known
-    if (!intervalToUse) {
-      return undefined;
+    // Return the determined date
+    else {
+      return this.determinedEpisodeDate[translationType];
     }
-
-    // Grab one of the last episodes
-    let lastEpisode = Episodes.queryForTranslationType(this._id, translationType, 1).fetch()[0];
-
-    // Determine earliest upload date
-    let lastDate = {};
-    Episodes.queryForEpisode(this._id, translationType, lastEpisode.episodeNumStart, lastEpisode.episodeNumEnd).forEach((episode) => {
-      lastDate = ScrapingHelpers.determineEarliestAiringDate(lastDate, episode.uploadDate);
-    });
-
-    // Convert to moment and add the interval
-    let lastDateMoment = moment(lastDate);
-    lastDateMoment.add(intervalToUse, 'minutes');
-
-    // Convert back to object
-    Object.keys(lastDate).forEach((key) => {
-      lastDate[key] = lastDateMoment.get(key);
-    });
-
-    // Return
-    return lastDate;
   },
 
   nextEpisodeInterval(translationType) {
@@ -376,11 +449,6 @@ Shows.helpers({
     return watchState ? watchState.malWatchedEpisodes : 0;
   },
 
-  availableEpisodes(translationType) {
-    let lastEpisode = Episodes.queryForTranslationType(this._id, translationType, 1).fetch()[0];
-    return lastEpisode ? lastEpisode.episodeNumEnd : 0;
-  },
-
   expired() {
     let now = moment();
     return (!this.locked() && (!this.lastUpdateStart || moment(this.lastUpdateEnd).add(Shows.timeUntilRecache) < now)) ||
@@ -391,13 +459,11 @@ Shows.helpers({
     return this.lastUpdateStart && (!this.lastUpdateEnd || this.lastUpdateStart > this.lastUpdateEnd);
   },
 
-  recalculateEpisodeInterval(translationType) {
+  afterNewEpisode(episode) {
     // Get the earliest episode for each number combination
     let earliestEpisodes = [];
-    Episodes.queryForTranslationType(this._id, translationType).forEach((episode) => {
+    Episodes.queryForTranslationType(this._id, episode.translationType).forEach((episode) => {
       let selector = {
-        showId: episode.showId,
-        translationType: episode.translationType,
         episodeNumStart: episode.episodeNumStart,
         episodeNumEnd: episode.episodeNumEnd
       };
@@ -414,64 +480,142 @@ Shows.helpers({
       }
     });
 
-    // Stop if there are less than 2 distinct episodes
-    if (earliestEpisodes.length < 2) {
-      return;
-    }
+    /*************************************
+     * Calculate the 'availableEpisodes' *
+     *************************************/
 
-    // Sort episodes by upload date ascending
-    earliestEpisodes.sort((a, b) => {
-      return moment.duration(moment.utc(a.uploadDate) - moment.utc(b.uploadDate)).asMinutes();
-    });
-
-    // Calculate delays between episodes and sort ascending
-    let episodeDelays = [];
-    for (let i = 1; i < earliestEpisodes.length; i++) {
-      episodeDelays.push(moment.duration(moment.utc(earliestEpisodes[i].uploadDate) - moment.utc(earliestEpisodes[i - 1].uploadDate)).asMinutes());
-    }
-    episodeDelays = episodeDelays.sort((a, b) => {
-      return a - b;
-    });
-
-    // Spread delays among bins depending on their distance and sort by length descending
-    let episodeDelayBins = [];
-    episodeDelays.forEach((delay) => {
-      if (!episodeDelayBins.empty() && delay - episodeDelayBins.peek().peek() < 1440) {
-        episodeDelayBins.peek().push(delay);
-      } else {
-        episodeDelayBins.push([delay]);
-      }
-    });
-    episodeDelayBins = episodeDelayBins.sort((a, b) => {
-      return b.length - a.length;
-    });
-
-    // Determine the amount of maximum size bins
-    let biggestBinCount = 1;
-    while (episodeDelayBins[biggestBinCount] && episodeDelayBins[biggestBinCount].length === episodeDelayBins[biggestBinCount - 1].length) {
-      biggestBinCount++;
-    }
-
-    // Calculate the total and count for the maximum bins
-    let total = 0;
-    let count = 0;
-    for (let i = 0; i < biggestBinCount; i++) {
-      episodeDelayBins[i].forEach((delay) => {
-        total += delay;
-        count++;
-      })
-    }
-
-    // Store the average on this
-    if (!this.determinedIntervalMinutes) {
-      this.determinedIntervalMinutes = {};
-    }
-    this.determinedIntervalMinutes[translationType] = Math.round(total / count);
+    // Store on this
+    this.availableEpisodes[episode.translationType] = earliestEpisodes.empty() ? 0 : earliestEpisodes[0].episodeNumEnd;
 
     // Store in the database
     Shows.update(this._id, {
       $set: {
-        determinedIntervalMinutes: this.determinedIntervalMinutes
+        availableEpisodes: this.availableEpisodes
+      }
+    });
+
+    /*******************************
+     * Calculate the 'airingState' *
+     *******************************/
+
+    // Store on this
+    if (this.availableEpisodes[episode.translationType] <= 0) {
+      this.airingState[episode.translationType] = 'Not Yet Aired';
+    }
+
+    else if (this.availableEpisodes[episode.translationType] >= this.episodeCount) {
+      this.airingState[episode.translationType] = 'Completed';
+    }
+
+    else {
+      this.airingState[episode.translationType] = 'Airing';
+    }
+
+    // Store in the database
+    Shows.update(this._id, {
+      $set: {
+        airingState: this.airingState
+      }
+    });
+
+    /*********************************************
+     * Calculate the 'determinedIntervalMinutes' *
+     *********************************************/
+
+    // Continue if there are more than 2 distinct episodes
+    if (earliestEpisodes.length >= 2) {
+
+      // Sort episodes by upload date ascending
+      let earliestEpisodesSorted = earliestEpisodes.slice(0).sort((a, b) => {
+        return moment.duration(moment.utc(a.uploadDate) - moment.utc(b.uploadDate)).asMinutes();
+      });
+
+      // Calculate delays between episodes and sort ascending
+      let episodeDelays = [];
+      for (let i = 1; i < earliestEpisodesSorted.length; i++) {
+        episodeDelays.push(moment.duration(moment.utc(earliestEpisodesSorted[i].uploadDate) - moment.utc(earliestEpisodesSorted[i - 1].uploadDate)).asMinutes());
+      }
+      episodeDelays = episodeDelays.sort((a, b) => {
+        return a - b;
+      });
+
+      // Spread delays among bins depending on their distance and sort by length descending
+      let episodeDelayBins = [];
+      episodeDelays.forEach((delay) => {
+        if (!episodeDelayBins.empty() && delay - episodeDelayBins.peek().peek() < 1440) {
+          episodeDelayBins.peek().push(delay);
+        } else {
+          episodeDelayBins.push([delay]);
+        }
+      });
+      episodeDelayBins = episodeDelayBins.sort((a, b) => {
+        return b.length - a.length;
+      });
+
+      // Determine the amount of maximum size bins
+      let biggestBinCount = 1;
+      while (episodeDelayBins[biggestBinCount] && episodeDelayBins[biggestBinCount].length === episodeDelayBins[biggestBinCount - 1].length) {
+        biggestBinCount++;
+      }
+
+      // Calculate the total and count for the maximum bins
+      let total = 0;
+      let count = 0;
+      for (let i = 0; i < biggestBinCount; i++) {
+        episodeDelayBins[i].forEach((delay) => {
+          total += delay;
+          count++;
+        })
+      }
+
+      // Store the average on this
+      this.determinedIntervalMinutes[episode.translationType] = Math.round(total / count);
+
+      // Store in the database
+      Shows.update(this._id, {
+        $set: {
+          determinedIntervalMinutes: this.determinedIntervalMinutes
+        }
+      });
+    }
+
+    /*****************************************
+     * Calculate the 'determinedEpisodeDate' *
+     *****************************************/
+
+    // Store the found date here
+    let lastDate = undefined;
+
+    // Only if the show is airing
+    if (this.airingState[episode.translationType] === 'Airing') {
+
+      // Determine the interval to use for the calculation
+      let intervalToUse = this.relevantBroadcastInterval(episode.translationType);
+
+      // Continue if the interval is known
+      if (intervalToUse) {
+
+        // Get earliest upload date for the last episode
+        lastDate = earliestEpisodes[0].uploadDate;
+
+        // Convert to moment and add the interval
+        let lastDateMoment = moment(lastDate);
+        lastDateMoment.add(intervalToUse, 'minutes');
+
+        // Convert back to object
+        Object.keys(lastDate).forEach((key) => {
+          lastDate[key] = lastDateMoment.get(key);
+        });
+      }
+    }
+
+    // Store on this
+    this.determinedEpisodeDate[episode.translationType] = lastDate;
+
+    // Store in the database
+    Shows.update(this._id, {
+      $set: {
+        determinedEpisodeDate: this.determinedEpisodeDate
       }
     });
   },
@@ -555,7 +699,7 @@ Shows.helpers({
           mutate: true
         });
         delete this.determinedIntervalMinutes;
-        delete this.nextEpisodeDate;
+        delete this.determinedEpisodeDate;
         delete this.airingState;
         delete this.availableEpisodes;
 
@@ -597,7 +741,7 @@ Shows.helpers({
           mutate: true
         });
         delete this.determinedIntervalMinutes;
-        delete this.nextEpisodeDate;
+        delete this.determinedEpisodeDate;
         delete this.airingState;
         delete this.availableEpisodes;
 

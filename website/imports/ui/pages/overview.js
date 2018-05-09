@@ -3,7 +3,6 @@ import {WatchStates} from '../../api/watchstates/watchstates';
 import {Shows} from '../../api/shows/shows';
 import {Episodes} from '../../api/episodes/episodes';
 import moment from 'moment-timezone';
-import ScrapingHelpers from '../../streamers/scrapingHelpers';
 
 Template.pages_overview.onRendered(function() {
   $('#load-more-items').appear();
@@ -68,52 +67,70 @@ Template.pages_overview.onCreated(function() {
     }, []);
   };
 
+  this.memoizedShowSort = _.memoize((a, b) => {
+    let nextA = a.nextEpisodeDate('sub');
+    let nextB = b.nextEpisodeDate('sub');
+    let diff = undefined;
+
+    if (a.airingState.sub === 'Completed' && b.airingState.sub === 'Completed') {
+      diff = 0;
+    }
+    else if (a.airingState.sub === 'Completed') {
+      diff = 1;
+    }
+    else if (b.airingState.sub === 'Completed') {
+      diff = -1;
+    }
+
+    else if (typeof nextA === 'undefined' && typeof nextB === 'undefined') {
+      diff = 0;
+    }
+    else if (typeof nextA === 'undefined') {
+      diff = -1;
+    }
+    else if (typeof nextB === 'undefined') {
+      diff = 1;
+    }
+
+    else {
+      diff = moment.duration(moment.utc(nextA) - moment.utc(nextB)).asMinutes();
+    }
+
+    if (diff === 0) {
+      diff = (b.availableEpisodes.sub - b.watchedEpisodes()) - (a.availableEpisodes.sub - a.watchedEpisodes());
+    }
+
+    if (diff === 0) {
+      diff = moment.duration(moment.utc(a.airedStart) - moment.utc(b.airedStart)).asMinutes();
+    }
+
+    if (diff === 0) {
+      diff = a.name.localeCompare(b.name);
+    }
+
+    return diff;
+  },
+
+  (a, b) => {
+    return [[
+      a.airingState.sub,
+      a.nextEpisodeDate('sub'),
+      a.availableEpisodes.sub,
+      a.watchedEpisodes(),
+      a.airedStart,
+      a.name,
+    ], [
+      b.airingState.sub,
+      b.nextEpisodeDate('sub'),
+      b.availableEpisodes.sub,
+      b.watchedEpisodes(),
+      b.airedStart,
+      b.name,
+    ]];
+  });
+
   this.currentDisplayShows = function() {
-    return Shows.queryWithMalIds(this.getMalIds()).fetch().sort((a, b) => {
-      let nextA = a.nextEpisodeDate('sub');
-      let nextB = b.nextEpisodeDate('sub');
-      let stateA = a.airingState('sub');
-      let stateB = b.airingState('sub');
-      let diff = undefined;
-
-      if (stateA === 'Completed' && stateB === 'Completed') {
-        diff = 0;
-      }
-      else if (stateA === 'Completed') {
-        diff = 1;
-      }
-      else if (stateB === 'Completed') {
-        diff = -1;
-      }
-
-      else if (typeof nextA === 'undefined' && typeof nextB === 'undefined') {
-        diff = 0;
-      }
-      else if (typeof nextA === 'undefined') {
-        diff = -1;
-      }
-      else if (typeof nextB === 'undefined') {
-        diff = 1;
-      }
-
-      else {
-        diff = moment.duration(moment.utc(nextA) - moment.utc(nextB)).asMinutes();
-      }
-
-      if (diff === 0) {
-        diff = (b.availableEpisodes('sub') - b.watchedEpisodes('sub')) - (a.availableEpisodes('sub') - a.watchedEpisodes('sub'));
-      }
-
-      if (diff === 0) {
-        diff = moment.duration(moment.utc(a.airedStart) - moment.utc(b.airedStart)).asMinutes();
-      }
-
-      if (diff === 0) {
-        diff = a.name.localeCompare(b.name);
-      }
-
-      return diff;
-    }).slice(0, this.state.get('displayLimit'));
+    return Shows.queryWithMalIds(this.getMalIds()).fetch().sort(this.memoizedShowSort).slice(0, this.state.get('displayLimit'));
   };
 
   // Local variables
@@ -137,16 +154,6 @@ Template.pages_overview.onCreated(function() {
   // Subscribe to shows based on watch states
   this.autorun(() => {
     this.subscribe('shows.withMalIds', this.getMalIds())
-  });
-
-  // Subscribe to episodes based on all shows
-  this.autorun(() => {
-    Shows.queryWithMalIds(this.getMalIds()).forEach((show) => {
-      this.subscribe('episodes.forTranslationType', show._id, 'sub', 1);
-      Episodes.queryForTranslationType(show._id, 'sub', 1).forEach((episode) => {
-        this.subscribe('episodes.forEpisode', episode.showId, episode.translationType, episode.episodeNumStart, episode.episodeNumEnd);
-      });
-    });
   });
 
   // Subscribe to thumbnails and episodes based on displayed shows

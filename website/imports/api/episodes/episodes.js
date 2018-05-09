@@ -169,10 +169,10 @@ Episodes.addEpisode = function(episode) {
     id = Episodes.insert(episode);
   }
 
-  // Recalculate the episode interval for the related show
+  // Recalculate certain attributes for the related show
   let show = Shows.findOne(episode.showId);
   if (show) {
-    show.recalculateEpisodeInterval(episode.translationType);
+    show.afterNewEpisode(episode);
   }
 
   // Return id
@@ -254,7 +254,7 @@ Episodes.queryForShow = function(showId) {
   });
 };
 
-Episodes.queryForTranslationType = function(showId, translationType, limit) {
+Episodes.queryForTranslationType = function(showId, translationType) {
   // Validate
   Schemas.Episode.validate({
     showId: showId,
@@ -262,19 +262,12 @@ Episodes.queryForTranslationType = function(showId, translationType, limit) {
   }, {
     keys: ['showId', 'translationType']
   });
-  new SimpleSchema({
-    limit: {
-      type: Number,
-      optional: true
-    }
-  }).validate({limit});
 
   // Return results cursor
   return Episodes.find({
     showId: showId,
     translationType: translationType
   }, {
-    limit: limit,
     sort: {
       episodeNumEnd: -1,
       episodeNumStart: -1,
