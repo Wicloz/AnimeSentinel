@@ -72,6 +72,7 @@ Template.pages_overview.onCreated(function() {
     let nextB = b.nextEpisodeDate('sub');
     let diff = undefined;
 
+    // Move completed shows to the bottom
     if (a.airingState.sub === 'Completed' && b.airingState.sub === 'Completed') {
       diff = 0;
     }
@@ -82,28 +83,33 @@ Template.pages_overview.onCreated(function() {
       diff = -1;
     }
 
-    else if (typeof nextA === 'undefined' && typeof nextB === 'undefined') {
+    // Move shows with unknown next date to the top
+    else if ((typeof nextA === 'undefined' || Object.keys(nextA).empty()) && (typeof nextB === 'undefined' || Object.keys(nextB).empty())) {
       diff = 0;
     }
-    else if (typeof nextA === 'undefined') {
+    else if (typeof nextA === 'undefined' || Object.keys(nextA).empty()) {
       diff = -1;
     }
-    else if (typeof nextB === 'undefined') {
+    else if (typeof nextB === 'undefined' || Object.keys(nextB).empty()) {
       diff = 1;
     }
 
+    // Sort by next episode date
     else {
       diff = moment.duration(moment.utc(nextA) - moment.utc(nextB)).asMinutes();
     }
 
+    // Sort by episodes to watch
     if (diff === 0) {
       diff = (b.availableEpisodes.sub - b.watchedEpisodes()) - (a.availableEpisodes.sub - a.watchedEpisodes());
     }
 
+    // Sort by start date
     if (diff === 0) {
       diff = moment.duration(moment.utc(a.airedStart) - moment.utc(b.airedStart)).asMinutes();
     }
 
+    // Sort by name
     if (diff === 0) {
       diff = a.name.localeCompare(b.name);
     }
@@ -114,14 +120,14 @@ Template.pages_overview.onCreated(function() {
   (a, b) => {
     return [[
       a.airingState.sub,
-      a.nextEpisodeDate('sub'),
+      a.determinedEpisodeDate.sub,
       a.availableEpisodes.sub,
       a.watchedEpisodes(),
       a.airedStart,
       a.name,
     ], [
       b.airingState.sub,
-      b.nextEpisodeDate('sub'),
+      b.determinedEpisodeDate.sub,
       b.availableEpisodes.sub,
       b.watchedEpisodes(),
       b.airedStart,

@@ -522,6 +522,9 @@ Shows.helpers({
      * Calculate the 'determinedIntervalMinutes' *
      *********************************************/
 
+    // Store the average found here
+    let average = undefined;
+
     // Continue if there are more than 2 distinct episodes
     if (earliestEpisodes.length >= 2) {
 
@@ -568,16 +571,19 @@ Shows.helpers({
         })
       }
 
-      // Store the average on this
-      this.determinedIntervalMinutes[episode.translationType] = Math.round(total / count);
-
-      // Store in the database
-      Shows.update(this._id, {
-        $set: {
-          determinedIntervalMinutes: this.determinedIntervalMinutes
-        }
-      });
+      // Calculate the average
+      average = Math.round(total / count);
     }
+
+    // Store on this
+    this.determinedIntervalMinutes[episode.translationType] = average;
+
+    // Store in the database
+    Shows.update(this._id, {
+      $set: {
+        determinedIntervalMinutes: this.determinedIntervalMinutes
+      }
+    });
 
     /*****************************************
      * Calculate the 'determinedEpisodeDate' *
