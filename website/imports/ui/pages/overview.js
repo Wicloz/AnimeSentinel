@@ -2,7 +2,6 @@ import './overview.html';
 import {WatchStates} from '../../api/watchstates/watchstates';
 import {Shows} from '../../api/shows/shows';
 import {Episodes} from '../../api/episodes/episodes';
-import moment from 'moment-timezone';
 
 Template.pages_overview.onRendered(function() {
   $('#load-more-items').appear();
@@ -18,7 +17,7 @@ Template.pages_overview.events({
   },
 
   'click .reload-all-shows-btn'(event) {
-    Shows.queryWithMalIds(Template.instance().getMalIds()).forEach((show) => {
+    Shows.queryForOverview(Template.instance().getMalIds()).forEach((show) => {
       Meteor.call('shows.attemptUpdate', show._id);
     });
   },
@@ -32,7 +31,7 @@ Template.pages_overview.events({
 
 Template.pages_overview.helpers({
   displayShows() {
-    return Template.instance().currentDisplayShows();
+    return Shows.queryForOverview(Template.instance().getMalIds(), Template.instance().state.get('displayLimit'));
   },
 
   episodesToWatch(show) {
@@ -51,7 +50,8 @@ Template.pages_overview.helpers({
   },
 
   loading() {
-    return !Template.instance().subscriptionsReady() || Template.instance().currentDisplayShows().length >= Template.instance().state.get('displayLimit');
+    return !Template.instance().subscriptionsReady() ||
+      Shows.queryForOverview(Template.instance().getMalIds(), Template.instance().state.get('displayLimit')).count() >= Template.instance().state.get('displayLimit');
   }
 });
 
@@ -65,78 +65,6 @@ Template.pages_overview.onCreated(function() {
     return WatchStates.queryWithStatuses(Meteor.userId(), getStorageItem('SelectedStatuses')).fetch().reduce((total, watchState) => {
       return total.concat([watchState.malId]);
     }, []);
-  };
-
-  this.memoizedShowSort = _.memoize((a, b) => {
-    let nextA = a.nextEpisodeDate('sub');
-    let nextB = b.nextEpisodeDate('sub');
-    let diff = undefined;
-
-    // Move completed shows to the bottom
-    if (a.airingState.sub === 'Completed' && b.airingState.sub === 'Completed') {
-      diff = 0;
-    }
-    else if (a.airingState.sub === 'Completed') {
-      diff = 1;
-    }
-    else if (b.airingState.sub === 'Completed') {
-      diff = -1;
-    }
-
-    // Move shows with unknown next date to the top
-    else if ((typeof nextA === 'undefined' || Object.keys(nextA).empty()) && (typeof nextB === 'undefined' || Object.keys(nextB).empty())) {
-      diff = 0;
-    }
-    else if (typeof nextA === 'undefined' || Object.keys(nextA).empty()) {
-      diff = -1;
-    }
-    else if (typeof nextB === 'undefined' || Object.keys(nextB).empty()) {
-      diff = 1;
-    }
-
-    // Sort by next episode date
-    else {
-      diff = moment.duration(moment.utc(nextA) - moment.utc(nextB)).asMinutes();
-    }
-
-    // Sort by episodes to watch
-    if (diff === 0) {
-      diff = (b.availableEpisodes.sub - b.watchedEpisodes()) - (a.availableEpisodes.sub - a.watchedEpisodes());
-    }
-
-    // Sort by start date
-    if (diff === 0) {
-      diff = moment.duration(moment.utc(a.airedStart) - moment.utc(b.airedStart)).asMinutes();
-    }
-
-    // Sort by name
-    if (diff === 0) {
-      diff = a.name.localeCompare(b.name);
-    }
-
-    return diff;
-  },
-
-  (a, b) => {
-    return [[
-      a.airingState.sub,
-      a.determinedEpisodeDate.sub,
-      a.availableEpisodes.sub,
-      a.watchedEpisodes(),
-      a.airedStart,
-      a.name,
-    ], [
-      b.airingState.sub,
-      b.determinedEpisodeDate.sub,
-      b.availableEpisodes.sub,
-      b.watchedEpisodes(),
-      b.airedStart,
-      b.name,
-    ]];
-  });
-
-  this.currentDisplayShows = function() {
-    return Shows.queryWithMalIds(this.getMalIds()).fetch().sort(this.memoizedShowSort).slice(0, this.state.get('displayLimit'));
   };
 
   // Local variables
@@ -159,13 +87,13 @@ Template.pages_overview.onCreated(function() {
 
   // Subscribe to shows based on watch states
   this.autorun(() => {
-    this.subscribe('shows.withMalIds', this.getMalIds())
+    this.subscribe('shows.forOverview', this.getMalIds())
   });
 
   // Subscribe to thumbnails and episodes based on displayed shows
   this.autorun(() => {
     let thumbnails = [];
-    this.currentDisplayShows().forEach((show) => {
+    Shows.queryForOverview(Template.instance().getMalIds(), Template.instance().state.get('displayLimit')).forEach((show) => {
       thumbnails = thumbnails.concat(show.thumbnails);
       this.subscribe('episodes.toWatch', show._id, 'sub', show.watchedEpisodes());
     });

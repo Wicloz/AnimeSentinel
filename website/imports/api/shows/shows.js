@@ -947,17 +947,81 @@ Shows.queryMatchingShows = function(show) {
   return ScrapingHelpers.queryMatchingShows(Shows, show);
 };
 
-Shows.queryWithMalIds = function(malIds) {
+Shows.queryForOverview = function(malIds, limit) {
   // Validate
   new SimpleSchema({
     malIds: Array,
     'malIds.$': SimpleSchema.Integer
   }).validate({malIds});
+  new SimpleSchema({
+    limit: {
+      type: Number,
+      optional: true
+    }
+  }).validate({limit});
+
+  // Sort and limit only on the client
+  let options = {};
+  if (Meteor.isClient) {
+    options.limit = limit;
+    options.sort = function(a, b) {
+      a = Shows._transform(a);
+      b = Shows._transform(b);
+
+      let nextA = a.nextEpisodeDate('sub');
+      let nextB = b.nextEpisodeDate('sub');
+      let diff = undefined;
+
+      // Move completed shows to the bottom
+      if (a.airingState.sub === 'Completed' && b.airingState.sub === 'Completed') {
+        diff = 0;
+      }
+      else if (a.airingState.sub === 'Completed') {
+        diff = 1;
+      }
+      else if (b.airingState.sub === 'Completed') {
+        diff = -1;
+      }
+
+      // Move shows with unknown next date to the top
+      else if ((typeof nextA === 'undefined' || Object.keys(nextA).empty()) && (typeof nextB === 'undefined' || Object.keys(nextB).empty())) {
+        diff = 0;
+      }
+      else if (typeof nextA === 'undefined' || Object.keys(nextA).empty()) {
+        diff = -1;
+      }
+      else if (typeof nextB === 'undefined' || Object.keys(nextB).empty()) {
+        diff = 1;
+      }
+
+      // Sort by next episode date
+      else {
+        diff = moment.duration(moment.utc(nextA) - moment.utc(nextB)).asMinutes();
+      }
+
+      // Sort by episodes to watch
+      if (diff === 0) {
+        diff = (b.availableEpisodes.sub - b.watchedEpisodes()) - (a.availableEpisodes.sub - a.watchedEpisodes());
+      }
+
+      // Sort by start date
+      if (diff === 0) {
+        diff = moment.duration(moment.utc(a.airedStart) - moment.utc(b.airedStart)).asMinutes();
+      }
+
+      // Sort by name
+      if (diff === 0) {
+        diff = a.name.localeCompare(b.name);
+      }
+
+      return diff;
+    }
+  }
 
   // Return results cursor
   return Shows.find({
     malId: {
       $in: malIds
     }
-  });
+  }, options);
 };

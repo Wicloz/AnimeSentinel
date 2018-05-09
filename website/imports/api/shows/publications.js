@@ -13,6 +13,6 @@ Meteor.publish('shows.withIds', function(ids) {
   return Shows.queryWithIds(ids);
 });
 
-Meteor.publish('shows.withMalIds', function(malIds) {
-  return Shows.queryWithMalIds(malIds);
+Meteor.publish('shows.forOverview', function(malIds, limit) {
+  return Shows.queryForOverview(malIds, limit);
 });
