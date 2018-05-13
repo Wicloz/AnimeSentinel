@@ -1,6 +1,7 @@
 import './main.html';
 import '/imports/ui/components/navMain.js';
 import '/imports/ui/components/superNote.js';
+import '/imports/ui/components/footer.js';
 
 Template.layouts_main.onCreated(function() {
   // TODO: Use a more general SEO solution

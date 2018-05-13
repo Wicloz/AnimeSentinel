@@ -968,18 +968,20 @@ Shows.queryForOverview = function(malIds, limit) {
       a = Shows._transform(a);
       b = Shows._transform(b);
 
-      let nextA = a.nextEpisodeDate('sub');
-      let nextB = b.nextEpisodeDate('sub');
+      let nextA = a.nextEpisodeDate(getStorageItem('SelectedTranslationType'));
+      let nextB = b.nextEpisodeDate(getStorageItem('SelectedTranslationType'));
+      let stateA = a.airingState[getStorageItem('SelectedTranslationType')];
+      let stateB = b.airingState[getStorageItem('SelectedTranslationType')];
       let diff = undefined;
 
       // Move completed shows to the bottom
-      if (a.airingState.sub === 'Completed' && b.airingState.sub === 'Completed') {
+      if (stateA === 'Completed' && stateB === 'Completed') {
         diff = 0;
       }
-      else if (a.airingState.sub === 'Completed') {
+      else if (stateA === 'Completed') {
         diff = 1;
       }
-      else if (b.airingState.sub === 'Completed') {
+      else if (stateB === 'Completed') {
         diff = -1;
       }
 
@@ -1001,7 +1003,7 @@ Shows.queryForOverview = function(malIds, limit) {
 
       // Sort by episodes to watch
       if (diff === 0) {
-        diff = (b.availableEpisodes.sub - b.watchedEpisodes()) - (a.availableEpisodes.sub - a.watchedEpisodes());
+        diff = (b.availableEpisodes[getStorageItem('SelectedTranslationType')] - b.watchedEpisodes()) - (a.availableEpisodes[getStorageItem('SelectedTranslationType')] - a.watchedEpisodes());
       }
 
       // Sort by start date

@@ -37,7 +37,7 @@ Template.pages_overview.helpers({
   episodesToWatch(show) {
     let episodes = [];
 
-    Episodes.queryToWatch(show._id, 'sub', show.watchedEpisodes()).forEach((episode) => {
+    Episodes.queryToWatch(show._id, getStorageItem('SelectedTranslationType'), show.watchedEpisodes()).forEach((episode) => {
       if (!episodes.hasPartialObjects({
         episodeNumStart: episode.episodeNumStart,
         episodeNumEnd: episode.episodeNumEnd
@@ -95,7 +95,7 @@ Template.pages_overview.onCreated(function() {
     let thumbnails = [];
     Shows.queryForOverview(Template.instance().getMalIds(), Template.instance().state.get('displayLimit')).forEach((show) => {
       thumbnails = thumbnails.concat(show.thumbnails);
-      this.subscribe('episodes.toWatch', show._id, 'sub', show.watchedEpisodes());
+      this.subscribe('episodes.toWatch', show._id, getStorageItem('SelectedTranslationType'), show.watchedEpisodes());
     });
     this.subscribe('thumbnails.withHashes', thumbnails);
   });

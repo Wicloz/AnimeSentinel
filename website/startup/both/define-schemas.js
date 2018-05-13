@@ -43,3 +43,19 @@ Schemas.statusesSelection = new SimpleSchema({
     allowedValues: WatchStates.validStatuses
   }
 }, { tracker: Tracker });
+
+Schemas.translationTypeSelection = new SimpleSchema({
+  translationType: {
+    type: String,
+    allowedValues: ['sub', 'dub', 'raw'],
+    autoform: {
+      options: [
+        {label: 'Subs', value: 'sub'},
+        {label: 'Dubs', value: 'dub'},
+        {label: 'Raws', value: 'raw'}
+      ],
+      type: 'select-radio-inline',
+      label: false
+    }
+  }
+}, { tracker: Tracker });

@@ -1,0 +1,10 @@
+@import "../../../client/_vars.scss";
+
+#translationTypeSelectionForm {
+  label {
+    color: white;
+  }
+  [type="radio"]:not(:checked) + label:before, [type="radio"]:not(:checked) + label:after {
+    border: 2px solid white;
+  }
+}

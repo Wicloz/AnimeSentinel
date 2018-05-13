@@ -28,9 +28,9 @@
                   <br>
                   Season: {{displaySeason season}}
                   <br>
-                  {{this.availableEpisodes.sub}} out of {{episodeCount}} episodes available
+                  {{$dot this.availableEpisodes ($GetStorageItem 'SelectedTranslationType')}} out of {{episodeCount}} episodes available
                   <br>
-                  Airs every {{displayMinuteInterval (relevantBroadcastInterval 'sub')}}
+                  Airs every {{displayMinuteInterval (relevantBroadcastInterval ($GetStorageItem 'SelectedTranslationType'))}}
                 </p>
               </div>
               <div class="col s12 m5">
@@ -44,10 +44,10 @@
                       Episode {{episodeNumStart}}{{#if $neq episodeNumStart episodeNumEnd}} - {{episodeNumEnd}}{{/if}}
                     </a>
                   {{/each}}
-                  {{#if $eq airingState.sub 'Completed'}}
+                  {{#if $eq ($dot airingState ($GetStorageItem 'SelectedTranslationType')) 'Completed'}}
                     <li class="collection-item">Finished Airing</li>
                   {{else}}
-                    <li class="collection-item">Next Episode: {{displayUploadDate (nextEpisodeDate 'sub')}}</li>
+                    <li class="collection-item">Next Episode: {{displayUploadDate (nextEpisodeDate ($GetStorageItem 'SelectedTranslationType'))}}</li>
                   {{/if}}
                 </ul>
                 <a class="waves-effect waves-light btn reload-show-btn" data-showid="{{_id}}">Attempt Show Update</a>

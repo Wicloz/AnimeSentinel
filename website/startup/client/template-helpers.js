@@ -117,3 +117,7 @@ Template.registerHelper('displayMinuteInterval', (minutes) => {
 Template.registerHelper('$GetStorageItem', (key) => {
   return getStorageItem(key);
 });
+
+Template.registerHelper('$dot', (object, key) => {
+  return object[key];
+});
