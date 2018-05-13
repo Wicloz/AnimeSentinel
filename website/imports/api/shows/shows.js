@@ -1,6 +1,6 @@
 import Cheerio from 'cheerio';
 import SimpleSchema from 'simpl-schema';
-import Streamers from "../../streamers/streamers";
+import {TempShow} from '../../streamers/streamers';
 import {Episodes} from "../episodes/episodes";
 import {Thumbnails} from '../thumbnails/thumbnails';
 import ScrapingHelpers from '../../streamers/scrapingHelpers';
@@ -672,7 +672,7 @@ Shows.helpers({
       // Track found episodes
       let episodeIds = [];
 
-      Streamers.createFullShow(this, (show) => {
+      let tempShow = new TempShow(this, (show) => {
 
         // Determine which streamers failed to download
         let streamersIdsFailed = show.streamerUrls.filter((streamerUrl) => {
@@ -761,7 +761,9 @@ Shows.helpers({
         // Add found episodes
         episodeIds.push(Episodes.addEpisode(episode));
 
-      });
+      }, false);
+
+      tempShow.start();
     }
   }
 });

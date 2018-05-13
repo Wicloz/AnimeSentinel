@@ -12,6 +12,10 @@ import {Episodes} from '../api/episodes/episodes';
 let streamers = [myanimelist, kissanime, nineanime];
 
 export default class Streamers {
+  static getStreamers() {
+    return streamers;
+  }
+
   static getStreamerById(id) {
     return streamers.find((streamer) => {
       return streamer.id === id;
@@ -473,50 +477,9 @@ export default class Streamers {
       });
     });
   }
-
-  static createFullShow(oldShow, doneCallback, partialCallback, fullCallback, episodeCallback) {
-    let tempShow = new TempShow(oldShow, doneCallback, partialCallback, fullCallback, episodeCallback, false);
-    tempShow.start();
-  }
-
-  static findRecentEpisodes(partialCallback, episodeCallback) {
-    // For each streamer
-    streamers.forEach((streamer) => {
-      // Download and process recent page
-      this.getRecentResults(streamer.recentPage, streamer, undefined, (results) => {
-        // For each result
-        results.forEach((result) => {
-
-          // Add as partial
-          partialCallback(result.show);
-
-          // Process show in simple mode when episodes are missing
-          if (result.missing) {
-            let tempShow = new TempShow(result.show, partialCallback, partialCallback, (partial) => {
-
-              result.show = partial;
-              partialCallback(partial);
-              delete partial._id;
-
-            }, (episode) => {
-
-              Shows.queryMatchingShows(result.show).forEach((show) => {
-                episode.showId = show._id;
-                episodeCallback(episode);
-                delete episode._id;
-              });
-
-            }, true);
-            tempShow.start();
-          }
-
-        });
-      });
-    });
-  }
 }
 
-class TempShow {
+export class TempShow {
   constructor(oldShow, doneCallback, partialCallback, fullCallback, episodeCallback, simpleMode) {
     this.doneCallback = doneCallback;
     this.partialCallback = partialCallback;

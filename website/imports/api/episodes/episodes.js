@@ -1,5 +1,5 @@
 import SimpleSchema from 'simpl-schema';
-import Streamers from '../../streamers/streamers';
+import Streamers, {TempShow} from '../../streamers/streamers';
 import {Shows} from '../shows/shows';
 
 // Collection
@@ -198,16 +198,46 @@ Episodes.isFlagDisabled = function(flag) {
 };
 
 Episodes.findRecentEpisodes = function() {
-  Streamers.findRecentEpisodes((partial, episodes) => {
+  // For each streamer
+  Streamers.getStreamers().forEach((streamer) => {
+    // Download and process recent page
+    Streamers.getRecentResults(streamer.recentPage, streamer, undefined, (results) => {
+      // For each result
+      results.forEach((result) => {
 
-    // Insert any partial results found in the process
-    Shows.addPartialShow(partial, episodes);
+        // Add as partial
+        Shows.addPartialShow(result.show);
 
-  }, (episode) => {
+        // Process show in simple mode when episodes are missing
+        if (result.missing) {
+          let tempShow = new TempShow(result.show, (partial, episodes) => {
 
-    // Add found episodes
-    Episodes.addEpisode(episode);
+            Shows.addPartialShow(partial, episodes);
 
+          }, (partial, episodes) => {
+
+            Shows.addPartialShow(partial, episodes);
+
+          }, (partial) => {
+
+            result.show = partial;
+            Shows.addPartialShow(result.show);
+            delete partial._id;
+
+          }, (episode) => {
+
+            Shows.queryMatchingShows(result.show).forEach((show) => {
+              episode.showId = show._id;
+              Episodes.addEpisode(episode);
+              delete episode._id;
+            });
+
+          }, true);
+          tempShow.start();
+        }
+
+      });
+    });
   });
 };
 
