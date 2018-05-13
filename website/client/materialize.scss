@@ -1,10 +1,6 @@
 @import "vars";
 @import "../node_modules/materialize-css/sass/materialize";
 
-.side-nav li .material-icons {
-  line-height: inherit;
-}
-
 .col {
   margin-bottom: $spacer;
 }
@@ -31,6 +27,9 @@
 
 .material-icons {
   font-size: inherit;
+  vertical-align: top;
+  line-height: inherit;
+  height: inherit;
 }
 
 .collapsible.card-panel {

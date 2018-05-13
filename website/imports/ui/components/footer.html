@@ -3,14 +3,20 @@
 
     <div class="row">
       <div class="col m6 s12">
-        <h5 class="white-text">Options</h5>
+        <h5 class="white-text">
+          <i class="material-icons">settings</i>
+          Settings
+        </h5>
         Select preferred episode type:
         {{#autoForm schema='Schemas.translationTypeSelection' id='translationTypeSelectionForm' autosave=true}}
           {{> afQuickField name='translationType' value=($GetStorageItem 'SelectedTranslationType')}}
         {{/autoForm}}
       </div>
       <div class="col m6 s12">
-        <h5 class="white-text">Connect</h5>
+        <h5 class="white-text">
+          <i class="material-icons">link</i>
+          Connect
+        </h5>
         <iframe src="https://ghbtns.com/github-btn.html?user=Wicloz&repo=AnimeSentinel&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
         <iframe src="https://ghbtns.com/github-btn.html?user=Wicloz&repo=AnimeSentinel&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px"></iframe></div>
     </div>
