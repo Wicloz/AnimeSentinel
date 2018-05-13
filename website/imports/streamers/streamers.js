@@ -580,14 +580,13 @@ class TempShow {
   mergeShows(intoShow, withShow, streamer) {
     Object.keys(withShow).forEach((key) => {
       if ((typeof intoShow[key] === 'undefined' && !['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key))
-        || (Shows.objectKeys.includes(key) && Object.countNonEmptyValues(withShow[key]) > Object.countNonEmptyValues(intoShow[key]))) {
+        || (Shows.objectKeys.includes(key) && Object.countNonEmptyValues(withShow[key]) > Object.countNonEmptyValues(intoShow[key]))
+        || (streamer.id === 'myanimelist' && !Shows.arrayKeys.includes(key)
+          && (!Shows.objectKeys.includes(key) || Object.countNonEmptyValues(withShow[key]) === Object.countNonEmptyValues(intoShow[key])))) {
         intoShow[key] = withShow[key];
       }
       else if (Shows.arrayKeys.includes(key)) {
         intoShow[key] = intoShow[key].concat(withShow[key]);
-      }
-      else if (streamer.id === 'myanimelist' && !Shows.objectKeys.includes(key) && !Shows.arrayKeys.includes(key)) {
-        intoShow[key] = withShow[key];
       }
     });
   }
