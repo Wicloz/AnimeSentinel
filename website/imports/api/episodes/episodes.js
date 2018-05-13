@@ -100,7 +100,10 @@ Episodes.flagsWithoutAddOnNever = ['x-frame-options'];
 Episodes.flagsWithAddOnPreference = ['flash', 'mixed-content'];
 Episodes.flagsWithAddOnNever = [];
 Episodes.flagsWithSandboxingNever = ['requires-plugins'];
-Episodes.informationKeys = ['sourceUrl', 'flags'];
+Episodes.objectKeys = Schemas.Episode._schemaKeys.filter((key) => {
+  return !key.includes('.') && Schemas.Episode._schema[key].type.definitions[0].type.toString().includes('Object()');
+});
+Episodes.informationKeys = ['sourceUrl', 'flags', 'uploadDate'];
 
 // Helpers
 Episodes.helpers({
@@ -115,7 +118,7 @@ Episodes.helpers({
   mergeEpisode(other) {
     // Copy and merge attributes
     Object.keys(other).forEach((key) => {
-      if (Episodes.informationKeys.includes(key) || (key === 'uploadDate' && Object.countNonEmptyValues(other[key]) > Object.countNonEmptyValues(this[key]))) {
+      if (Episodes.informationKeys.includes(key) && (!Episodes.objectKeys.includes(key) || Object.countNonEmptyValues(other[key]) > Object.countNonEmptyValues(this[key]))) {
         this[key] = other[key];
       }
     });
