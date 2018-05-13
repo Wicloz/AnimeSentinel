@@ -350,7 +350,7 @@ Episodes.queryRecent = function(limit) {
   // Validate
   new SimpleSchema({
     limit: {
-      type: Number
+      type: SimpleSchema.Integer
     }
   }).validate({limit});
 

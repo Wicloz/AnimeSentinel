@@ -236,7 +236,6 @@ Schemas.Show = new SimpleSchema({
   },
   broadcastIntervalMinutes: {
     type: SimpleSchema.Integer,
-    min: 0,
     optional: true
   },
 
@@ -247,17 +246,14 @@ Schemas.Show = new SimpleSchema({
   },
   'determinedIntervalMinutes.sub': {
     type: SimpleSchema.Integer,
-    min: 0,
     optional: true
   },
   'determinedIntervalMinutes.dub': {
     type: SimpleSchema.Integer,
-    min: 0,
     optional: true
   },
   'determinedIntervalMinutes.raw': {
     type: SimpleSchema.Integer,
-    min: 0,
     optional: true
   },
   determinedEpisodeDate: {
@@ -364,15 +360,15 @@ Schemas.Show = new SimpleSchema({
     defaultValue: {}
   },
   'availableEpisodes.sub': {
-    type: SimpleSchema.Integer,
+    type: Number,
     defaultValue: 0
   },
   'availableEpisodes.dub': {
-    type: SimpleSchema.Integer,
+    type: Number,
     defaultValue: 0
   },
   'availableEpisodes.raw': {
-    type: SimpleSchema.Integer,
+    type: Number,
     defaultValue: 0
   }
 }, { tracker: Tracker });
@@ -838,7 +834,7 @@ Shows.querySearch = function(search, limit) {
   Schemas.Search.validate(search);
   new SimpleSchema({
     limit: {
-      type: Number
+      type: SimpleSchema.Integer
     }
   }).validate({limit});
 
@@ -955,7 +951,7 @@ Shows.queryForOverview = function(malIds, limit) {
   }).validate({malIds});
   new SimpleSchema({
     limit: {
-      type: Number,
+      type: SimpleSchema.Integer,
       optional: true
     }
   }).validate({limit});
