@@ -16,6 +16,7 @@
     "meteor-node-stubs": "^0.3.2",
     "moment-timezone": "^0.5.14",
     "request": "^2.83.0",
+    "segfault-handler": "^1.0.0",
     "simpl-schema": "^1.4.2",
     "spawn-sync": "^1.0.15",
     "string-score": "^1.0.1",
