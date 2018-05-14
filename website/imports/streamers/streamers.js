@@ -154,78 +154,60 @@ export default class Streamers {
   }
 
   static convertCheerioToEpisodes(cheerioRow, cheerioPage, streamer, type) {
-    // Get the different sources as base episodes
-    let episodes = streamer[type].attributes.sources(cheerioRow, cheerioPage);
-
-    // Set some default variables on the episodes
-    episodes = episodes.map((episode) => {
-      episode.showId = 'undefined';
-      episode.streamerId = streamer.id;
-      return episode;
-    });
-
-    // Set the upload time to now on some episodes
-    episodes = episodes.map((episode) => {
-      Schemas.Episode.clean(episode, {
-        mutate: true
-      });
-
-      let now = moment();
-
-      if (episode.uploadDate.year === now.year() && episode.uploadDate.month === now.month() && episode.uploadDate.date === now.date()
-        && typeof episode.uploadDate.hour === 'undefined' && typeof episode.uploadDate.minute === 'undefined') {
-        episode.uploadDate.hour = now.hour();
-        episode.uploadDate.minute = now.minute();
-      }
-
-      return episode;
-    });
-
     // Get 'episodeNumStart'
     let episodeNumStart = streamer[type].attributes.episodeNumStart(cheerioRow, cheerioPage);
-    if (typeof episodeNumStart !== 'undefined' && !isNumeric(episodeNumStart)) {
+    if (typeof episodeNumStart === 'undefined') {
+      return [];
+    } else if (!isNumeric(episodeNumStart)) {
       episodeNumStart = 1;
     }
-    episodes = episodes.map((episode) => {
-      episode.episodeNumStart = episodeNumStart;
-      return episode;
-    }).filter((episode) => {
-      return typeof episode.episodeNumStart !== 'undefined';
-    });
 
     // Get 'episodeNumEnd'
     let episodeNumEnd = streamer[type].attributes.episodeNumEnd(cheerioRow, cheerioPage);
-    if (typeof episodeNumEnd !== 'undefined' && !isNumeric(episodeNumEnd)) {
+    if (typeof episodeNumEnd === 'undefined') {
+      return [];
+    } else if (!isNumeric(episodeNumEnd)) {
       episodeNumEnd = 1;
     }
-    episodes = episodes.map((episode) => {
-      episode.episodeNumEnd = episodeNumEnd;
-      return episode;
-    }).filter((episode) => {
-      return typeof episode.episodeNumEnd !== 'undefined';
-    });
 
     // Get 'notes'
+    let notes = undefined;
     if (streamer[type].attributes.notes) {
       let notes = streamer[type].attributes.notes(cheerioRow, cheerioPage);
-      episodes = episodes.map((episode) => {
-        episode.notes = notes;
-        return episode;
-      });
     }
 
     // Get 'translationType'
     let translationType = streamer[type].attributes.translationType(cheerioRow, cheerioPage);
-    episodes = episodes.map((episode) => {
-      episode.translationType = translationType;
-      return episode;
-    });
 
-    // Clean and validate episodes
+    // Get 'sources' as base episodes
+    let episodes = streamer[type].attributes.sources(cheerioRow, cheerioPage);
+
     episodes = episodes.map((episode) => {
+      // Set variables on the episode
+      episode.showId = 'undefined';
+      episode.streamerId = streamer.id;
+      episode.episodeNumStart = episodeNumStart;
+      episode.episodeNumEnd = episodeNumEnd;
+      episode.notes = notes;
+      episode.translationType = translationType;
+
+      // Clean the episode
       Schemas.Episode.clean(episode, {
         mutate: true
       });
+
+      // Set the upload time to now on some episodes
+      let now = moment();
+      if (episode.uploadDate.year === now.year() && episode.uploadDate.month === now.month() && episode.uploadDate.date === now.date() && typeof episode.uploadDate.minute === 'undefined') {
+        if (typeof episode.uploadDate.hour === 'undefined') {
+          episode.uploadDate.hour = now.hour();
+          episode.uploadDate.minute = now.minute();
+        } else if (episode.uploadDate.hour === now.hour()) {
+          episode.uploadDate.minute = now.minute();
+        }
+      }
+
+      // Validate and return the episode
       Schemas.Episode.validate(episode);
       return episode;
     });
