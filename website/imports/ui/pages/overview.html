@@ -44,7 +44,7 @@
                       Episode {{episodeNumStart}}{{#if $neq episodeNumStart episodeNumEnd}} - {{episodeNumEnd}}{{/if}}
                     </a>
                   {{/each}}
-                  {{#if $eq ($dot airingState ($GetStorageItem 'SelectedTranslationType')) 'Completed'}}
+                  {{#if $eq (airingState ($GetStorageItem 'SelectedTranslationType')) 'Completed'}}
                     <li class="collection-item">Finished Airing</li>
                   {{else}}
                     <li class="collection-item">Next Episode: {{displayUploadDate (nextEpisodeDate ($GetStorageItem 'SelectedTranslationType'))}}</li>

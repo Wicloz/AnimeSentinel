@@ -336,25 +336,6 @@ Schemas.Show = new SimpleSchema({
     type: SimpleSchema.Integer,
     optional: true
   },
-  airingState: {
-    type: Object,
-    defaultValue: {}
-  },
-  'airingState.sub': {
-    type: String,
-    allowedValues: ['Not Yet Aired', 'Completed', 'Airing'],
-    defaultValue: 'Not Yet Aired'
-  },
-  'airingState.dub': {
-    type: String,
-    allowedValues: ['Not Yet Aired', 'Completed', 'Airing'],
-    defaultValue: 'Not Yet Aired'
-  },
-  'airingState.raw': {
-    type: String,
-    allowedValues: ['Not Yet Aired', 'Completed', 'Airing'],
-    defaultValue: 'Not Yet Aired'
-  },
   availableEpisodes: {
     type: Object,
     defaultValue: {}
@@ -425,13 +406,23 @@ Shows.helpers({
 
   nextEpisodeDate(translationType) {
     // Return start date if the show has not started
-    if (this.airingState[translationType] === 'Not Yet Aired') {
+    if (this.airingState(translationType) === 'Not Yet Aired') {
       return translationType === 'dub' ? undefined : this.airedStart;
     }
 
     // Return the determined date
     else {
       return this.determinedEpisodeDate[translationType];
+    }
+  },
+
+  airingState(translationType) {
+    if (this.availableEpisodes[translationType] <= 0) {
+      return 'Not Yet Aired';
+    } else if (this.availableEpisodes[translationType] >= this.episodeCount) {
+      return 'Completed';
+    } else {
+      return 'Airing';
     }
   },
 
@@ -489,30 +480,6 @@ Shows.helpers({
     Shows.update(this._id, {
       $set: {
         availableEpisodes: this.availableEpisodes
-      }
-    });
-
-    /*******************************
-     * Calculate the 'airingState' *
-     *******************************/
-
-    // Store on this
-    if (this.availableEpisodes[episode.translationType] <= 0) {
-      this.airingState[episode.translationType] = 'Not Yet Aired';
-    }
-
-    else if (this.availableEpisodes[episode.translationType] >= this.episodeCount) {
-      this.airingState[episode.translationType] = 'Completed';
-    }
-
-    else {
-      this.airingState[episode.translationType] = 'Airing';
-    }
-
-    // Store in the database
-    Shows.update(this._id, {
-      $set: {
-        airingState: this.airingState
       }
     });
 
@@ -591,7 +558,7 @@ Shows.helpers({
     let lastDate = undefined;
 
     // Only if the show is airing
-    if (this.airingState[episode.translationType] === 'Airing') {
+    if (this.airingState(episode.translationType) === 'Airing') {
 
       // Determine the interval to use for the calculation
       let intervalToUse = this.relevantBroadcastInterval(episode.translationType);
@@ -704,7 +671,6 @@ Shows.helpers({
         });
         delete this.determinedIntervalMinutes;
         delete this.determinedEpisodeDate;
-        delete this.airingState;
         delete this.availableEpisodes;
 
         Shows.update({
@@ -746,7 +712,6 @@ Shows.helpers({
         });
         delete this.determinedIntervalMinutes;
         delete this.determinedEpisodeDate;
-        delete this.airingState;
         delete this.availableEpisodes;
 
         Shows.update({
@@ -969,8 +934,8 @@ Shows.queryForOverview = function(malIds, limit) {
 
       let nextA = a.nextEpisodeDate(getStorageItem('SelectedTranslationType'));
       let nextB = b.nextEpisodeDate(getStorageItem('SelectedTranslationType'));
-      let stateA = a.airingState[getStorageItem('SelectedTranslationType')];
-      let stateB = b.airingState[getStorageItem('SelectedTranslationType')];
+      let stateA = a.airingState(getStorageItem('SelectedTranslationType'));
+      let stateB = b.airingState(getStorageItem('SelectedTranslationType'));
       let diff = undefined;
 
       // Move completed shows to the bottom

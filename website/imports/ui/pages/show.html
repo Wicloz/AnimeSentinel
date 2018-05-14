@@ -126,10 +126,10 @@
     <div class="card-panel">
       <h2 class="card-title">
         Subbed:
-        <span class="card-subtitle">{{show.airingState.sub}}</span>
+        <span class="card-subtitle">{{show.airingState 'sub'}}</span>
       </h2>
       <ul class="collection">
-        {{#if $neq show.airingState.sub 'Completed'}}
+        {{#if $neq (show.airingState 'sub') 'Completed'}}
           <li class="collection-item">
             <div class="row">
               <div class="col s6">
@@ -148,10 +148,10 @@
     <div class="card-panel">
       <h2 class="card-title">
         Dubbed:
-        <span class="card-subtitle">{{show.airingState.dub}}</span>
+        <span class="card-subtitle">{{show.airingState 'dub'}}</span>
       </h2>
       <ul class="collection">
-        {{#if $neq show.airingState.dub 'Completed'}}
+        {{#if $neq (show.airingState 'dub') 'Completed'}}
           <li class="collection-item">
             <div class="row">
               <div class="col s6">
@@ -170,10 +170,10 @@
     <div class="card-panel">
       <h2 class="card-title">
         Raw:
-        <span class="card-subtitle">{{show.airingState.raw}}</span>
+        <span class="card-subtitle">{{show.airingState 'raw'}}</span>
       </h2>
       <ul class="collection">
-        {{#if $neq show.airingState.raw 'Completed'}}
+        {{#if $neq (show.airingState 'raw') 'Completed'}}
           <li class="collection-item">
             <div class="row">
               <div class="col s6">
