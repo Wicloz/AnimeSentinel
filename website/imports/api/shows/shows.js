@@ -906,15 +906,14 @@ Shows.querySearch = function(search, limit) {
     };
 
     if (Meteor.isClient) {
-      let cleanQuery = search.query.replace(/["'「」]/g, '');
       options.sort = function(a, b) {
         let scoreA = a.altNames.reduce((bestSore, altName) => {
           if (bestSore === 1) return 1;
-          return Math.max(bestSore, score(altName.cleanQuery().replace(/["'「」]/g, ''), cleanQuery, 0.1));
+          return Math.max(bestSore, score(altName.cleanQuery(), search.query, 0.1));
         }, 0);
         let scoreB = b.altNames.reduce((bestSore, altName) => {
           if (bestSore === 1) return 1;
-          return Math.max(bestSore, score(altName.cleanQuery().replace(/["'「」]/g, ''), cleanQuery, 0.1));
+          return Math.max(bestSore, score(altName.cleanQuery(), search.query, 0.1));
         }, 0);
         return scoreB - scoreA;
       }
