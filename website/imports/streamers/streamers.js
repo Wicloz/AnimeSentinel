@@ -189,6 +189,8 @@ export default class Streamers {
     episodes = episodes.map((episode) => {
       episode.episodeNumStart = episodeNumStart;
       return episode;
+    }).filter((episode) => {
+      return typeof episode.episodeNumStart !== 'undefined';
     });
 
     // Get 'episodeNumEnd'
@@ -199,7 +201,18 @@ export default class Streamers {
     episodes = episodes.map((episode) => {
       episode.episodeNumEnd = episodeNumEnd;
       return episode;
+    }).filter((episode) => {
+      return typeof episode.episodeNumEnd !== 'undefined';
     });
+
+    // Get 'notes'
+    if (streamer[type].attributes.notes) {
+      let notes = streamer[type].attributes.notes(cheerioRow, cheerioPage);
+      episodes = episodes.map((episode) => {
+        episode.notes = notes;
+        return episode;
+      });
+    }
 
     // Get 'translationType'
     let translationType = streamer[type].attributes.translationType(cheerioRow, cheerioPage);
@@ -391,6 +404,10 @@ export default class Streamers {
               episodeNumEnd = 1;
             } else {
               episodeNumEnd = Number(episodeNumEnd);
+            }
+            let notes = undefined;
+            if (streamer.recent.attributes.notes) {
+              notes = streamer.recent.attributes.notes(page(element), page('html')).cleanWhitespace();
             }
             let translationType = streamer.recent.attributes.translationType(page(element), page('html')).cleanWhitespace();
 

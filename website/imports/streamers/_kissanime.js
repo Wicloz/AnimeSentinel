@@ -21,18 +21,45 @@ function determineAiringDateShowPage(partial, index) {
   );
 }
 
-function getEpisodeNumbers(string) {
-  let numbers = {};
+function getEpisodeData(episodeString, showString) {
+  // Object for return values
+  let infoObject = {
+    start: false,
+    end: false
+  };
 
-  let words = string.cleanWhitespace().split(' ');
-  numbers.end = words.pop();
-  numbers.start = numbers.end;
-
-  if (isNumeric(numbers.end) && words.pop() === '-') {
-    numbers.start = words.pop();
+  // Remove the show title and turn into a cleaned array
+  let episodeArray = episodeString.replace(showString, '').cleanWhitespace().split(' ');
+  if (episodeArray[0] === 'Episode' || episodeArray[0] === '_Episode') {
+    episodeArray.shift();
   }
 
-  return numbers;
+  // Stop if it still starts with an underscore
+  if (episodeArray[0] && episodeArray[0].startsWith('_')) {
+    return false;
+  }
+
+  // Try to extract episode numbers
+  if (isNumeric(episodeArray[0])) {
+    infoObject.start = episodeArray.shift();
+    if (episodeArray[0] === '-' && isNumeric(episodeArray[1])) {
+      episodeArray.shift();
+      infoObject.end = episodeArray.shift();
+    } else {
+      infoObject.end = infoObject.start;
+    }
+  }
+
+  // Clean and set the notes
+  if (episodeArray[0] !== '-') {
+    if (validTypes.includes(episodeArray[0])) {
+      episodeArray.shift();
+    }
+    infoObject.notes = episodeArray.join(' ');
+  }
+
+  // Done
+  return infoObject;
 }
 
 const validTypes = ['OVA', 'Movie', 'Special', 'ONA'];
@@ -188,10 +215,13 @@ export let kissanime = {
     // Episode list attribute data
     attributes: {
       episodeNumStart: function(partial, full) {
-        return getEpisodeNumbers(partial.find('td:first-of-type a').text()).start;
+        return getEpisodeData(partial.find('td:first-of-type a').text(), full.find('a.bigChar').text()).start;
       },
       episodeNumEnd: function(partial, full) {
-        return getEpisodeNumbers(partial.find('td:first-of-type a').text()).end;
+        return getEpisodeData(partial.find('td:first-of-type a').text(), full.find('a.bigChar').text()).end;
+      },
+      notes: function(partial, full) {
+        return getEpisodeData(partial.find('td:first-of-type a').text(), full.find('a.bigChar').text()).notes;
       },
       translationType: function(partial, full) {
         return getTypeFromName(full.find('a.bigChar').text());
@@ -256,10 +286,13 @@ export let kissanime = {
     // Recent episode attribute data
     attributes: {
       episodeNumStart: function(partial, full) {
-        return getEpisodeNumbers(partial.find('span').text()).start;
+        return getEpisodeData(partial.find('span').text(), partial.clone().children().remove().end().text()).start;
       },
       episodeNumEnd: function(partial, full) {
-        return getEpisodeNumbers(partial.find('span').text()).end;
+        return getEpisodeData(partial.find('span').text(), partial.clone().children().remove().end().text()).end;
+      },
+      notes: function(partial, full) {
+        return getEpisodeData(partial.find('span').text(), partial.clone().children().remove().end().text()).notes;
       },
       translationType: function(partial, full) {
         return getTypeFromName(partial.clone().children().remove().end().text());

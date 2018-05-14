@@ -30,6 +30,21 @@ function determineAiringDateShowPage(partial, index) {
   );
 }
 
+function getEpisodeData(episodeString) {
+  let episodeBits = episodeString.split('-');
+
+  if (episodeBits.some((episodeBit) => {
+    return !isNumeric(episodeBit) && episodeBit !== 'Full';
+  })) {
+    return false;
+  }
+
+  return {
+    start: episodeBits[0],
+    end: episodeBits.peek()
+  };
+}
+
 const validTypes = ['TV', 'OVA', 'Movie', 'Special', 'ONA'];
 const validGenres = ['Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demons', 'Drama', 'Ecchi', 'Fantasy', 'Game',
   'Harem', 'Hentai', 'Historical', 'Horror', 'Josei', 'Kids', 'Magic', 'Martial Arts', 'Mecha', 'Military', 'Music', 'Mystery',
@@ -204,10 +219,10 @@ export let nineanime = {
     // Episode list attribute data
     attributes: {
       episodeNumStart: function(partial, full) {
-        return partial.text().includes('-') ? partial.text().split('-')[0] : partial.text();
+        return getEpisodeData(partial.text()).start;
       },
       episodeNumEnd: function(partial, full) {
-        return partial.text().includes('-') ? partial.text().split('-')[1] : partial.text();
+        return getEpisodeData(partial.text()).end;
       },
       translationType: function(partial, full) {
         return getTypeFromName(full.find('div.widget.player div.widget-title h1.title').text());
@@ -261,12 +276,10 @@ export let nineanime = {
     // Recent episode attribute data
     attributes: {
       episodeNumStart: function(partial, full) {
-        let epNum = partial.find('a.poster div.status div.ep').text().split('/')[0].replace('Ep ', '');
-        return epNum.includes('-') ? epNum.split('-')[0] : epNum;
+        return getEpisodeData(partial.find('a.poster div.status div.ep').text().split('/')[0].replace('Ep ', '')).start;
       },
       episodeNumEnd: function(partial, full) {
-        let epNum = partial.find('a.poster div.status div.ep').text().split('/')[0].replace('Ep ', '');
-        return epNum.includes('-') ? epNum.split('-')[1] : epNum;
+        return getEpisodeData(partial.find('a.poster div.status div.ep').text().split('/')[0].replace('Ep ', '')).end;
       },
       translationType: function(partial, full) {
         return getTypeFromName(partial.find('a.name').text());

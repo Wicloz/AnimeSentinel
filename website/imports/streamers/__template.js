@@ -306,6 +306,9 @@ export let template = {
       episodeNumEnd: function(partial, full) {
         return 0;
       },
+      notes: function(partial, full) {
+        return '';
+      },
       translationType: function(partial, full) {
         return '';
       },
@@ -337,6 +340,9 @@ export let template = {
       },
       episodeNumEnd: function(partial, full) {
         return 0;
+      },
+      notes: function(partial, full) {
+        return '';
       },
       translationType: function(partial, full) {
         return '';

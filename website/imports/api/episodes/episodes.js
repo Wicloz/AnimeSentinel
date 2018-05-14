@@ -24,6 +24,11 @@ Schemas.Episode = new SimpleSchema({
     type: Number,
     index: true
   },
+  notes: {
+    type: String,
+    index: true,
+    optional: true
+  },
   translationType: {
     type: String,
     allowedValues: ['sub', 'dub', 'raw'],
