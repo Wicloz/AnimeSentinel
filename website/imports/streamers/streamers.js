@@ -173,7 +173,7 @@ export default class Streamers {
     // Get 'notes'
     let notes = undefined;
     if (streamer[type].attributes.notes) {
-      let notes = streamer[type].attributes.notes(cheerioRow, cheerioPage);
+      notes = streamer[type].attributes.notes(cheerioRow, cheerioPage);
     }
 
     // Get 'translationType'
