@@ -376,22 +376,26 @@ export default class Streamers {
           if (!missing) {
             // Get episode information
             let episodeNumStart = streamer.recent.attributes.episodeNumStart(page(element), page('html'));
-            if (typeof episodeNumStart !== 'undefined' && !isNumeric(episodeNumStart)) {
+            if (typeof episodeNumStart === 'undefined') {
+              return;
+            } else if (!isNumeric(episodeNumStart)) {
               episodeNumStart = 1;
             } else {
               episodeNumStart = Number(episodeNumStart);
             }
             let episodeNumEnd = streamer.recent.attributes.episodeNumEnd(page(element), page('html'));
-            if (typeof episodeNumEnd !== 'undefined' && !isNumeric(episodeNumEnd)) {
+            if (typeof episodeNumEnd === 'undefined') {
+              return;
+            } else if (!isNumeric(episodeNumEnd)) {
               episodeNumEnd = 1;
             } else {
               episodeNumEnd = Number(episodeNumEnd);
             }
             let notes = undefined;
             if (streamer.recent.attributes.notes) {
-              notes = streamer.recent.attributes.notes(page(element), page('html')).cleanWhitespace();
+              notes = streamer.recent.attributes.notes(page(element), page('html')).trim();
             }
-            let translationType = streamer.recent.attributes.translationType(page(element), page('html')).cleanWhitespace();
+            let translationType = streamer.recent.attributes.translationType(page(element), page('html')).trim();
 
             // TODO: Correct episode numbers for streamers which can't count
 
