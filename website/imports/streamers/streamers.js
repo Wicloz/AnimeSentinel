@@ -401,7 +401,7 @@ export default class Streamers {
 
             // Test if the latest episode is present
             missing = dbShows.fetch().some((show) => {
-              return !Episodes.queryForStreamer(show._id, translationType, episodeNumStart, episodeNumEnd, streamer.id).count();
+              return !Episodes.queryForStreamer(show._id, translationType, episodeNumStart, episodeNumEnd, notes, streamer.id).count();
             });
           }
 

@@ -120,6 +120,14 @@ Episodes.helpers({
     return this.translationType.replace('dub', 'dubbed').replace('sub', 'subbed').capitalize();
   },
 
+  notesEncoded() {
+    if (this.notes) {
+      return encodeBase64(this.notes);
+    } else {
+      return 'none';
+    }
+  },
+
   mergeEpisode(other) {
     // Copy and merge attributes
     Object.keys(other).forEach((key) => {
@@ -152,7 +160,7 @@ Episodes.addEpisode = function(episode) {
   let id = undefined;
 
   // Get episodes which are the same
-  let others = Episodes.queryUnique(episode.showId, episode.translationType, episode.episodeNumStart, episode.episodeNumEnd, episode.streamerId, episode.sourceName);
+  let others = Episodes.queryUnique(episode.showId, episode.translationType, episode.episodeNumStart, episode.episodeNumEnd, episode.notes, episode.streamerId, episode.sourceName);
 
   // Merge episodes if found
   if (others.count()) {
@@ -249,21 +257,21 @@ Episodes.findRecentEpisodes = function() {
   });
 };
 
-Episodes.getPreviousEpisode = function(showId, translationType, episodeNumStart, episodeNumEnd) {
+Episodes.getPreviousEpisode = function(showId, translationType, episodeNumStart, episodeNumEnd, notes) {
   let episodes = Episodes.queryForTranslationType(showId, translationType).fetch();
 
   for (let i = episodes.length - 1; i >= 0; i--) {
-    if (episodes[i].episodeNumStart === episodeNumStart && episodes[i].episodeNumEnd === episodeNumEnd) {
+    if (episodes[i].episodeNumStart === episodeNumStart && episodes[i].episodeNumEnd === episodeNumEnd && episodes[i].notes === notes) {
       return episodes[i + 1];
     }
   }
 };
 
-Episodes.getNextEpisode = function(showId, translationType, episodeNumStart, episodeNumEnd) {
+Episodes.getNextEpisode = function(showId, translationType, episodeNumStart, episodeNumEnd, notes) {
   let episodes = Episodes.queryForTranslationType(showId, translationType).fetch();
 
   for (let i = 0; i < episodes.length; i++) {
-    if (episodes[i].episodeNumStart === episodeNumStart && episodes[i].episodeNumEnd === episodeNumEnd) {
+    if (episodes[i].episodeNumStart === episodeNumStart && episodes[i].episodeNumEnd === episodeNumEnd && episodes[i].notes === notes) {
       return episodes[i - 1];
     }
   }
@@ -309,6 +317,7 @@ Episodes.queryForTranslationType = function(showId, translationType) {
     sort: {
       episodeNumEnd: -1,
       episodeNumStart: -1,
+      notes: -1,
       'uploadDate.year': 1,
       'uploadDate.month': 1,
       'uploadDate.date': 1,
@@ -318,15 +327,16 @@ Episodes.queryForTranslationType = function(showId, translationType) {
   });
 };
 
-Episodes.queryForEpisode = function (showId, translationType, episodeNumStart, episodeNumEnd) {
+Episodes.queryForEpisode = function (showId, translationType, episodeNumStart, episodeNumEnd, notes) {
   // Validate
   Schemas.Episode.validate({
     showId: showId,
     translationType: translationType,
     episodeNumStart: episodeNumStart,
-    episodeNumEnd: episodeNumEnd
+    episodeNumEnd: episodeNumEnd,
+    notes: notes
   }, {
-    keys: ['showId', 'translationType', 'episodeNumStart', 'episodeNumEnd']
+    keys: ['showId', 'translationType', 'episodeNumStart', 'episodeNumEnd', 'notes']
   });
 
   // Return results cursor
@@ -334,20 +344,22 @@ Episodes.queryForEpisode = function (showId, translationType, episodeNumStart, e
     showId: showId,
     episodeNumStart: episodeNumStart,
     episodeNumEnd: episodeNumEnd,
+    notes: notes,
     translationType: translationType
   });
 };
 
-Episodes.queryForStreamer = function (showId, translationType, episodeNumStart, episodeNumEnd, streamerId) {
+Episodes.queryForStreamer = function (showId, translationType, episodeNumStart, episodeNumEnd, notes, streamerId) {
   // Validate
   Schemas.Episode.validate({
     showId: showId,
     translationType: translationType,
     episodeNumStart: episodeNumStart,
     episodeNumEnd: episodeNumEnd,
+    notes: notes,
     streamerId: streamerId
   }, {
-    keys: ['showId', 'translationType', 'episodeNumStart', 'episodeNumEnd', 'streamerId']
+    keys: ['showId', 'translationType', 'episodeNumStart', 'episodeNumEnd', 'streamerId', 'notes']
   });
 
   // Return results cursor
@@ -355,22 +367,24 @@ Episodes.queryForStreamer = function (showId, translationType, episodeNumStart, 
     showId: showId,
     episodeNumStart: episodeNumStart,
     episodeNumEnd: episodeNumEnd,
+    notes: notes,
     translationType: translationType,
     streamerId: streamerId
   });
 };
 
-Episodes.queryUnique = function (showId, translationType, episodeNumStart, episodeNumEnd, streamerId, sourceName) {
+Episodes.queryUnique = function (showId, translationType, episodeNumStart, episodeNumEnd, notes, streamerId, sourceName) {
   // Validate
   Schemas.Episode.validate({
     showId: showId,
     translationType: translationType,
     episodeNumStart: episodeNumStart,
     episodeNumEnd: episodeNumEnd,
+    notes: notes,
     streamerId: streamerId,
     sourceName: sourceName
   }, {
-    keys: ['showId', 'translationType', 'episodeNumStart', 'episodeNumEnd', 'streamerId', 'sourceName']
+    keys: ['showId', 'translationType', 'episodeNumStart', 'episodeNumEnd', 'streamerId', 'sourceName', 'notes']
   });
 
   // Return results cursor
@@ -378,6 +392,7 @@ Episodes.queryUnique = function (showId, translationType, episodeNumStart, episo
     showId: showId,
     episodeNumStart: episodeNumStart,
     episodeNumEnd: episodeNumEnd,
+    notes: notes,
     translationType: translationType,
     streamerId: streamerId,
     sourceName: sourceName
@@ -404,7 +419,8 @@ Episodes.queryRecent = function(limit) {
       showId: -1,
       translationType: -1,
       episodeNumEnd: -1,
-      episodeNumStart: -1
+      episodeNumStart: -1,
+      notes: -1
     }
   })
 };
@@ -429,7 +445,8 @@ Episodes.queryToWatch = function(showId, translationType, lastWatched) {
   }, {
     sort: {
       episodeNumStart: 1,
-      episodeNumEnd: 1
+      episodeNumEnd: 1,
+      notes: -1
     }
   });
 };

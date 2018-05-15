@@ -449,12 +449,13 @@ Shows.helpers({
   },
 
   afterNewEpisode(episode) {
-    // Get the earliest episode for each number combination
+    // Get the earliest episode for each unique episode
     let earliestEpisodes = [];
     Episodes.queryForTranslationType(this._id, episode.translationType).forEach((episode) => {
       let selector = {
         episodeNumStart: episode.episodeNumStart,
-        episodeNumEnd: episode.episodeNumEnd
+        episodeNumEnd: episode.episodeNumEnd,
+        notes: episode.notes
       };
 
       if (earliestEpisodes.hasPartialObjects(selector)) {
@@ -466,6 +467,26 @@ Shows.helpers({
       else {
         selector.uploadDate = episode.uploadDate;
         earliestEpisodes.push(selector);
+      }
+    });
+
+    // Get the earliest episode for each unique number combination
+    let earliestEpisodesReduced = [];
+    earliestEpisodes.forEach((episode) => {
+      let selector = {
+        episodeNumStart: episode.episodeNumStart,
+        episodeNumEnd: episode.episodeNumEnd
+      };
+
+      if (earliestEpisodesReduced.hasPartialObjects(selector)) {
+        let other = earliestEpisodesReduced.getPartialObjects(selector)[0];
+        other.uploadDate = ScrapingHelpers.determineEarliestAiringDate(other.uploadDate, episode.uploadDate);
+        earliestEpisodesReduced = earliestEpisodesReduced.replacePartialObjects(selector, other);
+      }
+
+      else {
+        selector.uploadDate = episode.uploadDate;
+        earliestEpisodesReduced.push(selector);
       }
     });
 
@@ -490,8 +511,8 @@ Shows.helpers({
     // Store the average found here
     let average = undefined;
 
-    // Continue if there are more than 2 distinct episodes
-    if (earliestEpisodes.length >= 2) {
+    // Continue if there is more than 1 distinct episode
+    if (earliestEpisodesReduced.length >= 2) {
 
       // Sort episodes by upload date ascending
       let earliestEpisodesSorted = earliestEpisodes.slice(0).sort((a, b) => {
