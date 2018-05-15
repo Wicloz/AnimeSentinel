@@ -16,13 +16,10 @@
                   <a href="{{pathFor 'show' showId=episodeJoined.show._id}}">{{episodeJoined.show.name}}</a>
                 </p>
                 <p>
-                  <a href="{{#if $eq episodeJoined.episodeNumStart episodeJoined.episodeNumEnd}}
-                    {{pathFor 'episodeSingle' showId=episodeJoined.showId translationType=episodeJoined.translationType episodeNumBoth=episodeJoined.episodeNumStart}}
-                  {{else}}
-                    {{pathFor 'episodeDouble' showId=episodeJoined.showId translationType=episodeJoined.translationType episodeNumStart=episodeJoined.episodeNumStart episodeNumEnd=episodeJoined.episodeNumEnd}}
-                  {{/if}}">
-                    Episode
-                    {{episodeJoined.episodeNumStart}}{{#if $neq episodeJoined.episodeNumStart episodeJoined.episodeNumEnd}} - {{episodeJoined.episodeNumEnd}}{{/if}}
+                  <a href="{{pathFor 'episode' showId=episodeJoined.showId translationType=episodeJoined.translationType episodeNumStart=episodeJoined.episodeNumStart episodeNumEnd=episodeJoined.episodeNumEnd notes=episodeJoined.notesEncoded}}">
+                    Episode {{episodeJoined.episodeNumStart}}
+                    {{#if $neq episodeJoined.episodeNumStart episodeJoined.episodeNumEnd}}- {{episodeJoined.episodeNumEnd}}{{/if}}
+                    {{#if episodeJoined.notes}}- {{episodeJoined.notes}}{{/if}}
                     ({{episodeJoined.translationTypeExpanded}})
                   </a>
                   out of {{episodeJoined.show.episodeCount}}

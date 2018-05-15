@@ -70,7 +70,8 @@ Template.pages_show.helpers({
         showId: episode.showId,
         translationType: episode.translationType,
         episodeNumStart: episode.episodeNumStart,
-        episodeNumEnd: episode.episodeNumEnd
+        episodeNumEnd: episode.episodeNumEnd,
+        notes: episode.notes
       };
 
       if (episodes.hasPartialObjects(selector)) {

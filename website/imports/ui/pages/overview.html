@@ -36,12 +36,10 @@
               <div class="col s12 m5">
                 <ul class="collection">
                   {{#each episodesToWatch this}}
-                    <a href="{{#if $eq episodeNumStart episodeNumEnd}}
-                      {{pathFor 'episodeSingle' showId=showId translationType=translationType episodeNumBoth=episodeNumStart}}
-                    {{else}}
-                      {{pathFor 'episodeDouble' showId=showId translationType=translationType episodeNumStart=episodeNumStart episodeNumEnd=episodeNumEnd}}
-                    {{/if}}" class="collection-item">
-                      Episode {{episodeNumStart}}{{#if $neq episodeNumStart episodeNumEnd}} - {{episodeNumEnd}}{{/if}}
+                    <a href="{{pathFor 'episode' showId=showId translationType=translationType episodeNumStart=episodeNumStart episodeNumEnd=episodeNumEnd notes=notesEncoded}}" class="collection-item">
+                      Episode {{episodeNumStart}}
+                      {{#if $neq episodeNumStart episodeNumEnd}}- {{episodeNumEnd}}{{/if}}
+                      {{#if notes}}- {{notes}}{{/if}}
                     </a>
                   {{/each}}
                   {{#if $eq (airingState ($GetStorageItem 'SelectedTranslationType')) 'Completed'}}

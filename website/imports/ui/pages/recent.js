@@ -16,7 +16,7 @@ Template.pages_recent.onCreated(function () {
 
   // Find all recent episodes
   // TODO: Make this work better (remove / make caching + indicator work)
-  Meteor.call('episodes.findRecentEpisodes');
+  // Meteor.call('episodes.findRecentEpisodes');
 
   // Subscribe to recent episodes
   this.autorun(() => {
@@ -49,7 +49,8 @@ Template.pages_recent.helpers({
         showId: episode.showId,
         translationType: episode.translationType,
         episodeNumStart: episode.episodeNumStart,
-        episodeNumEnd: episode.episodeNumEnd
+        episodeNumEnd: episode.episodeNumEnd,
+        notes: episode.notes
       };
 
       if (episodes.hasPartialObjects(selector)) {

@@ -40,7 +40,8 @@ Template.pages_overview.helpers({
     Episodes.queryToWatch(show._id, getStorageItem('SelectedTranslationType'), show.watchedEpisodes()).forEach((episode) => {
       if (!episodes.hasPartialObjects({
         episodeNumStart: episode.episodeNumStart,
-        episodeNumEnd: episode.episodeNumEnd
+        episodeNumEnd: episode.episodeNumEnd,
+        notes: episode.notes
       })) {
         episodes.push(episode);
       }

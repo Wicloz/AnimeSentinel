@@ -195,14 +195,12 @@
 
 <template name="pages_show_episodes">
   {{#each this}}
-    <a href="{{#if $eq episodeNumStart episodeNumEnd}}
-      {{pathFor 'episodeSingle' showId=showId translationType=translationType episodeNumBoth=episodeNumStart}}
-    {{else}}
-      {{pathFor 'episodeDouble' showId=showId translationType=translationType episodeNumStart=episodeNumStart episodeNumEnd=episodeNumEnd}}
-    {{/if}}" class="collection-item">
+    <a href="{{pathFor 'episode' showId=showId translationType=translationType episodeNumStart=episodeNumStart episodeNumEnd=episodeNumEnd notes=notesEncoded}}" class="collection-item">
       <div class="row">
         <div class="col s4">
-          Episode {{episodeNumStart}}{{#if $neq episodeNumStart episodeNumEnd}} - {{episodeNumEnd}}{{/if}}
+          Episode {{episodeNumStart}}
+          {{#if $neq episodeNumStart episodeNumEnd}}- {{episodeNumEnd}}{{/if}}
+          {{#if notes}}- {{notes}}{{/if}}
           <br>
           {{displayUploadDate uploadDate}}
         </div>

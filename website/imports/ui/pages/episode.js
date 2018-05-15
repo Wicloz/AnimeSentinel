@@ -7,20 +7,17 @@ import moment from 'moment-timezone';
 
 Template.pages_episode.onCreated(function() {
   // Getters for the episode numbers
-  this.hasMultipleEpisodeNumbers = function() {
-    return FlowRouter.getRouteName() === 'episodeDouble';
-  };
   this.getEpisodeNumStart = function() {
-    return Number(this.hasMultipleEpisodeNumbers() ? FlowRouter.getParam('episodeNumStart') : FlowRouter.getParam('episodeNumBoth'));
+    return Number(FlowRouter.getParam('episodeNumStart'));
   };
   this.getEpisodeNumEnd = function() {
-    return Number(this.hasMultipleEpisodeNumbers() ? FlowRouter.getParam('episodeNumEnd') : FlowRouter.getParam('episodeNumBoth'));
+    return Number(FlowRouter.getParam('episodeNumEnd'));
   };
-  this.getEpisodeNumBoth = function() {
-    if (this.hasMultipleEpisodeNumbers()) {
-      return this.getEpisodeNumStart() + ' - ' + this.getEpisodeNumEnd();
+  this.getNotes = function() {
+    if (FlowRouter.getParam('notes') === 'none') {
+      return undefined;
     } else {
-      return this.getEpisodeNumStart();
+      return decodeBase64(FlowRouter.getParam('notes'));
     }
   };
 
@@ -31,6 +28,7 @@ Template.pages_episode.onCreated(function() {
       FlowRouter.getParam('translationType'),
       this.getEpisodeNumStart(),
       this.getEpisodeNumEnd(),
+      this.getNotes(),
       this.state.get('selectedStreamerId'),
       this.state.get('selectedSourceName')
     ).fetch()[0].flags.filter((flag) => {
@@ -70,21 +68,14 @@ Template.pages_episode.onCreated(function() {
     this.startErrorsDelay();
   };
 
-  this.goToEpisode = function(episodeNumStart, episodeNumEnd) {
-    if (episodeNumStart === episodeNumEnd) {
-      FlowRouter.go('episodeSingle', {
-        showId: FlowRouter.getParam('showId'),
-        translationType: FlowRouter.getParam('translationType'),
-        episodeNumBoth: episodeNumStart
-      });
-    } else {
-      FlowRouter.go('episodeDouble', {
-        showId: FlowRouter.getParam('showId'),
-        translationType: FlowRouter.getParam('translationType'),
-        episodeNumStart: episodeNumStart,
-        episodeNumEnd: episodeNumEnd
-      });
-    }
+  this.goToEpisode = function(episodeNumStart, episodeNumEnd, notes) {
+    FlowRouter.go('episode', {
+      showId: FlowRouter.getParam('showId'),
+      translationType: FlowRouter.getParam('translationType'),
+      episodeNumStart: episodeNumStart,
+      episodeNumEnd: episodeNumEnd,
+      notes: notes
+    });
     this.selectSource(undefined, undefined, false);
   };
 
@@ -106,7 +97,14 @@ Template.pages_episode.onCreated(function() {
 
   // Set page title based on the episode numbers and translation type
   this.autorun(() => {
-    Session.set('PageTitle', 'Episode ' + this.getEpisodeNumBoth() + ' (' + FlowRouter.getParam('translationType').capitalize() + ')');
+    if (Session.get('BreadCrumbs') === '[]') {
+      Session.set('BreadCrumbs', JSON.stringify([{
+        name: FlowRouter.getParam('translationType').capitalize()
+      }]));
+    }
+    Session.set('PageTitle', 'Episode ' + this.getEpisodeNumStart()
+      + (this.getEpisodeNumStart() !== this.getEpisodeNumEnd() ? ' - ' + this.getEpisodeNumEnd() : '')
+      + (this.getNotes() ? ' - ' + this.getNotes() : ''));
   });
 
   // Subscribe based on the show id
@@ -132,6 +130,8 @@ Template.pages_episode.onCreated(function() {
         url: FlowRouter.path('show', {
           showId: FlowRouter.getParam('showId')
         })
+      }, {
+        name: FlowRouter.getParam('translationType').capitalize()
       }]));
     }
   });
@@ -143,15 +143,15 @@ Template.pages_episode.onCreated(function() {
 
   // Check if the episodes exists
   this.autorun(() => {
-    if (isNaN(this.getEpisodeNumStart()) || isNaN(this.getEpisodeNumEnd()) || (this.subscriptionsReady() && !Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count())) {
+    if (isNaN(this.getEpisodeNumStart()) || isNaN(this.getEpisodeNumEnd()) || (this.subscriptionsReady() && !Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd(), this.getNotes()).count())) {
       FlowRouter.go('notFound');
     }
   });
 
   // When the episodes are found and the selection needs to change
   this.autorun(() => {
-    if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).count() && (!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName'))) {
-      let selectedSource = Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).fetch().reduce((total, episode) => {
+    if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd(), this.getNotes()).count() && (!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName'))) {
+      let selectedSource = Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd(), this.getNotes()).fetch().reduce((total, episode) => {
         let thisTime = getStorageItem(['SelectedSourceLastTime', episode.streamerId, episode.sourceName]);
         if (thisTime && (!total || thisTime > total.time)) {
           total = {
@@ -180,7 +180,7 @@ Template.pages_episode.onCreated(function() {
 
         for (let i = flagsPreference.length; i >= 0; i--) {
           if (!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName')) {
-            Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd()).forEach((episode) => {
+            Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd(), this.getNotes()).forEach((episode) => {
               if ((!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName')) && episode.flags.every((flag) => {
                   return !flagsNever.includes(flag) && !flagsPreference.slice(0, i).includes(flag);
                 })) {
@@ -216,6 +216,7 @@ Template.pages_episode.helpers({
       FlowRouter.getParam('translationType'),
       Template.instance().getEpisodeNumStart(),
       Template.instance().getEpisodeNumEnd(),
+      Template.instance().getNotes(),
       Template.instance().state.get('selectedStreamerId'),
       Template.instance().state.get('selectedSourceName')
     ).fetch()[0].sourceUrl;
@@ -224,7 +225,7 @@ Template.pages_episode.helpers({
   episodesByStreamer() {
     let results = [];
 
-    Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd()).forEach((episode) => {
+    Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd(), Template.instance().getNotes()).forEach((episode) => {
       let done = false;
       results = results.map((result) => {
         if (result.streamer.id === episode.streamerId) {
@@ -266,11 +267,20 @@ Template.pages_episode.helpers({
       if (episode.episodeNumStart !== episode.episodeNumEnd) {
         label += ' - ' + episode.episodeNumEnd;
       }
+      if (episode.notes) {
+        label += ' - ' + episode.notes;
+      }
 
-      if (!options.hasPartialObjects({label})) {
+      let value = encodeURIComponent(JSON.stringify({
+        episodeNumStart: episode.episodeNumStart,
+        episodeNumEnd: episode.episodeNumEnd,
+        notes: episode.notesEncoded()
+      }));
+
+      if (!options.hasPartialObjects({label, value})) {
         options.push({
           label: label,
-          value: label
+          value: value
         });
       }
     });
@@ -279,7 +289,11 @@ Template.pages_episode.helpers({
   },
 
   episodeSelectionDefaultValue() {
-    return Template.instance().getEpisodeNumBoth();
+    return encodeURIComponent(JSON.stringify({
+      episodeNumStart: Template.instance().getEpisodeNumStart(),
+      episodeNumEnd: Template.instance().getEpisodeNumEnd(),
+      notes: FlowRouter.getParam('notes')
+    }));
   },
 
   frameSandboxingEnabled() {
@@ -287,11 +301,11 @@ Template.pages_episode.helpers({
   },
 
   previousEpisode() {
-    return Episodes.getPreviousEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd());
+    return Episodes.getPreviousEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd(), Template.instance().getNotes());
   },
 
   nextEpisode() {
-    return Episodes.getNextEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd());
+    return Episodes.getNextEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd(), Template.instance().getNotes());
   }
 });
 
@@ -318,12 +332,12 @@ Template.pages_episode.events({
   },
 
   'click button.btn-select-prev'(event) {
-    let episode = Episodes.getPreviousEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd());
-    Template.instance().goToEpisode(episode.episodeNumStart, episode.episodeNumEnd);
+    let episode = Episodes.getPreviousEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd(), Template.instance().getNotes());
+    Template.instance().goToEpisode(episode.episodeNumStart, episode.episodeNumEnd, episode.notesEncoded());
   },
   'click button.btn-select-next'(event) {
-    let episode = Episodes.getNextEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd());
-    Template.instance().goToEpisode(episode.episodeNumStart, episode.episodeNumEnd);
+    let episode = Episodes.getNextEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd(), Template.instance().getNotes());
+    Template.instance().goToEpisode(episode.episodeNumStart, episode.episodeNumEnd, episode.notesEncoded());
   },
 
   'change #sandboxing-checkbox'(event) {
@@ -334,8 +348,8 @@ Template.pages_episode.events({
 AutoForm.hooks({
   episodeSelectionForm: {
     onSubmit(insertDoc) {
-      let split = insertDoc.episodeNumber.split(' - ');
-      this.template.view.parentView.parentView._templateInstance.goToEpisode(split[0], split.length === 2 ? split[1] : split[0]);
+      let info = JSON.parse(decodeURIComponent(insertDoc.episodeNumber));
+      this.template.view.parentView.parentView._templateInstance.goToEpisode(info.episodeNumStart, info.episodeNumEnd, info.notes);
       this.done();
       return false;
     }
