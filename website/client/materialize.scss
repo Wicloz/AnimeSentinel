@@ -26,10 +26,14 @@
 }
 
 .material-icons {
-  font-size: inherit;
   vertical-align: top;
+  font-size: inherit;
   line-height: inherit;
   height: inherit;
+}
+
+.collapsible-header .material-icons {
+  line-height: 22px;
 }
 
 .collapsible.card-panel {
