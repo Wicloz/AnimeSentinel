@@ -16,7 +16,7 @@ Template.pages_recent.onCreated(function () {
 
   // Find all recent episodes
   // TODO: Make this work better (remove / make caching + indicator work)
-  // Meteor.call('episodes.findRecentEpisodes');
+  Meteor.call('episodes.findRecentEpisodes');
 
   // Subscribe to recent episodes
   this.autorun(() => {
