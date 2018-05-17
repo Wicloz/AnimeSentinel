@@ -128,6 +128,20 @@ Episodes.helpers({
     }
   },
 
+  encodedKey() {
+    return encodeURIComponent(JSON.stringify({
+      episodeNumStart: this.episodeNumStart,
+      episodeNumEnd: this.episodeNumEnd,
+      notes: this.notesEncoded()
+    }));
+  },
+
+  fancyKey() {
+    return this.episodeNumStart
+      + (this.episodeNumStart !== this.episodeNumEnd ? ' - ' + this.episodeNumEnd : '')
+      + (this.notes ? ' - ' + this.notes : '');
+  },
+
   mergeEpisode(other) {
     // Copy and merge attributes
     Object.keys(other).forEach((key) => {

@@ -37,9 +37,7 @@
                 <ul class="collection">
                   {{#each episodesToWatch this}}
                     <a href="{{pathFor 'episode' showId=showId translationType=translationType episodeNumStart=episodeNumStart episodeNumEnd=episodeNumEnd notes=notesEncoded}}" class="collection-item">
-                      Episode {{episodeNumStart}}
-                      {{#if $neq episodeNumStart episodeNumEnd}}- {{episodeNumEnd}}{{/if}}
-                      {{#if notes}}- {{notes}}{{/if}}
+                      Episode {{fancyKey}}
                     </a>
                   {{/each}}
                   {{#if $eq (airingState ($GetStorageItem 'SelectedTranslationType')) 'Completed'}}

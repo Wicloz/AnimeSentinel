@@ -263,25 +263,12 @@ Template.pages_episode.helpers({
     let options = [];
 
     Episodes.queryForTranslationType(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType')).forEach((episode) => {
-      let label = episode.episodeNumStart;
-      if (episode.episodeNumStart !== episode.episodeNumEnd) {
-        label += ' - ' + episode.episodeNumEnd;
-      }
-      if (episode.notes) {
-        label += ' - ' + episode.notes;
-      }
-
-      let value = encodeURIComponent(JSON.stringify({
-        episodeNumStart: episode.episodeNumStart,
-        episodeNumEnd: episode.episodeNumEnd,
-        notes: episode.notesEncoded()
-      }));
-
-      if (!options.hasPartialObjects({label, value})) {
-        options.push({
-          label: label,
-          value: value
-        });
+      let option = {
+        label: episode.fancyKey(),
+        value: episode.encodedKey()
+      };
+      if (!options.hasPartialObjects(option)) {
+        options.push(option);
       }
     });
 

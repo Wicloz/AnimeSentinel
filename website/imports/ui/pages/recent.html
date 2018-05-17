@@ -17,10 +17,7 @@
                 </p>
                 <p>
                   <a href="{{pathFor 'episode' showId=episodeJoined.showId translationType=episodeJoined.translationType episodeNumStart=episodeJoined.episodeNumStart episodeNumEnd=episodeJoined.episodeNumEnd notes=episodeJoined.notesEncoded}}">
-                    Episode {{episodeJoined.episodeNumStart}}
-                    {{#if $neq episodeJoined.episodeNumStart episodeJoined.episodeNumEnd}}- {{episodeJoined.episodeNumEnd}}{{/if}}
-                    {{#if episodeJoined.notes}}- {{episodeJoined.notes}}{{/if}}
-                    ({{episodeJoined.translationTypeExpanded}})
+                    Episode {{episodeJoined.fancyKey}} ({{episodeJoined.translationTypeExpanded}})
                   </a>
                   out of {{episodeJoined.show.episodeCount}}
                 </p>
