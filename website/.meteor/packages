@@ -43,6 +43,7 @@ cfs:gridfs
 accounts-password
 useraccounts:materialize
 useraccounts:flow-routing
+email
 
 johnantoni:meteor-appear
 awatson1978:browser-detection
