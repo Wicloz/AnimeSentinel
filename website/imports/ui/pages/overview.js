@@ -2,6 +2,7 @@ import './overview.html';
 import {WatchStates} from '../../api/watchstates/watchstates';
 import {Shows} from '../../api/shows/shows';
 import {Episodes} from '../../api/episodes/episodes';
+import '/imports/ui/components/image.js';
 
 Template.pages_overview.onRendered(function() {
   $('#load-more-items').appear();

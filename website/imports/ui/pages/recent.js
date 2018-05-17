@@ -2,6 +2,7 @@ import './recent.html';
 import {Episodes} from '../../api/episodes/episodes';
 import {Shows} from '../../api/shows/shows';
 import Streamers from '../../streamers/streamers';
+import '/imports/ui/components/image.js';
 
 Template.pages_recent.onCreated(function () {
   // Set page variables
