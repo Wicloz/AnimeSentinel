@@ -115,12 +115,10 @@ Schemas.Show = new SimpleSchema({
   },
   thumbnails: {
     type: Array,
-    optional: true,
     autoValue: function() {
-      if ((!this.isSet || !this.value) && !this.isUpdate) {
+      if (!this.value && (!this.isUpdate || this.isSet)) {
         return [];
-      }
-      if (!this.isSet) {
+      } else if (!this.isSet) {
         return undefined;
       }
       return this.value.reduce((total, value) => {
@@ -144,12 +142,10 @@ Schemas.Show = new SimpleSchema({
   genres: {
     type: Array,
     index: true,
-    optional: true,
     autoValue: function() {
-      if ((!this.isSet || !this.value) && !this.isUpdate) {
+      if (!this.value && (!this.isUpdate || this.isSet)) {
         return [];
-      }
-      if (!this.isSet) {
+      } else if (!this.isSet) {
         return undefined;
       }
       return this.value.reduce((total, value) => {

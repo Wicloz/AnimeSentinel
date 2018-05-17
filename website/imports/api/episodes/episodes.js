@@ -48,12 +48,10 @@ Schemas.Episode = new SimpleSchema({
   },
   flags: {
     type: Array,
-    optional: true,
     autoValue: function() {
-      if ((!this.isSet || !this.value) && !this.isUpdate) {
+      if (!this.value && (!this.isUpdate || this.isSet)) {
         return [];
-      }
-      if (!this.isSet) {
+      } else if (!this.isSet) {
         return undefined;
       }
       return this.value.reduce((total, value) => {
