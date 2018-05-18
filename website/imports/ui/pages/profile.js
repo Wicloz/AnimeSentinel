@@ -18,15 +18,15 @@ Template.pages_profile.helpers({
   },
 
   showMalUsernameError() {
-    return Meteor.user().profile.malUsername && !Meteor.user().malCanRead;
+    return Meteor.user() && Meteor.user().profile.malUsername && !Meteor.user().malCanRead;
   },
 
   showMalPasswordError() {
-    return Meteor.user().profile.malUsername && Meteor.user().profile.malPassword && !Meteor.user().malCanWrite;
+    return Meteor.user() && Meteor.user().profile.malUsername && Meteor.user().profile.malPassword && !Meteor.user().malCanWrite;
   },
 
   showMalSuccess() {
-    return Meteor.user().profile.malUsername;
+    return Meteor.user() && Meteor.user().profile.malUsername;
   }
 });
 
