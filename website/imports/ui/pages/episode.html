@@ -2,7 +2,7 @@
   <div class="container">
 
     <div class="card-panel">
-      {{#autoForm schema='Schemas.episodeSelection' id='episodeSelectionForm' autosave=true}}
+      {{#autoForm schema='Schemas.episodeSelection' id='episodeSelectionForm' autosave=true preserveForm=false}}
         <div class="flex-row">
           <div class="flex-col-sides btn-select-prev-col">
             <button class="waves-effect waves-teal btn btn-select-prev {{#unless previousEpisode}}disabled{{/unless}}">{{>tooltippedIcon icon='chevron_left' text='Previous Episode' position='right'}}</button>
