@@ -43,7 +43,11 @@
                   {{#if $eq (airingState ($GetStorageItem 'SelectedTranslationType')) 'Completed'}}
                     <li class="collection-item">Finished Airing</li>
                   {{else}}
-                    <li class="collection-item">Next Episode: {{displayUploadDate (nextEpisodeDate ($GetStorageItem 'SelectedTranslationType'))}}</li>
+                    <li class="collection-item">
+                      Next Episode: {{displayUploadDate (nextEpisodeDate ($GetStorageItem 'SelectedTranslationType'))}}
+                      <br>
+                      <span class="hidden">Next Episode:</span> in {{displayMinuteInterval (nextEpisodeInterval ($GetStorageItem 'SelectedTranslationType'))}}
+                    </li>
                   {{/if}}
                 </ul>
                 <a class="waves-effect waves-light btn reload-show-btn" data-showid="{{_id}}">Attempt Show Update</a>
