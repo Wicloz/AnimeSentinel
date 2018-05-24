@@ -79,11 +79,11 @@ AccountsTemplates.addField({
   displayName: 'MAL Username'
 });
 
-AccountsTemplates.addField({
-  _id: 'malPassword',
-  type: 'password',
-  displayName: 'MAL Password'
-});
+// AccountsTemplates.addField({
+//   _id: 'malPassword',
+//   type: 'password',
+//   displayName: 'MAL Password'
+// });
 
 // Email templates
 if (Meteor.isServer) {

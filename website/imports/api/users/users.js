@@ -85,7 +85,7 @@ Schemas.UserClient = new SimpleSchema({
   'username': Schemas.User._schema['username'],
   'profile': Schemas.User._schema['profile'],
   'profile.malUsername': Schemas.User._schema['profile.malUsername'],
-  'profile.malPassword': Schemas.User._schema['profile.malPassword'],
+  // 'profile.malPassword': Schemas.User._schema['profile.malPassword'],
 }, { tracker: Tracker });
 
 Meteor.users.attachSchema(Schemas.User);
