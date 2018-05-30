@@ -447,7 +447,7 @@ Shows.helpers({
   afterNewEpisode(episode) {
     // Get the earliest episode for each unique episode
     let earliestEpisodes = [];
-    Episodes.queryForTranslationType(this._id, episode.translationType).fetch().forEach((episode) => { // TODO: fix this
+    Episodes.queryForTranslationType(this._id, episode.translationType).forEach((episode) => {
       let selector = {
         episodeNumStart: episode.episodeNumStart,
         episodeNumEnd: episode.episodeNumEnd,
