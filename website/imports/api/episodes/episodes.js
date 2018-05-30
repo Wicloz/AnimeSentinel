@@ -169,8 +169,6 @@ Episodes.helpers({
 });
 
 Episodes.addEpisode = function(episode) {
-  let id = undefined;
-
   // Get episodes which are the same
   let others = Episodes.queryUnique(episode.showId, episode.translationType, episode.episodeNumStart, episode.episodeNumEnd, episode.notes, episode.streamerId, episode.sourceName);
 
@@ -186,25 +184,26 @@ Episodes.addEpisode = function(episode) {
       }
     });
 
-    if (firstOther) {
-      firstOther.mergeEpisode(episode);
-      id = firstOther._id;
-    }
+    firstOther.mergeEpisode(episode);
+    episode = firstOther;
   }
 
   // Insert otherwise
   else {
-    id = Episodes.insert(episode);
+    Episodes.insert(episode);
   }
 
-  // Recalculate certain attributes for the related show
+  // Find related show
+  episode = Episodes._transform(episode);
   let show = Shows.findOne(episode.showId);
+
   if (show) {
+    // Recalculate certain attributes
     show.afterNewEpisode(episode);
   }
 
   // Return id
-  return id;
+  return episode._id;
 };
 
 Episodes.moveEpisodes = function(fromId, toId) {
