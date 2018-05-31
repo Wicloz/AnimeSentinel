@@ -199,7 +199,7 @@ Episodes.addEpisode = function(episode) {
 
   if (show) {
     // Recalculate certain attributes
-    show.afterNewEpisode(episode);
+    show.afterNewEpisode(episode.translationType);
   }
 
   // Return id

@@ -444,10 +444,10 @@ Shows.helpers({
     return this.lastUpdateStart && (!this.lastUpdateEnd || this.lastUpdateStart > this.lastUpdateEnd);
   },
 
-  afterNewEpisode(episode) {
+  afterNewEpisode(translationType) {
     // Get the earliest episode for each unique episode
     let earliestEpisodes = [];
-    Episodes.queryForTranslationType(this._id, episode.translationType).forEach((episode) => {
+    Episodes.queryForTranslationType(this._id, translationType).forEach((episode) => {
       let selector = {
         episodeNumStart: episode.episodeNumStart,
         episodeNumEnd: episode.episodeNumEnd,
@@ -491,7 +491,7 @@ Shows.helpers({
      *************************************/
 
     // Store on this
-    this.availableEpisodes[episode.translationType] = earliestEpisodes.empty() ? 0 : earliestEpisodes[0].episodeNumEnd;
+    this.availableEpisodes[translationType] = earliestEpisodes.empty() ? 0 : earliestEpisodes[0].episodeNumEnd;
 
     // Store in the database
     Shows.update(this._id, {
@@ -558,7 +558,7 @@ Shows.helpers({
     }
 
     // Store on this
-    this.determinedIntervalMinutes[episode.translationType] = average;
+    this.determinedIntervalMinutes[translationType] = average;
 
     // Store in the database
     Shows.update(this._id, {
@@ -575,10 +575,10 @@ Shows.helpers({
     let lastDate = undefined;
 
     // Only if the show is airing
-    if (this.airingState(episode.translationType) === 'Airing') {
+    if (this.airingState(translationType) === 'Airing') {
 
       // Determine the interval to use for the calculation
-      let intervalToUse = this.relevantBroadcastInterval(episode.translationType);
+      let intervalToUse = this.relevantBroadcastInterval(translationType);
 
       // Continue if the interval is known
       if (intervalToUse) {
@@ -598,7 +598,7 @@ Shows.helpers({
     }
 
     // Store on this
-    this.determinedEpisodeDate[episode.translationType] = lastDate;
+    this.determinedEpisodeDate[translationType] = lastDate;
 
     // Store in the database
     Shows.update(this._id, {
