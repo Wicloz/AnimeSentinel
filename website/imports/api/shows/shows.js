@@ -423,7 +423,9 @@ Shows.helpers({
   },
 
   nextEpisodeInterval(translationType) {
-    invalidateMinute.depend();
+    if (Meteor.isClient) {
+      invalidateMinute.depend();
+    }
     return Math.round(
       moment.duration(moment.utc(this.nextEpisodeDate(translationType)) - moment.utc()).asMinutes()
     );
@@ -435,6 +437,9 @@ Shows.helpers({
   },
 
   expired() {
+    if (Meteor.isClient) {
+      invalidateMinute.depend();
+    }
     let now = moment();
     return (!this.locked() && (!this.lastUpdateStart || moment(this.lastUpdateEnd).add(Shows.timeUntilRecache) < now)) ||
             (this.locked() && moment(this.lastUpdateStart).add(Shows.maxUpdateTime) < now);

@@ -109,6 +109,9 @@ if (Meteor.isDevelopment) {
 // Helpers
 Searches.helpers({
   expired() {
+    if (Meteor.isClient) {
+      invalidateMinute.depend();
+    }
     let now = moment();
     return (!this.busy() && (!this.lastSearchStart || moment(this.lastSearchEnd).add(Searches.timeUntilRecache) < now)) ||
             (this.busy() && moment(this.lastSearchStart).add(Searches.maxSearchTime) < now);

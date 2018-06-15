@@ -34,6 +34,7 @@
                 </p>
               </div>
               <div class="col s12 m5">
+
                 <ul class="collection">
                   {{#each episodesToWatch this}}
                     <a href="{{pathFor 'episode' showId=showId translationType=translationType episodeNumStart=episodeNumStart episodeNumEnd=episodeNumEnd notes=notesEncoded}}" class="collection-item">
@@ -50,7 +51,30 @@
                     </li>
                   {{/if}}
                 </ul>
-                <a class="waves-effect waves-light btn reload-show-btn" data-showid="{{_id}}">Attempt Show Update</a>
+
+                <div class="flex-row">
+                  <div class="flex-col-center">
+                    <a class="waves-effect waves-light btn reload-show-btn {{#unless expired}}disabled{{/unless}}" data-showid="{{_id}}">Attempt Show Update</a>
+                  </div>
+                  {{#if locked}}
+                    <div class="flex-col-sides reload-show-spinner-col">
+                      <div class="preloader-wrapper small active">
+                        <div class="spinner-layer">
+                          <div class="circle-clipper left">
+                            <div class="circle"></div>
+                          </div>
+                          <div class="gap-patch">
+                            <div class="circle"></div>
+                          </div>
+                          <div class="circle-clipper right">
+                            <div class="circle"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {{/if}}
+                </div>
+
               </div>
             </div>
           </li>
