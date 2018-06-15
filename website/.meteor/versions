@@ -38,6 +38,7 @@ cfs:worker@0.1.5
 check@1.3.1
 coffeescript@1.0.17
 dburles:collection-helpers@1.1.0
+dburles:mongo-collection-instances@0.3.1
 ddp@1.4.0
 ddp-client@2.3.2
 ddp-common@1.4.0
@@ -90,6 +91,7 @@ mongo-id@1.0.7
 mongo-livedata@1.0.12
 mozfet:autoform-materialize@3.6.3
 mozfet:materialize-icons@0.0.4
+msavin:mongol@0.5.5
 npm-bcrypt@0.9.3
 npm-mongo@2.2.34
 observe-sequence@1.0.16
