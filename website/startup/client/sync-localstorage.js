@@ -1,4 +1,4 @@
-Meteor.autorun(() => {
+Tracker.autorun(() => {
   if (Meteor.user() && typeof Meteor.user().storage !== 'undefined') {
     let userStorageKeys = Object.keys(Meteor.user().storage);
 
