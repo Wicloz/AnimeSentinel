@@ -14,8 +14,8 @@ es5-shim@4.7.0
 ecmascript@0.10.6
 shell-server@0.3.1
 
-session@1.1.7
-reactive-dict@1.2.0
+session
+reactive-dict
 simply:reactive-local-storage
 
 fourseven:scss
@@ -50,3 +50,4 @@ awatson1978:browser-detection
 meteorhacks:inject-initial
 mixmax:smart-disconnect
 msavin:mongol
+underscore
