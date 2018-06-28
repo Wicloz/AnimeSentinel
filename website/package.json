@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0-beta.51",
+    "autoprefixer": "^8.6.4",
     "bcrypt": "^2.0.0",
     "cheerio": "^1.0.0-rc.2",
     "cloudscraper": "^1.5.0",
@@ -14,6 +15,8 @@
     "materialize-css": "^0.100.2",
     "meteor-node-stubs": "^0.4.1",
     "moment-timezone": "^0.5.14",
+    "postcss": "^6.0.23",
+    "postcss-load-config": "^1.2.0",
     "request": "^2.83.0",
     "segfault-handler": "^1.0.0",
     "simpl-schema": "^1.4.2",
@@ -32,10 +35,5 @@
         ]
       }
     }
-  },
-  "devDependencies": {
-    "autoprefixer": "^8.6.4",
-    "postcss": "^6.0.23",
-    "postcss-load-config": "^1.2.0"
   }
 }
