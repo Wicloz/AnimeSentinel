@@ -5,13 +5,13 @@
       {{#autoForm schema='Schemas.episodeSelection' id='episodeSelectionForm' autosave=true preserveForm=false}}
         <div class="flex-row">
           <div class="flex-col-sides btn-select-prev-col">
-            <button class="waves-effect waves-teal btn btn-select-prev {{#unless previousEpisode}}disabled{{/unless}}">{{>tooltippedIcon icon='chevron_left' text='Previous Episode' position='right'}}</button>
+            <!--<button class="waves-effect waves-teal btn btn-select-prev {{#unless previousEpisode}}disabled{{/unless}}">{{>tooltippedIcon icon='chevron_left' text='Previous Episode' position='right'}}</button>-->
           </div>
           <div class="flex-col-center select-episode-number-col">
             {{> afQuickField name='episodeNumber' options=episodeSelectionOptions defaultValue=episodeSelectionDefaultValue id='episodeNumberSelection'}}
           </div>
           <div class="flex-col-sides btn-select-next-col">
-            <button class="waves-effect waves-teal btn btn-select-next {{#unless nextEpisode}}disabled{{/unless}}">{{>tooltippedIcon icon='chevron_right' text='Next Episode' position='left'}}</button>
+            <!--<button class="waves-effect waves-teal btn btn-select-next {{#unless nextEpisode}}disabled{{/unless}}">{{>tooltippedIcon icon='chevron_right' text='Next Episode' position='left'}}</button>-->
           </div>
         </div>
       {{/autoForm}}
@@ -152,19 +152,19 @@
                 {{#each flag in episode.flags}}
                   {{#if showIcon flag}}
                     {{#if $eq flag 'x-frame-options'}}
-                      {{>tooltippedIcon icon='block' iconClass='right' text='Abuses X-Frame-Options' position='right'}}
+                      <!--{{>tooltippedIcon icon='block' iconClass='right' text='Abuses X-Frame-Options' position='right'}}-->
                     {{/if}}
                     {{#if $eq flag 'cloudflare'}}
-                      {{>tooltippedIcon icon='cloud_off' iconClass='right' text='Uses Cloudflare Filtering' position='right'}}
+                      <!--{{>tooltippedIcon icon='cloud_off' iconClass='right' text='Uses Cloudflare Filtering' position='right'}}-->
                     {{/if}}
                     {{#if $eq flag 'mixed-content'}}
-                      {{>tooltippedIcon icon='lock_open' iconClass='right' text='Has Mixed Content' position='right'}}
+                      <!--{{>tooltippedIcon icon='lock_open' iconClass='right' text='Has Mixed Content' position='right'}}-->
                     {{/if}}
                     {{#if $eq flag 'flash'}}
-                      {{>tooltippedIcon icon='flash_off' iconClass='right' text='Uses Flash Player' position='right'}}
+                      <!--{{>tooltippedIcon icon='flash_off' iconClass='right' text='Uses Flash Player' position='right'}}-->
                     {{/if}}
                     {{#if $eq flag 'requires-plugins'}}
-                      {{>tooltippedIcon icon='layers_clear' iconClass='right' text='Requires Plugin Access' position='right'}}
+                      <!--{{>tooltippedIcon icon='layers_clear' iconClass='right' text='Requires Plugin Access' position='right'}}-->
                     {{/if}}
                   {{/if}}
                 {{/each}}

@@ -1,22 +1,15 @@
 @charset "UTF-8";
-@import "../node_modules/materialize-css/sass/components/color";
+@import "../node_modules/bootstrap/scss/functions";
 
 ////////////////////////////
 // Custom Variables Start //
 ////////////////////////////
 
-// Other colors
-$text-color: #000 !default;
-$background-color: #eee !default;
 
-// Spacing
-$spacer: 15px !default;
 
 //////////////////////////
 // Custom Variables End //
 //////////////////////////
 
-@import "../node_modules/materialize-css/sass/components/variables";
-
-// Missing Media Query Ranges
-$large-only: "only screen and (min-width : #{$medium-screen-up}) and (max-width : #{$large-screen})" !default;
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins";

@@ -33,21 +33,17 @@ aldeed:collection2
 aldeed:schema-index
 dburles:collection-helpers
 
-mozfet:materialize-icons
-mozfet:autoform-materialize
-aldeed:autoform
-
 cfs:standard-packages
 cfs:gridfs
 
 accounts-password
-useraccounts:materialize
+useraccounts:bootstrap
 useraccounts:flow-routing
 email
 
 johnantoni:meteor-appear
 awatson1978:browser-detection
-meteorhacks:inject-initial
 mixmax:smart-disconnect
 msavin:mongol
 underscore
+aldeed:autoform
