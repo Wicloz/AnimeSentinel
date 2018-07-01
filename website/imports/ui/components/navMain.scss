@@ -1,17 +1,6 @@
 @import "../../../client/_vars.scss";
 
-.navbar-fixed {
+.navbar-padder {
+  height: $nav-link-height + $spacer;
   margin-bottom: $spacer;
-}
-
-.nav-breadcrumbs {
-  text-align: center;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  direction: rtl;
-
-  .hidden {
-    font-size: 0;
-  }
 }

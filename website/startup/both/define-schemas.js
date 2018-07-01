@@ -55,7 +55,7 @@ Schemas.translationTypeSelection = new SimpleSchema({
         {label: 'Raws', value: 'raw'}
       ],
       type: 'select-radio-inline',
-      label: false
+      label: 'Select preferred episode type:'
     }
   }
 }, { tracker: Tracker });

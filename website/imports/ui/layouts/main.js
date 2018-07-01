@@ -1,6 +1,5 @@
 import './main.html';
 import '/imports/ui/components/navMain.js';
-import '/imports/ui/components/superNote.js';
 import '/imports/ui/components/footer.js';
 
 Template.layouts_main.onCreated(function() {
@@ -8,7 +7,7 @@ Template.layouts_main.onCreated(function() {
   Session.set('BreadCrumbs', JSON.stringify([]));
   this.autorun(() => {
     document.title = JSON.parse(Session.get('BreadCrumbs')).reduce((total, breadCrumb) => {
-      return total + breadCrumb.name + ' > ';
+      return total + breadCrumb.name + ' / ';
     }, '') + Session.get('PageTitle')
   });
 });

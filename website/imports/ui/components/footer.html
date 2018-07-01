@@ -1,32 +1,28 @@
 <template name="components_footer">
-  <div class="container">
-
-    <div class="row">
-      <div class="col m6 s12">
-        <h5 class="white-text">
-          <i class="material-icons">settings</i>
-          Settings
-        </h5>
-        Select preferred episode type:
-        {{#autoForm schema='Schemas.translationTypeSelection' id='translationTypeSelectionForm' autosave=true}}
-          {{> afQuickField name='translationType' value=($GetStorageItem 'SelectedTranslationType')}}
-        {{/autoForm}}
-      </div>
-      <div class="col m6 s12">
-        <h5 class="white-text">
-          <i class="material-icons">link</i>
-          Connect
-        </h5>
-        <iframe src="https://ghbtns.com/github-btn.html?user=Wicloz&repo=AnimeSentinel&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
-        <iframe src="https://ghbtns.com/github-btn.html?user=Wicloz&repo=AnimeSentinel&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px"></iframe></div>
-    </div>
-
-  </div>
-  <div class="footer-copyright">
+  <div class="bg-dark text-white-50 footer">
     <div class="container">
+      <div class="row">
 
-      <!--TODO-->
+        <div class="col-sm">
+          <h5>
+            <i class="fas fa-cog"></i>
+            Settings
+          </h5>
+          {{#autoForm schema='Schemas.translationTypeSelection' id='translationTypeSelectionForm' autosave=true}}
+            {{> afQuickField name='translationType' value=($GetStorageItem 'SelectedTranslationType')}}
+          {{/autoForm}}
+        </div>
 
+        <div class="col-sm">
+          <h5>
+            <i class="fas fa-link"></i>
+            Connect
+          </h5>
+          <iframe src="https://ghbtns.com/github-btn.html?user=Wicloz&repo=AnimeSentinel&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+          <iframe src="https://ghbtns.com/github-btn.html?user=Wicloz&repo=AnimeSentinel&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+        </div>
+
+      </div>
     </div>
   </div>
 </template>
