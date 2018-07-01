@@ -1,1 +1,11 @@
 @import "vars";
+
+.removed {
+  display: none !important;
+  user-select: none !important;
+}
+
+.hidden {
+  visibility: hidden !important;
+  user-select: none !important;
+}
