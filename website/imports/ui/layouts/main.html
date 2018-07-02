@@ -30,6 +30,19 @@
     </nav>
     <div class="navbar-padder"></div>
 
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          {{#each breadCrumbs}}
+            <li class="breadcrumb-item">
+              <a href="{{url}}">{{name}}</a>
+            </li>
+          {{/each}}
+          <li class="breadcrumb-item active" aria-current="page">{{pageTitle}}</li>
+        </ol>
+      </nav>
+    </div>
+
   </header>
   <main>
 

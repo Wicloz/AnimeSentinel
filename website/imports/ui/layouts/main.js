@@ -29,6 +29,16 @@ Template.layouts_main.onRendered(function() {
   }, '*');
 });
 
+Template.layouts_main.helpers({
+  pageTitle() {
+    return Session.get('PageTitle');
+  },
+
+  breadCrumbs() {
+    return JSON.parse(Session.get('BreadCrumbs'));
+  }
+});
+
 AutoForm.hooks({
   translationTypeSelectionForm: {
     onSubmit(insertDoc) {
