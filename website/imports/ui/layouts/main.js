@@ -18,6 +18,7 @@ Template.layouts_main.onCreated(function() {
 });
 
 Template.layouts_main.onRendered(function() {
+  // Communicate with the add on
   window.addEventListener('message', (event) => {
     if (event.data && event.data.direction === 'from-content-script' && event.data.message === 'ready') {
       Session.set('AddOnInstalled', true)
