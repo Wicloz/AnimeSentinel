@@ -33,9 +33,9 @@
     <div class="container">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          {{#each breadCrumbs}}
+          {{#each breadCrumb in breadCrumbs}}
             <li class="breadcrumb-item">
-              <a href="{{url}}">{{name}}</a>
+              <a href="{{breadCrumb.url}}">{{breadCrumb.name}}</a>
             </li>
           {{/each}}
           <li class="breadcrumb-item active" aria-current="page">{{pageTitle}}</li>
@@ -55,7 +55,7 @@
       <div class="container">
         <div class="row">
 
-          <div class="col-sm">
+          <div class="col-sm-5">
             <h5>
               <i class="fas fa-cog"></i>
               Settings
@@ -65,13 +65,22 @@
             {{/autoForm}}
           </div>
 
-          <div class="col-sm">
+          <div class="col-sm-5">
             <h5>
               <i class="fas fa-link"></i>
               Connect
             </h5>
             <iframe src="https://ghbtns.com/github-btn.html?user=Wicloz&repo=AnimeSentinel&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
             <iframe src="https://ghbtns.com/github-btn.html?user=Wicloz&repo=AnimeSentinel&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+          </div>
+
+          <div class="col-sm-2">
+            <div class="float-right">
+              <img class="loading-indicator-background-stub hidden" src="/media/loading.gif" alt="Loading...">
+              {{#if loadingBackground}}
+                <img class="loading-indicator-background" src="/media/loading.gif" alt="Loading...">
+              {{/if}}
+            </div>
           </div>
 
         </div>

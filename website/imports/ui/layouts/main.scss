@@ -1,5 +1,22 @@
 @import "../../../client/_vars.scss";
 
+html, body, #__blaze-root {
+  height: 100%;
+}
+
+#__blaze-root {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+header, footer {
+  flex: 0 0 auto;
+}
+
 .navbar-padder {
   height: $nav-link-height + $spacer;
   margin-bottom: $spacer;
@@ -7,4 +24,13 @@
 
 .footer {
   padding-top: $spacer;
+}
+
+.loading-indicator-background {
+  position: fixed;
+  bottom: $spacer;
+}
+
+.loading-indicator-background-stub {
+  margin-bottom: $spacer;
 }

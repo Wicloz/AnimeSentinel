@@ -36,6 +36,10 @@ Template.layouts_main.helpers({
 
   breadCrumbs() {
     return JSON.parse(Session.get('BreadCrumbs'));
+  },
+
+  loadingBackground() {
+    return Session.get('LoadingBackground');
   }
 });
 
