@@ -2,7 +2,6 @@ import './show.html';
 import {Shows} from '/imports/api/shows/shows.js';
 import {Episodes} from "../../api/episodes/episodes";
 import Streamers from "../../streamers/streamers";
-import '/imports/ui/components/carousel.js';
 import ScrapingHelpers from '../../streamers/scrapingHelpers';
 import {WatchStates} from '../../api/watchstates/watchstates';
 
