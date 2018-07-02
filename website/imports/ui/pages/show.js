@@ -1,6 +1,5 @@
 import './show.html';
 import {Shows} from '/imports/api/shows/shows.js';
-import '/imports/ui/components/loadingIndicatorBackground.js';
 import {Episodes} from "../../api/episodes/episodes";
 import Streamers from "../../streamers/streamers";
 import '/imports/ui/components/carousel.js';

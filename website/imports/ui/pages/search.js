@@ -1,7 +1,6 @@
 import './search.html';
 import {Searches} from "../../api/searches/searches";
 import { Shows } from '/imports/api/shows/shows.js';
-import '/imports/ui/components/loadingIndicatorBackground.js';
 import '/imports/ui/components/image.js';
 
 Template.pages_search.onCreated(function() {
