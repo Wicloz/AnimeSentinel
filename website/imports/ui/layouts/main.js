@@ -1,6 +1,4 @@
 import './main.html';
-import '/imports/ui/components/navMain.js';
-import '/imports/ui/components/footer.js';
 
 Template.layouts_main.onCreated(function() {
   // TODO: Use a more general SEO solution
@@ -9,6 +7,13 @@ Template.layouts_main.onCreated(function() {
     document.title = JSON.parse(Session.get('BreadCrumbs')).reduce((total, breadCrumb) => {
       return total + breadCrumb.name + ' / ';
     }, '') + Session.get('PageTitle')
+  });
+
+  // Set the initially selected translation type
+  this.autorun(() => {
+    if (typeof getStorageItem('SelectedTranslationType') === 'undefined') {
+      setStorageItem('SelectedTranslationType', 'sub');
+    }
   });
 });
 
@@ -22,4 +27,14 @@ Template.layouts_main.onRendered(function() {
     direction: 'from-page-script',
     message: 'ready'
   }, '*');
+});
+
+AutoForm.hooks({
+  translationTypeSelectionForm: {
+    onSubmit(insertDoc) {
+      setStorageItem('SelectedTranslationType', insertDoc.translationType);
+      this.done();
+      return false;
+    }
+  }
 });
