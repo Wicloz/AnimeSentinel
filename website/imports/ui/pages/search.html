@@ -30,9 +30,9 @@
         {{#each show in shows}}
 
           <a class="card card-show-item" href="{{pathFor 'show' showId=show._id}}">
-            <div class="card-img-top">
-              {{>components_image src=show.getThumbnailUrls.[0] caption=show.name class="card-img-img"}}
-              <div class="card-img-info card-img-info-left">
+            {{>components_image src=show.getThumbnailUrls.[0] caption=show.name class="card-img-top"}}
+            <div class="card-img-info">
+              <div class="card-img-info-left">
                 {{$dot show.availableEpisodes ($GetStorageItem 'SelectedTranslationType')}}
                 {{#if $exists show.episodeCount}}
                   / {{show.episodeCount}}
@@ -40,7 +40,7 @@
                 <abbr title="episodes">eps</abbr>
               </div>
               {{#if show.season}}
-                <div class="card-img-info card-img-info-right">
+                <div class="card-img-info-right">
                   {{displaySeason show.season}}
                 </div>
               {{/if}}

@@ -17,45 +17,38 @@
     font-size: $font-size-sm;
     background-color: $dark;
 
-    .card-body {
-      padding: 0;
+    .card-img-top {
+      height: 220px;
+      width: auto;
+      margin: 0 auto $font-size-sm * -1.5;
     }
 
-    .card-img-top {
-      position: relative;
-      overflow: hidden;
-      min-width: 150px;
-      width: auto;
+    .card-img-info {
+      display: flex;
+      justify-content: space-between;
 
-      .card-img-img {
-        height: 220px;
-        width: auto;
-        margin-right: auto;
-        margin-left: auto;
-        display: block;
-      }
-
-      .card-img-info {
-        position: absolute;
-        bottom: 0;
+      & > * {
         height: 0;
-        border-bottom: 21px transparentize($dark, 0.1) solid;
+        border-bottom: $font-size-sm * 1.5 transparentize($dark, 0.1) solid;
+        flex: 0 0 auto;
         white-space: nowrap;
       }
 
       .card-img-info-left {
-        left: 0;
         border-right: 10px transparent solid;
         padding-right: 1px;
         padding-left: 3px;
       }
 
       .card-img-info-right {
-        right: 0;
         border-left: 10px transparent solid;
         padding-left: 1px;
         padding-right: 3px;
       }
+    }
+
+    .card-body {
+      padding: 0 3px;
     }
   }
 
