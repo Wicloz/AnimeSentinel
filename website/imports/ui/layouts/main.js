@@ -3,6 +3,7 @@ import './main.html';
 Template.layouts_main.onCreated(function() {
   // TODO: Use a more general SEO solution
   Session.set('BreadCrumbs', JSON.stringify([]));
+  Session.set('PageTitle', 'AnimeSentinel');
   this.autorun(() => {
     document.title = JSON.parse(Session.get('BreadCrumbs')).reduce((total, breadCrumb) => {
       return total + breadCrumb.name + ' / ';

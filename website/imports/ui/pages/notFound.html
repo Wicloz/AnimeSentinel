@@ -1,18 +1,33 @@
 <template name="pages_notFound">
   <div class="container">
 
-    <div class="card-panel">
-      <h1 class="card-title">Page Not Found</h1>
-      {{#if breadCrumbsWithUrl}}
-        <p class="flow-text">
-          Try going back to one of the following pages:
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Page Not Found</h5>
+
+        {{#if breadCrumbsWithUrl}}
+          <p class="card-text">
+            Try going back to one of the following pages:
+            <div class="list-group">
+              {{#each breadCrumbsWithUrl}}
+                <a href="{{url}}" class="list-group-item list-group-item-action">{{name}}</a>
+              {{/each}}
+            </div>
+          </p>
+        {{/if}}
+
+        <p class="card-text">
+          {{#if breadCrumbsWithUrl}}
+            Or return to the home page:
+          {{else}}
+            Return to the home page:
+          {{/if}}
+          <div class="list-group">
+            <a href="{{pathFor 'welcome'}}" class="list-group-item list-group-item-action">Home</a>
+          </div>
         </p>
-        <div class="collection">
-          {{#each breadCrumbsWithUrl}}
-            <a href="{{url}}" class="collection-item">{{name}}</a>
-          {{/each}}
-        </div>
-      {{/if}}
+
+      </div>
     </div>
 
   </div>
