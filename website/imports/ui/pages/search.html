@@ -4,7 +4,7 @@
     <div class="card">
       <div class="card-body">
         {{#autoForm schema='Schemas.Search' id='animeSearchFormQuery' autosave=true autosaveOnKeyup=true}}
-          {{> afQuickField name='query'}}
+          {{> afQuickField name='query' value=searchOptions.query}}
         {{/autoForm}}
       </div>
     </div>
@@ -16,11 +16,11 @@
       </div>
       <div class="card-body collapse" id="animeSearchFormOptionsCollapse">
         {{#autoForm schema='Schemas.Search' id='animeSearchFormOptions' autosave=true}}
-          {{> afQuickField name='types'}}
-          {{> afQuickField name='includeTypes'}}
-          {{> afQuickField name='genres'}}
-          {{> afQuickField name='includeGenres'}}
-          <button type="reset" class="btn btn-primary">Reset</button>
+          {{> afQuickField name='types' value=searchOptions.types}}
+          {{> afQuickField name='includeTypes' value=searchOptions.includeTypes}}
+          {{> afQuickField name='genres' value=searchOptions.genres}}
+          {{> afQuickField name='includeGenres' value=searchOptions.includeGenres}}
+          <button type="button" class="btn btn-primary" id="animeSearchFormOptionsReset">Reset</button>
         {{/autoForm}}
       </div>
     </div>

@@ -13,48 +13,45 @@ Template.pages_search.onCreated(function() {
 
   this.state = new ReactiveDict();
   this.state.setDefault({
-    searchQuery: undefined,
-    searchOptions: {},
     searchLimit: this.limitIncrement
   });
 
   // Local functions
-  this.getCombinedSearchOptions = function() {
-    let combinedSearchOptions = this.state.get('searchOptions');
-    combinedSearchOptions.query = this.state.get('searchQuery');
-    return combinedSearchOptions;
+  this.getSearchOptions = function() {
+    FlowRouter.watchPathChange();
+    return FlowRouter.current().queryParams;
   };
 
   this.isSearching = function() {
-    let currentSearch = Searches.queryWithSearch(this.getCombinedSearchOptions()).fetch()[0];
+    let currentSearch = Searches.queryWithSearch(this.getSearchOptions()).fetch()[0];
     return currentSearch && currentSearch.busy();
   };
 
   this.canLoadMoreShows = function() {
-    return Shows.querySearch(this.getCombinedSearchOptions(), this.state.get('searchLimit')).count() >= this.state.get('searchLimit');
+    return Shows.querySearch(this.getSearchOptions(), this.state.get('searchLimit')).count() >= this.state.get('searchLimit');
   };
 
   // Subscribe to searches based on search options
   this.autorun(() => {
-    this.subscribe('searches.withSearch', this.getCombinedSearchOptions());
+    this.subscribe('searches.withSearch', this.getSearchOptions());
     this.state.set('searchLimit', this.limitIncrement);
   });
 
   // Search when the subscription is ready
   this.autorun(() => {
-    if (this.subscriptionsReady() || Searches.queryWithSearch(this.getCombinedSearchOptions()).count()) {
-      Meteor.call('searches.startSearch', this.getCombinedSearchOptions());
+    if (this.subscriptionsReady() || Searches.queryWithSearch(this.getSearchOptions()).count()) {
+      Meteor.call('searches.startSearch', this.getSearchOptions());
     }
   });
 
   // Subscribe to shows based on search options and limit
   this.autorun(() => {
-    this.subscribe('shows.search', this.getCombinedSearchOptions(), this.state.get('searchLimit'));
+    this.subscribe('shows.search', this.getSearchOptions(), this.state.get('searchLimit'));
   });
 
   // Subscribe to thumbnails for all shows
   this.autorun(() => {
-    this.subscribe('thumbnails.withHashes', Shows.querySearch(this.getCombinedSearchOptions(), this.state.get('searchLimit')).fetch().reduce((total, show) => {
+    this.subscribe('thumbnails.withHashes', Shows.querySearch(this.getSearchOptions(), this.state.get('searchLimit')).fetch().reduce((total, show) => {
       return total.concat(show.thumbnails);
     }, []));
   });
@@ -75,11 +72,15 @@ Template.pages_search.onDestroyed(function() {
 
 Template.pages_search.helpers({
   shows() {
-    return Shows.querySearch(Template.instance().getCombinedSearchOptions(), Template.instance().state.get('searchLimit'));
+    return Shows.querySearch(Template.instance().getSearchOptions(), Template.instance().state.get('searchLimit'));
   },
 
   showsLoading() {
     return !Template.instance().subscriptionsReady() || Template.instance().isSearching() || Template.instance().canLoadMoreShows();
+  },
+
+  searchOptions() {
+    return Template.instance().getSearchOptions();
   }
 });
 
@@ -88,13 +89,29 @@ Template.pages_search.events({
     if (Template.instance().subscriptionsReady() && Template.instance().canLoadMoreShows()) {
       Template.instance().state.set('searchLimit', Template.instance().state.get('searchLimit') + Template.instance().limitIncrement);
     }
+  },
+
+  'click #animeSearchFormOptionsReset'(event) {
+    let reset = {};
+    Object.keys(FlowRouter.current().queryParams).forEach((key) => {
+      if (key !== 'query') {
+        reset[key] = null;
+      }
+    });
+    FlowRouter.withReplaceState(() => {
+      FlowRouter.setQueryParams(reset);
+    });
   }
 });
 
 AutoForm.hooks({
   animeSearchFormQuery: {
     onSubmit(insertDoc) {
-      this.template.view.parentView.parentView._templateInstance.state.set('searchQuery', insertDoc.query);
+      FlowRouter.withReplaceState(() => {
+        FlowRouter.setQueryParams({
+          query: insertDoc.query
+        });
+      });
       this.done();
       return false;
     }
@@ -102,8 +119,22 @@ AutoForm.hooks({
 
   animeSearchFormOptions: {
     onSubmit(insertDoc) {
-      console.log(insertDoc);
-      this.template.view.parentView.parentView._templateInstance.state.set('searchOptions', insertDoc);
+      // Remove missing parameters
+      Object.keys(FlowRouter.current().queryParams).forEach((key) => {
+        if (key !== 'query' && !insertDoc.hasOwnProperty(key)) {
+          insertDoc[key] = null;
+        }
+      });
+      // Remove default parameters
+      Object.keys(insertDoc).forEach((key) => {
+        if (Schemas.Search._schema[key].defaultValue === insertDoc[key]) {
+          insertDoc[key] = null;
+        }
+      });
+
+      FlowRouter.withReplaceState(() => {
+        FlowRouter.setQueryParams(insertDoc);
+      });
       this.done();
       return false;
     }
