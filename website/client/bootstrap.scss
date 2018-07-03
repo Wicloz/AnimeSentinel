@@ -13,6 +13,8 @@
 }
 
 .btn-unstyled {
+  user-select: none;
+
   &:disabled, &.disabled {
     pointer-events: none;
   }
