@@ -33,8 +33,7 @@ Schemas.Search = new SimpleSchema({
       return this.value.cleanQuery();
     },
     autoform: {
-      icon: 'search',
-      label: 'Search Anime',
+      label: 'Search Anime:',
       autocomplete: 'off',
       type: 'search'
     }
@@ -47,8 +46,7 @@ Schemas.Search = new SimpleSchema({
     defaultValue: [],
     autoform: {
       options: 'allowed',
-      type: 'select-checkbox',
-      class: 'filled-in'
+      type: 'select-checkbox-inline'
     }
   },
   'types.$': {
@@ -61,9 +59,14 @@ Schemas.Search = new SimpleSchema({
     optional: true,
     defaultValue: true,
     autoform: {
-      type: 'switch',
-      trueLabel: 'Include',
-      falseLabel: 'Exclude'
+      type: 'select-radio-inline',
+      options: [{
+        label: 'Include', value: 'true'
+      }, {
+        label: 'Exclude', value: 'false'
+      }],
+      defaultValue: 'true',
+      label: false
     }
   },
 
@@ -74,8 +77,7 @@ Schemas.Search = new SimpleSchema({
     defaultValue: [],
     autoform: {
       options: 'allowed',
-      type: 'select-checkbox',
-      class: 'filled-in'
+      type: 'select-checkbox-inline'
     }
   },
   'genres.$': {
@@ -88,9 +90,14 @@ Schemas.Search = new SimpleSchema({
     optional: true,
     defaultValue: true,
     autoform: {
-      type: 'switch',
-      trueLabel: 'Include',
-      falseLabel: 'Exclude'
+      type: 'select-radio-inline',
+      options: [{
+        label: 'Include', value: 'true'
+      }, {
+        label: 'Exclude', value: 'false'
+      }],
+      defaultValue: 'true',
+      label: false
     }
   }
 }, { tracker: Tracker });

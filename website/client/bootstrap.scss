@@ -1,2 +1,43 @@
 @import "vars";
 @import "../node_modules/bootstrap/scss/bootstrap";
+
+.card {
+  margin-bottom: $spacer;
+}
+
+.accordion {
+  margin-bottom: $spacer;
+  .card {
+    margin-bottom: unset;
+  }
+}
+
+.btn-unstyled {
+  &:disabled, &.disabled {
+    pointer-events: none;
+  }
+
+  &:not(:disabled):not(.disabled) {
+    cursor: pointer;
+  }
+}
+
+.btn-collapse {
+  .fa-caret-right {
+    transition: transform 0.3s;
+  }
+
+  &:not(.collapsed) {
+    .fa-caret-right {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.card-header.collapsed {
+  border-bottom: none;
+
+  & + .collapsing {
+    border-top: $card-border-width solid $card-border-color;
+  }
+}

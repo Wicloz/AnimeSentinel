@@ -1,86 +1,69 @@
 <template name="pages_search">
   <div class="container">
 
-    <div class="card-panel">
-      {{#autoForm schema='Schemas.Search' id='animeSearchFormQuery' autosave=true autosaveOnKeyup=true}}
-        {{> afQuickField name='query'}}
-      {{/autoForm}}
+    <div class="card">
+      <div class="card-body">
+        {{#autoForm schema='Schemas.Search' id='animeSearchFormQuery' autosave=true autosaveOnKeyup=true}}
+          {{> afQuickField name='query'}}
+        {{/autoForm}}
+      </div>
     </div>
 
-    <ul class="collapsible card-panel" data-collapsible="expandable">
-      <li>
-        <div class="collapsible-header collapsible-header-dropdown">
-          <i class="material-icons">arrow_drop_down</i>
-          More Search Options
-        </div>
-        <div class="collapsible-body">
-          {{#autoForm schema='Schemas.Search' id='animeSearchFormOptions' autosave=true}}
-            {{> afQuickField name='types'}}
-            {{> afQuickField name='includeTypes'}}
-            {{> afQuickField name='genres'}}
-            {{> afQuickField name='includeGenres'}}
-            <div class="row">
-              <div class="col s12">
-                <button class="btn waves-effect waves-light" type="reset">
-                  Reset
-                  <i class="material-icons right">settings_backup_restore</i>
-                </button>
+    <div class="card">
+      <div class="card-header collapsed btn-unstyled btn-collapse" data-toggle="collapse" data-target="#animeSearchFormOptionsCollapse" aria-expanded="false" aria-controls="animeSearchFormOptionsCollapse">
+        <i class="fas fa-caret-right"></i>
+        More Search Options
+      </div>
+      <div class="card-body collapse" id="animeSearchFormOptionsCollapse">
+        {{#autoForm schema='Schemas.Search' id='animeSearchFormOptions' autosave=true}}
+          {{> afQuickField name='types'}}
+          {{> afQuickField name='includeTypes'}}
+          {{> afQuickField name='genres'}}
+          {{> afQuickField name='includeGenres'}}
+          <button type="reset" class="btn btn-primary">Reset</button>
+        {{/autoForm}}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body card-show-container">
+        {{#each show in shows}}
+
+          <a class="card card-show-item" href="{{pathFor 'show' showId=show._id}}">
+            <div class="card-img-top">
+              {{>components_image src=show.getThumbnailUrls.[0] caption=show.name class="card-img-img"}}
+              <div class="card-img-info card-img-info-left">
+                {{$dot show.availableEpisodes ($GetStorageItem 'SelectedTranslationType')}}
+                {{#if $exists show.episodeCount}}
+                  / {{show.episodeCount}}
+                {{/if}}
+                <abbr title="episodes">eps</abbr>
               </div>
+              {{#if show.season}}
+                <div class="card-img-info card-img-info-right">
+                  {{displaySeason show.season}}
+                </div>
+              {{/if}}
             </div>
-          {{/autoForm}}
-        </div>
-      </li>
-    </ul>
-
-    <div class="card-panel">
-      <ul class="collection">
-        {{#each shows}}
-
-          <!--TODO: Make this display better-->
-          <li class="collection-item">
-            <div class="row">
-              <div class="col s12 m2">
-                {{>components_image src=this.getThumbnailUrls.[0] caption=name class="responsive-img materialboxed"}}
-              </div>
-              <div class="col s12 m10">
-                <p>
-                  <a href="{{pathFor 'show' showId=_id}}">{{name}}</a>
-                </p>
-                <p>[{{altNames}}]</p>
-                <p>{{{description}}}</p>
-                <p>MAL ID: {{malId}}</p>
-                <p>Type: {{type}}</p>
-                <p>Genres: [{{genres}}]</p>
-                <p>
-                  Airing:
-                  {{displayAiringDate airedStart}} - {{displayAiringDate airedEnd}}
-                </p>
-                <p>Season: {{displaySeason season}}</p>
-                <p>Episodes: {{episodeCount}}</p>
-                <p>
-                  {{#each streamerUrls}}
-                    <a target="_blank" rel="noopener" href="{{url}}">{{streamerId}} ({{type}})</a>;
-                  {{/each}}
-                </p>
-              </div>
+            <div class="card-body d-flex align-items-center">
+              <p class="card-text text-center w-100">{{show.name}}</p>
             </div>
-          </li>
+          </a>
 
-        {{else}}
-          <li class="collection-item center">
-            <p class="flow-text">
-              No Results Found
-            </p>
-          </li>
+        {{else if $not showsLoading}}
+          <div class="alert alert-info text-center w-100" role="alert">
+            No Results Found
+          </div>
         {{/each}}
 
-        <li class="collection-item center {{#unless showsLoading}}removed{{/unless}}" id="load-more-results">
+        <div class="alert alert-info text-center w-100 {{#unless showsLoading}}removed{{/unless}}" role="alert" id="load-more-results">
           <div class="progress">
-            <div class="indeterminate"></div>
+            <div class="progress-bar progress-bar-striped progress-bar-animated w-100" role="progressbar"></div>
           </div>
-          <span>Loading More Results ...</span>
-        </li>
-      </ul>
+          Loading More Results ...
+        </div>
+
+      </div>
     </div>
 
   </div>

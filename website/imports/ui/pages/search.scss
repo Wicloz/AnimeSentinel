@@ -1,19 +1,65 @@
 @import "../../../client/_vars.scss";
 
-#animeSearchFormOptions {
-  .af-checkbox-group p {
-    display: inline-block;
+.card-show-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding-right: $card-spacer-x - $spacer;
+  padding-bottom: 0;
+
+  .card-show-item {
+    flex: 0 0 auto;
+    width: min-content;
+
+    color: $white;
+    text-decoration: none;
+    font-weight: $font-weight-light;
+    font-size: $font-size-sm;
+    background-color: $dark;
+
+    .card-body {
+      padding: 0;
+    }
+
+    .card-img-top {
+      position: relative;
+      overflow: hidden;
+      min-width: 150px;
+      width: auto;
+
+      .card-img-img {
+        height: 220px;
+        width: auto;
+        margin-right: auto;
+        margin-left: auto;
+        display: block;
+      }
+
+      .card-img-info {
+        position: absolute;
+        bottom: 0;
+        height: 0;
+        border-bottom: 21px transparentize($dark, 0.1) solid;
+        white-space: nowrap;
+      }
+
+      .card-img-info-left {
+        left: 0;
+        border-right: 10px transparent solid;
+        padding-right: 1px;
+        padding-left: 3px;
+      }
+
+      .card-img-info-right {
+        right: 0;
+        border-left: 10px transparent solid;
+        padding-left: 1px;
+        padding-right: 3px;
+      }
+    }
+  }
+
+  & > * {
     margin-right: $spacer;
-    width: 120px;
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  .af-checkbox-group p:first-of-type {
-    margin-top: 10px;
-  }
-
-  .switch {
-    margin-bottom: $spacer;
   }
 }
