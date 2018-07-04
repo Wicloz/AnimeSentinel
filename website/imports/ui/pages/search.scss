@@ -18,9 +18,9 @@
     background-color: $dark;
 
     .card-img-top {
-      height: 220px;
+      height: $thumbnail-height;
       width: auto;
-      min-width: 150px;
+      min-width: $thumbnail-height / 1.5;
       margin: 0 auto $font-size-sm * -1.5;
     }
 
