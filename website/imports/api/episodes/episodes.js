@@ -7,6 +7,9 @@ import ScrapingHelpers from '../../streamers/scrapingHelpers';
 // Collection
 export const Episodes = new Mongo.Collection('episodes');
 
+// Constants
+Episodes.validTranslationTypes = ['sub', 'dub', 'raw'];
+
 // Schema
 Schemas.Episode = new SimpleSchema({
   _id: {
@@ -33,7 +36,7 @@ Schemas.Episode = new SimpleSchema({
   },
   translationType: {
     type: String,
-    allowedValues: ['sub', 'dub', 'raw'],
+    allowedValues: Episodes.validTranslationTypes,
     index: true
   },
   streamerId: {

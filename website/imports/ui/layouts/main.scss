@@ -29,6 +29,7 @@ header, footer {
 .loading-indicator-background {
   position: fixed;
   bottom: $spacer;
+  z-index: $zindex-modal-backdrop - 1;
 }
 
 .loading-indicator-background-stub {
