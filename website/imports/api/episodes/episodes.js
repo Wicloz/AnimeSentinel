@@ -1,6 +1,7 @@
 import SimpleSchema from 'simpl-schema';
 import Streamers, {TempShow} from '../../streamers/streamers';
 import {Shows} from '../shows/shows';
+import {WatchStates} from '../watchstates/watchstates';
 import ScrapingHelpers from '../../streamers/scrapingHelpers';
 
 // Collection
@@ -139,6 +140,17 @@ Episodes.helpers({
     return this.episodeNumStart
       + (this.episodeNumStart !== this.episodeNumEnd ? ' - ' + this.episodeNumEnd : '')
       + (this.notes ? ' - ' + this.notes : '');
+  },
+
+  watched() {
+    if (Meteor.userId()) {
+      let show = Shows.findOne(this.showId);
+      if (show && typeof show.malId !== 'undefined') {
+        let watchState = WatchStates.queryUnique(Meteor.userId(), show.malId).fetch()[0];
+        return watchState && watchState.malWatchedEpisodes >= this.episodeNumEnd;
+      }
+    }
+    return false;
   },
 
   mergeEpisode(other) {
