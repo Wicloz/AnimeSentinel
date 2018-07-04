@@ -39,7 +39,7 @@
 .card-header {
   border-bottom: none;
 
-  & + .card-body:not(.collapse), & + .card-body.show {
+  & + *:not(.collapse), & + *.show {
     border-top: $card-border-width solid $card-border-color;
   }
 }
