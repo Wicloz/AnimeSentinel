@@ -36,10 +36,10 @@
   }
 }
 
-.card-header.collapsed {
+.card-header {
   border-bottom: none;
 
-  & + .collapsing {
+  & + .card-body:not(.collapse), & + .card-body.show {
     border-top: $card-border-width solid $card-border-color;
   }
 }
