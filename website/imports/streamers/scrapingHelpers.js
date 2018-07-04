@@ -2,6 +2,10 @@ import {Shows} from "../api/shows/shows";
 import moment from 'moment-timezone';
 
 export default class ScrapingHelpers {
+  static makeTranslationTypeFancy(translationType) {
+    return translationType.replace('dub', 'dubbed').replace('sub', 'subbed').capitalize();
+  }
+
   static replaceDescriptionCutoff(description, oldCutoff) {
     return description.replaceEnd(oldCutoff, Shows.descriptionCutoff);
   }

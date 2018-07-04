@@ -1,4 +1,5 @@
 import moment from 'moment-timezone';
+import ScrapingHelpers from '../../imports/streamers/scrapingHelpers';
 
 Template.registerHelper('$in', (item, ...list) => {
   list.pop();
@@ -120,4 +121,8 @@ Template.registerHelper('$GetStorageItem', (key) => {
 
 Template.registerHelper('$dot', (object, key) => {
   return object[key];
+});
+
+Template.registerHelper('displayTranslationType', (translationType) => {
+  return ScrapingHelpers.makeTranslationTypeFancy(translationType);
 });

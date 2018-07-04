@@ -1,6 +1,7 @@
 import SimpleSchema from 'simpl-schema';
 import Streamers, {TempShow} from '../../streamers/streamers';
 import {Shows} from '../shows/shows';
+import ScrapingHelpers from '../../streamers/scrapingHelpers';
 
 // Collection
 export const Episodes = new Mongo.Collection('episodes');
@@ -115,7 +116,7 @@ Episodes.helpers({
   },
 
   translationTypeExpanded() {
-    return this.translationType.replace('dub', 'dubbed').replace('sub', 'subbed').capitalize();
+    return ScrapingHelpers.makeTranslationTypeFancy(this.translationType);
   },
 
   notesEncoded() {
