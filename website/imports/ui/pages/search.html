@@ -30,7 +30,7 @@
         {{#each show in shows}}
 
           <a class="card card-show-item" href="{{pathFor 'show' showId=show._id}}">
-            {{>components_image src=show.getThumbnailUrls.[0] caption=show.name class="card-img-top"}}
+            {{>components_image src=show.thumbnailUrls.[0] caption=show.name class="card-img-top"}}
             <div class="card-img-info">
               <div class="card-img-info-left">
                 {{$dot show.availableEpisodes ($GetStorageItem 'SelectedTranslationType')}}

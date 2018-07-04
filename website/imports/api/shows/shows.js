@@ -374,14 +374,14 @@ Shows.helpers({
     Shows.remove(this._id);
   },
 
-  getWatchState() {
+  watchState() {
     if (Meteor.userId() && typeof this.malId !== 'undefined') {
       return WatchStates.queryUnique(Meteor.userId(), this.malId).fetch()[0];
     }
     return undefined;
   },
 
-  getThumbnailUrls() {
+  thumbnailUrls() {
     if (!this.thumbnails || this.thumbnails.empty()) {
       return ['/media/unknown.png'];
     }
@@ -439,7 +439,7 @@ Shows.helpers({
   },
 
   watchedEpisodes() {
-    let watchState = this.getWatchState();
+    let watchState = this.watchState();
     return watchState ? watchState.malWatchedEpisodes : 0;
   },
 
