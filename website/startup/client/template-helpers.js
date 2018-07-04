@@ -1,6 +1,23 @@
 import moment from 'moment-timezone';
 import ScrapingHelpers from '../../imports/streamers/scrapingHelpers';
 
+Template.parentInstance = function(levels) {
+  return this.instance().parentTemplate(levels);
+};
+
+Blaze.TemplateInstance.prototype.parentTemplate = function(levels) {
+  let view = this.view;
+  if (typeof levels === 'undefined') {
+    levels = 1;
+  }
+  while (view) {
+    if (view.name.substring(0, 9) === 'Template.' && !(levels--)) {
+      return view.templateInstance();
+    }
+    view = view.parentView;
+  }
+};
+
 Template.registerHelper('$in', (item, ...list) => {
   list.pop();
   if (list.length === 1 && _.isArray(list[0])) {
