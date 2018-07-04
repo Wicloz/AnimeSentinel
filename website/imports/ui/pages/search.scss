@@ -21,7 +21,7 @@
       height: $thumbnail-height;
       width: auto;
       min-width: $thumbnail-height / 1.5;
-      margin: 0 auto $font-size-sm * -1.5;
+      margin: 0 auto $font-size-sm * $line-height-sm * -1;
     }
 
     .card-img-info {
@@ -30,7 +30,7 @@
 
       & > * {
         height: 0;
-        border-bottom: $font-size-sm * 1.5 transparentize($dark, 0.1) solid;
+        border-bottom: $font-size-sm * $line-height-sm transparentize($dark, 0.1) solid;
         flex: 0 0 auto;
         white-space: nowrap;
       }
