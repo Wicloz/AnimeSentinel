@@ -17,7 +17,7 @@ export default class ScrapingHelpers {
     build(airingDateResult, airingDateMoment);
 
     if (airingDateResult.hour) {
-      airingDateMoment.tz('UTC');
+      airingDateMoment.utc();
     }
 
     Object.keys(airingDateResult).forEach((key) => {

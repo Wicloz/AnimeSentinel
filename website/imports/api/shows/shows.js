@@ -434,7 +434,7 @@ Shows.helpers({
       invalidateMinute.depend();
     }
     return Math.round(
-      moment.duration(moment.utc(this.nextEpisodeDate(translationType)) - moment.utc()).asMinutes()
+      moment.duration(moment.fromUtc(this.nextEpisodeDate(translationType)) - moment.fromUtc()).asMinutes()
     );
   },
 
@@ -447,9 +447,9 @@ Shows.helpers({
     if (Meteor.isClient) {
       invalidateMinute.depend();
     }
-    let now = moment();
-    return (!this.locked() && (!this.lastUpdateStart || moment(this.lastUpdateEnd).add(Shows.timeUntilRecache) < now)) ||
-            (this.locked() && moment(this.lastUpdateStart).add(Shows.maxUpdateTime) < now);
+    let now = moment.fromUtc();
+    return (!this.locked() && (!this.lastUpdateStart || moment.fromUtc(this.lastUpdateEnd).add(Shows.timeUntilRecache) < now)) ||
+            (this.locked() && moment.fromUtc(this.lastUpdateStart).add(Shows.maxUpdateTime) < now);
   },
 
   locked() {
@@ -524,13 +524,13 @@ Shows.helpers({
 
       // Sort episodes by upload date ascending
       let earliestEpisodesSorted = earliestEpisodes.slice(0).sort((a, b) => {
-        return moment.duration(moment.utc(a.uploadDate) - moment.utc(b.uploadDate)).asMinutes();
+        return moment.duration(moment.fromUtc(a.uploadDate) - moment.fromUtc(b.uploadDate)).asMinutes();
       });
 
       // Calculate delays between episodes and sort ascending
       let episodeDelays = [];
       for (let i = 1; i < earliestEpisodesSorted.length; i++) {
-        episodeDelays.push(moment.duration(moment.utc(earliestEpisodesSorted[i].uploadDate) - moment.utc(earliestEpisodesSorted[i - 1].uploadDate)).asMinutes());
+        episodeDelays.push(moment.duration(moment.fromUtc(earliestEpisodesSorted[i].uploadDate) - moment.fromUtc(earliestEpisodesSorted[i - 1].uploadDate)).asMinutes());
       }
       episodeDelays = episodeDelays.sort((a, b) => {
         return a - b;
@@ -599,7 +599,7 @@ Shows.helpers({
         lastDate = earliestEpisodes[0].uploadDate;
 
         // Convert to moment and add the interval
-        let lastDateMoment = moment(lastDate);
+        let lastDateMoment = moment.fromUtc(lastDate);
         lastDateMoment.add(intervalToUse, 'minutes');
 
         // Convert back to object
@@ -658,7 +658,7 @@ Shows.helpers({
   attemptUpdate() {
     if (this.expired()) {
       // Mark update as started
-      this.lastUpdateStart = moment().toDate();
+      this.lastUpdateStart = moment.fromUtc().toDate();
       Shows.update(this._id, {
         $set: {
           lastUpdateStart: this.lastUpdateStart
@@ -694,7 +694,7 @@ Shows.helpers({
         });
 
         // Update result
-        this.lastUpdateEnd = moment().toDate();
+        this.lastUpdateEnd = moment.fromUtc().toDate();
         Schemas.Show.clean(this, {
           mutate: true
         });
@@ -991,7 +991,7 @@ Shows.queryForOverview = function(malIds, limit) {
 
       // Sort by next episode date
       else {
-        diff = moment.duration(moment.utc(nextA) - moment.utc(nextB)).asMinutes();
+        diff = moment.duration(moment.fromUtc(nextA) - moment.fromUtc(nextB)).asMinutes();
       }
 
       // Sort by episodes to watch
@@ -1001,7 +1001,7 @@ Shows.queryForOverview = function(malIds, limit) {
 
       // Sort by start date
       if (diff === 0) {
-        diff = moment.duration(moment.utc(a.airedStart) - moment.utc(b.airedStart)).asMinutes();
+        diff = moment.duration(moment.fromUtc(a.airedStart) - moment.fromUtc(b.airedStart)).asMinutes();
       }
 
       // Sort by name

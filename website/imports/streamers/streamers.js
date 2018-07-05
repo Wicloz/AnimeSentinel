@@ -98,7 +98,7 @@ export default class Streamers {
     }
     if (!show.season && show.airedStart && typeof show.airedStart.year !== 'undefined' && typeof show.airedStart.month !== 'undefined') {
       show.season = {
-        quarter: Shows.validQuarters[moment().month(show.airedStart.month).quarter() - 1],
+        quarter: Shows.validQuarters[moment.fromUtc().month(show.airedStart.month).quarter() - 1],
         year: show.airedStart.year
       };
     }
@@ -116,7 +116,7 @@ export default class Streamers {
       && show.airedStart && typeof show.airedStart.year !== 'undefined' && typeof show.airedStart.month !== 'undefined' && typeof show.airedStart.date !== 'undefined'
       && show.airedEnd && typeof show.airedEnd.year !== 'undefined' && typeof show.airedEnd.month !== 'undefined' && typeof show.airedEnd.date !== 'undefined') {
       show.broadcastIntervalMinutes = Math.round(
-        moment.duration(moment.utc(show.airedEnd) - moment.utc(show.airedStart)).asMinutes() / (show.episodeCount - 1)
+        moment.duration(moment.fromUtc(show.airedEnd) - moment.fromUtc(show.airedStart)).asMinutes() / (show.episodeCount - 1)
       );
     }
 
@@ -197,7 +197,7 @@ export default class Streamers {
       });
 
       // Set the upload time to now on some episodes
-      let now = moment();
+      let now = moment.fromUtc();
       if (episode.uploadDate.year === now.year() && episode.uploadDate.month === now.month() && episode.uploadDate.date === now.date() && typeof episode.uploadDate.minute === 'undefined') {
         if (typeof episode.uploadDate.hour === 'undefined') {
           episode.uploadDate.hour = now.hour();

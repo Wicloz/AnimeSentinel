@@ -51,7 +51,7 @@ Template.registerHelper('displayAiringDate', (date) => {
     formatTime = 'HH:mm (Z)';
   }
 
-  return moment.utc(date).local().format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
+  return moment.fromUtc(date).format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
 });
 
 Template.registerHelper('displayUploadDate', (date) => {
@@ -87,7 +87,7 @@ Template.registerHelper('displayUploadDate', (date) => {
     formatTime = 'HH:mm (Z)';
   }
 
-  return moment.utc(date).local().format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
+  return moment.fromUtc(date).format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
 });
 
 Template.registerHelper('displayMinuteInterval', (minutes) => {

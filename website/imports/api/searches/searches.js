@@ -119,9 +119,9 @@ Searches.helpers({
     if (Meteor.isClient) {
       invalidateMinute.depend();
     }
-    let now = moment();
-    return (!this.busy() && (!this.lastSearchStart || moment(this.lastSearchEnd).add(Searches.timeUntilRecache) < now)) ||
-            (this.busy() && moment(this.lastSearchStart).add(Searches.maxSearchTime) < now);
+    let now = moment.fromUtc();
+    return (!this.busy() && (!this.lastSearchStart || moment.fromUtc(this.lastSearchEnd).add(Searches.timeUntilRecache) < now)) ||
+            (this.busy() && moment.fromUtc(this.lastSearchStart).add(Searches.maxSearchTime) < now);
   },
 
   busy() {
@@ -197,7 +197,7 @@ Searches.helpers({
 
   doSearch() {
     // Mark search as started
-    this.lastSearchStart = moment().toDate();
+    this.lastSearchStart = moment.fromUtc().toDate();
     Searches.update(this._id, {
       $set: {
         lastSearchStart: this.lastSearchStart
@@ -207,7 +207,7 @@ Searches.helpers({
     Streamers.doSearch(this, () => {
 
       // When done
-      this.lastSearchEnd = moment().toDate();
+      this.lastSearchEnd = moment.fromUtc().toDate();
       Searches.update(this._id, {
         $set: {
           lastSearchEnd: this.lastSearchEnd

@@ -40,8 +40,8 @@ function determineAiringDateSearchPage(string) {
       airingDateResult.date = dateBits[1];
     }
     if (!dateBits[2].includes('?')) {
-      let prepend = Math.floor(moment().year() / 100);
-      if (dateBits[2] > moment().year() % 100 + 10) {
+      let prepend = Math.floor(moment.fromUtc().year() / 100);
+      if (dateBits[2] > moment.fromUtc().year() % 100 + 10) {
         prepend--;
       }
       airingDateResult.year = prepend + dateBits[2];
@@ -336,7 +336,7 @@ export let myanimelist = {
         let dateBits = partial.find('td.episode-aired').text().replace(/,/g, '').split(' ');
         if (dateBits.length === 3) {
           uploadDate.year = dateBits[2];
-          uploadDate.month = moment().month(dateBits[0]).month();
+          uploadDate.month = moment.fromUtc().month(dateBits[0]).month();
           uploadDate.date = dateBits[1];
         }
 

@@ -61,7 +61,7 @@ Template.pages_episode.onCreated(function() {
     this.state.set('selectedStreamerId', streamerId);
     this.state.set('selectedSourceName', sourceName);
     if (manual) {
-      setStorageItem(['SelectedSourceLastTime', streamerId, sourceName], moment().valueOf());
+      setStorageItem(['SelectedSourceLastTime', streamerId, sourceName], moment.fromUtc().valueOf());
     }
 
     this.state.set('iframeErrors', []);
