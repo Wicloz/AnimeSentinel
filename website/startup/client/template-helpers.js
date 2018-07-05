@@ -125,7 +125,11 @@ Template.registerHelper('$GetStorageItem', (key) => {
 });
 
 Template.registerHelper('$dot', (object, key) => {
-  return object[key];
+  if (_.isObject(object) && object.hasOwnProperty(key)) {
+    return object[key];
+  } else {
+    return undefined;
+  }
 });
 
 Template.registerHelper('$in', (item, ...list) => {
