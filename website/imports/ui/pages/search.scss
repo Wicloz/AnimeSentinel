@@ -9,7 +9,10 @@
 
   .card-show-item {
     flex: 0 0 auto;
-    width: min-content;
+    width: 100%;
+    @include media-breakpoint-up(sm) {
+      width: min-content;
+    }
 
     color: $white;
     text-decoration: none;
@@ -18,10 +21,17 @@
     background-color: $dark;
 
     .card-img-top {
-      height: $thumbnail-height;
-      width: auto;
-      min-width: $thumbnail-height / 1.5;
       margin: 0 auto $font-size-sm * $line-height-sm * -1;
+
+      max-height: $thumbnail-height;
+      width: 100%;
+      object-fit: contain;
+
+      @include media-breakpoint-up(sm) {
+        height: $thumbnail-height;
+        width: auto;
+        min-width: $thumbnail-height / 1.5;
+      }
     }
 
     .card-img-info {
