@@ -30,7 +30,7 @@
                   <br>
                   {{$dot this.availableEpisodes ($GetStorageItem 'SelectedTranslationType')}} out of {{episodeCount}} episodes available
                   <br>
-                  Airs every {{displayMinuteInterval (relevantBroadcastInterval ($GetStorageItem 'SelectedTranslationType'))}}
+                  Airs every {{displayInterval (relevantBroadcastInterval ($GetStorageItem 'SelectedTranslationType'))}}
                 </p>
               </div>
               <div class="col s12 m5">
@@ -47,7 +47,7 @@
                     <li class="collection-item">
                       Next Episode: {{displayUploadDate (nextEpisodeDate ($GetStorageItem 'SelectedTranslationType'))}}
                       <br>
-                      <span class="hidden">Next Episode:</span> in {{displayMinuteInterval (nextEpisodeInterval ($GetStorageItem 'SelectedTranslationType'))}}
+                      <span class="hidden">Next Episode:</span> {{displayInterval (nextEpisodeInterval ($GetStorageItem 'SelectedTranslationType')) true}}
                     </li>
                   {{/if}}
                 </ul>

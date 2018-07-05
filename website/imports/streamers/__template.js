@@ -66,7 +66,7 @@ export let template = {
       episodeCount: function(partial, full) {
         return 0;
       },
-      broadcastIntervalMinutes: function(partial, full) {
+      broadcastInterval: function(partial, full) {
         return 0;
       },
     },
@@ -139,7 +139,7 @@ export let template = {
       episodeCount: function(partial, full) {
         return 0;
       },
-      broadcastIntervalMinutes: function(partial, full) {
+      broadcastInterval: function(partial, full) {
         return 0;
       },
     },
@@ -208,7 +208,7 @@ export let template = {
       episodeCount: function(partial, full) {
         return 0;
       },
-      broadcastIntervalMinutes: function(partial, full) {
+      broadcastInterval: function(partial, full) {
         return 0;
       },
     },
@@ -279,7 +279,7 @@ export let template = {
       episodeCount: function(partial, full) {
         return 0;
       },
-      broadcastIntervalMinutes: function(partial, full) {
+      broadcastInterval: function(partial, full) {
         return 0;
       },
     },
@@ -405,7 +405,7 @@ export let template = {
       episodeCount: function(partial, full) {
         return 0;
       },
-      broadcastIntervalMinutes: function(partial, full) {
+      broadcastInterval: function(partial, full) {
         return 0;
       },
     },

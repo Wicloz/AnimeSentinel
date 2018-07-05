@@ -18,13 +18,6 @@ Blaze.TemplateInstance.prototype.parentTemplate = function(levels) {
   }
 };
 
-Template.registerHelper('displaySeason', (season) => {
-  if (!season || typeof season.quarter === 'undefined' || typeof season.year === 'undefined') {
-    return 'unknown season';
-  }
-  return season.quarter + ' ' + season.year;
-});
-
 Template.registerHelper('displayAiringDate', (date) => {
   if (!date || (typeof date.year === 'undefined'
       && typeof date.month === 'undefined'
@@ -90,30 +83,39 @@ Template.registerHelper('displayUploadDate', (date) => {
   return moment.fromUtc(date).format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
 });
 
-Template.registerHelper('displayMinuteInterval', (minutes) => {
-  if (!minutes) {
-    return 'unknown interval';
+Template.registerHelper('displayBroadcastDay', (date) => {
+  if (!date || (typeof date.date === 'undefined' && typeof date.hour === 'undefined' && typeof date.minute === 'undefined')) {
+    return 'unknown day';
   }
 
-  let dayRemainder = minutes % 1440;
-  let days = (minutes - dayRemainder) / 1440;
-  let hourRemainder = dayRemainder % 60;
-  let hours = (dayRemainder - hourRemainder) / 60;
-  minutes = hourRemainder;
+  let formatDate = typeof date.date === 'undefined' ? undefined : 'dddd[s]';
 
-  let string = '';
-
-  if (days) {
-    string += days + ' day' + (days === 1 || days === -1 ? '' : 's');
-  }
-  if (hours) {
-    string += (days ? ', ' : '') + hours + ' hour' + (hours === 1 || hours === -1 ? '' : 's');
-  }
-  if (minutes) {
-    string += (days || hours ? ', ' : '') + minutes + ' minute' + (minutes === 1 || minutes === -1 ? '' : 's');
+  let formatTime = undefined;
+  if (typeof date.hour !== 'undefined' && typeof date.minute !== 'undefined') {
+    formatTime = 'HH:mm (Z)';
   }
 
-  return string;
+  return moment.fromUtc(date).format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
+});
+
+Template.registerHelper('displaySeason', (season) => {
+  if (!season || typeof season.quarter === 'undefined' || typeof season.year === 'undefined') {
+    return 'unknown season';
+  }
+
+  return season.quarter + ' ' + season.year;
+});
+
+Template.registerHelper('displayInterval', (milliseconds, suffix) => {
+  if (suffix !== true) {
+    suffix = false;
+  }
+
+  if (!isNumeric(milliseconds)) {
+    return (suffix ? 'in ' : '') + 'unknown interval';
+  }
+
+  return moment.duration(milliseconds).humanize(suffix);
 });
 
 Template.registerHelper('displayTranslationType', (translationType) => {

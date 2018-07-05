@@ -230,25 +230,25 @@ Schemas.Show = new SimpleSchema({
     min: 1,
     optional: true
   },
-  broadcastIntervalMinutes: {
+  broadcastInterval: {
     type: SimpleSchema.Integer,
     optional: true
   },
 
-  determinedIntervalMinutes: {
+  determinedInterval: {
     type: Object,
     optional: true,
     defaultValue: {}
   },
-  'determinedIntervalMinutes.sub': {
+  'determinedInterval.sub': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedIntervalMinutes.dub': {
+  'determinedInterval.dub': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedIntervalMinutes.raw': {
+  'determinedInterval.raw': {
     type: SimpleSchema.Integer,
     optional: true
   },
@@ -400,10 +400,10 @@ Shows.helpers({
   },
 
   relevantBroadcastInterval(translationType) {
-    if ((!this.broadcastIntervalMinutes || translationType === 'dub') && this.determinedIntervalMinutes[translationType]) {
-      return this.determinedIntervalMinutes[translationType];
+    if (translationType !== 'dub' && this.broadcastInterval) {
+      return this.broadcastInterval;
     } else {
-      return this.broadcastIntervalMinutes;
+      return this.determinedInterval[translationType];
     }
   },
 
@@ -433,9 +433,11 @@ Shows.helpers({
     if (Meteor.isClient) {
       invalidateMinute.depend();
     }
-    return Math.round(
-      moment.duration(moment.fromUtc(this.nextEpisodeDate(translationType)) - moment.fromUtc()).asMinutes()
-    );
+    if (typeof this.nextEpisodeDate(translationType) !== 'undefined') {
+      return moment.fromUtc(this.nextEpisodeDate(translationType)).diff(moment.fromUtc());
+    } else {
+      return undefined;
+    }
   },
 
   watchedEpisodes() {
@@ -512,9 +514,9 @@ Shows.helpers({
       }
     });
 
-    /*********************************************
-     * Calculate the 'determinedIntervalMinutes' *
-     *********************************************/
+    /**************************************
+     * Calculate the 'determinedInterval' *
+     **************************************/
 
     // Store the average found here
     let average = undefined;
@@ -524,13 +526,13 @@ Shows.helpers({
 
       // Sort episodes by upload date ascending
       let earliestEpisodesSorted = earliestEpisodes.slice(0).sort((a, b) => {
-        return moment.duration(moment.fromUtc(a.uploadDate) - moment.fromUtc(b.uploadDate)).asMinutes();
+        return moment.fromUtc(a.uploadDate).diff(moment.fromUtc(b.uploadDate));
       });
 
       // Calculate delays between episodes and sort ascending
       let episodeDelays = [];
       for (let i = 1; i < earliestEpisodesSorted.length; i++) {
-        episodeDelays.push(moment.duration(moment.fromUtc(earliestEpisodesSorted[i].uploadDate) - moment.fromUtc(earliestEpisodesSorted[i - 1].uploadDate)).asMinutes());
+        episodeDelays.push(moment.fromUtc(earliestEpisodesSorted[i].uploadDate).diff(moment.fromUtc(earliestEpisodesSorted[i - 1].uploadDate)));
       }
       episodeDelays = episodeDelays.sort((a, b) => {
         return a - b;
@@ -539,7 +541,7 @@ Shows.helpers({
       // Spread delays among bins depending on their distance and sort by length descending
       let episodeDelayBins = [];
       episodeDelays.forEach((delay) => {
-        if (!episodeDelayBins.empty() && delay - episodeDelayBins.peek().peek() < 1440) {
+        if (!episodeDelayBins.empty() && delay - episodeDelayBins.peek().peek() < 86400000) {
           episodeDelayBins.peek().push(delay);
         } else {
           episodeDelayBins.push([delay]);
@@ -570,12 +572,12 @@ Shows.helpers({
     }
 
     // Store on this
-    this.determinedIntervalMinutes[translationType] = average;
+    this.determinedInterval[translationType] = average;
 
     // Store in the database
     Shows.update(this._id, {
       $set: {
-        determinedIntervalMinutes: this.determinedIntervalMinutes
+        determinedInterval: this.determinedInterval
       }
     });
 
@@ -600,7 +602,7 @@ Shows.helpers({
 
         // Convert to moment and add the interval
         let lastDateMoment = moment.fromUtc(lastDate);
-        lastDateMoment.add(intervalToUse, 'minutes');
+        lastDateMoment.add(intervalToUse);
 
         // Convert back to object
         Object.keys(lastDate).forEach((key) => {
@@ -698,7 +700,7 @@ Shows.helpers({
         Schemas.Show.clean(this, {
           mutate: true
         });
-        delete this.determinedIntervalMinutes;
+        delete this.determinedInterval;
         delete this.determinedEpisodeDate;
         delete this.availableEpisodes;
 
@@ -739,7 +741,7 @@ Shows.helpers({
         Schemas.Show.clean(this, {
           mutate: true
         });
-        delete this.determinedIntervalMinutes;
+        delete this.determinedInterval;
         delete this.determinedEpisodeDate;
         delete this.availableEpisodes;
 
@@ -991,7 +993,7 @@ Shows.queryForOverview = function(malIds, limit) {
 
       // Sort by next episode date
       else {
-        diff = moment.duration(moment.fromUtc(nextA) - moment.fromUtc(nextB)).asMinutes();
+        diff = moment.fromUtc(nextA).diff(moment.fromUtc(nextB));
       }
 
       // Sort by episodes to watch
@@ -1001,7 +1003,7 @@ Shows.queryForOverview = function(malIds, limit) {
 
       // Sort by start date
       if (diff === 0) {
-        diff = moment.duration(moment.fromUtc(a.airedStart) - moment.fromUtc(b.airedStart)).asMinutes();
+        diff = moment.fromUtc(a.airedStart).diff(moment.fromUtc(b.airedStart));
       }
 
       // Sort by name

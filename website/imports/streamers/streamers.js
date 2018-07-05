@@ -108,15 +108,15 @@ export default class Streamers {
       show.episodeCount = streamer[type].attributes.episodeCount(cheerioRow, cheerioPage);
     }
 
-    // Get 'broadcastIntervalMinutes'
-    if (streamer[type].attributes.broadcastIntervalMinutes) {
-      show.broadcastIntervalMinutes = streamer[type].attributes.broadcastIntervalMinutes(cheerioRow, cheerioPage);
+    // Get 'broadcastInterval'
+    if (streamer[type].attributes.broadcastInterval) {
+      show.broadcastInterval = streamer[type].attributes.broadcastInterval(cheerioRow, cheerioPage);
     }
-    if (!show.broadcastIntervalMinutes && show.episodeCount > 1
+    if (!show.broadcastInterval && show.episodeCount > 1
       && show.airedStart && typeof show.airedStart.year !== 'undefined' && typeof show.airedStart.month !== 'undefined' && typeof show.airedStart.date !== 'undefined'
       && show.airedEnd && typeof show.airedEnd.year !== 'undefined' && typeof show.airedEnd.month !== 'undefined' && typeof show.airedEnd.date !== 'undefined') {
-      show.broadcastIntervalMinutes = Math.round(
-        moment.duration(moment.fromUtc(show.airedEnd) - moment.fromUtc(show.airedStart)).asMinutes() / (show.episodeCount - 1)
+      show.broadcastInterval = Math.round(
+        moment.fromUtc(show.airedEnd).diff(moment.fromUtc(show.airedStart)) / (show.episodeCount - 1)
       );
     }
 

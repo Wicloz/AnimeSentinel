@@ -221,9 +221,9 @@ export let myanimelist = {
         return partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Episodes:")').text()
           .replace('Episodes:', '').cleanWhitespace().replace('Unknown', '');
       },
-      broadcastIntervalMinutes: function(partial, full) {
+      broadcastInterval: function(partial, full) {
         let broadcast = partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Broadcast:")').text().cleanWhitespace();
-        return broadcast && /Broadcast: [A-Za-z]+ at [0-9:?]+/.test(broadcast) ? 10080 : undefined;
+        return broadcast && /Broadcast: [A-Za-z]+ at [0-9:?]+/.test(broadcast) ? 604800000 : undefined;
       },
     },
 
