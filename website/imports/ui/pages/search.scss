@@ -21,7 +21,7 @@
     background-color: $dark;
 
     .card-img-top {
-      margin: 0 auto $font-size-sm * $line-height-sm * -1;
+      margin-bottom: $font-size-sm * $line-height-sm * -1;
 
       max-height: $thumbnail-height;
       width: 100%;
