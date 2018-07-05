@@ -48,10 +48,10 @@ Template.registerHelper('displayAiringDate', (date) => {
 
   let formatTime = undefined;
   if (typeof date.hour !== 'undefined' && typeof date.minute !== 'undefined') {
-    formatTime = 'HH:mm (z)';
+    formatTime = 'HH:mm (Z)';
   }
 
-  return moment.utc(date).tz(moment.tz.guess()).format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
+  return moment.utc(date).local().format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
 });
 
 Template.registerHelper('displayUploadDate', (date) => {
@@ -65,7 +65,7 @@ Template.registerHelper('displayUploadDate', (date) => {
 
   let formatDate = '';
   if (typeof date.date !== 'undefined') {
-    formatDate += 'DD';
+    formatDate += 'dddd DD';
   } else {
     formatDate += '??';
   }
@@ -84,10 +84,10 @@ Template.registerHelper('displayUploadDate', (date) => {
 
   let formatTime = undefined;
   if (typeof date.hour !== 'undefined' && typeof date.minute !== 'undefined') {
-    formatTime = 'HH:mm (z)';
+    formatTime = 'HH:mm (Z)';
   }
 
-  return moment.utc(date).tz(moment.tz.guess()).format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
+  return moment.utc(date).local().format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
 });
 
 Template.registerHelper('displayMinuteInterval', (minutes) => {
