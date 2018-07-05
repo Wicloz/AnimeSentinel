@@ -18,22 +18,6 @@ Blaze.TemplateInstance.prototype.parentTemplate = function(levels) {
   }
 };
 
-Template.registerHelper('$in', (item, ...list) => {
-  list.pop();
-  if (list.length === 1 && _.isArray(list[0])) {
-    list = list[0];
-  }
-  return list.includes(item);
-});
-
-Template.registerHelper('$nin', (item, ...list) => {
-  list.pop();
-  if (list.length === 1 && _.isArray(list[0])) {
-    list = list[0];
-  }
-  return !list.includes(item);
-});
-
 Template.registerHelper('displaySeason', (season) => {
   if (!season || typeof season.quarter === 'undefined' || typeof season.year === 'undefined') {
     return 'unknown season';
@@ -132,6 +116,10 @@ Template.registerHelper('displayMinuteInterval', (minutes) => {
   return string;
 });
 
+Template.registerHelper('displayTranslationType', (translationType) => {
+  return ScrapingHelpers.makeTranslationTypeFancy(translationType);
+});
+
 Template.registerHelper('$GetStorageItem', (key) => {
   return getStorageItem(key);
 });
@@ -140,6 +128,29 @@ Template.registerHelper('$dot', (object, key) => {
   return object[key];
 });
 
-Template.registerHelper('displayTranslationType', (translationType) => {
-  return ScrapingHelpers.makeTranslationTypeFancy(translationType);
+Template.registerHelper('$in', (item, ...list) => {
+  list.pop();
+  if (list.length === 1 && _.isArray(list[0])) {
+    list = list[0];
+  }
+  return list.includes(item);
+});
+
+Template.registerHelper('$nin', (item, ...list) => {
+  list.pop();
+  if (list.length === 1 && _.isArray(list[0])) {
+    list = list[0];
+  }
+  return !list.includes(item);
+});
+
+Template.registerHelper('$firstActive', (index, start) => {
+  if (!isNumeric(start)) {
+    start = 0;
+  }
+  return index === start ? 'active' : '';
+});
+
+Template.registerHelper('$addOne', (value) => {
+  return value + 1;
 });
