@@ -24,7 +24,7 @@ Template.pages_search.onCreated(function() {
 
   this.isSearching = function() {
     let currentSearch = Searches.queryWithSearch(this.getSearchOptions()).fetch()[0];
-    return currentSearch && currentSearch.busy();
+    return currentSearch && currentSearch.locked();
   };
 
   this.canLoadMoreShows = function() {

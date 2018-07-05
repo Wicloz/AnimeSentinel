@@ -370,6 +370,19 @@ if (Meteor.isDevelopment) {
 
 // Helpers
 Shows.helpers({
+  expired() {
+    if (Meteor.isClient) {
+      invalidateMinute.depend();
+    }
+    return !this.lastUpdateStart ||
+      (!this.locked() && moment.fromUtc(this.lastUpdateEnd).add(Shows.timeUntilRecache).isBefore()) ||
+      (this.locked() && moment.fromUtc(this.lastUpdateStart).add(Shows.maxUpdateTime).isBefore());
+  },
+
+  locked() {
+    return this.lastUpdateStart && (!this.lastUpdateEnd || this.lastUpdateStart > this.lastUpdateEnd);
+  },
+
   remove() {
     Shows.remove(this._id);
   },
@@ -443,19 +456,6 @@ Shows.helpers({
   watchedEpisodes() {
     let watchState = this.watchState();
     return watchState ? watchState.malWatchedEpisodes : 0;
-  },
-
-  expired() {
-    if (Meteor.isClient) {
-      invalidateMinute.depend();
-    }
-    let now = moment.fromUtc();
-    return (!this.locked() && (!this.lastUpdateStart || moment.fromUtc(this.lastUpdateEnd).add(Shows.timeUntilRecache) < now)) ||
-            (this.locked() && moment.fromUtc(this.lastUpdateStart).add(Shows.maxUpdateTime) < now);
-  },
-
-  locked() {
-    return this.lastUpdateStart && (!this.lastUpdateEnd || this.lastUpdateStart > this.lastUpdateEnd);
   },
 
   afterNewEpisode(translationType) {
