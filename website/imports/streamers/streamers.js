@@ -120,6 +120,16 @@ export default class Streamers {
       );
     }
 
+    // Get 'episodeDuration'
+    if (streamer[type].attributes.episodeDuration) {
+      show.episodeDuration = streamer[type].attributes.episodeDuration(cheerioRow, cheerioPage);
+    }
+
+    // Get 'rating'
+    if (streamer[type].attributes.rating) {
+      show.rating = streamer[type].attributes.rating(cheerioRow, cheerioPage);
+    }
+
     // Get 'thumbnails'
     if (streamer[type].thumbnails) {
       show.thumbnails = [];

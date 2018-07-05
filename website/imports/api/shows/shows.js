@@ -234,6 +234,15 @@ Schemas.Show = new SimpleSchema({
     type: SimpleSchema.Integer,
     optional: true
   },
+  episodeDuration: {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  rating: {
+    type: String,
+    allowedValues: ['G', 'PG', 'PG-13', 'R', 'R+', 'Rx'],
+    optional: true
+  },
 
   determinedInterval: {
     type: Object,

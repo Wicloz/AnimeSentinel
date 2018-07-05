@@ -129,6 +129,9 @@ export let myanimelist = {
       episodeCount: function(partial, full) {
         return partial.find('td:nth-of-type(4)').text().cleanWhitespace().replace('-', '');
       },
+      rating: function(partial, full) {
+        return partial.find('td:nth-of-type(9)').text().replace(/^\s*-\s*$/, '');
+      },
     },
 
     // Search page thumbnail data
@@ -225,6 +228,19 @@ export let myanimelist = {
         let broadcast = partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Broadcast:")').text().cleanWhitespace();
         return broadcast && /Broadcast: [A-Za-z]+ at [0-9:?]+/.test(broadcast) ? 604800000 : undefined;
       },
+      episodeDuration: function(partial, full) {
+        let base = partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Duration:")')
+          .text().cleanWhitespace().split(' ')[1];
+        if (isNumeric(base)) {
+          return base * 60000;
+        } else {
+          return undefined;
+        }
+      },
+      rating: function(partial, full) {
+        return partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Rating:")')
+          .text().cleanWhitespace().split(' ')[1].replace('None', '');
+      },
     },
 
     // Show page thumbnail data
@@ -279,6 +295,12 @@ export let myanimelist = {
       },
       episodeCount: function(partial, full) {
         return partial.series_episodes[0] === '0' ? undefined : partial.series_episodes[0];
+      },
+      episodeDuration: function(partial, full) {
+        // TODO
+      },
+      rating: function(partial, full) {
+        // TODO
       },
     },
 
@@ -386,6 +408,12 @@ export let myanimelist = {
       },
       name: function(partial, full) {
         return partial.find('div.video-info-title a:last-of-type').text();
+      },
+      episodeDuration: function(partial, full) {
+        // TODO
+      },
+      rating: function(partial, full) {
+        // TODO
       },
     },
 

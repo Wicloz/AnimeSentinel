@@ -69,6 +69,12 @@ export let template = {
       broadcastInterval: function(partial, full) {
         return 0;
       },
+      episodeDuration: function(partial, full) {
+        return 0;
+      },
+      rating: function(partial, full) {
+        return '';
+      },
     },
 
     // Search page thumbnail data
@@ -142,6 +148,12 @@ export let template = {
       broadcastInterval: function(partial, full) {
         return 0;
       },
+      episodeDuration: function(partial, full) {
+        return 0;
+      },
+      rating: function(partial, full) {
+        return '';
+      },
     },
 
     // Show page thumbnail data
@@ -210,6 +222,12 @@ export let template = {
       },
       broadcastInterval: function(partial, full) {
         return 0;
+      },
+      episodeDuration: function(partial, full) {
+        return 0;
+      },
+      rating: function(partial, full) {
+        return '';
       },
     },
 
@@ -281,6 +299,12 @@ export let template = {
       },
       broadcastInterval: function(partial, full) {
         return 0;
+      },
+      episodeDuration: function(partial, full) {
+        return 0;
+      },
+      rating: function(partial, full) {
+        return '';
       },
     },
 
@@ -407,6 +431,12 @@ export let template = {
       },
       broadcastInterval: function(partial, full) {
         return 0;
+      },
+      episodeDuration: function(partial, full) {
+        return 0;
+      },
+      rating: function(partial, full) {
+        return '';
       },
     },
 

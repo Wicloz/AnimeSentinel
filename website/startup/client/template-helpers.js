@@ -118,6 +118,14 @@ Template.registerHelper('displayInterval', (milliseconds, suffix) => {
   return moment.duration(milliseconds).humanize(suffix);
 });
 
+Template.registerHelper('displayDuration', (milliseconds) => {
+  if (!isNumeric(milliseconds)) {
+    return 'unknown duration';
+  }
+
+  return moment.duration(milliseconds).humanize();
+});
+
 Template.registerHelper('displayTranslationType', (translationType) => {
   return ScrapingHelpers.makeTranslationTypeFancy(translationType);
 });

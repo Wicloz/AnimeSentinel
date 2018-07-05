@@ -189,6 +189,14 @@ export let nineanime = {
         }
         return undefined;
       },
+      episodeDuration: function(partial, full) {
+        let base = partial.find('div.info div.row dl:last-of-type dt:contains("Duration:")').next().text().split(' ')[0];
+        if (isNumeric(base)) {
+          return base * 60000;
+        } else {
+          return undefined;
+        }
+      },
     },
 
     // Show page thumbnail data
