@@ -61,7 +61,7 @@
               Settings
             </h5>
             {{#autoForm schema='Schemas.translationTypeSelection' id='translationTypeSelectionForm' autosave=true}}
-              {{> afQuickField name='translationType' value=($GetStorageItem 'SelectedTranslationType')}}
+              {{> afQuickField name='translationType' value=($getStorageItem 'SelectedTranslationType')}}
             {{/autoForm}}
           </div>
 

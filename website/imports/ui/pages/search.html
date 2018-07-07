@@ -33,7 +33,7 @@
             {{>components_image src=show.thumbnailUrls.[0] caption=show.name class="card-img-top"}}
             <div class="card-img-info">
               <div class="card-img-info-left">
-                {{$dot show.availableEpisodes ($GetStorageItem 'SelectedTranslationType')}}
+                {{$dot show.availableEpisodes ($getStorageItem 'SelectedTranslationType')}}
                 {{#if $exists show.episodeCount}}
                   / {{show.episodeCount}}
                 {{/if}}
