@@ -36,10 +36,10 @@
   }
 }
 
-.card-header {
+.card-header, .list-group-flush {
   border-bottom: none;
 
-  & + *:not(.collapse), & + *.show {
+  & + *:not(.collapse), & + *.collapse.show {
     border-top: $card-border-width solid $card-border-color;
   }
 }

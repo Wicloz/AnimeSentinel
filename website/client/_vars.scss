@@ -28,9 +28,10 @@ $thumbnail-height: 220px !default;
   display: none !important;
 }
 
-.semi-hidden {
+.semi-removed {
   @extend .hidden;
-  height: 0 !important;
   overflow: hidden !important;
   border: none !important;
+  height: 0;
+  width: 0;
 }
