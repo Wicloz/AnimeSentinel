@@ -66,8 +66,8 @@ Template.pages_recent.helpers({
         episodes = episodes.replacePartialObjects(selector, other);
       }
 
-      else if ((episodes.empty() || episodes[episodes.length - 1].showId !== episode.showId || episodes[episodes.length - 1].translationType !== episode.translationType)
-        && (episodes.length < 2 || episodes[episodes.length - 1].showId !== episode.showId || episodes[episodes.length - 2].showId !== episode.showId || episodes[episodes.length - 2].translationType !== episode.translationType)) {
+      else if ((episodes.empty() || episodes.peek().showId !== episode.showId || episodes.peek().translationType !== episode.translationType)
+        && (episodes.length < 2 || episodes.peek().showId !== episode.showId || episodes[episodes.length - 2].showId !== episode.showId || episodes[episodes.length - 2].translationType !== episode.translationType)) {
         episode.show = Shows.findOne(episode.showId);
         episode.streamers = [Streamers.getSimpleStreamerById(episode.streamerId)];
         episodes.push(episode);
