@@ -56,7 +56,14 @@ Schemas.Show = new SimpleSchema({
           total.push(value);
         }
         return total;
-      }, []);
+      }, []).sort((a, b) => {
+        let idCompare = a.streamerId.localeCompare(b.streamerId);
+        if (idCompare === 0) {
+          return a.type.localeCompare(b.type);
+        } else {
+          return idCompare;
+        }
+      });
     }
   },
   'streamerUrls.$': {
