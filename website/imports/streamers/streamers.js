@@ -351,6 +351,9 @@ export default class Streamers {
           episode.episodeNumEnd -= episodeCorrection;
           return episode;
         });
+        if (results.full && typeof results.full.episodeCount !== 'undefined') {
+          results.full.episodeCount -= episodeCorrection;
+        }
       }
     }
 
