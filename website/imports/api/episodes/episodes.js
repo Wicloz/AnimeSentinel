@@ -115,10 +115,6 @@ Episodes.informationKeys = ['sourceUrl', 'flags', 'uploadDate'];
 
 // Helpers
 Episodes.helpers({
-  remove() {
-    Episodes.remove(this._id);
-  },
-
   translationTypeExpanded() {
     return ScrapingHelpers.makeTranslationTypeFancy(this.translationType);
   },
@@ -173,7 +169,7 @@ Episodes.helpers({
 
     // Remove other from database
     if (other._id) {
-      other.remove();
+      Episodes.remove(other._id);
     }
   },
 

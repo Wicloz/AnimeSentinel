@@ -399,10 +399,6 @@ Shows.helpers({
     return this.lastUpdateStart && (!this.lastUpdateEnd || this.lastUpdateStart > this.lastUpdateEnd);
   },
 
-  remove() {
-    Shows.remove(this._id);
-  },
-
   watchState() {
     if (Meteor.userId() && typeof this.malId !== 'undefined') {
       return WatchStates.queryUnique(Meteor.userId(), this.malId).fetch()[0];
@@ -667,7 +663,7 @@ Shows.helpers({
 
     if (other._id) {
       // Remove other from database
-      other.remove();
+      Shows.remove(other._id);
       // Move episodes
       Episodes.moveEpisodes(other._id, this._id);
     }

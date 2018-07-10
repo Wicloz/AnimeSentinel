@@ -53,10 +53,6 @@ if (Meteor.isServer) {
 
 // Helpers
 WatchStates.helpers({
-  remove() {
-    WatchStates.remove(this._id);
-  },
-
   mergeWatchState(other) {
     // Update this
     Object.keys(other).forEach((key) => {
@@ -72,7 +68,7 @@ WatchStates.helpers({
 
     // Remove other from database
     if (other._id) {
-      other.remove();
+      WatchStates.remove(other._id);
     }
   },
 
