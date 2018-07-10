@@ -10,23 +10,13 @@ function getTypeFromName(name) {
 }
 
 function determineAiringDateShowPage(partial, index) {
-  let stringTime = undefined;
-  let episodes = partial.find('div.widget.servers div.widget-body div.server.active ul li a');
-  if (episodes.length) {
-    if (index) {
-      stringTime = episodes.last().attr('data-title').split(' - ')[1];
-    } else {
-      stringTime = episodes.first().attr('data-title').split(' - ')[1];
-    }
-  }
-
   return ScrapingHelpers.buildAiringDateFromStandardStrings(
-    'EST',
-    index,
-    partial.find('div.info div.row dl:first-of-type dt:contains("Date aired:")').next().text().replace('Date aired:', ''),
-    partial.find('div.info div.row dl:last-of-type dt:contains("Premiered:")').next().find('a').text(),
     undefined,
-    stringTime
+    index,
+    partial.find('div.info div.row dl:first-of-type dt:contains("Date aired:")').next().text().split(' to '),
+    undefined,
+    partial.find('div.info div.row dl:last-of-type dt:contains("Premiered:")').next().find('a').text(),
+    undefined
   );
 }
 
@@ -262,9 +252,9 @@ export let nineanime = {
                   'EST',
                   undefined,
                   dateBits[0],
+                  dateBits[1],
                   undefined,
-                  undefined,
-                  dateBits[1]
+                  undefined
                 ),
                 flags: ['OpenLoad', 'Streamango'].includes(name) ? ['requires-plugins'] : []
               });

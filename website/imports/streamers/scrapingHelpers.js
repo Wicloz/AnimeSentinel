@@ -12,7 +12,7 @@ export default class ScrapingHelpers {
 
   static buildAiringDate(timezone, build) {
     let airingDateResult = {};
-    let airingDateMoment = moment.tz(timezone);
+    let airingDateMoment = timezone ? moment.tz(timezone) : moment.utc();
 
     build(airingDateResult, airingDateMoment);
 
@@ -47,29 +47,36 @@ export default class ScrapingHelpers {
     return dateB;
   }
 
-  static buildAiringDateFromStandardStrings(timezone, index, stringDates, stringSeason, stringDay, stringTime) {
-    if (!timezone) {
-      timezone = 'UTC';
+  static buildAiringDateFromStandardStrings(timezone, index, stringDates, stringTimes, stringSeason, stringDay) {
+    if (typeof index === 'undefined') {
+      index = 1;
+      stringDates = stringDates ? [stringDates, stringDates] : undefined;
+      stringTimes = stringTimes ? [stringTimes, stringTimes] : undefined;
+    }
+
+    if (stringDates && stringDates.length === 1) {
+      stringDates = [stringDates[0], stringDates[0]];
+    }
+
+    if (stringTimes && stringTimes.length === 1) {
+      stringTimes = [stringTimes[0], stringTimes[0]];
     }
 
     return ScrapingHelpers.buildAiringDate(timezone, (airingDateResult, airingDateMoment) => {
 
-      if (stringDates) {
-        let stringDatesBits = stringDates.cleanWhitespace().split(' to ');
-        if (stringDatesBits[0]) {
-          let stringDatesBitsBits = stringDatesBits[stringDatesBits.length === 2 ? index : 0].replace(/,/g, '').split(' ');
-          if (stringDatesBitsBits.length >= 1 && !stringDatesBitsBits[stringDatesBitsBits.length - 1].includes('?')) {
-            airingDateMoment.year(stringDatesBitsBits[stringDatesBitsBits.length - 1]);
-            airingDateResult.year = true;
-          }
-          if (stringDatesBitsBits.length >= 2 && !stringDatesBitsBits[0].includes('?')) {
-            airingDateMoment.month(stringDatesBitsBits[0]);
-            airingDateResult.month = true;
-          }
-          if (stringDatesBitsBits.length >= 3 && !stringDatesBitsBits[1].includes('?')) {
-            airingDateMoment.date(stringDatesBitsBits[1]);
-            airingDateResult.date = true;
-          }
+      if (stringDates && stringDates[index]) {
+        let stringDateBits = stringDates[index].replace(/,/g, '').cleanWhitespace().split(' ');
+        if (stringDateBits.length >= 1 && !stringDateBits.peek().includes('?')) {
+          airingDateMoment.year(stringDateBits.peek());
+          airingDateResult.year = true;
+        }
+        if (stringDateBits.length >= 2 && !stringDateBits[0].includes('?')) {
+          airingDateMoment.month(stringDateBits[0]);
+          airingDateResult.month = true;
+        }
+        if (stringDateBits.length >= 3 && !stringDateBits[1].includes('?')) {
+          airingDateMoment.date(stringDateBits[1]);
+          airingDateResult.date = true;
         }
       }
 
@@ -92,11 +99,14 @@ export default class ScrapingHelpers {
         airingDateResult.date = true;
       }
 
-      if (stringTime && airingDateResult.date && airingDateResult.month && airingDateResult.year) {
-        airingDateMoment.hour(stringTime.split(':')[0]);
-        airingDateResult.hour = true;
-        airingDateMoment.minute(stringTime.split(':')[1]);
-        airingDateResult.minute = true;
+      if (stringTimes && stringTimes[index] && airingDateResult.date && airingDateResult.month && airingDateResult.year) {
+        let stringTimeBits = stringTimes[index].split(':');
+        if (stringTimeBits.length === 2) {
+          airingDateMoment.hour(stringTimeBits[0]);
+          airingDateResult.hour = true;
+          airingDateMoment.minute(stringTimeBits[1]);
+          airingDateResult.minute = true;
+        }
       }
 
     });

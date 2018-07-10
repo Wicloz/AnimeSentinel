@@ -14,7 +14,7 @@ function determineAiringDateShowPage(partial, index) {
   return ScrapingHelpers.buildAiringDateFromStandardStrings(
     undefined,
     index,
-    partial.find('div.bigBarContainer div.barContent div:nth-of-type(2) p:has(span:contains("Date aired:"))').text().replace('Date aired:', ''),
+    partial.find('div.bigBarContainer div.barContent div:nth-of-type(2) p:has(span:contains("Date aired:"))').text().replace('Date aired:', '').split(' to '),
     undefined,
     undefined,
     undefined
