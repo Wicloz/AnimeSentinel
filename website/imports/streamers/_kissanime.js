@@ -55,7 +55,7 @@ function getEpisodeData(episodeString, showString) {
     if (validTypes.includes(episodeArray[0])) {
       episodeArray.shift();
     }
-    infoObject.notes = episodeArray.join(' ');
+    infoObject.notes = episodeArray.join(' ').replaceFull('[Censored]', '').replaceFull('[Uncensored]', 'Uncensored');
   }
 
   // Done

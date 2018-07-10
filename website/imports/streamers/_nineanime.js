@@ -21,17 +21,19 @@ function determineAiringDateShowPage(partial, index) {
 }
 
 function getEpisodeData(episodeString) {
-  let episodeBits = episodeString.split('-');
+  let episodeBits = episodeString.split(' - ');
+  let episodeBitsBits = episodeBits[0].split('-');
 
-  if (episodeBits.some((episodeBit) => {
+  if (episodeBitsBits.some((episodeBit) => {
     return !isNumeric(episodeBit) && episodeBit !== 'Full';
   })) {
     return false;
   }
 
   return {
-    start: episodeBits[0],
-    end: episodeBits.peek()
+    start: episodeBitsBits[0],
+    end: episodeBitsBits.peek(),
+    notes: episodeBits[1] ? episodeBits[1].replaceFull('Uncen', 'Uncensored') : undefined
   };
 }
 
@@ -221,6 +223,9 @@ export let nineanime = {
       },
       episodeNumEnd: function(partial, full) {
         return getEpisodeData(partial.text()).end;
+      },
+      notes: function(partial, full) {
+        return getEpisodeData(partial.text()).notes;
       },
       translationType: function(partial, full) {
         return getTypeFromName(full.find('div.widget.player div.widget-title h1.title').text());
