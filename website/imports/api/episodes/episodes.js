@@ -351,6 +351,10 @@ Episodes.queryForTranslationType = function(showId, translationType) {
 };
 
 Episodes.queryForEpisode = function (showId, translationType, episodeNumStart, episodeNumEnd, notes) {
+  if (!notes) {
+    notes = null;
+  }
+
   // Validate
   Schemas.Episode.validate({
     showId: showId,
@@ -373,6 +377,10 @@ Episodes.queryForEpisode = function (showId, translationType, episodeNumStart, e
 };
 
 Episodes.queryForStreamer = function (showId, translationType, episodeNumStart, episodeNumEnd, notes, streamerId) {
+  if (!notes) {
+    notes = null;
+  }
+
   // Validate
   Schemas.Episode.validate({
     showId: showId,
@@ -397,6 +405,10 @@ Episodes.queryForStreamer = function (showId, translationType, episodeNumStart, 
 };
 
 Episodes.queryUnique = function (showId, translationType, episodeNumStart, episodeNumEnd, notes, streamerId, sourceName) {
+  if (!notes) {
+    notes = null;
+  }
+
   // Validate
   Schemas.Episode.validate({
     showId: showId,
