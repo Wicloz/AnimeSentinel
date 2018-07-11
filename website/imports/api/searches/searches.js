@@ -217,7 +217,7 @@ Searches.helpers({
     }, (partial, episodes) => {
 
       // For each search result
-      Shows.addPartialShow(partial, episodes);
+      return Shows.addPartialShow(partial, episodes);
 
     });
   }

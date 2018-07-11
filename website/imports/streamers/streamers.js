@@ -239,22 +239,7 @@ export default class Streamers {
 
       // Check if we have a show page
       if (streamer.show.checkIfPage(page)) {
-        let showResult = this.processShowPage(html, streamer, logData);
-
-        results = results.concat(showResult.partials.map((partial) => {
-          return {
-            partial: partial,
-            episodes: []
-          };
-        }));
-
-        if (showResult.full) {
-          results.push({
-            partial: showResult.full,
-            episodes: showResult.episodes,
-            fromShowPage: true
-          });
-        }
+        results.push(this.processShowPage(html, streamer, logData));
       }
 
       // Otherwise we have a search page
@@ -266,7 +251,8 @@ export default class Streamers {
             let result = this.convertCheerioToShow(page(element), page('html'), streamer, 'search');
             if (result) {
               results.push({
-                partial: result,
+                full: false,
+                partials: [result],
                 episodes: []
               });
             }
@@ -316,6 +302,9 @@ export default class Streamers {
           // Create and add related show
           let result = this.convertCheerioToShow(page(element), page('html'), streamer, 'showRelated');
           if (result) {
+            if (streamer.showRelated.relation) {
+              result.relation = streamer.showRelated.relation(page(element), page('html'));
+            }
             results.partials.push(result);
           }
         }
@@ -479,9 +468,24 @@ export default class Streamers {
       // Download and process search results
       this.getSearchResults(streamer.search.createUrl(search), streamer, search.query, (results) => {
 
-        // Return results
         results.forEach((result) => {
-          resultCallback(result.partial, result.episodes, result.fromShowPage);
+          // Return partial results
+          result.partials.forEach((partial) => {
+            let ids = resultCallback(partial);
+
+            // Store show relations on full result
+            if (ids && result.full && partial.relation) {
+              result.full.relatedShows.push({
+                relation: partial.relation,
+                showId: ids[0]
+              });
+            }
+          });
+
+          // Return full result with episodes
+          if (result.full) {
+            resultCallback(result.full, result.episodes, true);
+          }
         });
 
         // Check if done
@@ -672,7 +676,7 @@ export class TempShow {
 
       // Otherwise store as partial
       else {
-        this.partialCallback(partial, episodes);
+        return this.partialCallback(partial, episodes);
       }
 
     }, this.getStreamerIdsDone());
@@ -687,6 +691,21 @@ export class TempShow {
     // Get the streamer
     let streamer = Streamers.getStreamerById(streamerUrl.streamerId);
 
+    // Store partial results from show page
+    result.partials.forEach((partial) => {
+      if (!this.doesShowMatchMerged(partial)) {
+        let ids = this.partialCallback(partial);
+
+        // Store show relations on full result
+        if (ids && result.full && partial.relation) {
+          result.full.relatedShows.push({
+            relation: partial.relation,
+            showId: ids[0]
+          });
+        }
+      }
+    });
+
     if (result.full) {
       // Merge result into the working show
       this.mergeShows(this.mergedShow, result.full, streamer);
@@ -699,13 +718,6 @@ export class TempShow {
       // Merge result into the new show
       this.mergeShows(this.newShow, result.full, streamer);
     }
-
-    // Store partial results from show page
-    result.partials.forEach((partial) => {
-      if (!this.doesShowMatchMerged(partial)) {
-        this.partialCallback(partial);
-      }
-    });
 
     // Handle episodes
     result.episodes.forEach((episode) => {

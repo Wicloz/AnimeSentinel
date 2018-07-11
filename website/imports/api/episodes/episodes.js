@@ -255,7 +255,7 @@ Episodes.findRecentEpisodes = function() {
 
           }, (partial, episodes) => {
 
-            Shows.addPartialShow(partial, episodes);
+            return Shows.addPartialShow(partial, episodes);
 
           }, (partial) => {
 

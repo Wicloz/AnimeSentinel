@@ -315,7 +315,10 @@ export let myanimelist = {
 
   // Related shows data
   showRelated: {
-    rowSelector: 'table.anime_detail_related_anime tbody a[href^="/anime/"]',
+    rowSelector: 'table.anime_detail_related_anime tr > td > a[href^="/anime/"]',
+    relation: function(partial, full) {
+      return partial.parent().parent().find('td:first-of-type').text().replace(':', '').toLowerCase();
+    },
 
     // Related shows attribute data
     attributes: {

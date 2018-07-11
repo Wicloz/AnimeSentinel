@@ -251,6 +251,42 @@ Schemas.Show = new SimpleSchema({
     optional: true
   },
 
+  relatedShows: {
+    type: Array,
+    optional: true,
+    autoValue: function() {
+      if (!this.value && (!this.isUpdate || this.isSet)) {
+        return [];
+      } else if (!this.isSet) {
+        return undefined;
+      }
+      return this.value.reduce((total, value) => {
+        if (value) {
+          if (!total.hasPartialObjects({
+            showId: value.showId
+          })) {
+            total.push(value);
+          } else if (value.relation !== 'other') {
+            total = total.replacePartialObjects({
+              showId: value.showId,
+              relation: 'other'
+            }, value);
+          }
+        }
+        return total;
+      }, []);
+    }
+  },
+  'relatedShows.$': {
+    type: Object
+  },
+  'relatedShows.$.relation': {
+    type: String
+  },
+  'relatedShows.$.showId': {
+    type: String
+  },
+
   determinedInterval: {
     type: Object,
     optional: true,
@@ -734,7 +770,7 @@ Shows.helpers({
       }, (partial, episodes) => {
 
         // Insert any partial results found in the process
-        Shows.addPartialShow(partial, episodes);
+        return Shows.addPartialShow(partial, episodes);
 
       }, (full) => {
 

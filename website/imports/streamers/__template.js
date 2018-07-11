@@ -243,6 +243,9 @@ export let template = {
   // Related shows data
   showRelated: {
     rowSelector: '',
+    relation: function(partial, full) {
+      return '';
+    },
 
     // Related shows attribute data
     attributes: {
