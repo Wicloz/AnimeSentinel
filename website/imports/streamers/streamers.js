@@ -562,7 +562,7 @@ export class TempShow {
 
   mergeShows(intoShow, withShow, streamer) {
     Object.keys(withShow).forEach((key) => {
-      if ((typeof intoShow[key] === 'undefined' && !['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key))
+      if ((typeof intoShow[key] === 'undefined' && !Shows.systemKeys.includes(key))
         || (Shows.objectKeys.includes(key) && Object.countNonEmptyValues(withShow[key]) > Object.countNonEmptyValues(intoShow[key]))
         || (streamer.id === 'myanimelist' && !Shows.arrayKeys.includes(key)
           && (!Shows.objectKeys.includes(key) || Object.countNonEmptyValues(withShow[key]) === Object.countNonEmptyValues(intoShow[key])))) {

@@ -411,6 +411,7 @@ Shows.arrayKeys = Schemas.Show._schemaKeys.filter((key) => {
 Shows.objectKeys = Schemas.Show._schemaKeys.filter((key) => {
   return !key.includes('.') && Schemas.Show._schema[key].type.definitions[0].type.toString().includes('Object()');
 });
+Shows.systemKeys = ['_id', 'lastUpdateStart', 'lastUpdateEnd'];
 Shows.descriptionCutoff = '&#x2026; (read more)';
 Shows.timeUntilRecache = 86400000; // 1 day
 Shows.maxUpdateTime = 600000; // 10 minutes
@@ -673,7 +674,7 @@ Shows.helpers({
   mergePartialShow(other) {
     // Copy and merge attributes
     Object.keys(other).forEach((key) => {
-      if ((typeof this[key] === 'undefined' && !['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key))
+      if ((typeof this[key] === 'undefined' && !Shows.systemKeys.includes(key))
         || (Shows.objectKeys.includes(key) && Object.countNonEmptyValues(other[key]) > Object.countNonEmptyValues(this[key]))) {
         this[key] = other[key];
       }
@@ -738,6 +739,13 @@ Shows.helpers({
           }
         });
 
+        // Delete missing fields
+        Object.keys(this).forEach((key) => {
+          if (!Shows.systemKeys.includes(key) && !Object.keys(show).includes(key)) {
+            this[key] = undefined;
+          }
+        });
+
         // Replace existing fields
         Object.keys(show).forEach((key) => {
           this[key] = show[key];
@@ -776,7 +784,7 @@ Shows.helpers({
 
         // Copy and merge attributes
         Object.keys(full).forEach((key) => {
-          if ((typeof this[key] === 'undefined' && !['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key))
+          if ((typeof this[key] === 'undefined' && !Shows.systemKeys.includes(key))
             || (Shows.objectKeys.includes(key) && Object.countNonEmptyValues(full[key]) > Object.countNonEmptyValues(this[key]))) {
             this[key] = full[key];
           }
