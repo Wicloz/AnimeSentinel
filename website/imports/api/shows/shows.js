@@ -644,7 +644,7 @@ Shows.helpers({
       let intervalToUse = this.relevantBroadcastInterval(translationType);
 
       // Continue if the interval is known
-      if (intervalToUse) {
+      if (typeof intervalToUse !== 'undefined') {
 
         // Get earliest upload date for the last episode
         lastDate = earliestEpisodes[0].uploadDate;
