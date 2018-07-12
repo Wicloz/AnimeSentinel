@@ -425,7 +425,7 @@ if (Meteor.isDevelopment) {
 Shows.helpers({
   expired() {
     if (Meteor.isClient) {
-      invalidateMinute.depend();
+      invalidateSecond.depend();
     }
     return !this.lastUpdateStart ||
       (!this.locked() && moment.fromUtc(this.lastUpdateEnd).add(Shows.timeUntilRecache).isBefore()) ||
@@ -492,10 +492,10 @@ Shows.helpers({
   },
 
   nextEpisodeInterval(translationType) {
-    if (Meteor.isClient) {
-      invalidateMinute.depend();
-    }
-    if (typeof this.nextEpisodeDate(translationType) !== 'undefined') {
+    if (!_.isEmpty(this.nextEpisodeDate(translationType))) {
+      if (Meteor.isClient) {
+        invalidateSecond.depend();
+      }
       return moment.fromUtc(this.nextEpisodeDate(translationType)).diff(moment.fromUtc());
     } else {
       return undefined;

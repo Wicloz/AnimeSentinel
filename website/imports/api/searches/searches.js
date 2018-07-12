@@ -117,7 +117,7 @@ if (Meteor.isDevelopment) {
 Searches.helpers({
   expired() {
     if (Meteor.isClient) {
-      invalidateMinute.depend();
+      invalidateSecond.depend();
     }
     return !this.lastUpdateStart ||
       (!this.locked() && moment.fromUtc(this.lastUpdateEnd).add(Searches.timeUntilRecache).isBefore()) ||
