@@ -416,8 +416,8 @@ Shows.timeUntilRecache = 86400000; // 1 day
 Shows.maxUpdateTime = 600000; // 10 minutes
 
 if (Meteor.isDevelopment) {
-  Shows.timeUntilRecache = 10000;
-  Shows.maxUpdateTime = 30000;
+  Shows.timeUntilRecache = 60000; // 1 minute
+  Shows.maxUpdateTime = 60000; // 1 minute
 }
 
 // Helpers
