@@ -53,3 +53,7 @@ Template.registerHelper('$firstActive', (index, start) => {
 Template.registerHelper('$addOne', (value) => {
   return value + 1;
 });
+
+Template.registerHelper('$capitalize', (string) => {
+  return string.capitalize();
+});

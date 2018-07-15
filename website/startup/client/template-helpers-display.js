@@ -91,10 +91,10 @@ Template.registerHelper('displayInterval', (milliseconds, suffix) => {
   }
 
   if (milliseconds === 0) {
-    return 'now';
+    return suffix ? 'now' : 'zero seconds';
   }
 
-  return moment.duration(milliseconds).humanize(suffix);
+  return moment.duration(milliseconds).humanize(suffix).replaceStart('a ', '');
 });
 
 Template.registerHelper('displayDuration', (milliseconds) => {
