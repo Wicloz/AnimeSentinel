@@ -40,7 +40,9 @@ Template.pages_search.onCreated(function() {
   // Search when the subscription is ready
   this.autorun(() => {
     if (this.subscriptionsReady() || Searches.queryWithSearch(this.getSearchOptions()).count()) {
-      Meteor.call('searches.startSearch', this.getSearchOptions());
+      Tracker.nonreactive(() => {
+        Meteor.call('searches.startSearch', this.getSearchOptions());
+      });
     }
   });
 
