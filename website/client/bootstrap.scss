@@ -43,3 +43,24 @@
     border-top: $card-border-width solid $card-border-color;
   }
 }
+
+.carousel {
+  overflow: hidden;
+  min-height: calc(2rem + #{20px + $carousel-indicator-height});
+
+  .carousel-inner {
+    width: 100%;
+    height: 100%;
+
+    .carousel-item {
+      width: 100%;
+      height: 100%;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+  }
+}
