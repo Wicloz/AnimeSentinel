@@ -21,7 +21,7 @@ function determineAiringDateShowPage(partial, index) {
   return ScrapingHelpers.buildAiringDateFromStandardStrings(
     'Asia/Tokyo',
     index,
-    partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Aired:")').text().replace('Aired:', '').replace('Not available', '').split(' to '),
+    partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Aired:")').text().replace('Aired:', '').replace('Not available', '').cleanWhitespace().split(' to '),
     [stringTime, stringTime],
     partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Premiered:") a').text(),
     stringDay
