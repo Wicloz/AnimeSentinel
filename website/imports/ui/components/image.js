@@ -66,7 +66,7 @@ Template.components_image.onRendered(function () {
       this.state.set('src', Template.currentData().src);
       Tracker.nonreactive(() => {
         $.force_appear();
-      })
+      });
     }
   });
 });
