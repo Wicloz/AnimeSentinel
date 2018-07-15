@@ -6,6 +6,7 @@ import {Thumbnails} from '../thumbnails/thumbnails';
 import ScrapingHelpers from '../../streamers/scrapingHelpers';
 import moment from 'moment-timezone';
 import {WatchStates} from '../watchstates/watchstates';
+import Streamers from '../../streamers/streamers';
 const score = require('string-score');
 
 // Collection
@@ -459,6 +460,50 @@ Shows.helpers({
     }
 
     return urls;
+  },
+
+  streamersCleaned() {
+    return this.streamerUrls.filter((streamerUrl) => {
+      return !(streamerUrl.streamerId === 'myanimelist' && streamerUrl.type.startsWith('episodes-'));
+    }).map((streamerUrl) => {
+      return {...streamerUrl, ...Streamers.getSimpleStreamerById(streamerUrl.streamerId)};
+    });
+  },
+
+  episodeList(translationType) {
+    let episodes = [];
+
+    Episodes.queryForTranslationType(this._id, translationType).forEach((episode) => {
+      let selector = {
+        showId: episode.showId,
+        translationType: episode.translationType,
+        episodeNumStart: episode.episodeNumStart,
+        episodeNumEnd: episode.episodeNumEnd,
+        notes: episode.notes
+      };
+      let other = episodes.getPartialObjects(selector)[0];
+
+      if (other) {
+        if (other.streamers.every((streamer) => {
+          return streamer.id !== episode.streamerId;
+        })) {
+          let streamer = Streamers.getSimpleStreamerById(episode.streamerId);
+          streamer.sourceUrl = episode.sourceUrl;
+          other.streamers.push(streamer);
+        }
+        other.uploadDate = ScrapingHelpers.determineEarliestAiringDate(other.uploadDate, episode.uploadDate);
+
+        episodes = episodes.replacePartialObjects(selector, other);
+      }
+
+      else {
+        episode.streamers = [Streamers.getSimpleStreamerById(episode.streamerId)];
+        episode.streamers[0].sourceUrl = episode.sourceUrl;
+        episodes.push(episode);
+      }
+    });
+
+    return episodes;
   },
 
   relevantBroadcastInterval(translationType) {
