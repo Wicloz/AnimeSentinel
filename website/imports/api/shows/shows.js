@@ -263,15 +263,25 @@ Schemas.Show = new SimpleSchema({
       }
       return this.value.reduce((total, value) => {
         if (value) {
-          if (!total.hasPartialObjects({
+          if (value.relation !== 'other') {
+            if (total.hasPartialObjects({
+              showId: value.showId,
+              relation: 'other'
+            })) {
+              total = total.replacePartialObjects({
+                showId: value.showId,
+                relation: 'other'
+              }, value);
+            } else if (!total.hasPartialObjects({
+              showId: value.showId,
+              relation: value.relation
+            })) {
+              total.push(value);
+            }
+          } else if (!total.hasPartialObjects({
             showId: value.showId
           })) {
             total.push(value);
-          } else if (value.relation !== 'other') {
-            total = total.replacePartialObjects({
-              showId: value.showId,
-              relation: 'other'
-            }, value);
           }
         }
         return total;
@@ -504,6 +514,63 @@ Shows.helpers({
     });
 
     return episodes;
+  },
+
+  seriesMap(state, visitedIds=[]) {
+    let seriesMap = [];
+    visitedIds.push(this._id);
+
+    if (state !== 'sequels') {
+      this.relatedShows.getPartialObjects({
+        relation: 'prequel'
+      }).forEach((prequel) => {
+        if (!visitedIds.includes(prequel.showId)) {
+          let show = Shows.findOne(prequel.showId);
+          if (show) {
+            seriesMap = seriesMap.concat(show.seriesMap('prequels', visitedIds))
+          }
+        }
+      });
+    }
+
+    seriesMap.push({
+      root: this,
+      items: this.relatedShowsExpanded(true)
+    });
+
+    if (state !== 'prequels') {
+      this.relatedShows.getPartialObjects({
+        relation: 'sequel'
+      }).forEach((sequel) => {
+        if (!visitedIds.includes(sequel.showId)) {
+          let show = Shows.findOne(sequel.showId);
+          if (show) {
+            seriesMap = seriesMap.concat(show.seriesMap('sequels', visitedIds))
+          }
+        }
+      });
+    }
+
+    return seriesMap;
+  },
+
+  relatedShowsExpanded(removePrequelSequel) {
+    let uniqueRelations = Array.from(new Set(this.relatedShows.pluck('relation')));
+
+    if (removePrequelSequel) {
+      uniqueRelations = uniqueRelations.filter((relation) => {
+        return relation !== 'prequel' && relation !== 'sequel';
+      });
+    }
+
+    return uniqueRelations.map((relation) => {
+      return {
+        relation: relation,
+        shows: Shows.queryWithIds(this.relatedShows.getPartialObjects({
+          relation: relation
+        }).pluck('showId'))
+      };
+    });
   },
 
   relevantBroadcastInterval(translationType) {
