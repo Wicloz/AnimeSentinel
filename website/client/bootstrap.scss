@@ -64,3 +64,18 @@
     }
   }
 }
+
+@each $color, $value in $theme-colors {
+  .card-footer.btn-#{$color} {
+    @include button-variant($value, $value);
+    border-bottom: none;
+    border-right: none;
+    border-left: none;
+    border-top: $card-border-width solid $card-border-color;
+  }
+
+  .card-header.btn-#{$color} {
+    @include button-variant($value, $value);
+    border: none;
+  }
+}
