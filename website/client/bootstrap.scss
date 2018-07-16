@@ -79,3 +79,13 @@
     border: none;
   }
 }
+
+.card-body, .modal-body {
+  & > *:last-child, & > .row > .col > *:last-child, & > .row > [class^="col-"] > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+dl > dd:last-of-type {
+  margin-bottom: 0;
+}

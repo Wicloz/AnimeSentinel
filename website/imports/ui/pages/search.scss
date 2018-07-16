@@ -1,6 +1,6 @@
 @import "../../../client/_vars.scss";
 
-.card-show-container {
+.card-result-container > .card-body {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
