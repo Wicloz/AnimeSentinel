@@ -315,83 +315,83 @@ Schemas.Show = new SimpleSchema({
     type: SimpleSchema.Integer,
     optional: true
   },
-  determinedEpisodeDate: {
+  lastEpisodeDate: {
     type: Object,
     optional: true,
     defaultValue: {}
   },
-  'determinedEpisodeDate.sub': {
+  'lastEpisodeDate.sub': {
     type: Object,
     optional: true,
     defaultValue: {}
   },
-  'determinedEpisodeDate.sub.year': {
+  'lastEpisodeDate.sub.year': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.sub.month': {
+  'lastEpisodeDate.sub.month': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.sub.date': {
+  'lastEpisodeDate.sub.date': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.sub.hour': {
+  'lastEpisodeDate.sub.hour': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.sub.minute': {
+  'lastEpisodeDate.sub.minute': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.dub': {
+  'lastEpisodeDate.dub': {
     type: Object,
     optional: true,
     defaultValue: {}
   },
-  'determinedEpisodeDate.dub.year': {
+  'lastEpisodeDate.dub.year': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.dub.month': {
+  'lastEpisodeDate.dub.month': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.dub.date': {
+  'lastEpisodeDate.dub.date': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.dub.hour': {
+  'lastEpisodeDate.dub.hour': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.dub.minute': {
+  'lastEpisodeDate.dub.minute': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.raw': {
+  'lastEpisodeDate.raw': {
     type: Object,
     optional: true,
     defaultValue: {}
   },
-  'determinedEpisodeDate.raw.year': {
+  'lastEpisodeDate.raw.year': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.raw.month': {
+  'lastEpisodeDate.raw.month': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.raw.date': {
+  'lastEpisodeDate.raw.date': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.raw.hour': {
+  'lastEpisodeDate.raw.hour': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.raw.minute': {
+  'lastEpisodeDate.raw.minute': {
     type: SimpleSchema.Integer,
     optional: true
   },
@@ -587,10 +587,20 @@ Shows.helpers({
       return translationType === 'dub' ? undefined : this.airedStart;
     }
 
-    // Return the determined date
-    else {
-      return this.determinedEpisodeDate[translationType];
+    // Return next date if the show is airing
+    else if (this.airingState(translationType) === 'Airing') {
+      let intervalToUse = this.relevantBroadcastInterval(translationType);
+      if (typeof intervalToUse !== 'undefined' && !_.isEmpty(this.lastEpisodeDate[translationType])) {
+        let nextDateMoment = moment.utc(this.lastEpisodeDate[translationType]).add(intervalToUse);
+        return Object.keys(this.lastEpisodeDate[translationType]).reduce((nextDateObject, key) => {
+          nextDateObject[key] = nextDateMoment.get(key);
+          return nextDateObject;
+        }, {});
+      }
     }
+
+    // Return unknown date if something goes wrong
+    return undefined;
   },
 
   airingState(translationType) {
@@ -675,6 +685,20 @@ Shows.helpers({
       }
     });
 
+    /***********************************
+     * Calculate the 'lastEpisodeDate' *
+     ***********************************/
+
+    // Store on this
+    this.lastEpisodeDate[translationType] = earliestEpisodes.empty() ? undefined : earliestEpisodes[0].uploadDate;
+
+    // Store in the database
+    Shows.update(this._id, {
+      $set: {
+        lastEpisodeDate: this.lastEpisodeDate
+      }
+    });
+
     /**************************************
      * Calculate the 'determinedInterval' *
      **************************************/
@@ -739,46 +763,6 @@ Shows.helpers({
     Shows.update(this._id, {
       $set: {
         determinedInterval: this.determinedInterval
-      }
-    });
-
-    /*****************************************
-     * Calculate the 'determinedEpisodeDate' *
-     *****************************************/
-
-    // Store the found date here
-    let lastDate = undefined;
-
-    // Only if the show is airing
-    if (this.airingState(translationType) === 'Airing') {
-
-      // Determine the interval to use for the calculation
-      let intervalToUse = this.relevantBroadcastInterval(translationType);
-
-      // Continue if the interval is known
-      if (typeof intervalToUse !== 'undefined') {
-
-        // Get earliest upload date for the last episode
-        lastDate = earliestEpisodes[0].uploadDate;
-
-        // Convert to moment and add the interval
-        let lastDateMoment = moment.fromUtc(lastDate);
-        lastDateMoment.add(intervalToUse);
-
-        // Convert back to object
-        Object.keys(lastDate).forEach((key) => {
-          lastDate[key] = lastDateMoment.get(key);
-        });
-      }
-    }
-
-    // Store on this
-    this.determinedEpisodeDate[translationType] = lastDate;
-
-    // Store in the database
-    Shows.update(this._id, {
-      $set: {
-        determinedEpisodeDate: this.determinedEpisodeDate
       }
     });
   },
@@ -869,7 +853,7 @@ Shows.helpers({
           mutate: true
         });
         delete this.determinedInterval;
-        delete this.determinedEpisodeDate;
+        delete this.lastEpisodeDate;
         delete this.availableEpisodes;
 
         Shows.update({
@@ -910,7 +894,7 @@ Shows.helpers({
           mutate: true
         });
         delete this.determinedInterval;
-        delete this.determinedEpisodeDate;
+        delete this.lastEpisodeDate;
         delete this.availableEpisodes;
 
         Shows.update({
