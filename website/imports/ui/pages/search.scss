@@ -9,7 +9,7 @@
 
   .card-show-item {
     flex: 0 0 auto;
-    width: 100%;
+    width: calc(100% - #{$spacer});
     @include media-breakpoint-up(sm) {
       width: min-content;
     }
