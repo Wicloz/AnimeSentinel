@@ -12,11 +12,11 @@ Schemas.Search = new SimpleSchema({
     type: String,
     optional: true
   },
-  lastSearchStart: {
+  lastUpdateStart: {
     type: Date,
     optional: true
   },
-  lastSearchEnd: {
+  lastUpdateEnd: {
     type: Date,
     optional: true
   },
@@ -33,8 +33,7 @@ Schemas.Search = new SimpleSchema({
       return this.value.cleanQuery();
     },
     autoform: {
-      icon: 'search',
-      label: 'Search Anime',
+      label: 'Search Anime:',
       autocomplete: 'off',
       type: 'search'
     }
@@ -47,8 +46,7 @@ Schemas.Search = new SimpleSchema({
     defaultValue: [],
     autoform: {
       options: 'allowed',
-      type: 'select-checkbox',
-      class: 'filled-in'
+      type: 'select-checkbox-inline'
     }
   },
   'types.$': {
@@ -61,9 +59,14 @@ Schemas.Search = new SimpleSchema({
     optional: true,
     defaultValue: true,
     autoform: {
-      type: 'switch',
-      trueLabel: 'Include',
-      falseLabel: 'Exclude'
+      type: 'select-radio-inline',
+      options: [{
+        label: 'Include', value: 'true'
+      }, {
+        label: 'Exclude', value: 'false'
+      }],
+      defaultValue: 'true',
+      label: false
     }
   },
 
@@ -74,8 +77,7 @@ Schemas.Search = new SimpleSchema({
     defaultValue: [],
     autoform: {
       options: 'allowed',
-      type: 'select-checkbox',
-      class: 'filled-in'
+      type: 'select-checkbox-inline'
     }
   },
   'genres.$': {
@@ -88,9 +90,14 @@ Schemas.Search = new SimpleSchema({
     optional: true,
     defaultValue: true,
     autoform: {
-      type: 'switch',
-      trueLabel: 'Include',
-      falseLabel: 'Exclude'
+      type: 'select-radio-inline',
+      options: [{
+        label: 'Include', value: 'true'
+      }, {
+        label: 'Exclude', value: 'false'
+      }],
+      defaultValue: 'true',
+      label: false
     }
   }
 }, { tracker: Tracker });
@@ -99,26 +106,26 @@ Searches.attachSchema(Schemas.Search);
 
 // Constants
 Searches.timeUntilRecache = 86400000; // 1 day
-Searches.maxSearchTime = 60000; // 1 minute
+Searches.maxUpdateTime = 60000; // 1 minute
 
 if (Meteor.isDevelopment) {
-  Searches.timeUntilRecache = 10000;
-  Searches.maxSearchTime = 30000;
+  Searches.timeUntilRecache = 30000; // 30 seconds
+  Searches.maxUpdateTime = 30000; // 30 seconds
 }
 
 // Helpers
 Searches.helpers({
   expired() {
     if (Meteor.isClient) {
-      invalidateMinute.depend();
+      invalidateSecond.depend();
     }
-    let now = moment();
-    return (!this.busy() && (!this.lastSearchStart || moment(this.lastSearchEnd).add(Searches.timeUntilRecache) < now)) ||
-            (this.busy() && moment(this.lastSearchStart).add(Searches.maxSearchTime) < now);
+    return !this.lastUpdateStart ||
+      (!this.locked() && moment.fromUtc(this.lastUpdateEnd).add(Searches.timeUntilRecache).isBefore()) ||
+      (this.locked() && moment.fromUtc(this.lastUpdateStart).add(Searches.maxUpdateTime).isBefore());
   },
 
-  busy() {
-    return this.lastSearchStart && (!this.lastSearchEnd || this.lastSearchStart > this.lastSearchEnd);
+  locked() {
+    return this.lastUpdateStart && (!this.lastUpdateEnd || this.lastUpdateStart > this.lastUpdateEnd);
   },
 
   completeQuery(length, string) {
@@ -190,27 +197,27 @@ Searches.helpers({
 
   doSearch() {
     // Mark search as started
-    this.lastSearchStart = moment().toDate();
+    this.lastUpdateStart = moment.fromUtc().toDate();
     Searches.update(this._id, {
       $set: {
-        lastSearchStart: this.lastSearchStart
+        lastUpdateStart: this.lastUpdateStart
       }
     });
 
     Streamers.doSearch(this, () => {
 
       // When done
-      this.lastSearchEnd = moment().toDate();
+      this.lastUpdateEnd = moment.fromUtc().toDate();
       Searches.update(this._id, {
         $set: {
-          lastSearchEnd: this.lastSearchEnd
+          lastUpdateEnd: this.lastUpdateEnd
         }
       });
 
     }, (partial, episodes) => {
 
       // For each search result
-      Shows.addPartialShow(partial, episodes);
+      return Shows.addPartialShow(partial, episodes);
 
     });
   }
@@ -254,8 +261,8 @@ Searches.queryWithSearch = function(search) {
   });
 
   delete search._id;
-  delete search.lastSearchStart;
-  delete search.lastSearchEnd;
+  delete search.lastUpdateStart;
+  delete search.lastUpdateEnd;
 
   // Validate
   Schemas.Search.validate(search);

@@ -1,5 +1,56 @@
 @import "../../../client/_vars.scss";
 
-.episode-streamer-list {
-  margin: 0;
+$card-alt-names-height-inner: $line-height-base * $font-size-base * 2 + $card-spacer-y * 2;
+$card-alt-names-shadow-size: $line-height-base * $font-size-base + $card-spacer-y;
+
+#thumbnailCarousel {
+  background-color: $dark;
+  color: $white;
+
+  @include media-breakpoint-down(sm) {
+    max-height: $thumbnail-height;
+  }
+}
+
+#thumbnailCarouselFake {
+  width: 100%;
+}
+
+.card-alt-names {
+  max-height: calc(#{$card-alt-names-height-inner} + #{$card-border-width * 2});
+  overflow: hidden;
+
+  .card-show-more {
+    position: absolute;
+    bottom: 0;
+    width: calc(100% + #{2 * $card-alt-names-shadow-size});
+    margin-left: -$card-alt-names-shadow-size;
+    height: $card-alt-names-shadow-size + $card-alt-names-height-inner;
+
+    border: none;
+    box-shadow: inset 0 0 $card-alt-names-shadow-size $dark;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    color: $primary;
+    padding-bottom: 2px;
+  }
+
+  &:hover {
+    max-height: unset;
+
+    .card-show-more {
+      @include removed;
+    }
+  }
+}
+
+.card-related-shows {
+  dd {
+    margin-bottom: 0;
+  }
+
+  hr {
+    margin: 2px 0;
+  }
 }

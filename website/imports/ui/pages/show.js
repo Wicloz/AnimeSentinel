@@ -1,11 +1,5 @@
 import './show.html';
 import {Shows} from '/imports/api/shows/shows.js';
-import '/imports/ui/components/loadingIndicatorBackground.js';
-import {Episodes} from "../../api/episodes/episodes";
-import Streamers from "../../streamers/streamers";
-import '/imports/ui/components/carousel.js';
-import ScrapingHelpers from '../../streamers/scrapingHelpers';
-import {WatchStates} from '../../api/watchstates/watchstates';
 
 Template.pages_show.onCreated(function() {
   // Set page variables
@@ -15,14 +9,42 @@ Template.pages_show.onCreated(function() {
   }]));
 
   // Local functions
-  this.getWatchState = function() {
-    if (Meteor.userId()) {
-      let show = Shows.findOne(FlowRouter.getParam('showId'));
-      if (show && typeof show.malId !== 'undefined') {
-        return WatchStates.queryUnique(Meteor.userId(), show.malId).fetch()[0];
-      }
+  this.fixCarouselHeight = function() {
+    Tracker.afterFlush(() => {
+      $('#thumbnailCarousel').height(Math.max(...$('#thumbnailCarouselFake img').map(function() {
+        return $(this).height();
+      }).toArray(), 0));
+    });
+  };
+
+  this.restartCarousel = function() {
+    Tracker.afterFlush(() => {
+      let carouselElement = $('#thumbnailCarousel');
+      carouselElement.carousel('dispose');
+      carouselElement.carousel();
+    });
+  };
+
+  this.isUpdating = function() {
+    let show = Shows.findOne(FlowRouter.getParam('showId'));
+    return show && show.locked();
+  };
+
+  this.recursivelySubscribe = function(show, direction, visitedIds=[]) {
+    if (show) {
+      visitedIds.push(show._id);
+      Tracker.nonreactive(() => {
+        Meteor.call('shows.attemptUpdate', show._id);
+      });
+      this.subscribe('shows.withIds', show.relatedShows.pluck('showId'));
+      show.relatedShows.getPartialObjects({
+        relation: direction
+      }).forEach((related) => {
+        if (!visitedIds.includes(related.showId)) {
+          this.recursivelySubscribe(Shows.findOne(related.showId), direction, visitedIds);
+        }
+      });
     }
-    return undefined;
   };
 
   // Subscribe based on the show id
@@ -38,11 +60,10 @@ Template.pages_show.onCreated(function() {
     }
   });
 
-  // When a show is found
+  // When the show is found
   this.autorun(() => {
     let show = Shows.findOne(FlowRouter.getParam('showId'));
     if (show) {
-      Meteor.call('shows.attemptUpdate', FlowRouter.getParam('showId'));
       Session.set('PageTitle', show.name);
       this.subscribe('thumbnails.withHashes', show.thumbnails);
       if (typeof show.malId !== 'undefined' && Meteor.userId()) {
@@ -50,6 +71,64 @@ Template.pages_show.onCreated(function() {
       }
     }
   });
+
+  // Recursively subscribe to all prequels and sequels
+  this.autorun(() => {
+    let visitedIds = [];
+    this.recursivelySubscribe(Shows.findOne(FlowRouter.getParam('showId')), 'prequel', visitedIds);
+    this.recursivelySubscribe(Shows.findOne(FlowRouter.getParam('showId')), 'sequel', visitedIds);
+  });
+
+  // Set 'LoadingBackground' parameter
+  this.autorun(() => {
+    Session.set('LoadingBackground', this.isUpdating());
+  });
+});
+
+Template.pages_show.onRendered(function() {
+  // When the selected translation type changes
+  this.autorun(() => {
+    $('#episodeList-collapse-' + getStorageItem('SelectedTranslationType')).collapse('show');
+  });
+
+  // When the collapse state of the related shows changes
+  this.autorun(() => {
+    $('#relatedShowsCollapse').collapse(getStorageItem('RelatedShowsCollapsed') ? 'hide' : 'show');
+  });
+
+  // When thumbnails change
+  this.lastThumbnails = undefined;
+  this.autorun(() => {
+    let show = Shows.findOne(FlowRouter.getParam('showId'));
+    let currentThumbnails = show ? show.thumbnailUrls() : undefined;
+    if (!_.isEqual(this.lastThumbnails, currentThumbnails)) {
+      this.fixCarouselHeight();
+      this.restartCarousel();
+      this.lastThumbnails = currentThumbnails;
+    }
+  });
+
+  // When the window size or orientation changes
+  $(window).on('resize orientationchange', this.fixCarouselHeight);
+});
+
+Template.pages_show.onDestroyed(function() {
+  Session.set('LoadingBackground', false);
+  $(window).off('resize orientationchange', this.fixCarouselHeight);
+});
+
+Template.pages_show.events({
+  'load #thumbnailCarouselFake img'(event) {
+    Template.instance().fixCarouselHeight();
+  },
+
+  'hide.bs.collapse #relatedShowsCollapse'(event) {
+    setStorageItem('RelatedShowsCollapsed', true);
+  },
+
+  'show.bs.collapse #relatedShowsCollapse'(event) {
+    setStorageItem('RelatedShowsCollapsed', false);
+  }
 });
 
 Template.pages_show.helpers({
@@ -57,51 +136,25 @@ Template.pages_show.helpers({
     return Shows.findOne(FlowRouter.getParam('showId'));
   },
 
-  updating() {
-    let show = Shows.findOne(FlowRouter.getParam('showId'));
-    return show && show.locked();
+  queryType(type) {
+    return {
+      types: [type]
+    };
   },
 
-  episodesJoined(translationType) {
-    let episodes = [];
+  queryGenre(genre) {
+    return {
+      genres: [genre]
+    };
+  }
+});
 
-    Episodes.queryForTranslationType(FlowRouter.getParam('showId'), translationType).forEach((episode) => {
-      let selector = {
-        showId: episode.showId,
-        translationType: episode.translationType,
-        episodeNumStart: episode.episodeNumStart,
-        episodeNumEnd: episode.episodeNumEnd,
-        notes: episode.notes
-      };
-
-      if (episodes.hasPartialObjects(selector)) {
-        let other = episodes.getPartialObjects(selector)[0];
-
-        if (other.streamers.every((streamer) => {
-            return streamer.id !== episode.streamerId;
-          })) {
-          other.streamers.push(Streamers.getSimpleStreamerById(episode.streamerId));
-        }
-
-        other.uploadDate = ScrapingHelpers.determineEarliestAiringDate(other.uploadDate, episode.uploadDate);
-
-        episodes = episodes.replacePartialObjects(selector, other);
-      }
-
-      else {
-        let watchState = Template.instance().getWatchState();
-        if (watchState) {
-          episode.watched = episode.episodeNumEnd <= watchState.malWatchedEpisodes;
-        }
-        episode.streamers = [Streamers.getSimpleStreamerById(episode.streamerId)];
-        episodes.push(episode);
-      }
-    });
-
-    return episodes;
+Template.pages_show_episodes.helpers({
+  show() {
+    return Shows.findOne(FlowRouter.getParam('showId'));
   },
 
-  watchState() {
-    return Template.instance().getWatchState();
+  episodesLoading() {
+    return !Template.parentInstance().subscriptionsReady() || Template.parentInstance().isUpdating();
   }
 });

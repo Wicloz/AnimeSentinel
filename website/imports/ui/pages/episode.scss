@@ -1,76 +1,53 @@
 @import "../../../client/_vars.scss";
 
-#player-container-panel {
-  padding: 0;
-}
-
-#player-container-outer {
-  position: relative;
-  width: 100%;
-}
-
-#player-container-outer:before {
-  content: "";
-  display: block;
+.card-player-container > .card-img {
   padding-top: 75%;
-}
+  position: relative;
+  overflow: hidden;
 
-#player-container-inner {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
-#episode-frame {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-.under-player-container {
-  padding: $spacer;
-  border-top: 1px solid color("grey", "lighten-2");
-
-  .input-field {
-    margin-top: $spacer/2;
+  #episode-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
   }
 }
 
-.disable-mixed-protection-image {
-  width: calc(50% - 9.5px);
+.card-episode-selection > .card-body {
+  display: flex;
+
+  button {
+    flex: 0 0 auto;
+  }
+
+  form {
+    flex: 1 1 100%;
+    margin: 0 $spacer;
+  }
 }
 
 .disable-cloudflare-filter-image {
-  width: 50%;
-  margin: auto;
   display: block;
-}
-
-.source-button-container {
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
-.btn-select-next, .btn-select-prev {
-  padding: 0 10px;
   width: 100%;
-  height: 100%;
-  text-align: center;
+  max-height: $thumbnail-height;
+  object-fit: contain;
+  object-position: left;
+  padding: $spacer;
 }
 
-.btn-select-prev-col {
-  margin-right: $spacer;
-}
+.card-mixed-content > .card-body {
+  display: flex;
+  flex-wrap: wrap;
+  padding-right: $card-spacer-x - $spacer;
 
-.btn-select-next-col {
-  margin-left: $spacer;
-}
+  span {
+    flex: 1 1 $thumbnail-height;
+    margin-right: $spacer;
 
-.select-episode-number-col {
-  .input-field label:not(.label-icon).active {
-    transform: translateY(12px);
-    transform-origin: 0 100%;
+    img {
+      width: 100%;
+    }
   }
 }

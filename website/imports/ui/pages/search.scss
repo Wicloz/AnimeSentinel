@@ -1,19 +1,70 @@
 @import "../../../client/_vars.scss";
 
-#animeSearchFormOptions {
-  .af-checkbox-group p {
-    display: inline-block;
+.card-result-container > .card-body {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding-right: $card-spacer-x - $spacer;
+  padding-bottom: $card-spacer-x - $spacer;
+
+  .card-show-item {
+    flex: 0 0 auto;
+    width: calc(100% - #{$spacer});
+    @include media-breakpoint-up(sm) {
+      width: min-content;
+    }
+
+    color: $white;
+    text-decoration: none;
+    font-weight: $font-weight-light;
+    font-size: $font-size-sm;
+    background-color: $dark;
+
+    .card-img-top {
+      margin-bottom: $font-size-sm * $line-height-sm * -1;
+
+      max-height: $thumbnail-height;
+      width: 100%;
+      object-fit: contain;
+
+      @include media-breakpoint-up(sm) {
+        height: $thumbnail-height;
+        width: auto;
+        min-width: $thumbnail-height / 1.5;
+      }
+    }
+
+    .card-img-info {
+      display: flex;
+      justify-content: space-between;
+
+      & > * {
+        height: 0;
+        border-bottom: $font-size-sm * $line-height-sm transparentize($dark, 0.1) solid;
+        flex: 0 0 auto;
+        white-space: nowrap;
+      }
+
+      .card-img-info-left {
+        border-right: 10px transparent solid;
+        padding-right: 1px;
+        padding-left: 3px;
+      }
+
+      .card-img-info-right {
+        border-left: 10px transparent solid;
+        padding-left: 1px;
+        padding-right: 3px;
+      }
+    }
+
+    .card-body {
+      padding: 0 3px;
+    }
+  }
+
+  & > * {
     margin-right: $spacer;
-    width: 120px;
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  .af-checkbox-group p:first-of-type {
-    margin-top: 10px;
-  }
-
-  .switch {
     margin-bottom: $spacer;
   }
 }

@@ -1,9 +1,14 @@
 import SimpleSchema from 'simpl-schema';
 import Streamers, {TempShow} from '../../streamers/streamers';
 import {Shows} from '../shows/shows';
+import {WatchStates} from '../watchstates/watchstates';
+import ScrapingHelpers from '../../streamers/scrapingHelpers';
 
 // Collection
 export const Episodes = new Mongo.Collection('episodes');
+
+// Constants
+Episodes.validTranslationTypes = ['sub', 'dub', 'raw'];
 
 // Schema
 Schemas.Episode = new SimpleSchema({
@@ -31,7 +36,7 @@ Schemas.Episode = new SimpleSchema({
   },
   translationType: {
     type: String,
-    allowedValues: ['sub', 'dub', 'raw'],
+    allowedValues: Episodes.validTranslationTypes,
     index: true
   },
   streamerId: {
@@ -110,12 +115,8 @@ Episodes.informationKeys = ['sourceUrl', 'flags', 'uploadDate'];
 
 // Helpers
 Episodes.helpers({
-  remove() {
-    Episodes.remove(this._id);
-  },
-
   translationTypeExpanded() {
-    return this.translationType.replace('dub', 'dubbed').replace('sub', 'subbed').capitalize();
+    return ScrapingHelpers.makeTranslationTypeFancy(this.translationType);
   },
 
   notesEncoded() {
@@ -140,6 +141,17 @@ Episodes.helpers({
       + (this.notes ? ' - ' + this.notes : '');
   },
 
+  watched() {
+    if (Meteor.userId()) {
+      let show = Shows.findOne(this.showId);
+      if (show && typeof show.malId !== 'undefined') {
+        let watchState = WatchStates.queryUnique(Meteor.userId(), show.malId).fetch()[0];
+        return watchState && watchState.malWatchedEpisodes >= this.episodeNumEnd;
+      }
+    }
+    return false;
+  },
+
   mergeEpisode(other) {
     // Copy and merge attributes
     Object.keys(other).forEach((key) => {
@@ -157,7 +169,7 @@ Episodes.helpers({
 
     // Remove other from database
     if (other._id) {
-      other.remove();
+      Episodes.remove(other._id);
     }
   },
 
@@ -243,7 +255,7 @@ Episodes.findRecentEpisodes = function() {
 
           }, (partial, episodes) => {
 
-            Shows.addPartialShow(partial, episodes);
+            return Shows.addPartialShow(partial, episodes);
 
           }, (partial) => {
 
@@ -339,6 +351,10 @@ Episodes.queryForTranslationType = function(showId, translationType) {
 };
 
 Episodes.queryForEpisode = function (showId, translationType, episodeNumStart, episodeNumEnd, notes) {
+  if (!notes) {
+    notes = null;
+  }
+
   // Validate
   Schemas.Episode.validate({
     showId: showId,
@@ -361,6 +377,10 @@ Episodes.queryForEpisode = function (showId, translationType, episodeNumStart, e
 };
 
 Episodes.queryForStreamer = function (showId, translationType, episodeNumStart, episodeNumEnd, notes, streamerId) {
+  if (!notes) {
+    notes = null;
+  }
+
   // Validate
   Schemas.Episode.validate({
     showId: showId,
@@ -385,6 +405,10 @@ Episodes.queryForStreamer = function (showId, translationType, episodeNumStart, 
 };
 
 Episodes.queryUnique = function (showId, translationType, episodeNumStart, episodeNumEnd, notes, streamerId, sourceName) {
+  if (!notes) {
+    notes = null;
+  }
+
   // Validate
   Schemas.Episode.validate({
     showId: showId,

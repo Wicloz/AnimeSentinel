@@ -1,0 +1,84 @@
+@import "vars";
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+@each $color, $value in $theme-colors {
+  .card-header.btn-#{$color}, .card-footer.btn-#{$color} {
+    @include button-variant($value, $value);
+    border: none;
+  }
+}
+
+.card {
+  margin-bottom: $spacer;
+
+  & > * {
+    border-bottom: none;
+
+    & + *:not(.collapse), & + *.collapse.show {
+      border-top: $card-border-width solid $card-border-color;
+    }
+  }
+}
+
+.accordion {
+  margin-bottom: $spacer;
+
+  .card {
+    margin-bottom: unset;
+  }
+}
+
+.btn-unstyled {
+  user-select: none;
+
+  &:disabled, &.disabled {
+    pointer-events: none;
+  }
+
+  &:not(:disabled):not(.disabled) {
+    cursor: pointer;
+  }
+}
+
+.btn-collapse {
+  .fa-caret-right {
+    transition: transform 0.3s;
+  }
+
+  &:not(.collapsed) {
+    .fa-caret-right {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.carousel {
+  overflow: hidden;
+  min-height: calc(2rem + #{20px + $carousel-indicator-height});
+
+  .carousel-inner {
+    width: 100%;
+    height: 100%;
+
+    .carousel-item {
+      width: 100%;
+      height: 100%;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+  }
+}
+
+.card-body, .modal-body {
+  & > *:last-child, & > .row > .col > *:last-child, & > .row > [class^="col-"] > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+dl > dd:last-of-type {
+  margin-bottom: 0;
+}

@@ -10,38 +10,30 @@ function getTypeFromName(name) {
 }
 
 function determineAiringDateShowPage(partial, index) {
-  let stringTime = undefined;
-  let episodes = partial.find('div.widget.servers div.widget-body div.server.active ul li a');
-  if (episodes.length) {
-    if (index) {
-      stringTime = episodes.last().attr('data-title').split(' - ')[1];
-    } else {
-      stringTime = episodes.first().attr('data-title').split(' - ')[1];
-    }
-  }
-
   return ScrapingHelpers.buildAiringDateFromStandardStrings(
-    'EST',
-    index,
-    partial.find('div.info div.row dl:first-of-type dt:contains("Date aired:")').next().text().replace('Date aired:', ''),
-    partial.find('div.info div.row dl:last-of-type dt:contains("Premiered:")').next().find('a').text(),
     undefined,
-    stringTime
+    index,
+    partial.find('div.info div.row dl:first-of-type dt:contains("Date aired:")').next().text().split(' to '),
+    undefined,
+    partial.find('div.info div.row dl:last-of-type dt:contains("Premiered:")').next().find('a').text(),
+    undefined
   );
 }
 
 function getEpisodeData(episodeString) {
-  let episodeBits = episodeString.split('-');
+  let episodeBits = episodeString.split(' - ');
+  let episodeBitsBits = episodeBits[0].split('-');
 
-  if (episodeBits.some((episodeBit) => {
+  if (episodeBitsBits.some((episodeBit) => {
     return !isNumeric(episodeBit) && episodeBit !== 'Full';
   })) {
     return false;
   }
 
   return {
-    start: episodeBits[0],
-    end: episodeBits.peek()
+    start: episodeBitsBits[0],
+    end: episodeBitsBits.peek(),
+    notes: episodeBits[1] ? episodeBits[1].replaceFull('Uncen', 'Uncensored') : undefined
   };
 }
 
@@ -189,6 +181,14 @@ export let nineanime = {
         }
         return undefined;
       },
+      episodeDuration: function(partial, full) {
+        let base = partial.find('div.info div.row dl:last-of-type dt:contains("Duration:")').next().text().split(' ')[0];
+        if (isNumeric(base)) {
+          return base * 60000;
+        } else {
+          return undefined;
+        }
+      },
     },
 
     // Show page thumbnail data
@@ -224,6 +224,9 @@ export let nineanime = {
       episodeNumEnd: function(partial, full) {
         return getEpisodeData(partial.text()).end;
       },
+      notes: function(partial, full) {
+        return getEpisodeData(partial.text()).notes;
+      },
       translationType: function(partial, full) {
         return getTypeFromName(full.find('div.widget.player div.widget-title h1.title').text());
       },
@@ -254,9 +257,9 @@ export let nineanime = {
                   'EST',
                   undefined,
                   dateBits[0],
+                  dateBits[1],
                   undefined,
-                  undefined,
-                  dateBits[1]
+                  undefined
                 ),
                 flags: ['OpenLoad', 'Streamango'].includes(name) ? ['requires-plugins'] : []
               });

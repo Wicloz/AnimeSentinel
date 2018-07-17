@@ -5,7 +5,7 @@
       <a class="waves-effect waves-light btn reload-mal-list-btn">Reload MAL List</a>
       <a class="waves-effect waves-light btn reload-all-shows-btn">Attempt All Show Updates</a>
       {{#autoForm schema='Schemas.statusesSelection' id='statusesSelectionForm' autosave=true}}
-        {{> afQuickField name='statuses' value=($GetStorageItem 'SelectedStatuses')}}
+        {{> afQuickField name='statuses' value=($getStorageItem 'SelectedStatuses')}}
       {{/autoForm}}
 
       <ul class="collection">
@@ -15,7 +15,7 @@
           <li class="collection-item">
             <div class="row">
               <div class="col s12 m2">
-                {{>components_image src=this.getThumbnailUrls.[0] caption=name class="responsive-img materialboxed"}}
+                {{>components_image src=this.thumbnailUrls.[0] caption=name class="responsive-img materialboxed"}}
               </div>
               <div class="col s12 m5">
                 <p>
@@ -28,9 +28,9 @@
                   <br>
                   Season: {{displaySeason season}}
                   <br>
-                  {{$dot this.availableEpisodes ($GetStorageItem 'SelectedTranslationType')}} out of {{episodeCount}} episodes available
+                  {{$dot this.availableEpisodes ($getStorageItem 'SelectedTranslationType')}} out of {{episodeCount}} episodes available
                   <br>
-                  Airs every {{displayMinuteInterval (relevantBroadcastInterval ($GetStorageItem 'SelectedTranslationType'))}}
+                  Airs every {{displayInterval (relevantBroadcastInterval ($getStorageItem 'SelectedTranslationType'))}}
                 </p>
               </div>
               <div class="col s12 m5">
@@ -41,13 +41,13 @@
                       Episode {{fancyKey}}
                     </a>
                   {{/each}}
-                  {{#if $eq (airingState ($GetStorageItem 'SelectedTranslationType')) 'Completed'}}
+                  {{#if $eq (airingState ($getStorageItem 'SelectedTranslationType')) 'Completed'}}
                     <li class="collection-item">Finished Airing</li>
                   {{else}}
                     <li class="collection-item">
-                      Next Episode: {{displayUploadDate (nextEpisodeDate ($GetStorageItem 'SelectedTranslationType'))}}
+                      Next Episode: {{displayUploadDate (nextEpisodeDate ($getStorageItem 'SelectedTranslationType'))}}
                       <br>
-                      <span class="hidden">Next Episode:</span> in {{displayMinuteInterval (nextEpisodeInterval ($GetStorageItem 'SelectedTranslationType'))}}
+                      <span class="hidden">Next Episode:</span> {{displayInterval (nextEpisodeInterval ($getStorageItem 'SelectedTranslationType')) true}}
                     </li>
                   {{/if}}
                 </ul>

@@ -21,10 +21,10 @@ function determineAiringDateShowPage(partial, index) {
   return ScrapingHelpers.buildAiringDateFromStandardStrings(
     'Asia/Tokyo',
     index,
-    partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Aired:")').text().replace('Aired:', ''),
+    partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Aired:")').text().replace('Aired:', '').replace('Not available', '').cleanWhitespace().split(' to '),
+    [stringTime, stringTime],
     partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Premiered:") a').text(),
-    stringDay,
-    stringTime
+    stringDay
   );
 }
 
@@ -40,8 +40,8 @@ function determineAiringDateSearchPage(string) {
       airingDateResult.date = dateBits[1];
     }
     if (!dateBits[2].includes('?')) {
-      let prepend = Math.floor(moment().year() / 100);
-      if (dateBits[2] > moment().year() % 100 + 10) {
+      let prepend = Math.floor(moment.fromUtc().year() / 100);
+      if (dateBits[2] > moment.fromUtc().year() % 100 + 10) {
         prepend--;
       }
       airingDateResult.year = prepend + dateBits[2];
@@ -128,6 +128,9 @@ export let myanimelist = {
       },
       episodeCount: function(partial, full) {
         return partial.find('td:nth-of-type(4)').text().cleanWhitespace().replace('-', '');
+      },
+      rating: function(partial, full) {
+        return partial.find('td:nth-of-type(9)').text().replace(/^\s*-\s*$/, '');
       },
     },
 
@@ -221,9 +224,22 @@ export let myanimelist = {
         return partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Episodes:")').text()
           .replace('Episodes:', '').cleanWhitespace().replace('Unknown', '');
       },
-      broadcastIntervalMinutes: function(partial, full) {
+      broadcastInterval: function(partial, full) {
         let broadcast = partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Broadcast:")').text().cleanWhitespace();
-        return broadcast && /Broadcast: [A-Za-z]+ at [0-9:?]+/.test(broadcast) ? 10080 : undefined;
+        return broadcast && /Broadcast: [A-Za-z]+ at [0-9:?]+/.test(broadcast) ? 604800000 : undefined;
+      },
+      episodeDuration: function(partial, full) {
+        let base = partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Duration:")')
+          .text().cleanWhitespace().split(' ')[1];
+        if (isNumeric(base)) {
+          return base * 60000;
+        } else {
+          return undefined;
+        }
+      },
+      rating: function(partial, full) {
+        return partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Rating:")')
+          .text().cleanWhitespace().split(' ')[1].replace('None', '');
       },
     },
 
@@ -280,6 +296,12 @@ export let myanimelist = {
       episodeCount: function(partial, full) {
         return partial.series_episodes[0] === '0' ? undefined : partial.series_episodes[0];
       },
+      episodeDuration: function(partial, full) {
+        // TODO
+      },
+      rating: function(partial, full) {
+        // TODO
+      },
     },
 
     // Show API page thumbnail data
@@ -293,7 +315,10 @@ export let myanimelist = {
 
   // Related shows data
   showRelated: {
-    rowSelector: 'table.anime_detail_related_anime tbody a[href^="/anime/"]',
+    rowSelector: 'table.anime_detail_related_anime tr > td > a[href^="/anime/"]',
+    relation: function(partial, full) {
+      return partial.parent().parent().find('td:first-of-type').text().replace(':', '').toLowerCase();
+    },
 
     // Related shows attribute data
     attributes: {
@@ -336,7 +361,7 @@ export let myanimelist = {
         let dateBits = partial.find('td.episode-aired').text().replace(/,/g, '').split(' ');
         if (dateBits.length === 3) {
           uploadDate.year = dateBits[2];
-          uploadDate.month = moment().month(dateBits[0]).month();
+          uploadDate.month = moment.fromUtc().month(dateBits[0]).month();
           uploadDate.date = dateBits[1];
         }
 
@@ -386,6 +411,12 @@ export let myanimelist = {
       },
       name: function(partial, full) {
         return partial.find('div.video-info-title a:last-of-type').text();
+      },
+      episodeDuration: function(partial, full) {
+        // TODO
+      },
+      rating: function(partial, full) {
+        // TODO
       },
     },
 

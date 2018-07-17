@@ -14,7 +14,7 @@ function determineAiringDateShowPage(partial, index) {
   return ScrapingHelpers.buildAiringDateFromStandardStrings(
     undefined,
     index,
-    partial.find('div.bigBarContainer div.barContent div:nth-of-type(2) p:has(span:contains("Date aired:"))').text().replace('Date aired:', ''),
+    partial.find('div.bigBarContainer div.barContent div:nth-of-type(2) p:has(span:contains("Date aired:"))').text().replace('Date aired:', '').split(' to '),
     undefined,
     undefined,
     undefined
@@ -55,7 +55,7 @@ function getEpisodeData(episodeString, showString) {
     if (validTypes.includes(episodeArray[0])) {
       episodeArray.shift();
     }
-    infoObject.notes = episodeArray.join(' ');
+    infoObject.notes = episodeArray.join(' ').replaceFull('[Censored]', '').replaceFull('[Uncensored]', 'Uncensored');
   }
 
   // Done

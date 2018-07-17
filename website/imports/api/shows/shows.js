@@ -6,6 +6,7 @@ import {Thumbnails} from '../thumbnails/thumbnails';
 import ScrapingHelpers from '../../streamers/scrapingHelpers';
 import moment from 'moment-timezone';
 import {WatchStates} from '../watchstates/watchstates';
+import Streamers from '../../streamers/streamers';
 const score = require('string-score');
 
 // Collection
@@ -56,7 +57,14 @@ Schemas.Show = new SimpleSchema({
           total.push(value);
         }
         return total;
-      }, []);
+      }, []).sort((a, b) => {
+        let idCompare = a.streamerId.localeCompare(b.streamerId);
+        if (idCompare === 0) {
+          return a.type.localeCompare(b.type);
+        } else {
+          return idCompare;
+        }
+      });
     }
   },
   'streamerUrls.$': {
@@ -230,105 +238,160 @@ Schemas.Show = new SimpleSchema({
     min: 1,
     optional: true
   },
-  broadcastIntervalMinutes: {
+  broadcastInterval: {
     type: SimpleSchema.Integer,
+    optional: true
+  },
+  episodeDuration: {
+    type: SimpleSchema.Integer,
+    optional: true
+  },
+  rating: {
+    type: String,
+    allowedValues: ['G', 'PG', 'PG-13', 'R', 'R+', 'Rx'],
     optional: true
   },
 
-  determinedIntervalMinutes: {
+  relatedShows: {
+    type: Array,
+    optional: true,
+    autoValue: function() {
+      if (!this.value && (!this.isUpdate || this.isSet)) {
+        return [];
+      } else if (!this.isSet) {
+        return undefined;
+      }
+      return this.value.reduce((total, value) => {
+        if (value) {
+          if (value.relation !== 'other') {
+            if (total.hasPartialObjects({
+              showId: value.showId,
+              relation: 'other'
+            })) {
+              total = total.replacePartialObjects({
+                showId: value.showId,
+                relation: 'other'
+              }, value);
+            } else if (!total.hasPartialObjects({
+              showId: value.showId,
+              relation: value.relation
+            })) {
+              total.push(value);
+            }
+          } else if (!total.hasPartialObjects({
+            showId: value.showId
+          })) {
+            total.push(value);
+          }
+        }
+        return total;
+      }, []);
+    }
+  },
+  'relatedShows.$': {
+    type: Object
+  },
+  'relatedShows.$.relation': {
+    type: String
+  },
+  'relatedShows.$.showId': {
+    type: String
+  },
+
+  determinedInterval: {
     type: Object,
     optional: true,
     defaultValue: {}
   },
-  'determinedIntervalMinutes.sub': {
+  'determinedInterval.sub': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedIntervalMinutes.dub': {
+  'determinedInterval.dub': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedIntervalMinutes.raw': {
+  'determinedInterval.raw': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  determinedEpisodeDate: {
+  lastEpisodeDate: {
     type: Object,
     optional: true,
     defaultValue: {}
   },
-  'determinedEpisodeDate.sub': {
+  'lastEpisodeDate.sub': {
     type: Object,
     optional: true,
     defaultValue: {}
   },
-  'determinedEpisodeDate.sub.year': {
+  'lastEpisodeDate.sub.year': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.sub.month': {
+  'lastEpisodeDate.sub.month': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.sub.date': {
+  'lastEpisodeDate.sub.date': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.sub.hour': {
+  'lastEpisodeDate.sub.hour': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.sub.minute': {
+  'lastEpisodeDate.sub.minute': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.dub': {
+  'lastEpisodeDate.dub': {
     type: Object,
     optional: true,
     defaultValue: {}
   },
-  'determinedEpisodeDate.dub.year': {
+  'lastEpisodeDate.dub.year': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.dub.month': {
+  'lastEpisodeDate.dub.month': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.dub.date': {
+  'lastEpisodeDate.dub.date': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.dub.hour': {
+  'lastEpisodeDate.dub.hour': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.dub.minute': {
+  'lastEpisodeDate.dub.minute': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.raw': {
+  'lastEpisodeDate.raw': {
     type: Object,
     optional: true,
     defaultValue: {}
   },
-  'determinedEpisodeDate.raw.year': {
+  'lastEpisodeDate.raw.year': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.raw.month': {
+  'lastEpisodeDate.raw.month': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.raw.date': {
+  'lastEpisodeDate.raw.date': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.raw.hour': {
+  'lastEpisodeDate.raw.hour': {
     type: SimpleSchema.Integer,
     optional: true
   },
-  'determinedEpisodeDate.raw.minute': {
+  'lastEpisodeDate.raw.minute': {
     type: SimpleSchema.Integer,
     optional: true
   },
@@ -359,22 +422,39 @@ Shows.arrayKeys = Schemas.Show._schemaKeys.filter((key) => {
 Shows.objectKeys = Schemas.Show._schemaKeys.filter((key) => {
   return !key.includes('.') && Schemas.Show._schema[key].type.definitions[0].type.toString().includes('Object()');
 });
+Shows.systemKeys = ['_id', 'lastUpdateStart', 'lastUpdateEnd'];
 Shows.descriptionCutoff = '&#x2026; (read more)';
 Shows.timeUntilRecache = 86400000; // 1 day
 Shows.maxUpdateTime = 600000; // 10 minutes
 
 if (Meteor.isDevelopment) {
-  Shows.timeUntilRecache = 10000;
-  Shows.maxUpdateTime = 30000;
+  Shows.timeUntilRecache = 30000; // 30 seconds
+  Shows.maxUpdateTime = 30000; // 30 seconds
 }
 
 // Helpers
 Shows.helpers({
-  remove() {
-    Shows.remove(this._id);
+  expired() {
+    if (Meteor.isClient) {
+      invalidateSecond.depend();
+    }
+    return !this.lastUpdateStart ||
+      (!this.locked() && moment.fromUtc(this.lastUpdateEnd).add(Shows.timeUntilRecache).isBefore()) ||
+      (this.locked() && moment.fromUtc(this.lastUpdateStart).add(Shows.maxUpdateTime).isBefore());
   },
 
-  getThumbnailUrls() {
+  locked() {
+    return this.lastUpdateStart && (!this.lastUpdateEnd || this.lastUpdateStart > this.lastUpdateEnd);
+  },
+
+  watchState() {
+    if (Meteor.userId() && typeof this.malId !== 'undefined') {
+      return WatchStates.queryUnique(Meteor.userId(), this.malId).fetch()[0];
+    }
+    return undefined;
+  },
+
+  thumbnailUrls() {
     if (!this.thumbnails || this.thumbnails.empty()) {
       return ['/media/unknown.png'];
     }
@@ -392,11 +472,112 @@ Shows.helpers({
     return urls;
   },
 
+  streamersCleaned() {
+    return this.streamerUrls.filter((streamerUrl) => {
+      return !(streamerUrl.streamerId === 'myanimelist' && streamerUrl.type.startsWith('episodes-'));
+    }).map((streamerUrl) => {
+      return {...streamerUrl, ...Streamers.getSimpleStreamerById(streamerUrl.streamerId)};
+    });
+  },
+
+  episodeList(translationType) {
+    let episodes = [];
+
+    Episodes.queryForTranslationType(this._id, translationType).forEach((episode) => {
+      let selector = {
+        showId: episode.showId,
+        translationType: episode.translationType,
+        episodeNumStart: episode.episodeNumStart,
+        episodeNumEnd: episode.episodeNumEnd,
+        notes: episode.notes
+      };
+      let other = episodes.getPartialObjects(selector)[0];
+
+      if (other) {
+        if (other.streamers.every((streamer) => {
+          return streamer.id !== episode.streamerId;
+        })) {
+          let streamer = Streamers.getSimpleStreamerById(episode.streamerId);
+          streamer.sourceUrl = episode.sourceUrl;
+          other.streamers.push(streamer);
+        }
+        other.uploadDate = ScrapingHelpers.determineEarliestAiringDate(other.uploadDate, episode.uploadDate);
+
+        episodes = episodes.replacePartialObjects(selector, other);
+      }
+
+      else {
+        episode.streamers = [Streamers.getSimpleStreamerById(episode.streamerId)];
+        episode.streamers[0].sourceUrl = episode.sourceUrl;
+        episodes.push(episode);
+      }
+    });
+
+    return episodes;
+  },
+
+  seriesMap(state, visitedIds=[]) {
+    let seriesMap = [];
+    visitedIds.push(this._id);
+
+    if (state !== 'sequels') {
+      this.relatedShows.getPartialObjects({
+        relation: 'prequel'
+      }).forEach((prequel) => {
+        if (!visitedIds.includes(prequel.showId)) {
+          let show = Shows.findOne(prequel.showId);
+          if (show) {
+            seriesMap = seriesMap.concat(show.seriesMap('prequels', visitedIds))
+          }
+        }
+      });
+    }
+
+    seriesMap.push({
+      root: this,
+      items: this.relatedShowsExpanded(true)
+    });
+
+    if (state !== 'prequels') {
+      this.relatedShows.getPartialObjects({
+        relation: 'sequel'
+      }).forEach((sequel) => {
+        if (!visitedIds.includes(sequel.showId)) {
+          let show = Shows.findOne(sequel.showId);
+          if (show) {
+            seriesMap = seriesMap.concat(show.seriesMap('sequels', visitedIds))
+          }
+        }
+      });
+    }
+
+    return seriesMap;
+  },
+
+  relatedShowsExpanded(removePrequelSequel) {
+    let uniqueRelations = Array.from(new Set(this.relatedShows.pluck('relation')));
+
+    if (removePrequelSequel) {
+      uniqueRelations = uniqueRelations.filter((relation) => {
+        return relation !== 'prequel' && relation !== 'sequel';
+      });
+    }
+
+    return uniqueRelations.map((relation) => {
+      return {
+        relation: relation,
+        shows: Shows.queryWithIds(this.relatedShows.getPartialObjects({
+          relation: relation
+        }).pluck('showId'))
+      };
+    });
+  },
+
   relevantBroadcastInterval(translationType) {
-    if ((!this.broadcastIntervalMinutes || translationType === 'dub') && this.determinedIntervalMinutes[translationType]) {
-      return this.determinedIntervalMinutes[translationType];
+    if (translationType !== 'dub' && this.broadcastInterval) {
+      return this.broadcastInterval;
     } else {
-      return this.broadcastIntervalMinutes;
+      return this.determinedInterval[translationType];
     }
   },
 
@@ -406,10 +587,20 @@ Shows.helpers({
       return translationType === 'dub' ? undefined : this.airedStart;
     }
 
-    // Return the determined date
-    else {
-      return this.determinedEpisodeDate[translationType];
+    // Return next date if the show is airing
+    else if (this.airingState(translationType) === 'Airing') {
+      let intervalToUse = this.relevantBroadcastInterval(translationType);
+      if (typeof intervalToUse !== 'undefined' && !_.isEmpty(this.lastEpisodeDate[translationType])) {
+        let nextDateMoment = moment.utc(this.lastEpisodeDate[translationType]).add(intervalToUse);
+        return Object.keys(this.lastEpisodeDate[translationType]).reduce((nextDateObject, key) => {
+          nextDateObject[key] = nextDateMoment.get(key);
+          return nextDateObject;
+        }, {});
+      }
     }
+
+    // Return unknown date if something goes wrong
+    return undefined;
   },
 
   airingState(translationType) {
@@ -423,30 +614,19 @@ Shows.helpers({
   },
 
   nextEpisodeInterval(translationType) {
-    if (Meteor.isClient) {
-      invalidateMinute.depend();
+    if (!_.isEmpty(this.nextEpisodeDate(translationType))) {
+      if (Meteor.isClient) {
+        invalidateSecond.depend();
+      }
+      return moment.fromUtc(this.nextEpisodeDate(translationType)).diff(moment.fromUtc());
+    } else {
+      return undefined;
     }
-    return Math.round(
-      moment.duration(moment.utc(this.nextEpisodeDate(translationType)) - moment.utc()).asMinutes()
-    );
   },
 
   watchedEpisodes() {
-    let watchState = WatchStates.queryUnique(Meteor.userId(), this.malId).fetch()[0];
+    let watchState = this.watchState();
     return watchState ? watchState.malWatchedEpisodes : 0;
-  },
-
-  expired() {
-    if (Meteor.isClient) {
-      invalidateMinute.depend();
-    }
-    let now = moment();
-    return (!this.locked() && (!this.lastUpdateStart || moment(this.lastUpdateEnd).add(Shows.timeUntilRecache) < now)) ||
-            (this.locked() && moment(this.lastUpdateStart).add(Shows.maxUpdateTime) < now);
-  },
-
-  locked() {
-    return this.lastUpdateStart && (!this.lastUpdateEnd || this.lastUpdateStart > this.lastUpdateEnd);
   },
 
   afterNewEpisode(translationType) {
@@ -505,9 +685,23 @@ Shows.helpers({
       }
     });
 
-    /*********************************************
-     * Calculate the 'determinedIntervalMinutes' *
-     *********************************************/
+    /***********************************
+     * Calculate the 'lastEpisodeDate' *
+     ***********************************/
+
+    // Store on this
+    this.lastEpisodeDate[translationType] = earliestEpisodes.empty() ? undefined : earliestEpisodes[0].uploadDate;
+
+    // Store in the database
+    Shows.update(this._id, {
+      $set: {
+        lastEpisodeDate: this.lastEpisodeDate
+      }
+    });
+
+    /**************************************
+     * Calculate the 'determinedInterval' *
+     **************************************/
 
     // Store the average found here
     let average = undefined;
@@ -517,13 +711,13 @@ Shows.helpers({
 
       // Sort episodes by upload date ascending
       let earliestEpisodesSorted = earliestEpisodes.slice(0).sort((a, b) => {
-        return moment.duration(moment.utc(a.uploadDate) - moment.utc(b.uploadDate)).asMinutes();
+        return moment.fromUtc(a.uploadDate).diff(moment.fromUtc(b.uploadDate));
       });
 
       // Calculate delays between episodes and sort ascending
       let episodeDelays = [];
       for (let i = 1; i < earliestEpisodesSorted.length; i++) {
-        episodeDelays.push(moment.duration(moment.utc(earliestEpisodesSorted[i].uploadDate) - moment.utc(earliestEpisodesSorted[i - 1].uploadDate)).asMinutes());
+        episodeDelays.push(moment.fromUtc(earliestEpisodesSorted[i].uploadDate).diff(moment.fromUtc(earliestEpisodesSorted[i - 1].uploadDate)));
       }
       episodeDelays = episodeDelays.sort((a, b) => {
         return a - b;
@@ -532,7 +726,7 @@ Shows.helpers({
       // Spread delays among bins depending on their distance and sort by length descending
       let episodeDelayBins = [];
       episodeDelays.forEach((delay) => {
-        if (!episodeDelayBins.empty() && delay - episodeDelayBins.peek().peek() < 1440) {
+        if (!episodeDelayBins.empty() && delay - episodeDelayBins.peek().peek() < 86400000) {
           episodeDelayBins.peek().push(delay);
         } else {
           episodeDelayBins.push([delay]);
@@ -563,52 +757,12 @@ Shows.helpers({
     }
 
     // Store on this
-    this.determinedIntervalMinutes[translationType] = average;
+    this.determinedInterval[translationType] = average;
 
     // Store in the database
     Shows.update(this._id, {
       $set: {
-        determinedIntervalMinutes: this.determinedIntervalMinutes
-      }
-    });
-
-    /*****************************************
-     * Calculate the 'determinedEpisodeDate' *
-     *****************************************/
-
-    // Store the found date here
-    let lastDate = undefined;
-
-    // Only if the show is airing
-    if (this.airingState(translationType) === 'Airing') {
-
-      // Determine the interval to use for the calculation
-      let intervalToUse = this.relevantBroadcastInterval(translationType);
-
-      // Continue if the interval is known
-      if (intervalToUse) {
-
-        // Get earliest upload date for the last episode
-        lastDate = earliestEpisodes[0].uploadDate;
-
-        // Convert to moment and add the interval
-        let lastDateMoment = moment(lastDate);
-        lastDateMoment.add(intervalToUse, 'minutes');
-
-        // Convert back to object
-        Object.keys(lastDate).forEach((key) => {
-          lastDate[key] = lastDateMoment.get(key);
-        });
-      }
-    }
-
-    // Store on this
-    this.determinedEpisodeDate[translationType] = lastDate;
-
-    // Store in the database
-    Shows.update(this._id, {
-      $set: {
-        determinedEpisodeDate: this.determinedEpisodeDate
+        determinedInterval: this.determinedInterval
       }
     });
   },
@@ -616,7 +770,7 @@ Shows.helpers({
   mergePartialShow(other) {
     // Copy and merge attributes
     Object.keys(other).forEach((key) => {
-      if ((typeof this[key] === 'undefined' && !['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key))
+      if ((typeof this[key] === 'undefined' && !Shows.systemKeys.includes(key))
         || (Shows.objectKeys.includes(key) && Object.countNonEmptyValues(other[key]) > Object.countNonEmptyValues(this[key]))) {
         this[key] = other[key];
       }
@@ -642,7 +796,7 @@ Shows.helpers({
 
     if (other._id) {
       // Remove other from database
-      other.remove();
+      Shows.remove(other._id);
       // Move episodes
       Episodes.moveEpisodes(other._id, this._id);
     }
@@ -651,7 +805,7 @@ Shows.helpers({
   attemptUpdate() {
     if (this.expired()) {
       // Mark update as started
-      this.lastUpdateStart = moment().toDate();
+      this.lastUpdateStart = moment.fromUtc().toDate();
       Shows.update(this._id, {
         $set: {
           lastUpdateStart: this.lastUpdateStart
@@ -681,18 +835,25 @@ Shows.helpers({
           }
         });
 
+        // Delete missing fields
+        Object.keys(this).forEach((key) => {
+          if (!Shows.systemKeys.includes(key) && !Object.keys(show).includes(key)) {
+            this[key] = undefined;
+          }
+        });
+
         // Replace existing fields
         Object.keys(show).forEach((key) => {
           this[key] = show[key];
         });
 
         // Update result
-        this.lastUpdateEnd = moment().toDate();
+        this.lastUpdateEnd = moment.fromUtc().toDate();
         Schemas.Show.clean(this, {
           mutate: true
         });
-        delete this.determinedIntervalMinutes;
-        delete this.determinedEpisodeDate;
+        delete this.determinedInterval;
+        delete this.lastEpisodeDate;
         delete this.availableEpisodes;
 
         Shows.update({
@@ -713,13 +874,13 @@ Shows.helpers({
       }, (partial, episodes) => {
 
         // Insert any partial results found in the process
-        Shows.addPartialShow(partial, episodes);
+        return Shows.addPartialShow(partial, episodes);
 
       }, (full) => {
 
         // Copy and merge attributes
         Object.keys(full).forEach((key) => {
-          if ((typeof this[key] === 'undefined' && !['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key))
+          if ((typeof this[key] === 'undefined' && !Shows.systemKeys.includes(key))
             || (Shows.objectKeys.includes(key) && Object.countNonEmptyValues(full[key]) > Object.countNonEmptyValues(this[key]))) {
             this[key] = full[key];
           }
@@ -732,8 +893,8 @@ Shows.helpers({
         Schemas.Show.clean(this, {
           mutate: true
         });
-        delete this.determinedIntervalMinutes;
-        delete this.determinedEpisodeDate;
+        delete this.determinedInterval;
+        delete this.lastEpisodeDate;
         delete this.availableEpisodes;
 
         Shows.update({
@@ -984,7 +1145,7 @@ Shows.queryForOverview = function(malIds, limit) {
 
       // Sort by next episode date
       else {
-        diff = moment.duration(moment.utc(nextA) - moment.utc(nextB)).asMinutes();
+        diff = moment.fromUtc(nextA).diff(moment.fromUtc(nextB));
       }
 
       // Sort by episodes to watch
@@ -994,7 +1155,7 @@ Shows.queryForOverview = function(malIds, limit) {
 
       // Sort by start date
       if (diff === 0) {
-        diff = moment.duration(moment.utc(a.airedStart) - moment.utc(b.airedStart)).asMinutes();
+        diff = moment.fromUtc(a.airedStart).diff(moment.fromUtc(b.airedStart));
       }
 
       // Sort by name

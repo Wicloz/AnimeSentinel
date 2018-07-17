@@ -66,8 +66,14 @@ export let template = {
       episodeCount: function(partial, full) {
         return 0;
       },
-      broadcastIntervalMinutes: function(partial, full) {
+      broadcastInterval: function(partial, full) {
         return 0;
+      },
+      episodeDuration: function(partial, full) {
+        return 0;
+      },
+      rating: function(partial, full) {
+        return '';
       },
     },
 
@@ -139,8 +145,14 @@ export let template = {
       episodeCount: function(partial, full) {
         return 0;
       },
-      broadcastIntervalMinutes: function(partial, full) {
+      broadcastInterval: function(partial, full) {
         return 0;
+      },
+      episodeDuration: function(partial, full) {
+        return 0;
+      },
+      rating: function(partial, full) {
+        return '';
       },
     },
 
@@ -208,8 +220,14 @@ export let template = {
       episodeCount: function(partial, full) {
         return 0;
       },
-      broadcastIntervalMinutes: function(partial, full) {
+      broadcastInterval: function(partial, full) {
         return 0;
+      },
+      episodeDuration: function(partial, full) {
+        return 0;
+      },
+      rating: function(partial, full) {
+        return '';
       },
     },
 
@@ -225,6 +243,9 @@ export let template = {
   // Related shows data
   showRelated: {
     rowSelector: '',
+    relation: function(partial, full) {
+      return '';
+    },
 
     // Related shows attribute data
     attributes: {
@@ -279,8 +300,14 @@ export let template = {
       episodeCount: function(partial, full) {
         return 0;
       },
-      broadcastIntervalMinutes: function(partial, full) {
+      broadcastInterval: function(partial, full) {
         return 0;
+      },
+      episodeDuration: function(partial, full) {
+        return 0;
+      },
+      rating: function(partial, full) {
+        return '';
       },
     },
 
@@ -405,8 +432,14 @@ export let template = {
       episodeCount: function(partial, full) {
         return 0;
       },
-      broadcastIntervalMinutes: function(partial, full) {
+      broadcastInterval: function(partial, full) {
         return 0;
+      },
+      episodeDuration: function(partial, full) {
+        return 0;
+      },
+      rating: function(partial, full) {
+        return '';
       },
     },
 

@@ -1,22 +1,87 @@
 @charset "UTF-8";
-@import "../node_modules/materialize-css/sass/components/color";
+@import "../node_modules/bootstrap/scss/functions";
 
 ////////////////////////////
 // Custom Variables Start //
 ////////////////////////////
 
-// Other colors
-$text-color: #000 !default;
-$background-color: #eee !default;
-
-// Spacing
-$spacer: 15px !default;
+$thumbnail-height: 220px !default;
 
 //////////////////////////
 // Custom Variables End //
 //////////////////////////
 
-@import "../node_modules/materialize-css/sass/components/variables";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins";
 
-// Missing Media Query Ranges
-$large-only: "only screen and (min-width : #{$medium-screen-up}) and (max-width : #{$large-screen})" !default;
+////////////////////////
+// Custom Definitions //
+////////////////////////
+
+@mixin hidden() {
+  visibility: hidden !important;
+  user-select: none !important;
+}
+
+.hidden {
+  @include hidden;
+}
+
+@mixin removed() {
+  @include hidden;
+  display: none !important;
+}
+
+.removed {
+  @include removed;
+}
+
+@mixin semi-removed() {
+  @include hidden;
+  overflow: hidden !important;
+  border: none !important;
+  height: 0;
+  width: 0;
+}
+
+.semi-removed {
+  @include semi-removed;
+}
+
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    .hidden-#{$breakpoint}-up {
+      @include hidden;
+    }
+    .removed-#{$breakpoint}-up {
+      @include removed;
+    }
+    .semi-removed-#{$breakpoint}-up {
+      @include semi-removed;
+    }
+  }
+
+  @include media-breakpoint-down($breakpoint) {
+    .hidden-#{$breakpoint}-down {
+      @include hidden;
+    }
+    .removed-#{$breakpoint}-down {
+      @include removed;
+    }
+    .semi-removed-#{$breakpoint}-down {
+      @include semi-removed;
+    }
+  }
+
+  @include media-breakpoint-only($breakpoint) {
+    .hidden-#{$breakpoint}-only {
+      @include hidden;
+    }
+    .removed-#{$breakpoint}-only {
+      @include removed;
+    }
+    .semi-removed-#{$breakpoint}-only {
+      @include semi-removed;
+    }
+  }
+}

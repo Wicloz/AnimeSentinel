@@ -90,6 +90,20 @@ String.prototype.replaceStart = function(from, to, caseInsensitive=false) {
   return this.replace(regex, to);
 };
 
+String.prototype.replaceFull = function(from, to, caseInsensitive=false) {
+  if (from.source) {
+    from = from.source;
+    caseInsensitive = caseInsensitive || from.ignoreCase;
+  } else {
+    from = RegExp.escape(from);
+  }
+
+  let flags = caseInsensitive ? 'i' : '';
+  let regex = new RegExp('^' + from + '$', flags);
+
+  return this.replace(regex, to);
+};
+
 Array.prototype.filterMap = function(callback) {
   return this.filter(callback).map(callback);
 };

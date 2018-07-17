@@ -98,7 +98,7 @@ export default class Streamers {
     }
     if (!show.season && show.airedStart && typeof show.airedStart.year !== 'undefined' && typeof show.airedStart.month !== 'undefined') {
       show.season = {
-        quarter: Shows.validQuarters[moment().month(show.airedStart.month).quarter() - 1],
+        quarter: Shows.validQuarters[moment.fromUtc().month(show.airedStart.month).quarter() - 1],
         year: show.airedStart.year
       };
     }
@@ -108,16 +108,26 @@ export default class Streamers {
       show.episodeCount = streamer[type].attributes.episodeCount(cheerioRow, cheerioPage);
     }
 
-    // Get 'broadcastIntervalMinutes'
-    if (streamer[type].attributes.broadcastIntervalMinutes) {
-      show.broadcastIntervalMinutes = streamer[type].attributes.broadcastIntervalMinutes(cheerioRow, cheerioPage);
+    // Get 'broadcastInterval'
+    if (streamer[type].attributes.broadcastInterval) {
+      show.broadcastInterval = streamer[type].attributes.broadcastInterval(cheerioRow, cheerioPage);
     }
-    if (!show.broadcastIntervalMinutes && show.episodeCount > 1
+    if (!show.broadcastInterval && show.episodeCount > 1
       && show.airedStart && typeof show.airedStart.year !== 'undefined' && typeof show.airedStart.month !== 'undefined' && typeof show.airedStart.date !== 'undefined'
       && show.airedEnd && typeof show.airedEnd.year !== 'undefined' && typeof show.airedEnd.month !== 'undefined' && typeof show.airedEnd.date !== 'undefined') {
-      show.broadcastIntervalMinutes = Math.round(
-        moment.duration(moment.utc(show.airedEnd) - moment.utc(show.airedStart)).asMinutes() / (show.episodeCount - 1)
+      show.broadcastInterval = Math.round(
+        moment.fromUtc(show.airedEnd).diff(moment.fromUtc(show.airedStart)) / (show.episodeCount - 1)
       );
+    }
+
+    // Get 'episodeDuration'
+    if (streamer[type].attributes.episodeDuration) {
+      show.episodeDuration = streamer[type].attributes.episodeDuration(cheerioRow, cheerioPage);
+    }
+
+    // Get 'rating'
+    if (streamer[type].attributes.rating) {
+      show.rating = streamer[type].attributes.rating(cheerioRow, cheerioPage);
     }
 
     // Get 'thumbnails'
@@ -197,7 +207,7 @@ export default class Streamers {
       });
 
       // Set the upload time to now on some episodes
-      let now = moment();
+      let now = moment.fromUtc();
       if (episode.uploadDate.year === now.year() && episode.uploadDate.month === now.month() && episode.uploadDate.date === now.date() && typeof episode.uploadDate.minute === 'undefined') {
         if (typeof episode.uploadDate.hour === 'undefined') {
           episode.uploadDate.hour = now.hour();
@@ -229,22 +239,7 @@ export default class Streamers {
 
       // Check if we have a show page
       if (streamer.show.checkIfPage(page)) {
-        let showResult = this.processShowPage(html, streamer, logData);
-
-        results = results.concat(showResult.partials.map((partial) => {
-          return {
-            partial: partial,
-            episodes: []
-          };
-        }));
-
-        if (showResult.full) {
-          results.push({
-            partial: showResult.full,
-            episodes: showResult.episodes,
-            fromShowPage: true
-          });
-        }
+        results.push(this.processShowPage(html, streamer, logData));
       }
 
       // Otherwise we have a search page
@@ -256,7 +251,8 @@ export default class Streamers {
             let result = this.convertCheerioToShow(page(element), page('html'), streamer, 'search');
             if (result) {
               results.push({
-                partial: result,
+                full: false,
+                partials: [result],
                 episodes: []
               });
             }
@@ -306,6 +302,9 @@ export default class Streamers {
           // Create and add related show
           let result = this.convertCheerioToShow(page(element), page('html'), streamer, 'showRelated');
           if (result) {
+            if (streamer.showRelated.relation) {
+              result.relation = streamer.showRelated.relation(page(element), page('html'));
+            }
             results.partials.push(result);
           }
         }
@@ -341,6 +340,9 @@ export default class Streamers {
           episode.episodeNumEnd -= episodeCorrection;
           return episode;
         });
+        if (results.full && typeof results.full.episodeCount !== 'undefined') {
+          results.full.episodeCount -= episodeCorrection;
+        }
       }
     }
 
@@ -466,9 +468,24 @@ export default class Streamers {
       // Download and process search results
       this.getSearchResults(streamer.search.createUrl(search), streamer, search.query, (results) => {
 
-        // Return results
         results.forEach((result) => {
-          resultCallback(result.partial, result.episodes, result.fromShowPage);
+          // Return partial results
+          result.partials.forEach((partial) => {
+            let ids = resultCallback(partial);
+
+            // Store show relations on full result
+            if (ids && result.full && partial.relation) {
+              result.full.relatedShows.push({
+                relation: partial.relation,
+                showId: ids[0]
+              });
+            }
+          });
+
+          // Return full result with episodes
+          if (result.full) {
+            resultCallback(result.full, result.episodes, true);
+          }
         });
 
         // Check if done
@@ -545,7 +562,7 @@ export class TempShow {
 
   mergeShows(intoShow, withShow, streamer) {
     Object.keys(withShow).forEach((key) => {
-      if ((typeof intoShow[key] === 'undefined' && !['_id', 'lastUpdateStart', 'lastUpdateEnd'].includes(key))
+      if ((typeof intoShow[key] === 'undefined' && !Shows.systemKeys.includes(key))
         || (Shows.objectKeys.includes(key) && Object.countNonEmptyValues(withShow[key]) > Object.countNonEmptyValues(intoShow[key]))
         || (streamer.id === 'myanimelist' && !Shows.arrayKeys.includes(key)
           && (!Shows.objectKeys.includes(key) || Object.countNonEmptyValues(withShow[key]) === Object.countNonEmptyValues(intoShow[key])))) {
@@ -659,7 +676,7 @@ export class TempShow {
 
       // Otherwise store as partial
       else {
-        this.partialCallback(partial, episodes);
+        return this.partialCallback(partial, episodes);
       }
 
     }, this.getStreamerIdsDone());
@@ -674,6 +691,21 @@ export class TempShow {
     // Get the streamer
     let streamer = Streamers.getStreamerById(streamerUrl.streamerId);
 
+    // Store partial results from show page
+    result.partials.forEach((partial) => {
+      if (!this.doesShowMatchMerged(partial)) {
+        let ids = this.partialCallback(partial);
+
+        // Store show relations on full result
+        if (ids && result.full && partial.relation) {
+          result.full.relatedShows.push({
+            relation: partial.relation,
+            showId: ids[0]
+          });
+        }
+      }
+    });
+
     if (result.full) {
       // Merge result into the working show
       this.mergeShows(this.mergedShow, result.full, streamer);
@@ -686,13 +718,6 @@ export class TempShow {
       // Merge result into the new show
       this.mergeShows(this.newShow, result.full, streamer);
     }
-
-    // Store partial results from show page
-    result.partials.forEach((partial) => {
-      if (!this.doesShowMatchMerged(partial)) {
-        this.partialCallback(partial);
-      }
-    });
 
     // Handle episodes
     result.episodes.forEach((episode) => {

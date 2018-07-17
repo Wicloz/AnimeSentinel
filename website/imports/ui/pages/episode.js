@@ -4,6 +4,7 @@ import Streamers from "../../streamers/streamers";
 import {Shows} from "../../api/shows/shows";
 import '/imports/ui/components/image.js';
 import moment from 'moment-timezone';
+import '/imports/ui/components/tooltippedIcon';
 
 Template.pages_episode.onCreated(function() {
   // Getters for the episode numbers
@@ -61,7 +62,7 @@ Template.pages_episode.onCreated(function() {
     this.state.set('selectedStreamerId', streamerId);
     this.state.set('selectedSourceName', sourceName);
     if (manual) {
-      setStorageItem(['SelectedSourceLastTime', streamerId, sourceName], moment().valueOf());
+      setStorageItem(['SelectedSourceLastTime', streamerId, sourceName], moment.fromUtc().valueOf());
     }
 
     this.state.set('iframeErrors', []);
@@ -203,6 +204,10 @@ Template.pages_episode.helpers({
     return Streamers.getSimpleStreamerById(Template.instance().state.get('selectedStreamerId')).homepage;
   },
 
+  selectedStreamerName() {
+    return Streamers.getSimpleStreamerById(Template.instance().state.get('selectedStreamerId')).name;
+  },
+
   selectedSourceName() {
     return Template.instance().state.get('selectedSourceName');
   },
@@ -297,9 +302,10 @@ Template.pages_episode.helpers({
 });
 
 Template.pages_episode.events({
-  'click a.btn-source'(event) {
+  'click .btn-source'(event) {
+    console.log(event);
     if (event.target.tagName === 'I') {
-      event.target = event.target.parentElement.parentElement;
+      event.target = event.target.parentElement;
     }
     Template.instance().selectSource(event.target.dataset.streamerid, event.target.dataset.sourcename, true);
   },
@@ -313,16 +319,17 @@ Template.pages_episode.events({
     Template.instance().setIframeErrors();
   },
 
-  'click a.btn-not-working'(event) {
+  'click .btn-not-working'(event) {
     Template.instance().stopErrorsDelay();
     Template.instance().setIframeErrors();
   },
 
-  'click button.btn-select-prev'(event) {
+  'click .btn-select-prev'(event) {
     let episode = Episodes.getPreviousEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd(), Template.instance().getNotes());
     Template.instance().goToEpisode(episode.episodeNumStart, episode.episodeNumEnd, episode.notesEncoded());
   },
-  'click button.btn-select-next'(event) {
+
+  'click .btn-select-next'(event) {
     let episode = Episodes.getNextEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd(), Template.instance().getNotes());
     Template.instance().goToEpisode(episode.episodeNumStart, episode.episodeNumEnd, episode.notesEncoded());
   },
