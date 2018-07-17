@@ -470,7 +470,7 @@ Shows.helpers({
     });
 
     while (urls.length < this.thumbnails.length) {
-      urls.push('/media/spinner.gif');
+      urls.push('/media/spinner.svg');
     }
 
     return urls;
