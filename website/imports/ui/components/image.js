@@ -48,16 +48,14 @@ Template.components_image.onCreated(function () {
 });
 
 Template.components_image.onRendered(function () {
-  // Enable appear
-  $('#img-detector-' + this.state.get('id')).appear();
-
   // When the src changes
   this.srcOld = undefined;
   this.autorun(() => {
     if (this.srcOld !== Template.currentData().src) {
       this.state.set('appeared', false);
       this.state.set('loaded', false);
-      Tracker.nonreactive(() => {
+      Tracker.afterFlush(() => {
+        $('#img-detector-' + this.state.get('id')).appear();
         $.force_appear();
       });
       this.srcOld = Template.currentData().src;
