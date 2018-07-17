@@ -11,10 +11,6 @@ Template.components_image.helpers({
 
   getId() {
     return Template.instance().state.get('id');
-  },
-
-  getSrc() {
-    return Template.instance().state.get('src');
   }
 });
 
@@ -38,8 +34,7 @@ Template.components_image.onCreated(function () {
   this.state.setDefault({
     appeared: false,
     loaded: false,
-    id: undefined,
-    src: Template.currentData().src
+    id: undefined
   });
 
   // When the id changes
@@ -59,14 +54,15 @@ Template.components_image.onRendered(function () {
   });
 
   // When the src changes
+  this.srcOld = undefined;
   this.autorun(() => {
-    if (Template.currentData().src !== this.state.get('src')) {
+    if (this.srcOld !== Template.currentData().src) {
       this.state.set('appeared', false);
       this.state.set('loaded', false);
-      this.state.set('src', Template.currentData().src);
       Tracker.nonreactive(() => {
         $.force_appear();
       });
+      this.srcOld = Template.currentData().src;
     }
   });
 });

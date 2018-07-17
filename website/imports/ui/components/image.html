@@ -1,12 +1,13 @@
 <template name="components_image">
 
   {{#if showImage}}
-    <img src="{{getSrc}}" class="{{class}} {{#if showLoading}}removed{{/if}} img-lazy" data-caption="{{caption}}" alt="{{caption}}" id="{{getId}}">
+    <img src="{{src}}" class="{{class}} {{#if showLoading}}removed{{/if}} img-lazy" data-caption="{{caption}}" alt="{{caption}}" id="{{getId}}">
   {{/if}}
 
   {{#if showLoading}}
     <div class="{{class}} img-detector" id="img-detector-{{getId}}" data-appear-top-offset="200" data-appear-left-offset="200">
       <i class="fas fa-spinner fa-pulse fa-3x"></i>
+      <span class="sr-only">{{caption}}</span>
     </div>
   {{/if}}
 
