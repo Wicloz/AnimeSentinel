@@ -104,10 +104,6 @@ String.prototype.replaceFull = function(from, to, caseInsensitive=false) {
   return this.replace(regex, to);
 };
 
-Array.prototype.filterMap = function(callback) {
-  return this.filter(callback).map(callback);
-};
-
 Object.countNonEmptyValues = function(object) {
   return Object.keys(object).filter((key) => {
     return (object[key] || object[key] === false || object[key] === 0) && (typeof object[key].length === 'undefined' || object[key].length !== 0);

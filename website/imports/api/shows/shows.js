@@ -459,10 +459,14 @@ Shows.helpers({
       return ['/media/unknown.png'];
     }
 
-    let urls = Thumbnails.queryWithHashes(this.thumbnails).fetch().filterMap((thumbnail) => {
+    let urls = Thumbnails.queryWithHashes(this.thumbnails).fetch().map((thumbnail) => {
       if (thumbnail.uploadedAt) {
         return thumbnail.url({store: Session.get('FeatureSupportWebP') ? 'thumbnailsWEBP' : 'thumbnailsJPEG'});
+      } else {
+        return undefined;
       }
+    }).filter((thumbnailUrl) => {
+      return thumbnailUrl;
     });
 
     while (urls.length < this.thumbnails.length) {
