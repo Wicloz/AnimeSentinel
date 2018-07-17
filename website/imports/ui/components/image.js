@@ -48,10 +48,8 @@ Template.components_image.onCreated(function () {
 });
 
 Template.components_image.onRendered(function () {
-  // When the id changes
-  this.autorun(() => {
-    $('#img-detector-' + this.state.get('id')).appear();
-  });
+  // Enable appear
+  $('#img-detector-' + this.state.get('id')).appear();
 
   // When the src changes
   this.srcOld = undefined;
