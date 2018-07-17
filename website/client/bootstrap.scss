@@ -1,12 +1,28 @@
 @import "vars";
 @import "../node_modules/bootstrap/scss/bootstrap";
 
+@each $color, $value in $theme-colors {
+  .card-header.btn-#{$color}, .card-footer.btn-#{$color} {
+    @include button-variant($value, $value);
+    border: none;
+  }
+}
+
 .card {
   margin-bottom: $spacer;
+
+  & > * {
+    border-bottom: none;
+
+    & + *:not(.collapse), & + *.collapse.show {
+      border-top: $card-border-width solid $card-border-color;
+    }
+  }
 }
 
 .accordion {
   margin-bottom: $spacer;
+
   .card {
     margin-bottom: unset;
   }
@@ -36,14 +52,6 @@
   }
 }
 
-.card-header, .list-group-flush {
-  border-bottom: none;
-
-  & + *:not(.collapse), & + *.collapse.show {
-    border-top: $card-border-width solid $card-border-color;
-  }
-}
-
 .carousel {
   overflow: hidden;
   min-height: calc(2rem + #{20px + $carousel-indicator-height});
@@ -62,21 +70,6 @@
         object-fit: contain;
       }
     }
-  }
-}
-
-@each $color, $value in $theme-colors {
-  .card-footer.btn-#{$color} {
-    @include button-variant($value, $value);
-    border-bottom: none;
-    border-right: none;
-    border-left: none;
-    border-top: $card-border-width solid $card-border-color;
-  }
-
-  .card-header.btn-#{$color} {
-    @include button-variant($value, $value);
-    border: none;
   }
 }
 
