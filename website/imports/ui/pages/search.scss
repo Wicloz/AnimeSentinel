@@ -37,6 +37,7 @@
     .card-img-info {
       display: flex;
       justify-content: space-between;
+      border-top: none;
 
       & > * {
         height: 0;
@@ -60,6 +61,7 @@
 
     .card-body {
       padding: 0 3px;
+      border-top: none;
     }
   }
 
