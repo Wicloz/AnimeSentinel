@@ -119,3 +119,7 @@ Array.prototype.pluck = function(key) {
 Array.prototype.peek = function() {
   return this[this.length - 1];
 };
+
+Number.prototype.mod = function(n) {
+  return ((this % n) + n) % n;
+};

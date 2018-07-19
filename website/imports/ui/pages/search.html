@@ -20,6 +20,26 @@
           {{> afQuickField name='includeTypes' value=searchOptions.includeTypes}}
           {{> afQuickField name='genres' value=searchOptions.genres}}
           {{> afQuickField name='includeGenres' value=searchOptions.includeGenres}}
+          <div class="row mb">
+            <div class="col-auto">
+              <button type="button" class="btn btn-primary btn-prev-season h-100">
+                <i class="fas fa-chevron-left"></i>
+                <span class="sr-only">Previous Season</span>
+              </button>
+            </div>
+            <div class="col">
+              {{> afQuickField name='season' value=searchOptions.season}}
+            </div>
+            <div class="col">
+              {{> afQuickField name='year' value=searchOptions.year}}
+            </div>
+            <div class="col-auto">
+              <button type="button" class="btn btn-primary btn-next-season h-100">
+                <i class="fas fa-chevron-right"></i>
+                <span class="sr-only">Next Season</span>
+              </button>
+            </div>
+          </div>
           <button type="reset" class="btn btn-primary" id="animeSearchFormOptionsReset">Reset</button>
         {{/autoForm}}
       </div>

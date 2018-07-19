@@ -99,6 +99,21 @@ Schemas.Search = new SimpleSchema({
       defaultValue: 'true',
       label: false
     }
+  },
+
+  season: {
+    type: String,
+    allowedValues: Shows.validQuarters,
+    index: true,
+    optional: true,
+    autoform: {
+      options: 'allowed'
+    }
+  },
+  year: {
+    type: SimpleSchema.Integer,
+    index: true,
+    optional: true
   }
 }, { tracker: Tracker });
 

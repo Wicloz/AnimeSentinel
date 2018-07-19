@@ -2,6 +2,7 @@ import './search.html';
 import {Searches} from "../../api/searches/searches";
 import { Shows } from '/imports/api/shows/shows.js';
 import '/imports/ui/components/image.js';
+import moment from 'moment-timezone';
 
 Template.pages_search.onCreated(function() {
   // Set page variables
@@ -29,6 +30,28 @@ Template.pages_search.onCreated(function() {
 
   this.canLoadMoreShows = function() {
     return Shows.querySearch(this.getSearchOptions(), this.state.get('searchLimit')).count() >= this.state.get('searchLimit');
+  };
+
+  this.moveSeasonOption = function(offset) {
+    let season = this.getSearchOptions().season;
+    let year = Number(this.getSearchOptions().year);
+
+    if (!season || isNaN(year)) {
+      season = Shows.validQuarters[moment.fromUtc().quarter() - 1];
+      year = moment.fromUtc().year();
+    } else {
+      let seasonIndex = Shows.validQuarters.indexOf(season) + offset;
+      year += Math.floor(seasonIndex / 4);
+      seasonIndex = seasonIndex.mod(4);
+      season = Shows.validQuarters[seasonIndex];
+    }
+
+    FlowRouter.withReplaceState(() => {
+      FlowRouter.setQueryParams({
+        season: season,
+        year: year
+      });
+    });
   };
 
   // Subscribe to searches based on search options
@@ -103,6 +126,14 @@ Template.pages_search.events({
     FlowRouter.withReplaceState(() => {
       FlowRouter.setQueryParams(reset);
     });
+  },
+
+  'click .btn-prev-season'(event) {
+    Template.instance().moveSeasonOption(-1);
+  },
+
+  'click .btn-next-season'(event) {
+    Template.instance().moveSeasonOption(1);
   }
 });
 

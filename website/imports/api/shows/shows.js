@@ -1048,6 +1048,14 @@ Shows.querySearch = function(search, limit) {
     }
   }
 
+  // Search on 'season'
+  if (typeof search.season !== 'undefined') {
+    selector['season.quarter'] = search.season;
+  }
+  if (typeof search.year !== 'undefined') {
+    selector['season.year'] = search.year;
+  }
+
   // Search on 'query'
   if (search.query) {
     selector.altNames = {
