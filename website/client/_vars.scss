@@ -85,3 +85,43 @@ $thumbnail-height: 220px !default;
     }
   }
 }
+
+.p {
+  padding: $spacer;
+}
+
+.pb {
+  padding-bottom: $spacer;
+}
+
+.pt {
+  padding-top: $spacer;
+}
+
+.pl {
+  padding-left: $spacer;
+}
+
+.pr {
+  padding-right: $spacer;
+}
+
+.m {
+  margin: $spacer;
+}
+
+.mb {
+  margin-bottom: $spacer;
+}
+
+.mt {
+  margin-top: $spacer;
+}
+
+.ml {
+  margin-left: $spacer;
+}
+
+.mr {
+  margin-right: $spacer;
+}
