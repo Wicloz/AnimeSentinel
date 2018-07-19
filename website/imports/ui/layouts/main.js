@@ -31,6 +31,12 @@ Template.layouts_main.onRendered(function() {
   }, '*');
 });
 
+Template.layouts_main.events({
+  'click #mainNav .nav-link'(event) {
+    $('#mainNav').collapse('hide');
+  },
+});
+
 Template.layouts_main.helpers({
   pageTitle() {
     return Session.get('PageTitle');
