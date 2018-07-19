@@ -30,6 +30,21 @@ Template.pages_show.onCreated(function() {
     return show && show.locked();
   };
 
+  this.isRelatedUpdating = function(show, direction, visitedIds=[]) {
+    if (!show) {
+      return true;
+    }
+
+    visitedIds.push(show._id);
+    return show.locked() || show.relatedShows.getPartialObjects({
+      relation: direction
+    }).filter((related) => {
+      return !visitedIds.includes(related.showId);
+    }).some((related) => {
+      return this.isRelatedUpdating(Shows.findOne(related.showId), direction, visitedIds);
+    });
+  };
+
   this.recursivelySubscribe = function(show, direction, visitedIds=[]) {
     if (!show) {
       return;
@@ -149,6 +164,12 @@ Template.pages_show.helpers({
     return {
       genres: [genre]
     };
+  },
+
+  relatedShowsLoading() {
+    let visitedIds = [];
+    let mainShow = Shows.findOne(FlowRouter.getParam('showId'));
+    return Template.instance().isRelatedUpdating(mainShow, 'prequel', visitedIds) || Template.instance().isRelatedUpdating(mainShow, 'sequel', visitedIds);
   }
 });
 
