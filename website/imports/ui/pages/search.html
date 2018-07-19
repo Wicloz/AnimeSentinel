@@ -15,7 +15,7 @@
         More Search Options
       </div>
       <div class="card-body collapse" id="animeSearchFormOptionsCollapse">
-        {{#autoForm schema='Schemas.Search' id='animeSearchFormOptions' autosave=true}}
+        {{#autoForm schema='Schemas.Search' id='animeSearchFormOptions' autosave=true autosaveOnKeyup=true}}
           {{> afQuickField name='types' value=searchOptions.types}}
           {{> afQuickField name='includeTypes' value=searchOptions.includeTypes}}
           {{> afQuickField name='genres' value=searchOptions.genres}}

@@ -105,6 +105,7 @@ Schemas.Search = new SimpleSchema({
 Searches.attachSchema(Schemas.Search);
 
 // Constants
+Searches.systemKeys = ['_id', 'lastUpdateStart', 'lastUpdateEnd'];
 Searches.timeUntilRecache = 86400000; // 1 day
 Searches.maxUpdateTime = 60000; // 1 minute
 
@@ -260,19 +261,19 @@ Searches.queryWithSearch = function(search) {
     mutate: true
   });
 
-  delete search._id;
-  delete search.lastUpdateStart;
-  delete search.lastUpdateEnd;
-
   // Validate
   Schemas.Search.validate(search);
 
-  // Properly search for empty queries
-  if (!search.query) {
-    search.query = {
-      $exists: false
+  // Properly query for missing values
+  Schemas.Search._schemaKeys.forEach((key) => {
+    if (Searches.systemKeys.includes(key)) {
+      delete search[key];
+    } else if (!search[key]) {
+      search[key] = {
+        $exists: false
+      };
     }
-  }
+  });
 
   // Return results cursor
   return Searches.find(search);
