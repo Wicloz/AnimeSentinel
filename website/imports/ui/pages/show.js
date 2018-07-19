@@ -34,14 +34,16 @@ Template.pages_show.onCreated(function() {
     if (!show) {
       return true;
     }
-
     visitedIds.push(show._id);
-    return show.locked() || show.relatedShows.getPartialObjects({
-      relation: direction
-    }).filter((related) => {
-      return !visitedIds.includes(related.showId);
+
+    return show.locked() || show.relatedShows.filter((related) => {
+      return related.relation === direction && !visitedIds.includes(related.showId);
     }).some((related) => {
       return this.isRelatedUpdating(Shows.findOne(related.showId), direction, visitedIds);
+    }) || show.relatedShows.filter((related) => {
+      return !['prequel', 'sequel'].includes(related.relation) && !visitedIds.includes(related.showId);
+    }).some((related) => {
+      return !Shows.findOne(related.showId);
     });
   };
 
@@ -49,16 +51,14 @@ Template.pages_show.onCreated(function() {
     if (!show) {
       return;
     }
-
     visitedIds.push(show._id);
+
     Tracker.nonreactive(() => {
       Meteor.call('shows.attemptUpdate', show._id);
     });
     this.subscribe('shows.withIds', show.relatedShows.pluck('showId'));
-    show.relatedShows.getPartialObjects({
-      relation: direction
-    }).filter((related) => {
-      return !visitedIds.includes(related.showId);
+    show.relatedShows.filter((related) => {
+      return related.relation === direction && !visitedIds.includes(related.showId);
     }).forEach((related) => {
       this.recursivelySubscribe(Shows.findOne(related.showId), direction, visitedIds);
     });
