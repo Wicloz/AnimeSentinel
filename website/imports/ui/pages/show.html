@@ -12,6 +12,15 @@
         </div>
         <div class="modal-body">
 
+          {{#if relatedShowsLoading}}
+            <div class="alert alert-info text-center w-100" role="alert">
+              <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated w-100" role="progressbar"></div>
+              </div>
+              Updating Related Shows ...
+            </div>
+          {{/if}}
+
           {{#each mainBlock in show.seriesMap}}
             <div class="card card-related-shows">
               <a href="{{pathFor 'show' showId=mainBlock.root._id}}" class="card-header">
@@ -266,13 +275,11 @@
 
       {{#if episodesLoading}}
         <li class="list-group-item">
-          <div class="row">
-            <div class="col-12 text-center">
-              <div class="progress">
-                <div class="progress-bar progress-bar-striped progress-bar-animated w-100" role="progressbar"></div>
-              </div>
-              Loading More Episodes ...
+          <div class="alert alert-info text-center w-100" role="alert">
+            <div class="progress">
+              <div class="progress-bar progress-bar-striped progress-bar-animated w-100" role="progressbar"></div>
             </div>
+            Loading More Episodes ...
           </div>
         </li>
       {{/if}}
@@ -305,10 +312,8 @@
 
       {{else unless episodesLoading}}
         <li class="list-group-item">
-          <div class="row">
-            <div class="col-12 text-center">
-              No Episodes Yet
-            </div>
+          <div class="alert alert-info text-center w-100" role="alert">
+            No Episodes Yet
           </div>
         </li>
       {{/each}}

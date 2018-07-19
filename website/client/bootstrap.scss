@@ -73,7 +73,7 @@
   }
 }
 
-.card-body, .modal-body {
+.card-body, .modal-body, .list-group-item {
   & > *:last-child, & > .row > .col > *:last-child, & > .row > [class^="col-"] > *:last-child {
     margin-bottom: 0;
   }
