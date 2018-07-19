@@ -18,6 +18,7 @@
     text-decoration: none;
     font-weight: $font-weight-light;
     font-size: $font-size-sm;
+    line-height: $line-height-sm;
     background-color: $dark;
 
     .card-img-top {
@@ -47,13 +48,13 @@
       }
 
       .card-img-info-left {
-        border-right: 10px transparent solid;
+        border-right: $font-size-sm * $line-height-sm / 2 transparent solid;
         padding-right: 1px;
         padding-left: 3px;
       }
 
       .card-img-info-right {
-        border-left: 10px transparent solid;
+        border-left: $font-size-sm * $line-height-sm / 2 transparent solid;
         padding-left: 1px;
         padding-right: 3px;
       }
@@ -62,6 +63,7 @@
     .card-body {
       padding: 0 3px;
       border-top: none;
+      background-color: $dark;
     }
   }
 

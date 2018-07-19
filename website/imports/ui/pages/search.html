@@ -28,10 +28,14 @@
               </button>
             </div>
             <div class="col">
-              {{> afQuickField name='season' value=searchOptions.season}}
-            </div>
-            <div class="col">
-              {{> afQuickField name='year' value=searchOptions.year}}
+              <div class="row">
+                <div class="col-sm">
+                  {{> afQuickField name='season' value=searchOptions.season}}
+                </div>
+                <div class="col-sm">
+                  {{> afQuickField name='year' value=searchOptions.year}}
+                </div>
+              </div>
             </div>
             <div class="col-auto">
               <button type="button" class="btn btn-primary btn-next-season h-100">
@@ -40,7 +44,7 @@
               </button>
             </div>
           </div>
-          <button type="reset" class="btn btn-primary" id="animeSearchFormOptionsReset">Reset</button>
+          <button type="button" class="btn btn-primary" id="animeSearchFormOptionsReset">Reset</button>
         {{/autoForm}}
       </div>
     </div>
