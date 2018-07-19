@@ -31,20 +31,22 @@ Template.pages_show.onCreated(function() {
   };
 
   this.recursivelySubscribe = function(show, direction, visitedIds=[]) {
-    if (show) {
-      visitedIds.push(show._id);
-      Tracker.nonreactive(() => {
-        Meteor.call('shows.attemptUpdate', show._id);
-      });
-      this.subscribe('shows.withIds', show.relatedShows.pluck('showId'));
-      show.relatedShows.getPartialObjects({
-        relation: direction
-      }).forEach((related) => {
-        if (!visitedIds.includes(related.showId)) {
-          this.recursivelySubscribe(Shows.findOne(related.showId), direction, visitedIds);
-        }
-      });
+    if (!show) {
+      return;
     }
+
+    visitedIds.push(show._id);
+    Tracker.nonreactive(() => {
+      Meteor.call('shows.attemptUpdate', show._id);
+    });
+    this.subscribe('shows.withIds', show.relatedShows.pluck('showId'));
+    show.relatedShows.getPartialObjects({
+      relation: direction
+    }).filter((related) => {
+      return !visitedIds.includes(related.showId);
+    }).forEach((related) => {
+      this.recursivelySubscribe(Shows.findOne(related.showId), direction, visitedIds);
+    });
   };
 
   // Subscribe based on the show id
@@ -75,8 +77,9 @@ Template.pages_show.onCreated(function() {
   // Recursively subscribe to all prequels and sequels
   this.autorun(() => {
     let visitedIds = [];
-    this.recursivelySubscribe(Shows.findOne(FlowRouter.getParam('showId')), 'prequel', visitedIds);
-    this.recursivelySubscribe(Shows.findOne(FlowRouter.getParam('showId')), 'sequel', visitedIds);
+    let mainShow = Shows.findOne(FlowRouter.getParam('showId'));
+    this.recursivelySubscribe(mainShow, 'prequel', visitedIds);
+    this.recursivelySubscribe(mainShow, 'sequel', visitedIds);
   });
 
   // Set 'LoadingBackground' parameter
