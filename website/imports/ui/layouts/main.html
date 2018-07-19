@@ -60,7 +60,7 @@
               <i class="fas fa-cog"></i>
               Settings
             </h5>
-            {{#autoForm schema='Schemas.translationTypeSelection' id='translationTypeSelectionForm' autosave=true}}
+            {{#autoForm schema='Schemas.translationTypeSelection' id='translationTypeSelectionForm' autosave=true preserveForm=false}}
               {{> afQuickField name='translationType' value=($getStorageItem 'SelectedTranslationType')}}
             {{/autoForm}}
           </div>

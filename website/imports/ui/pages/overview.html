@@ -4,7 +4,7 @@
     <div class="card-panel">
       <a class="waves-effect waves-light btn reload-mal-list-btn">Reload MAL List</a>
       <a class="waves-effect waves-light btn reload-all-shows-btn">Attempt All Show Updates</a>
-      {{#autoForm schema='Schemas.statusesSelection' id='statusesSelectionForm' autosave=true}}
+      {{#autoForm schema='Schemas.statusesSelection' id='statusesSelectionForm' autosave=true preserveForm=false}}
         {{> afQuickField name='statuses' value=($getStorageItem 'SelectedStatuses')}}
       {{/autoForm}}
 
