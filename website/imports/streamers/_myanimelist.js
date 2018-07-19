@@ -1,5 +1,6 @@
 import ScrapingHelpers from "./scrapingHelpers";
 import moment from 'moment-timezone';
+import {Shows} from '../api/shows/shows';
 
 function getMalIdFromUrl(url) {
   return url.replace(/^.*\/(\d+)\/.*$/, '$1');
@@ -93,7 +94,22 @@ export let myanimelist = {
         }));
       }
 
-      return myanimelist.homepage + '/anime.php?c[]=a&c[]=b&c[]=c&c[]=d&c[]=e&c[]=f&c[]=g' + query + type + exclude + '&genre[]=' + genres.join('&genre[]=');
+      let startDate = '';
+      if (typeof search.year !== 'undefined') {
+        if (typeof search.season !== 'undefined') {
+          let momentStart = moment.fromUtc({
+            year: search.year
+          }).quarter(Shows.validQuarters.indexOf(search.season) + 1);
+          startDate = '&sd=' + momentStart.date() + '&sm=' + (momentStart.month() + 1) + '&sy=' + momentStart.year();
+        } else {
+          startDate = '&sd=1&sm=1&sy=' + search.year;
+        }
+        if (!search.query) {
+          startDate += '&o=2&w=2';
+        }
+      }
+
+      return myanimelist.homepage + '/anime.php?c[]=a&c[]=b&c[]=c&c[]=d&c[]=e&c[]=f&c[]=g' + startDate + query + type + exclude + '&genre[]=' + genres.join('&genre[]=');
     },
     rowSelector: '.js-block-list.list table tbody tr:has(td a.hoverinfo_trigger)',
 
