@@ -164,7 +164,15 @@
               <div class="col-sm-6">
                 <dl>
                   <dt>Season:</dt>
-                  <dd>{{$capitalize (displaySeason show.season)}}</dd>
+                  <dd>
+                    {{#if show.season}}
+                      <a href="{{pathFor 'search' query=(querySeason show.season)}}">
+                        {{$capitalize (displaySeason show.season)}}
+                      </a>
+                    {{else}}
+                      {{$capitalize (displaySeason show.season)}}
+                    {{/if}}
+                  </dd>
                   <dt>Airing:</dt>
                   <dd>
                     {{$capitalize (displayAiringDate show.airedStart)}}

@@ -166,6 +166,13 @@ Template.pages_show.helpers({
     };
   },
 
+  querySeason(season) {
+    return {
+      season: season.quarter,
+      year: season.year
+    };
+  },
+
   relatedShowsLoading() {
     let visitedIds = [];
     let mainShow = Shows.findOne(FlowRouter.getParam('showId'));
