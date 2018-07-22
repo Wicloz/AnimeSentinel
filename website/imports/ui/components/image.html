@@ -6,8 +6,10 @@
 
   {{#if showLoading}}
     <div class="{{class}} img-detector" id="img-detector-{{getId}}" data-appear-top-offset="200" data-appear-left-offset="200">
-      <i class="fas fa-spinner fa-pulse fa-3x"></i>
-      <span class="sr-only">{{caption}}</span>
+      <div class="img-detector-inner">
+        <i class="fas fa-spinner fa-pulse fa-3x"></i>
+        <span class="sr-only">{{caption}}</span>
+      </div>
     </div>
   {{/if}}
 

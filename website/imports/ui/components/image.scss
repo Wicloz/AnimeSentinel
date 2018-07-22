@@ -1,6 +1,11 @@
 @import "../../../client/_vars.scss";
 
-.img-detector {
+.img-detector-inner {
+  width: 100%;
+  height: 100%;
   padding: $spacer;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
