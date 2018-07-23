@@ -30,12 +30,17 @@ Template.registerHelper('displayAiringDate', (date) => {
   return moment.fromUtc(date).format((formatDate ? formatDate : '?') + (formatTime ? ' [at] ' + formatTime : ''));
 });
 
-Template.registerHelper('displayUploadDate', (date) => {
-  if (!date || (typeof date.year === 'undefined'
-    && typeof date.month === 'undefined'
-    && typeof date.date === 'undefined'
-    && typeof date.hour === 'undefined'
-    && typeof date.minute === 'undefined')) {
+Template.registerHelper('displayUploadDate', (date, short) => {
+  if (short !== true) {
+    short = false;
+  }
+
+  if (!date || (
+    typeof date.year === 'undefined' &&
+    typeof date.month === 'undefined' &&
+    typeof date.date === 'undefined' &&
+    (short || (typeof date.hour === 'undefined' && typeof date.minute === 'undefined'))
+  )) {
     return 'unknown date';
   }
 
@@ -59,7 +64,7 @@ Template.registerHelper('displayUploadDate', (date) => {
   }
 
   let formatTime = undefined;
-  if (typeof date.hour !== 'undefined' && typeof date.minute !== 'undefined') {
+  if (!short && typeof date.hour !== 'undefined' && typeof date.minute !== 'undefined') {
     formatTime = 'HH:mm (Z)';
   }
 
