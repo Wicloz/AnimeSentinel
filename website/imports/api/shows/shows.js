@@ -1079,7 +1079,11 @@ Shows.querySearch = function(search, limit) {
           if (bestSore === 1) return 1;
           return Math.max(bestSore, score(altName.cleanQuery(), search.query, 0.1));
         }, 0);
-        return scoreB - scoreA;
+        if (scoreA !== scoreB) {
+          return scoreB - scoreA;
+        } else {
+          return a.name.localeCompare(b.name);
+        }
       }
     }
   }
