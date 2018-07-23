@@ -454,6 +454,10 @@ Shows.helpers({
     return undefined;
   },
 
+  latestEpisode(translationType) {
+    return Episodes.queryForTranslationType(this._id, translationType, 1).fetch()[0];
+  },
+
   thumbnailUrls() {
     if (!this.thumbnails || this.thumbnails.empty()) {
       return ['/media/unknown.png'];

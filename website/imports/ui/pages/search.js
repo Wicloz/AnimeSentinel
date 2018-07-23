@@ -74,11 +74,14 @@ Template.pages_search.onCreated(function() {
     this.subscribe('shows.search', this.getSearchOptions(), this.state.get('searchLimit'));
   });
 
-  // Subscribe to thumbnails for all shows
+  // Subscribe to thumbnails and episodes for all shows
   this.autorun(() => {
-    this.subscribe('thumbnails.withHashes', Shows.querySearch(this.getSearchOptions(), this.state.get('searchLimit')).fetch().reduce((total, show) => {
-      return total.concat(show.thumbnails);
-    }, []));
+    let thumbnailHashes = [];
+    Shows.querySearch(this.getSearchOptions(), this.state.get('searchLimit')).forEach((show) => {
+      thumbnailHashes = thumbnailHashes.concat(show.thumbnails);
+      this.subscribe('episodes.forTranslationType', show._id, getStorageItem('SelectedTranslationType'), 1);
+    });
+    this.subscribe('thumbnails.withHashes', thumbnailHashes);
   });
 
   // Set 'LoadingBackground' parameter
@@ -106,6 +109,31 @@ Template.pages_search.helpers({
 
   searchOptions() {
     return Template.instance().getSearchOptions();
+  },
+
+  hasLatestEpisode(show) {
+    return typeof show.latestEpisode(getStorageItem('SelectedTranslationType')) !== 'undefined';
+  },
+
+  latestEpisodeNumbers(show) {
+    let latestEpisode = show.latestEpisode(getStorageItem('SelectedTranslationType'));
+    return latestEpisode.episodeNumStart
+      + (latestEpisode.episodeNumStart !== latestEpisode.episodeNumEnd ? ' - ' + latestEpisode.episodeNumEnd : '');
+  },
+
+  latestEpisodeNotes(show) {
+    return show.latestEpisode(getStorageItem('SelectedTranslationType')).notes;
+  },
+
+  latestEpisodeLink(show) {
+    let latestEpisode = show.latestEpisode(getStorageItem('SelectedTranslationType'));
+    return FlowRouter.path('episode', {
+      showId: latestEpisode.showId,
+      translationType: latestEpisode.translationType,
+      episodeNumStart: latestEpisode.episodeNumStart,
+      episodeNumEnd: latestEpisode.episodeNumEnd,
+      notes: latestEpisode.notesEncoded()
+    });
   }
 });
 
