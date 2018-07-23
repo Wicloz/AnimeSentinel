@@ -14,15 +14,36 @@
       width: min-content;
     }
 
-    color: $white;
     text-decoration: none;
     font-weight: $font-weight-light;
     font-size: $font-size-sm;
     line-height: $line-height-sm;
-    background-color: $dark;
 
-    .card-img-top {
-      margin-bottom: $font-size-sm * $line-height-sm * -1;
+    .card-header, .card-footer {
+      color: $white;
+      padding: 3px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: $dark;
+
+      .card-text {
+        text-align: center;
+        width: 100%;
+      }
+    }
+
+    .card-header {
+      flex: 1 0 auto;
+      border-bottom: $card-border-width solid $card-border-color;
+    }
+
+    .card-img-center {
+      flex: 0 0 auto;
+      margin: $font-size-sm * $line-height-sm * -1 0;
+      background-color: $white;
+      color: $dark;
+      border-top: none;
 
       max-height: $thumbnail-height;
       width: 100%;
@@ -36,34 +57,65 @@
     }
 
     .card-img-info {
+      flex: 0 0 $font-size-sm * $line-height-sm;
       display: flex;
-      justify-content: space-between;
       border-top: none;
 
-      & > * {
-        height: 0;
-        border-bottom: $font-size-sm * $line-height-sm transparentize($dark, 0.1) solid;
+      .card-img-info-spacer {
+        flex: 1 1 100%;
+      }
+
+      .card-img-info-left, .card-img-info-right {
         flex: 0 0 auto;
         white-space: nowrap;
+        position: relative;
+        color: $white;
+        z-index: 1;
+
+        &::before {
+          content: '';
+          width: 100%;
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          z-index: -1;
+        }
       }
 
       .card-img-info-left {
-        border-right: $font-size-sm * $line-height-sm / 2 transparent solid;
-        padding-right: 1px;
+        padding-right: calc(#{$font-size-sm * $line-height-sm / 2} + 1px);
         padding-left: 3px;
+
+        &::before {
+          border-right: $font-size-sm * $line-height-sm / 2 transparent solid;
+          border-bottom: $font-size-sm * $line-height-sm transparentize($dark, 0.1) solid;
+          left: 0;
+        }
       }
 
       .card-img-info-right {
-        border-left: $font-size-sm * $line-height-sm / 2 transparent solid;
-        padding-left: 1px;
+        padding-left: calc(#{$font-size-sm * $line-height-sm / 2} + 1px);
         padding-right: 3px;
+
+        &::before {
+          border-left: $font-size-sm * $line-height-sm / 2 transparent solid;
+          border-top: $font-size-sm * $line-height-sm transparentize($dark, 0.1) solid;
+          right: 0;
+        }
       }
     }
 
-    .card-body {
-      padding: 0 3px;
-      border-top: none;
-      background-color: $dark;
+    .card-footer {
+      flex: 0 0 calc(#{$line-height-sm * $font-size-sm * 2} + 7px);
+
+      .card-text {
+        margin-bottom: 0;
+        white-space: nowrap;
+      }
+    }
+
+    a.card-footer {
+      font-weight: $font-weight-base;
     }
   }
 

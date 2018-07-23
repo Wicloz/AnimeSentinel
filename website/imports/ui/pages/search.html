@@ -54,24 +54,57 @@
         {{#each show in shows}}
 
           <a class="card card-show-item" href="{{pathFor 'show' showId=show._id}}">
-            {{>components_image src=show.thumbnailUrls.[0] caption=show.name class="card-img-top"}}
+            <div class="card-header">
+              <p class="card-text">{{show.name}}</p>
+            </div>
             <div class="card-img-info">
-              <div class="card-img-info-left">
-                {{$dot show.availableEpisodes ($getStorageItem 'SelectedTranslationType')}}
-                {{#if $exists show.episodeCount}}
-                  / {{show.episodeCount}}
-                {{/if}}
-                <abbr title="episodes">eps</abbr>
-              </div>
+              {{#if show.type}}
+                <div class="card-img-info-left">
+                  {{show.type}}
+                </div>
+              {{/if}}
+              <div class="card-img-info-spacer"></div>
               {{#if show.season}}
                 <div class="card-img-info-right">
                   {{displaySeason show.season}}
                 </div>
               {{/if}}
             </div>
-            <div class="card-body d-flex align-items-center">
-              <p class="card-text text-center w-100">{{show.name}}</p>
+            {{>components_image src=show.thumbnailUrls.[0] caption=show.name class="card-img-center"}}
+            <div class="card-img-info">
+              {{#if $or ($exists show.episodeCount) ($exists show.episodeDuration)}}
+                <div class="card-img-info-left">
+                  {{#if $exists show.episodeCount}}
+                    {{show.episodeCount}}
+                  {{else}}
+                    ?
+                  {{/if}}
+                  {{#if $eq show.episodeCount 1}}
+                    <abbr title="episode">ep</abbr>
+                  {{else}}
+                    <abbr title="episodes">eps</abbr>
+                  {{/if}}
+                  {{#if $exists show.episodeDuration}}
+                    of {{displayDuration show.episodeDuration}}
+                  {{/if}}
+                </div>
+              {{/if}}
+              <div class="card-img-info-spacer"></div>
             </div>
+            {{#if hasLatestEpisode show}}
+              <a class="card-footer" href="{{latestEpisodeLink show}}">
+                <p class="card-text">Episode {{latestEpisodeNumbers show}}</p>
+                {{#if latestEpisodeNotes show}}
+                  <p class="card-text">{{latestEpisodeNotes show}}</p>
+                {{/if}}
+              </a>
+            {{else}}
+              <div class="card-footer">
+                <p class="card-text">
+                  {{$capitalize (displayUploadDate (show.nextEpisodeDate ($getStorageItem 'SelectedTranslationType')) true)}}
+                </p>
+              </div>
+            {{/if}}
           </a>
 
         {{else unless showsLoading}}
