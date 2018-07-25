@@ -10,6 +10,15 @@
     </div>
 
     <div class="card">
+      <div class="card-body">
+        {{#autoForm schema='Schemas.Search' id='animeSearchFormSorting' autosave=true autosaveOnKeyup=true preserveForm=false}}
+          {{> afQuickField name='sortBy' value=searchOptions.sortBy}}
+          {{> afQuickField name='sortDirection' value=searchOptions.sortDirection disabled=sortDirectionDisabled}}
+        {{/autoForm}}
+      </div>
+    </div>
+
+    <div class="card">
       <div class="card-header collapsed btn-unstyled btn-collapse" data-toggle="collapse" data-target="#animeSearchFormOptionsCollapse" aria-expanded="false" aria-controls="animeSearchFormOptionsCollapse">
         <i class="fas fa-caret-right"></i>
         More Search Options

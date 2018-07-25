@@ -21,6 +21,34 @@ Schemas.Search = new SimpleSchema({
     optional: true
   },
 
+  sortBy: {
+    type: String,
+    index: true,
+    optional: true,
+    allowedValues: ['Latest Update', 'Type'],
+    autoform: {
+      label: 'Sort By:',
+      options: 'allowed'
+    }
+  },
+  sortDirection: {
+    type: SimpleSchema.Integer,
+    index: true,
+    optional: true,
+    defaultValue: 1,
+    allowedValues: [-1, 1],
+    autoform: {
+      type: 'select-radio-inline',
+      options: [{
+        label: 'Ascending', value: '1'
+      }, {
+        label: 'Descending', value: '-1'
+      }],
+      defaultValue: '1',
+      label: false
+    }
+  },
+
   query: {
     type: String,
     index: true,
@@ -253,7 +281,18 @@ Searches.startSearch = function(search) {
   Schemas.Search.clean(search, {
     mutate: true
   });
+
   Schemas.Search.validate(search);
+  if (!search.sortBy) {
+    new SimpleSchema({
+      sortDirection: {
+        type: SimpleSchema.Integer,
+        allowedValues: [1],
+      },
+    }).validate({
+      sortDirection: search.sortDirection
+    });
+  }
 
   let result = Searches.getOrInsertSearch(search);
 

@@ -29,7 +29,7 @@ Template.pages_search.onCreated(function() {
   };
 
   this.canLoadMoreShows = function() {
-    return Shows.querySearch(this.getSearchOptions(), this.state.get('searchLimit')).count() >= this.state.get('searchLimit');
+    return Shows.querySearch(this.getSearchOptions(), this.state.get('searchLimit'), getStorageItem('SelectedTranslationType')).count() >= this.state.get('searchLimit');
   };
 
   this.moveSeasonOption = function(offset) {
@@ -71,13 +71,13 @@ Template.pages_search.onCreated(function() {
 
   // Subscribe to shows based on search options and limit
   this.autorun(() => {
-    this.subscribe('shows.search', this.getSearchOptions(), this.state.get('searchLimit'));
+    this.subscribe('shows.search', this.getSearchOptions(), this.state.get('searchLimit'), getStorageItem('SelectedTranslationType'));
   });
 
   // Subscribe to thumbnails and episodes for all shows
   this.autorun(() => {
     let thumbnailHashes = [];
-    Shows.querySearch(this.getSearchOptions(), this.state.get('searchLimit')).forEach((show) => {
+    Shows.querySearch(this.getSearchOptions(), this.state.get('searchLimit'), getStorageItem('SelectedTranslationType')).forEach((show) => {
       thumbnailHashes = thumbnailHashes.concat(show.thumbnails);
       this.subscribe('episodes.forTranslationType', show._id, getStorageItem('SelectedTranslationType'), 1);
     });
@@ -100,7 +100,7 @@ Template.pages_search.onDestroyed(function() {
 
 Template.pages_search.helpers({
   shows() {
-    return Shows.querySearch(Template.instance().getSearchOptions(), Template.instance().state.get('searchLimit'));
+    return Shows.querySearch(Template.instance().getSearchOptions(), Template.instance().state.get('searchLimit'), getStorageItem('SelectedTranslationType'));
   },
 
   showsLoading() {
@@ -134,6 +134,10 @@ Template.pages_search.helpers({
       episodeNumEnd: latestEpisode.episodeNumEnd,
       notes: latestEpisode.notesEncoded()
     });
+  },
+
+  sortDirectionDisabled() {
+    return !Template.instance().getSearchOptions().sortBy;
   }
 });
 
@@ -147,7 +151,7 @@ Template.pages_search.events({
   'click #animeSearchFormOptionsReset'(event) {
     let reset = {};
     Object.keys(FlowRouter.current().queryParams).forEach((key) => {
-      if (key !== 'query') {
+      if (!['query', 'sortBy', 'sortDirection'].includes(key)) {
         reset[key] = null;
       }
     });
@@ -178,11 +182,35 @@ AutoForm.hooks({
     }
   },
 
+  animeSearchFormSorting: {
+    onSubmit(insertDoc) {
+      // Remove default parameters
+      Object.keys(insertDoc).forEach((key) => {
+        if (Schemas.Search._schema[key].defaultValue === insertDoc[key]) {
+          insertDoc[key] = null;
+        }
+      });
+      // Remove sort direction for the default sort order
+      if (!insertDoc.sortBy) {
+        insertDoc.sortDirection = null;
+      }
+
+      FlowRouter.withReplaceState(() => {
+        FlowRouter.setQueryParams({
+          sortBy: insertDoc.sortBy,
+          sortDirection: insertDoc.sortDirection
+        });
+      });
+      this.done();
+      return false;
+    }
+  },
+
   animeSearchFormOptions: {
     onSubmit(insertDoc) {
       // Remove missing parameters
       Object.keys(FlowRouter.current().queryParams).forEach((key) => {
-        if (key !== 'query' && !insertDoc.hasOwnProperty(key)) {
+        if (!['query', 'sortBy', 'sortDirection'].includes(key) && !insertDoc.hasOwnProperty(key)) {
           insertDoc[key] = null;
         }
       });

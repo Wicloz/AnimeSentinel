@@ -984,7 +984,7 @@ Meteor.methods({
 });
 
 // Queries
-Shows.querySearch = function(search, limit) {
+Shows.querySearch = function(search, limit, translationType) {
   // Clean
   Schemas.Search.clean(search, {
     mutate: true
@@ -995,8 +995,12 @@ Shows.querySearch = function(search, limit) {
   new SimpleSchema({
     limit: {
       type: SimpleSchema.Integer
+    },
+    translationType: {
+      type: String,
+      allowedValues: Episodes.validTranslationTypes
     }
-  }).validate({limit});
+  }).validate({limit, translationType});
 
   // Setup initial options
   let selector = {};
