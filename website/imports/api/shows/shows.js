@@ -1066,14 +1066,59 @@ Shows.querySearch = function(search, limit, translationType) {
 
   // Search on 'query'
   if (search.query) {
-    selector.altNames = {
-      $regex: '.*' + search.query.split('').map((character) => {
-        return RegExp.escape(character);
-      }).join('.*') + '.*',
-      $options: 'i'
-    };
+    if (search.sortBy) {
+      selector.altNames = {
+        $regex: '.*' + search.query + '.*',
+        $options: 'i'
+      };
+    } else {
+      selector.altNames = {
+        $regex: '.*' + search.query.split('').map((character) => {
+          return RegExp.escape(character);
+        }).join('.*') + '.*',
+        $options: 'i'
+      };
+    }
+  }
 
-    if (Meteor.isClient) {
+  // Sort if the limit exists
+  if (options.hasOwnProperty('limit')) {
+    if (search.sortBy === 'Latest Update') {
+      options.sort = {};
+      options.sort['lastEpisodeDate.' + translationType + '.year'] = search.sortDirection;
+      options.sort['lastEpisodeDate.' + translationType + '.month'] = search.sortDirection;
+      options.sort['lastEpisodeDate.' + translationType + '.date'] = search.sortDirection;
+      options.sort['lastEpisodeDate.' + translationType + '.hour'] = search.sortDirection;
+      options.sort['lastEpisodeDate.' + translationType + '.minute'] = search.sortDirection;
+      options.sort['airedStart.year'] = search.sortDirection;
+      options.sort['airedStart.month'] = search.sortDirection;
+      options.sort['airedStart.date'] = search.sortDirection;
+      options.sort['airedStart.hour'] = search.sortDirection;
+      options.sort['airedStart.minute'] = search.sortDirection;
+      if (search.sortDirection === 1) {
+        selector.$or = [{
+          airedStart: {
+            $gt: {}
+          }
+        }, {}];
+        selector.$or[1]['lastEpisodeDate.' + translationType] = {
+          $gt: {}
+        };
+      }
+    }
+
+    else if (search.sortBy === 'Type') {
+      options.sort = {
+        type: search.sortDirection
+      };
+      if (search.sortDirection === 1) {
+        selector.type = {
+          $exists: true
+        };
+      }
+    }
+
+    else if (search.query) {
       options.sort = function(a, b) {
         let scoreA = a.altNames.reduce((bestSore, altName) => {
           if (bestSore === 1) return 1;
@@ -1090,12 +1135,13 @@ Shows.querySearch = function(search, limit, translationType) {
         }
       }
     }
-  }
 
-  else {
-    options.sort = {
-      name: 1
-    };
+    if (!search.query) {
+      if (!options.sort) {
+        options.sort = {};
+      }
+      options.sort.name = 1;
+    }
   }
 
   // Return results cursor
