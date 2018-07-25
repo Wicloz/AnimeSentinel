@@ -1111,7 +1111,7 @@ Shows.querySearch = function(search, limit, translationType) {
       options.sort = {
         type: search.sortDirection
       };
-      if (search.sortDirection === 1) {
+      if (search.sortDirection === 1 && !selector.type) {
         selector.type = {
           $exists: true
         };
