@@ -104,12 +104,20 @@ export let myanimelist = {
         } else {
           startDate = '&sd=1&sm=1&sy=' + search.year;
         }
-        if (!search.query) {
-          startDate += '&o=2&w=2';
-        }
       }
 
-      return myanimelist.homepage + '/anime.php?c[]=a&c[]=b&c[]=c&c[]=d&c[]=e&c[]=f&c[]=g' + startDate + query + type + exclude + '&genre[]=' + genres.join('&genre[]=');
+      let sort = '';
+      let sortDirection = search.sortDirection === 1 ? '2' : '1';
+      switch(search.sortBy) {
+        case 'Latest Update':
+          sort = '&o=2&w=' + sortDirection;
+          break;
+        case 'Type':
+          sort = '&o=6&w=' + sortDirection;
+          break;
+      }
+
+      return myanimelist.homepage + '/anime.php?c[]=a&c[]=b&c[]=c&c[]=d&c[]=e&c[]=f&c[]=g' + sort + startDate + query + type + exclude + '&genre[]=' + genres.join('&genre[]=');
     },
     rowSelector: '.js-block-list.list table tbody tr:has(td a.hoverinfo_trigger)',
 
