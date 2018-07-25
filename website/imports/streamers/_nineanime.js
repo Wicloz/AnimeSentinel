@@ -89,7 +89,6 @@ export let nineanime = {
       if (search.query) {
         return nineanime.homepage + '/search?keyword=' + encodeURIComponentReplaceSpaces(search.query, '+');
       }
-      let sort = 'sort=title%3Aasc';
 
       let types = search.getTypesAsIncludes(validTypes);
       if (types) {
@@ -112,12 +111,22 @@ export let nineanime = {
       let year = '';
       if (search.year) {
         year = '&release[]=' + search.year;
-        sort = 'sort=release_date%3Aasc';
       }
 
       let season = '';
       if (search.season) {
         season = '&season[]=' + search.season;
+      }
+
+      let sort = '';
+      let sortDirection = search.sortDirection === 1 ? 'asc' : 'desc';
+      switch(search.sortBy) {
+        case 'Latest Update':
+          sort = 'sort=episode_last_added_at%3A' + sortDirection;
+          break;
+        default:
+          sort = 'sort=title%3Aasc';
+          break;
       }
 
       return nineanime.homepage + '/filter?' + sort + types + genres + year + season;
