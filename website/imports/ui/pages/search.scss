@@ -61,6 +61,10 @@
       display: flex;
       border-top: none;
 
+      .card-img-info-broken {
+        transform: translateY(-0.8px);
+      }
+
       .card-img-info-spacer {
         flex: 1 1 100%;
       }
