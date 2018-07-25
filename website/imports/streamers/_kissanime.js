@@ -80,20 +80,25 @@ export let kissanime = {
   // Search page data
   search: {
     createUrl: function(search) {
+      let sortPage = '';
+      if (search.sortDirection === -1 && search.sortBy === 'Latest Update') {
+        sortPage = '/LatestUpdate';
+      }
+
       if (search.query) {
         return kissanime.homepage + '/Search/Anime?keyword=' + encodeURIComponentReplaceSpaces(search.completeQuery(2, search.query), '+');
       }
 
       else if (search.getSingleType(validTypes)) {
-        return kissanime.homepage + '/Genre/' + search.getSingleType(validTypes);
+        return kissanime.homepage + '/Genre/' + search.getSingleType(validTypes) + sortPage;
       }
 
       else if (search.getSingleGenre(validGenres)) {
-        return kissanime.homepage + '/Genre/' + search.getSingleGenre(validGenres).replace(/\s/g, '-');
+        return kissanime.homepage + '/Genre/' + search.getSingleGenre(validGenres).replace(/\s/g, '-') + sortPage;
       }
 
       else {
-        return kissanime.homepage + '/AnimeList';
+        return kissanime.homepage + '/AnimeList' + sortPage;
       }
     },
     rowSelector: 'table.listing tbody tr:has(td)',
