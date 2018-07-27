@@ -36,12 +36,20 @@ Template.pages_search.onCreated(function() {
     let season = this.getSearchOptions().season;
     let year = Number(this.getSearchOptions().year);
 
-    if (!season || isNaN(year)) {
+    if (!season && isNaN(year)) {
       season = Shows.validQuarters[moment.fromUtc().quarter() - 1];
       year = moment.fromUtc().year();
-    } else {
+    }
+
+    else if (!season) {
+      year += offset;
+    }
+
+    else {
       let seasonIndex = Shows.validQuarters.indexOf(season) + offset;
-      year += Math.floor(seasonIndex / 4);
+      if (!isNaN(year)) {
+        year += Math.floor(seasonIndex / 4);
+      }
       seasonIndex = seasonIndex.mod(4);
       season = Shows.validQuarters[seasonIndex];
     }
@@ -49,7 +57,7 @@ Template.pages_search.onCreated(function() {
     FlowRouter.withReplaceState(() => {
       FlowRouter.setQueryParams({
         season: season,
-        year: year
+        year: isNaN(year) ? null : year
       });
     });
   };
