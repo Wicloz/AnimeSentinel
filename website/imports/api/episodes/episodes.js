@@ -307,14 +307,6 @@ Episodes.getNextEpisode = function(showId, translationType, episodeNumStart, epi
   }
 };
 
-// Methods
-Meteor.methods({
-  'episodes.findRecentEpisodes'() {
-    // TODO: Make this work better (remove / make caching + indicator work)
-    Episodes.findRecentEpisodes();
-  }
-});
-
 // Queries
 Episodes.queryForShow = function(showId) {
   // Validate
@@ -446,32 +438,6 @@ Episodes.queryUnique = function (showId, translationType, episodeNumStart, episo
     streamerId: streamerId,
     sourceName: sourceName
   });
-};
-
-Episodes.queryRecent = function(limit) {
-  // Validate
-  new SimpleSchema({
-    limit: {
-      type: SimpleSchema.Integer
-    }
-  }).validate({limit});
-
-  // Return results cursor
-  return Episodes.find({}, {
-    limit: limit,
-    sort: {
-      'uploadDate.year': -1,
-      'uploadDate.month': -1,
-      'uploadDate.date': -1,
-      'uploadDate.hour': -1,
-      'uploadDate.minute': -1,
-      showId: -1,
-      translationType: -1,
-      episodeNumEnd: -1,
-      episodeNumStart: -1,
-      notes: -1
-    }
-  })
 };
 
 Episodes.queryToWatch = function(showId, translationType, lastWatched) {

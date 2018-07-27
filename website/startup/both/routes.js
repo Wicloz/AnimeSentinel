@@ -65,17 +65,6 @@ FlowRouter.route('/anime/:showId/episodes/:translationType/:episodeNumStart-:epi
   }
 });
 
-FlowRouter.route('/recent', {
-  name: 'recent',
-  action() {
-    if (Meteor.isClient) {
-      require('/imports/ui/layouts/main.js');
-      require('/imports/ui/pages/recent.js');
-    }
-    BlazeLayout.render('layouts_main', {content: 'pages_recent'});
-  }
-});
-
 FlowRouter.route('/manage-profile', {
   name: 'manageProfile',
   triggersEnter: [AccountsTemplates.ensureSignedIn],
