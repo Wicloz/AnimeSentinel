@@ -166,6 +166,20 @@ Template.pages_search.events({
 
   'click .btn-next-season'(event) {
     Template.instance().moveSeasonOption(1);
+  },
+
+  'click .btn-preset-recent'(event) {
+    FlowRouter.setQueryParams({
+      sortBy: 'Latest Update',
+      sortDirection: -1
+    });
+  },
+
+  'click .btn-preset-season'(event) {
+    FlowRouter.setQueryParams({
+      season: Shows.validQuarters[moment.fromUtc().quarter() - 1],
+      year: moment.fromUtc().year()
+    });
   }
 });
 

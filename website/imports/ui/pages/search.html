@@ -1,6 +1,11 @@
 <template name="pages_search">
   <div class="container">
 
+    <div class="preset-button-container">
+      <button type="button" class="btn btn-primary btn-preset-recent">Recent Episodes</button>
+      <button type="button" class="btn btn-primary btn-preset-season">Current Season</button>
+    </div>
+
     <div class="card">
       <div class="card-body">
         {{#autoForm schema='Schemas.Search' id='animeSearchFormQuery' autosave=true autosaveOnKeyup=true preserveForm=false}}

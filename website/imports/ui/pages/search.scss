@@ -1,5 +1,13 @@
 @import "../../../client/_vars.scss";
 
+.preset-button-container {
+  margin-bottom: $spacer;
+
+  .btn {
+    margin-right: $spacer / 2;
+  }
+}
+
 .card-result-container > .card-body {
   display: flex;
   flex-wrap: wrap;
