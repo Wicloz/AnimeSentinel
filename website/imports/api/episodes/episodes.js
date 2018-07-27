@@ -236,7 +236,9 @@ Episodes.isFlagDisabled = function(flag) {
     (!Session.get('AddOnInstalled') && Episodes.flagsWithoutAddOnNever.includes(flag));
 };
 
-Episodes.findRecentEpisodes = function() {
+Episodes.findRecentEpisodes = function(doneCallback) {
+  let missingResultCount = 0;
+
   // For each streamer
   Streamers.getStreamers().forEach((streamer) => {
     // Download and process recent page
@@ -249,9 +251,14 @@ Episodes.findRecentEpisodes = function() {
 
         // Process show in simple mode when episodes are missing
         if (result.missing) {
+          missingResultCount++;
           let tempShow = new TempShow(result.show, (partial, episodes) => {
 
             Shows.addPartialShow(partial, episodes);
+            missingResultCount--;
+            if (missingResultCount === 0) {
+              doneCallback();
+            }
 
           }, (partial, episodes) => {
 

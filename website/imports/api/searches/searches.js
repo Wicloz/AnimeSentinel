@@ -2,6 +2,7 @@ import SimpleSchema from 'simpl-schema';
 import Streamers from "../../streamers/streamers";
 import {Shows} from "../shows/shows";
 import moment from 'moment-timezone';
+import {Episodes} from '../episodes/episodes';
 
 // Collection
 export const Searches = new Mongo.Collection('searches');
@@ -151,10 +152,14 @@ Searches.attachSchema(Schemas.Search);
 Searches.systemKeys = ['_id', 'lastUpdateStart', 'lastUpdateEnd'];
 Searches.timeUntilRecache = 86400000; // 1 day
 Searches.maxUpdateTime = 60000; // 1 minute
+Searches.timeUntilRecacheRecent = 1800000; // 30 minutes
+Searches.maxUpdateTimeRecent = 600000; // 10 minutes
 
 if (Meteor.isDevelopment) {
   Searches.timeUntilRecache = 30000; // 30 seconds
   Searches.maxUpdateTime = 30000; // 30 seconds
+  Searches.timeUntilRecacheRecent = 30000; // 30 seconds
+  Searches.maxUpdateTimeRecent = 30000; // 30 seconds
 }
 
 // Helpers
@@ -164,12 +169,20 @@ Searches.helpers({
       invalidateSecond.depend();
     }
     return !this.lastUpdateStart ||
-      (!this.locked() && moment.fromUtc(this.lastUpdateEnd).add(Searches.timeUntilRecache).isBefore()) ||
-      (this.locked() && moment.fromUtc(this.lastUpdateStart).add(Searches.maxUpdateTime).isBefore());
+      (!this.locked() && moment.fromUtc(this.lastUpdateEnd).add(
+        this.isRecentSearch() ? Searches.timeUntilRecacheRecent : Searches.timeUntilRecache
+      ).isBefore()) ||
+      (this.locked() && moment.fromUtc(this.lastUpdateStart).add(
+        this.isRecentSearch() ? Searches.maxUpdateTimeRecent : Searches.maxUpdateTime
+      ).isBefore());
   },
 
   locked() {
     return this.lastUpdateStart && (!this.lastUpdateEnd || this.lastUpdateStart > this.lastUpdateEnd);
+  },
+
+  isRecentSearch() {
+    return this.sortBy === 'Latest Update' && this.sortDirection === -1;
   },
 
   completeQuery(length, string) {
@@ -248,21 +261,31 @@ Searches.helpers({
       }
     });
 
-    Streamers.doSearch(this, () => {
+    // Track when both searches are done
+    let firstDone = false;
+    let doneFunction = () => {
+      if (firstDone) {
+        this.lastUpdateEnd = moment.fromUtc().toDate();
+        Searches.update(this._id, {
+          $set: {
+            lastUpdateEnd: this.lastUpdateEnd
+          }
+        });
+      } else {
+        firstDone = true;
+      }
+    };
 
-      // When done
-      this.lastUpdateEnd = moment.fromUtc().toDate();
-      Searches.update(this._id, {
-        $set: {
-          lastUpdateEnd: this.lastUpdateEnd
-        }
-      });
+    // Search for recent episodes when needed
+    if (this.isRecentSearch()) {
+      Episodes.findRecentEpisodes(doneFunction);
+    } else {
+      firstDone = true;
+    }
 
-    }, (partial, episodes) => {
-
-      // For each search result
+    // Do normal search
+    Streamers.doSearch(this, doneFunction, (partial, episodes) => {
       return Shows.addPartialShow(partial, episodes);
-
     });
   }
 });
