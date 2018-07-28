@@ -5,7 +5,7 @@ aldeed:collection2@3.0.0
 aldeed:schema-index@3.0.0
 allow-deny@1.1.0
 arillo:flow-router-helpers@0.5.2
-autoupdate@1.4.0
+autoupdate@1.4.1
 awatson1978:browser-detection@1.0.4
 babel-compiler@7.1.1
 babel-runtime@1.2.2
@@ -16,7 +16,7 @@ blaze-html-templates@1.1.2
 blaze-tools@1.0.10
 boilerplate-generator@1.5.0
 caching-compiler@1.1.12
-caching-html-compiler@1.1.2
+caching-html-compiler@1.1.3
 callback-hook@1.1.0
 cfs:access-point@0.1.49
 cfs:base-package@0.0.30
@@ -39,7 +39,7 @@ check@1.3.1
 coffeescript@1.0.17
 dburles:collection-helpers@1.1.0
 ddp@1.4.0
-ddp-client@2.3.2
+ddp-client@2.3.3
 ddp-common@1.4.0
 ddp-rate-limiter@1.0.7
 ddp-server@2.2.0
@@ -70,7 +70,7 @@ launch-screen@1.1.1
 livedata@1.0.18
 localstorage@1.2.0
 logging@1.1.20
-meteor@1.9.0
+meteor@1.9.2
 meteor-base@1.4.0
 meteor-platform@1.2.6
 meteortoys:toykit@4.0.2
@@ -80,17 +80,17 @@ minimongo@1.4.4
 mixmax:smart-disconnect@0.0.4
 mobile-experience@1.0.5
 mobile-status-bar@1.0.14
-modern-browsers@0.1.1
-modules@0.12.0
+modern-browsers@0.1.2
+modules@0.12.2
 modules-runtime@0.10.2
 momentjs:moment@2.22.2
-mongo@1.5.0
+mongo@1.5.1
 mongo-dev-server@1.1.0
 mongo-id@1.0.7
 mongo-livedata@1.0.12
 msavin:mongol@7.0.1
 npm-bcrypt@0.9.3
-npm-mongo@3.0.7
+npm-mongo@3.0.11
 observe-sequence@1.0.16
 ordered-dict@1.1.0
 promise@0.11.1
@@ -127,6 +127,6 @@ url@1.2.0
 useraccounts:bootstrap@1.14.2
 useraccounts:core@1.14.2
 useraccounts:flow-routing@1.14.2
-webapp@1.6.1
+webapp@1.6.2
 webapp-hashing@1.0.9
 zimme:active-route@2.3.2
