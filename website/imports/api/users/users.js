@@ -3,7 +3,6 @@ import {Searches} from '../searches/searches'; // REQUIRED TO FIX IMPORT CHAINS
 import {WatchStates} from '../watchstates/watchstates';
 import {Shows} from '../shows/shows';
 import Streamers from '../../streamers/streamers';
-const parseXML = require('xml2js').parseString;
 
 // Schema
 Schemas.User = new SimpleSchema({
@@ -193,73 +192,84 @@ Meteor.users.helpers({
       return;
     }
 
-    let url = 'https://myanimelist.net/malappinfo.php?u=' + encodeURIComponent(this.profile.malUsername) + '&status=all&type=anime';
-    startDownloadWithCallback(url, (html) => {
-      if (html) {
-        parseXML(html, (err, result) => {
-          if (err) {
-            console.error(err);
-          }
+    let baseUrl = 'https://myanimelist.net/animelist/' + encodeURIComponent(this.profile.malUsername) + '/load.json?offset=';
+    let offset = 0;
+    let entries = [];
 
-          else if (result.myanimelist === '') {
+    let temp = () => {
+      startDownloadWithCallback(baseUrl + offset, (json) => {
+        if (json) {
+          json = JSON.parse(json);
+
+          if (!_.isEmpty(json.errors)) {
             // Invalid MAL username
             this.setMalCanReadWrite(false, false);
           }
 
-          else if (typeof result.myanimelist.anime !== 'undefined') {
-            this.setMalCanReadWrite(true, undefined);
-            let malIds = [];
+          else {
+            // Get all entries
+            entries = entries.concat(json);
+            if (entries.length > offset) {
+              offset = entries.length;
+              temp();
+            } else {
 
-            result.myanimelist.anime.reverse().forEach((entry, index) => {
-              // Add the show
-              try {
-                Shows.addPartialShow(Streamers.convertCheerioToShow(entry, result.myanimelist, Streamers.getStreamerById('myanimelist'), 'showApi'));
-              } catch (e) {
-                console.error('Failed to process show api page for user: \'' + this.profile.malUsername + '\' and streamer: \'myanimelist\'.');
-                console.error('Failed to process entry number ' + (result.myanimelist.anime.length - index - 1) + '.');
-                console.error(e);
-              }
+              this.setMalCanReadWrite(true, undefined);
+              let malIds = [];
 
-              // Add the watch state
-              let watchState = {
-                userId: this._id,
-                malId: entry.series_animedb_id[0],
+              entries.forEach((entry, index) => {
+                // Add the show
+                try {
+                  Shows.addPartialShow(Streamers.convertCheerioToShow(entry, json, Streamers.getStreamerById('myanimelist'), 'showApi'));
+                } catch (e) {
+                  console.error('Failed to process show api page for user: \'' + this.profile.malUsername + '\' and streamer: \'myanimelist\'.');
+                  console.error('Failed to process entry number ' + index + '.');
+                  console.error(e);
+                }
 
-                malStatus: entry.my_status[0],
-                malWatchedEpisodes: entry.my_watched_episodes[0],
-                malRewatching: entry.my_rewatching[0] === '1',
-                malScore: entry.my_score[0] === '0' ? undefined : entry.my_score[0],
-              };
+                // Add the watch state
+                let watchState = {
+                  userId: this._id,
+                  malId: entry.anime_id,
 
-              if (watchState.malRewatching) {
-                watchState.malStatus = 'watching'
-              } else if (watchState.malStatus === '6') {
-                watchState.malStatus = WatchStates.validStatuses[4];
-              } else {
-                watchState.malStatus = WatchStates.validStatuses[watchState.malStatus - 1];
-              }
+                  malStatus: entry.status,
+                  malWatchedEpisodes: entry.num_watched_episodes,
+                  malRewatching: entry.is_rewatching === 1,
+                  malScore: entry.score === 0 ? undefined : entry.score,
+                };
 
-              Schemas.WatchState.clean(watchState, {
-                mutate: true
+                if (watchState.malRewatching) {
+                  watchState.malStatus = 'watching'
+                } else if (watchState.malStatus === '6') {
+                  watchState.malStatus = WatchStates.validStatuses[4];
+                } else {
+                  watchState.malStatus = WatchStates.validStatuses[watchState.malStatus - 1];
+                }
+
+                Schemas.WatchState.clean(watchState, {
+                  mutate: true
+                });
+                Schemas.WatchState.validate(watchState);
+
+                malIds.push(watchState.malId);
+                WatchStates.addWatchState(watchState);
               });
-              Schemas.WatchState.validate(watchState);
 
-              malIds.push(watchState.malId);
-              WatchStates.addWatchState(watchState);
-            });
+              // Remove missing watch states
+              WatchStates.remove({
+                userId: this._id,
+                malId: {
+                  $nin: malIds
+                }
+              });
 
-            // Remove missing watch states
-            WatchStates.remove({
-              userId: this._id,
-              malId: {
-                $nin: malIds
-              }
-            });
+            }
           }
 
-        });
-      }
-    });
+        }
+      });
+    };
+    temp();
   }
 });
 

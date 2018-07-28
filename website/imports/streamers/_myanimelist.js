@@ -31,6 +31,9 @@ function determineAiringDateShowPage(partial, index) {
 
 function determineAiringDateSearchPage(string) {
   let airingDateResult = {};
+  if (!string) {
+    return airingDateResult;
+  }
 
   let dateBits = string.split('-');
   if (dateBits.length === 3) {
@@ -281,58 +284,41 @@ export let myanimelist = {
     // Show API page attribute data
     attributes: {
       malId: function(partial, full) {
-        return partial.series_animedb_id[0];
+        return partial.anime_id;
       },
       streamerUrls: function(partial, full) {
         return [{
           type: 'details',
-          url: myanimelist.homepage + '/anime/' + partial.series_animedb_id[0] + '/-'
+          url: cleanUrl(myanimelist.homepage + partial.anime_url)
         }, {
           type: 'pictures',
-          url: myanimelist.homepage + '/anime/' + partial.series_animedb_id[0] + '/-/pics'
+          url: cleanUrl(myanimelist.homepage + partial.anime_url) + '/pics'
         }];
       },
       name: function(partial, full) {
-        return partial.series_title[0];
-      },
-      altNames: function(partial, full) {
-        return partial.series_synonyms[0].split('; ');
+        return partial.anime_title;
       },
       type: function(partial, full) {
-        return validTypes[partial.series_type[0] - 1];
+        return partial.anime_media_type_string;
       },
       airedStart: function(partial, full) {
-        let splitDate = partial.series_start[0].split('-');
-        return {
-          year: splitDate[0] === '0000' ? undefined : splitDate[0],
-          month: splitDate[1] === '00' ? undefined : splitDate[1] - 1,
-          date: splitDate[2] === '00' ? undefined : splitDate[2]
-        };
+        return determineAiringDateSearchPage(partial.anime_start_date_string);
       },
       airedEnd: function(partial, full) {
-        let splitDate = partial.series_end[0].split('-');
-        return {
-          year: splitDate[0] === '0000' ? undefined : splitDate[0],
-          month: splitDate[1] === '00' ? undefined : splitDate[1] - 1,
-          date: splitDate[2] === '00' ? undefined : splitDate[2]
-        };
+        return determineAiringDateSearchPage(partial.anime_end_date_string);
       },
       episodeCount: function(partial, full) {
-        return partial.series_episodes[0] === '0' ? undefined : partial.series_episodes[0];
-      },
-      episodeDuration: function(partial, full) {
-        // TODO
+        return partial.anime_num_episodes === 0 ? undefined : partial.anime_num_episodes;
       },
       rating: function(partial, full) {
-        // TODO
+        return partial.anime_mpaa_rating_string;
       },
     },
 
     // Show API page thumbnail data
     thumbnails: {
-      rowSelector: 'series_image',
       getUrl: function (partial, full) {
-        return partial === 'https://myanimelist.cdn-dena.com/images/anime//0.jpg' ? undefined : partial;
+        return partial.anime_image_path === 'https://myanimelist.cdn-dena.com/images/anime//0.jpg' ? undefined : partial.anime_image_path;
       },
     },
   },

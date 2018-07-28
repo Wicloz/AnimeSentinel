@@ -134,7 +134,7 @@ export default class Streamers {
     if (streamer[type].thumbnails) {
       show.thumbnails = [];
 
-      if (cheerioRow.find) {
+      if (streamer[type].thumbnails.rowSelector) {
         cheerioRow.find(streamer[type].thumbnails.rowSelector).each((index, element) => {
           let url = streamer[type].thumbnails.getUrl(cheerioRow.find(element), cheerioPage);
           if (url) {
@@ -144,12 +144,10 @@ export default class Streamers {
       }
 
       else {
-        cheerioRow[streamer[type].thumbnails.rowSelector].forEach((element) => {
-          let url = streamer[type].thumbnails.getUrl(element, cheerioPage);
-          if (url) {
-            show.thumbnails.push(Thumbnails.addThumbnail(url));
-          }
-        });
+        let url = streamer[type].thumbnails.getUrl(cheerioRow, cheerioPage);
+        if (url) {
+          show.thumbnails.push(Thumbnails.addThumbnail(url));
+        }
       }
     }
 
