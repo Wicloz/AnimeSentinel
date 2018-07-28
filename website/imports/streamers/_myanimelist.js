@@ -51,6 +51,14 @@ function determineAiringDateSearchPage(string) {
   return airingDateResult;
 }
 
+function cleanThumbnailUrl(thumbnailUrl) {
+  if (!thumbnailUrl.includes('/images/anime/')) {
+    return undefined;
+  } else {
+    return thumbnailUrl.replace(/^.*\/images\/anime\/(\d+\/\d+\.[A-Za-z]+).*$/, 'https://myanimelist.cdn-dena.com/images/anime/$1');
+  }
+}
+
 const validTypes = ['TV', 'OVA', 'Movie', 'Special', 'ONA'];
 const validGenres = ['Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demons', 'Mystery', 'Drama', 'Ecchi',
   'Fantasy', 'Game', 'Hentai', 'Historical', 'Horror', 'Kids', 'Magic', 'Martial Arts', 'Mecha', 'Music', 'Parody', 'Samurai',
@@ -161,7 +169,7 @@ export let myanimelist = {
     thumbnails: {
       rowSelector: 'div.picSurround img',
       getUrl: function (partial, full) {
-        return partial.attr('data-src').replace(/^.*\/images\/anime\/(\d+\/\d+\.[A-Za-z]+).*$/, 'https://myanimelist.cdn-dena.com/images/anime/$1');
+        return cleanThumbnailUrl(partial.attr('data-src'));
       },
     },
   },
@@ -270,7 +278,7 @@ export let myanimelist = {
     thumbnails: {
       rowSelector: 'div.picSurround a.js-picture-gallery img, img.ac',
       getUrl: function (partial, full) {
-        return partial.attr('src');
+        return cleanThumbnailUrl(partial.attr('src'));
       },
     },
   },
@@ -314,7 +322,7 @@ export let myanimelist = {
     // Show API page thumbnail data
     thumbnails: {
       getUrl: function (partial, full) {
-        return partial.anime_image_path === 'https://myanimelist.cdn-dena.com/images/anime//0.jpg' ? undefined : partial.anime_image_path;
+        return cleanThumbnailUrl(partial.anime_image_path);
       },
     },
   },
@@ -430,11 +438,7 @@ export let myanimelist = {
     thumbnails: {
       rowSelector: 'div.episode',
       getUrl: function (partial, full) {
-        let url = partial.css('background-image').replace('url(\'', '').replace('\')', '');
-        if (!url.includes('icon-banned-youtube-rect')) {
-          return url;
-        }
-        return undefined;
+        return cleanThumbnailUrl(partial.css('background-image').replace('url(\'', '').replace('\')', ''));
       },
     },
   },
