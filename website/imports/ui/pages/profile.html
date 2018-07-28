@@ -1,46 +1,50 @@
 <template name="pages_profile">
   <div class="container">
 
-    <div class="card-panel">
-      <div class="at-form">
-        <div class="at-title">
-          <h3 class="header">Change Profile</h3>
-        </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="at-form">
 
-        {{#if updateProfileFormError}}
-          <div class="at-error card-panel red lighten-2">
-            <span><i class="mdi-alert-warning"></i> {{updateProfileFormError}}</span>
+          <div class="at-title">
+            <h3>Change Profile</h3>
           </div>
-        {{/if}}
 
-        <div class="at-pwd-form">
-          {{#autoForm schema='Schemas.UserClient' id='updateProfileForm' doc=currentUser validation='keyup'}}
-            {{> afQuickField name='username'}}
-            {{#if showMalUsernameError}}
-              <div class="card-panel red lighten-2">
-                Invalid MAL Username
-              </div>
-            {{else if showMalPasswordError}}
-              <div class="card-panel red lighten-2">
-                Invalid MAL Password
-              </div>
-            {{else if showMalSuccess}}
-              <div class="card-panel green lighten-2">
-                MAL Credentials Valid
-              </div>
-            {{/if}}
-            {{> afQuickField name='profile'}}
-            {{> afQuickField name='emails'}}
-            <div class="row">
-              <button type="submit" class="at-btn submit waves-effect waves-light btn">Update your profile</button>
+          {{#if updateProfileFormError}}
+            <div class="at-error alert alert-danger">
+              <p>{{updateProfileFormError}}</p>
             </div>
-          {{/autoForm}}
+          {{/if}}
+
+          <div class="at-pwd-form">
+            {{#autoForm schema='Schemas.UserClient' id='updateProfileForm' doc=currentUser validation='keyup'}}
+              {{> afQuickField name='username'}}
+              {{> afObjectField name='profile'}}
+              {{#if showMalUsernameError}}
+                <div class="alert alert-danger" role="alert">
+                  Invalid MAL Username
+                </div>
+              {{else if showMalPasswordError}}
+                <div class="alert alert-danger" role="alert">
+                  Invalid MAL Password
+                </div>
+              {{else if showMalSuccess}}
+                <div class="alert alert-success" role="alert">
+                  MAL Credentials Valid
+                </div>
+              {{/if}}
+              {{> afQuickField name='emails'}}
+              <button type="submit" class="btn btn-primary btn-block btn-at-like">Update your profile</button>
+            {{/autoForm}}
+          </div>
+
         </div>
       </div>
     </div>
 
-    <div class="card-panel">
-      {{> atForm state='changePwd'}}
+    <div class="card">
+      <div class="card-body">
+        {{> atForm state='changePwd'}}
+      </div>
     </div>
 
   </div>

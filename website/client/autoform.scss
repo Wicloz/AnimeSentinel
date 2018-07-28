@@ -1,0 +1,72 @@
+@import "vars";
+
+/////////////////////
+// aldeed:autoform //
+/////////////////////
+
+.glyphicon {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+}
+
+.glyphicon-plus::before {
+  content: "\f067";
+}
+
+.glyphicon-minus::before {
+  content: "\f068";
+}
+
+.glyphicon-remove::before {
+  content: "\f00d";
+}
+
+.glyphicon-ok::before {
+  content: "\f00c";
+}
+
+.form-group.has-error {
+  .form-control-feedback, .help-block {
+    color: $danger;
+  }
+}
+
+.form-group.has-success {
+  .form-control-feedback, .help-block {
+    color: $success;
+  }
+}
+
+////////////////////////////
+// useraccounts:bootstrap //
+////////////////////////////
+
+.at-form .at-pwd-form .btn-at-like {
+  font-size: 16px;
+  padding: 10px 12px;
+  margin-top: 30px;
+  line-height: 1.5;
+  border-radius: 0.3rem;
+}
+
+.at-form {
+  margin: 0;
+  padding: 0;
+  overflow: unset;
+}
+
+.btn-default {
+  @include button-variant($primary, $primary);
+}
+
+.at-signin-link, .at-signin-link > p, .at-resend-verification-email-link > p, .at-signup-link, .at-error:last-child {
+  margin-bottom: 0;
+}
