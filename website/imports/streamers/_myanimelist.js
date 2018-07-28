@@ -6,10 +6,6 @@ function getMalIdFromUrl(url) {
   return url.replace(/^.*\/(\d+)\/.*$/, '$1');
 }
 
-function cleanUrl(url) {
-  return url.replace(/\/[^\/]*$/, '/-');
-}
-
 function determineAiringDateShowPage(partial, index) {
   let stringDay = undefined;
   let stringTime = undefined;
@@ -132,10 +128,10 @@ export let myanimelist = {
       streamerUrls: function(partial, full) {
         return [{
           type: 'details',
-          url: cleanUrl(partial.find('td a.hoverinfo_trigger').attr('href'))
+          url: partial.find('td a.hoverinfo_trigger').attr('href')
         }, {
           type: 'pictures',
-          url: cleanUrl(partial.find('td a.hoverinfo_trigger').attr('href')) + '/pics'
+          url: partial.find('td a.hoverinfo_trigger').attr('href') + '/pics'
         }];
       },
       name: function(partial, full) {
@@ -184,16 +180,16 @@ export let myanimelist = {
       streamerUrls: function(partial, full) {
         let urls = [{
           type: 'details',
-          url: cleanUrl(partial.find('div#horiznav_nav ul li:first-of-type a').attr('href'))
+          url: partial.find('div#horiznav_nav ul li:first-of-type a').attr('href')
         }, {
           type: 'pictures',
-          url: cleanUrl(partial.find('div#horiznav_nav ul li:first-of-type a').attr('href')) + '/pics'
+          url: partial.find('div#horiznav_nav ul li:first-of-type a').attr('href') + '/pics'
         }];
 
         if (partial.find('div#horiznav_nav ul li a').text().includes('Episodes')) {
           urls.push({
             type: 'episodes-0',
-            url: cleanUrl(partial.find('div#horiznav_nav ul li:first-of-type a').attr('href')) + '/episode'
+            url: partial.find('div#horiznav_nav ul li:first-of-type a').attr('href') + '/episode'
           });
 
           partial.find('div.pagination a.link').each((index, element) => {
@@ -202,7 +198,7 @@ export let myanimelist = {
             if (offset !== '0') {
               urls.push({
                 type: 'episodes-' + offset,
-                url: cleanUrl(link)
+                url: link
               });
             }
           });
@@ -289,10 +285,10 @@ export let myanimelist = {
       streamerUrls: function(partial, full) {
         return [{
           type: 'details',
-          url: cleanUrl(myanimelist.homepage + partial.anime_url)
+          url: myanimelist.homepage + partial.anime_url
         }, {
           type: 'pictures',
-          url: cleanUrl(myanimelist.homepage + partial.anime_url) + '/pics'
+          url: myanimelist.homepage + partial.anime_url + '/pics'
         }];
       },
       name: function(partial, full) {
@@ -338,10 +334,10 @@ export let myanimelist = {
       streamerUrls: function(partial, full) {
         return [{
           type: 'details',
-          url: cleanUrl(myanimelist.homepage + partial.attr('href'))
+          url: myanimelist.homepage + partial.attr('href')
         }, {
           type: 'pictures',
-          url: cleanUrl(myanimelist.homepage + partial.attr('href')) + '/pics'
+          url: myanimelist.homepage + partial.attr('href') + '/pics'
         }];
       },
       name: function(partial, full) {
@@ -413,10 +409,10 @@ export let myanimelist = {
       streamerUrls: function(partial, full) {
         return [{
           type: 'details',
-          url: cleanUrl(partial.find('div.video-info-title a:last-of-type').attr('href'))
+          url: partial.find('div.video-info-title a:last-of-type').attr('href')
         }, {
           type: 'pictures',
-          url: cleanUrl(partial.find('div.video-info-title a:last-of-type').attr('href')) + '/pics'
+          url: partial.find('div.video-info-title a:last-of-type').attr('href') + '/pics'
         }];
       },
       name: function(partial, full) {
