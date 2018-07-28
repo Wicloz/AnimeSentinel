@@ -200,72 +200,66 @@ Meteor.users.helpers({
       startDownloadWithCallback(baseUrl + offset, (json) => {
         if (json) {
           json = JSON.parse(json);
+          // Get all entries
+          entries = entries.concat(json);
+          if (entries.length > offset) {
+            offset = entries.length;
+            temp();
+          } else {
 
-          if (!_.isEmpty(json.errors)) {
-            // Invalid MAL username
-            this.setMalCanReadWrite(false, false);
-          }
+            this.setMalCanReadWrite(true, undefined);
+            let malIds = [];
 
-          else {
-            // Get all entries
-            entries = entries.concat(json);
-            if (entries.length > offset) {
-              offset = entries.length;
-              temp();
-            } else {
+            entries.forEach((entry, index) => {
+              // Add the show
+              try {
+                Shows.addPartialShow(Streamers.convertCheerioToShow(entry, json, Streamers.getStreamerById('myanimelist'), 'showApi'));
+              } catch (e) {
+                console.error('Failed to process show api page for user: \'' + this.profile.malUsername + '\' and streamer: \'myanimelist\'.');
+                console.error('Failed to process entry number ' + index + '.');
+                console.error(e);
+              }
 
-              this.setMalCanReadWrite(true, undefined);
-              let malIds = [];
-
-              entries.forEach((entry, index) => {
-                // Add the show
-                try {
-                  Shows.addPartialShow(Streamers.convertCheerioToShow(entry, json, Streamers.getStreamerById('myanimelist'), 'showApi'));
-                } catch (e) {
-                  console.error('Failed to process show api page for user: \'' + this.profile.malUsername + '\' and streamer: \'myanimelist\'.');
-                  console.error('Failed to process entry number ' + index + '.');
-                  console.error(e);
-                }
-
-                // Add the watch state
-                let watchState = {
-                  userId: this._id,
-                  malId: entry.anime_id,
-
-                  malStatus: entry.status,
-                  malWatchedEpisodes: entry.num_watched_episodes,
-                  malRewatching: entry.is_rewatching === 1,
-                  malScore: entry.score === 0 ? undefined : entry.score,
-                };
-
-                if (watchState.malRewatching) {
-                  watchState.malStatus = 'watching'
-                } else if (watchState.malStatus === '6') {
-                  watchState.malStatus = WatchStates.validStatuses[4];
-                } else {
-                  watchState.malStatus = WatchStates.validStatuses[watchState.malStatus - 1];
-                }
-
-                Schemas.WatchState.clean(watchState, {
-                  mutate: true
-                });
-                Schemas.WatchState.validate(watchState);
-
-                malIds.push(watchState.malId);
-                WatchStates.addWatchState(watchState);
-              });
-
-              // Remove missing watch states
-              WatchStates.remove({
+              // Add the watch state
+              let watchState = {
                 userId: this._id,
-                malId: {
-                  $nin: malIds
-                }
+                malId: entry.anime_id,
+
+                malStatus: entry.status,
+                malWatchedEpisodes: entry.num_watched_episodes,
+                malRewatching: entry.is_rewatching === 1,
+                malScore: entry.score === 0 ? undefined : entry.score,
+              };
+
+              if (watchState.malRewatching) {
+                watchState.malStatus = 'watching'
+              } else if (watchState.malStatus === '6') {
+                watchState.malStatus = WatchStates.validStatuses[4];
+              } else {
+                watchState.malStatus = WatchStates.validStatuses[watchState.malStatus - 1];
+              }
+
+              Schemas.WatchState.clean(watchState, {
+                mutate: true
               });
+              Schemas.WatchState.validate(watchState);
 
-            }
+              malIds.push(watchState.malId);
+              WatchStates.addWatchState(watchState);
+            });
+
+            // Remove missing watch states
+            WatchStates.remove({
+              userId: this._id,
+              malId: {
+                $nin: malIds
+              }
+            });
+
           }
-
+        } else {
+          // Invalid MAL username
+          this.setMalCanReadWrite(false, false);
         }
       });
     };
