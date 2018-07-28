@@ -62,6 +62,20 @@ function cleanThumbnailUrl(thumbnailUrl) {
   }
 }
 
+function showApiUsesNormalOrder(entries) {
+  for (let i = 0; i < entries.length; i++) {
+    if ((entries[i].anime_start_date_string && entries[i].anime_start_date_string.split('-')[0] > 12) ||
+      (entries[i].anime_end_date_string && entries[i].anime_end_date_string.split('-')[0] > 12)) {
+      return true;
+    }
+    if ((entries[i].anime_start_date_string && entries[i].anime_start_date_string.split('-')[1] > 12) ||
+      (entries[i].anime_end_date_string && entries[i].anime_end_date_string.split('-')[1] > 12)) {
+      return false;
+    }
+  }
+  return false;
+}
+
 const validTypes = ['TV', 'OVA', 'Movie', 'Special', 'ONA'];
 const validGenres = ['Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demons', 'Mystery', 'Drama', 'Ecchi',
   'Fantasy', 'Game', 'Hentai', 'Historical', 'Horror', 'Kids', 'Magic', 'Martial Arts', 'Mecha', 'Music', 'Parody', 'Samurai',
@@ -309,10 +323,10 @@ export let myanimelist = {
         return partial.anime_media_type_string.replace('Unknown', '');
       },
       airedStart: function(partial, full) {
-        return determineAiringDateSearchPage(partial.anime_start_date_string, true);
+        return determineAiringDateSearchPage(partial.anime_start_date_string, showApiUsesNormalOrder(full));
       },
       airedEnd: function(partial, full) {
-        return determineAiringDateSearchPage(partial.anime_end_date_string, true);
+        return determineAiringDateSearchPage(partial.anime_end_date_string, showApiUsesNormalOrder(full));
       },
       episodeCount: function(partial, full) {
         return partial.anime_num_episodes === 0 ? undefined : partial.anime_num_episodes;

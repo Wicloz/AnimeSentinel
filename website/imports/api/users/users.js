@@ -213,7 +213,7 @@ Meteor.users.helpers({
             entries.forEach((entry, index) => {
               // Add the show
               try {
-                let show = Streamers.convertCheerioToShow(entry, json, Streamers.getStreamerById('myanimelist'), 'showApi');
+                let show = Streamers.convertCheerioToShow(entry, entries, Streamers.getStreamerById('myanimelist'), 'showApi');
                 if (show) {
                   Shows.addPartialShow(show);
                 }
