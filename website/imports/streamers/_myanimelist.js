@@ -25,21 +25,24 @@ function determineAiringDateShowPage(partial, index) {
   );
 }
 
-function determineAiringDateSearchPage(string) {
+function determineAiringDateSearchPage(string, normalOrder) {
   let airingDateResult = {};
   if (!string) {
     return airingDateResult;
   }
 
+  let positionDate = normalOrder ? 0 : 1;
+  let positionMonth = normalOrder ? 1 : 0;
+
   let dateBits = string.split('-');
   if (dateBits.length === 3) {
-    if (!dateBits[0].includes('?') && dateBits[0] !== '00') {
-      airingDateResult.month = dateBits[0] - 1;
+    if (!dateBits[positionDate].includes('?') && dateBits[positionDate] !== '00') {
+      airingDateResult.date = dateBits[positionDate];
     }
-    if (!dateBits[1].includes('?') && dateBits[1] !== '00') {
-      airingDateResult.date = dateBits[1];
+    if (!dateBits[positionMonth].includes('?') && dateBits[positionMonth] !== '00') {
+      airingDateResult.month = dateBits[positionMonth] - 1;
     }
-    if (!dateBits[2].includes('?') && dateBits[2] !== '00') {
+    if (!dateBits[2].includes('?')) {
       let prepend = Math.floor(moment.fromUtc().year() / 100);
       if (dateBits[2] > moment.fromUtc().year() % 100 + 10) {
         prepend--;
@@ -152,10 +155,10 @@ export let myanimelist = {
         return partial.find('td:nth-of-type(3)').text().replace('Unknown', '');
       },
       airedStart: function(partial, full) {
-        return determineAiringDateSearchPage(partial.find('td:nth-of-type(6)').text());
+        return determineAiringDateSearchPage(partial.find('td:nth-of-type(6)').text(), false);
       },
       airedEnd: function(partial, full) {
-        return determineAiringDateSearchPage(partial.find('td:nth-of-type(7)').text());
+        return determineAiringDateSearchPage(partial.find('td:nth-of-type(7)').text(), false);
       },
       episodeCount: function(partial, full) {
         return partial.find('td:nth-of-type(4)').text().cleanWhitespace().replace('-', '');
@@ -306,10 +309,10 @@ export let myanimelist = {
         return partial.anime_media_type_string.replace('Unknown', '');
       },
       airedStart: function(partial, full) {
-        return determineAiringDateSearchPage(partial.anime_start_date_string);
+        return determineAiringDateSearchPage(partial.anime_start_date_string, true);
       },
       airedEnd: function(partial, full) {
-        return determineAiringDateSearchPage(partial.anime_end_date_string);
+        return determineAiringDateSearchPage(partial.anime_end_date_string, true);
       },
       episodeCount: function(partial, full) {
         return partial.anime_num_episodes === 0 ? undefined : partial.anime_num_episodes;
