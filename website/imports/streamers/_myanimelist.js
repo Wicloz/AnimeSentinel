@@ -33,13 +33,13 @@ function determineAiringDateSearchPage(string) {
 
   let dateBits = string.split('-');
   if (dateBits.length === 3) {
-    if (!dateBits[0].includes('?')) {
+    if (!dateBits[0].includes('?') && dateBits[0] !== '00') {
       airingDateResult.month = dateBits[0] - 1;
     }
-    if (!dateBits[1].includes('?')) {
+    if (!dateBits[1].includes('?') && dateBits[1] !== '00') {
       airingDateResult.date = dateBits[1];
     }
-    if (!dateBits[2].includes('?')) {
+    if (!dateBits[2].includes('?') && dateBits[2] !== '00') {
       let prepend = Math.floor(moment.fromUtc().year() / 100);
       if (dateBits[2] > moment.fromUtc().year() % 100 + 10) {
         prepend--;
@@ -303,7 +303,7 @@ export let myanimelist = {
         return partial.anime_title;
       },
       type: function(partial, full) {
-        return partial.anime_media_type_string;
+        return partial.anime_media_type_string.replace('Unknown', '');
       },
       airedStart: function(partial, full) {
         return determineAiringDateSearchPage(partial.anime_start_date_string);
