@@ -213,7 +213,10 @@ Meteor.users.helpers({
             entries.forEach((entry, index) => {
               // Add the show
               try {
-                Shows.addPartialShow(Streamers.convertCheerioToShow(entry, json, Streamers.getStreamerById('myanimelist'), 'showApi'));
+                let show = Streamers.convertCheerioToShow(entry, json, Streamers.getStreamerById('myanimelist'), 'showApi');
+                if (show) {
+                  Shows.addPartialShow(show);
+                }
               } catch (e) {
                 console.error('Failed to process show api page for user: \'' + this.profile.malUsername + '\' and streamer: \'myanimelist\'.');
                 console.error('Failed to process entry number ' + index + '.');
@@ -233,7 +236,7 @@ Meteor.users.helpers({
 
               if (watchState.malRewatching) {
                 watchState.malStatus = 'watching'
-              } else if (watchState.malStatus === '6') {
+              } else if (watchState.malStatus === 6) {
                 watchState.malStatus = WatchStates.validStatuses[4];
               } else {
                 watchState.malStatus = WatchStates.validStatuses[watchState.malStatus - 1];
