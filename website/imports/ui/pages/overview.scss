@@ -1,21 +1,25 @@
 @import "../../../client/_vars.scss";
 
+#statusesSelectionForm .checkbox-inline {
+  margin-bottom: 0;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
 .card-overview-controls .row {
   margin-bottom: -$spacer;
 
   .col-auto {
     margin-bottom: $spacer;
     max-width: 100%;
-  }
-
-  .af-checkbox-group, .col-auto {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
 
-    & > * {
+    & > *:not(:last-child) {
       margin-right: $spacer;
-      margin-bottom: 0;
     }
   }
 }
