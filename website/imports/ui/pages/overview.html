@@ -1,97 +1,121 @@
 <template name="pages_overview">
   <div class="container">
 
-    <div class="card-panel">
-      <a class="waves-effect waves-light btn reload-mal-list-btn">Reload MAL List</a>
-      <a class="waves-effect waves-light btn reload-all-shows-btn">Attempt All Show Updates</a>
-      {{#autoForm schema='Schemas.statusesSelection' id='statusesSelectionForm' autosave=true preserveForm=false}}
-        {{> afQuickField name='statuses' value=($getStorageItem 'SelectedStatuses')}}
-      {{/autoForm}}
+    <div class="card card-overview-controls">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-auto">
+            <a target="_blank" rel="noopener" href="https://myanimelist.net/animelist/{{currentUser.profile.malUsername}}">Show On MAL</a>
+            <button type="button" class="btn btn-primary reload-mal-list-btn">Reload MAL List</button>
+            <button type="button" class="btn btn-primary reload-all-shows-btn">Update All Shows</button>
+          </div>
+          <div class="col-auto">
+            {{#autoForm schema='Schemas.statusesSelection' id='statusesSelectionForm' autosave=true preserveForm=false}}
+              {{> afQuickField name='statuses' value=($getStorageItem 'SelectedStatuses')}}
+            {{/autoForm}}
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <ul class="collection">
-        {{#each displayShows}}
+    <div class="card">
+      <ul class="list-group list-group-flush">
+        {{#each show in displayShows}}
 
-          <!--TODO: Make this display better-->
-          <li class="collection-item">
+          <li class="list-group-item">
             <div class="row">
-              <div class="col s12 m2">
-                {{>components_image src=this.thumbnailUrls.[0] caption=name class="responsive-img materialboxed"}}
-              </div>
-              <div class="col s12 m5">
-                <p>
-                  <a href="{{pathFor 'show' showId=_id}}">{{name}}</a>
-                </p>
-                <p>
-                  Start: {{displayAiringDate airedStart}}
-                  <br>
-                  End: {{displayAiringDate airedEnd}}
-                  <br>
-                  Season: {{displaySeason season}}
-                  <br>
-                  {{$dot this.availableEpisodes ($getStorageItem 'SelectedTranslationType')}} out of {{episodeCount}} episodes available
-                  <br>
-                  Airs every {{displayInterval (relevantBroadcastInterval ($getStorageItem 'SelectedTranslationType'))}}
-                </p>
-              </div>
-              <div class="col s12 m5">
+              <div class="col-md-2 col-6 mb mb-md-0">
 
-                <ul class="collection">
-                  {{#each episodesToWatch this}}
-                    <a href="{{pathFor 'episode' showId=showId translationType=translationType episodeNumStart=episodeNumStart episodeNumEnd=episodeNumEnd notes=notesEncoded}}" class="collection-item">
-                      Episode {{fancyKey}}
-                    </a>
-                  {{/each}}
-                  {{#if $eq (airingState ($getStorageItem 'SelectedTranslationType')) 'Completed'}}
-                    <li class="collection-item">Finished Airing</li>
-                  {{else}}
-                    <li class="collection-item">
-                      Next Episode: {{displayUploadDate (nextEpisodeDate ($getStorageItem 'SelectedTranslationType'))}}
-                      <br>
-                      <span class="hidden">Next Episode:</span> {{displayInterval (nextEpisodeInterval ($getStorageItem 'SelectedTranslationType')) true}}
-                    </li>
-                  {{/if}}
-                </ul>
+                {{>components_image src=show.thumbnailUrls.[0] caption=show.name class="img-thumbnail w-100 h-auto"}}
 
-                <div class="flex-row">
-                  <div class="flex-col-center">
-                    <a class="waves-effect waves-light btn reload-show-btn {{#unless expired}}disabled{{/unless}}" data-showid="{{_id}}">Attempt Show Update</a>
-                  </div>
-                  {{#if locked}}
-                    <div class="flex-col-sides reload-show-spinner-col">
-                      <div class="preloader-wrapper small active">
-                        <div class="spinner-layer">
-                          <div class="circle-clipper left">
-                            <div class="circle"></div>
-                          </div>
-                          <div class="gap-patch">
-                            <div class="circle"></div>
-                          </div>
-                          <div class="circle-clipper right">
-                            <div class="circle"></div>
-                          </div>
-                        </div>
-                      </div>
+              </div>
+              <div class="col-md-3 col-6 mb mb-md-0">
+
+                <h5>
+                  <a href="{{pathFor 'show' showId=show._id}}">{{show.name}}</a>
+                </h5>
+                <dl>
+                  <dt>Episodes:</dt>
+                  <dd>
+                    {{#if $exists show.episodeCount}}
+                      {{show.episodeCount}}
+                    {{else}}
+                      ?
+                    {{/if}}
+                    episodes of {{displayDuration show.episodeDuration}}
+                  </dd>
+                  <dt>Airing:</dt>
+                  <dd>
+                    {{$capitalize (displayAiringDate show.airedStart)}}
+                    -<br>
+                    {{$capitalize (displayAiringDate show.airedEnd)}}
+                  </dd>
+                </dl>
+
+              </div>
+              <div class="col-md-5 mb mb-md-0">
+
+                {{#if episodesToWatch show}}
+                  <div class="card card-watch-episodes">
+                    <div class="list-group list-group-flush">
+                      {{#each episode in (episodesToWatch show)}}
+                        <a class="list-group-item list-group-item-action" href="{{pathFor 'episode' showId=episode.showId translationType=episode.translationType episodeNumStart=episode.episodeNumStart episodeNumEnd=episode.episodeNumEnd notes=episode.notesEncoded}}">
+                          Episode {{episode.fancyKey}}
+                        </a>
+                      {{/each}}
                     </div>
-                  {{/if}}
-                </div>
+                  </div>
+                {{/if}}
+                {{#if $eq (show.airingState ($getStorageItem 'SelectedTranslationType')) 'Completed'}}
+                  <div class="alert alert-success" role="alert">Finished Airing</div>
+                {{else}}
+                  <div class="alert
+                    {{#if $not ($exists (show.nextEpisodeInterval ($getStorageItem 'SelectedTranslationType')))}}
+                      alert-warning
+                    {{else if $lt (show.nextEpisodeInterval ($getStorageItem 'SelectedTranslationType')) 0}}
+                      alert-danger
+                    {{else}}
+                      alert-success
+                    {{/if}}
+                  " role="alert">
+                    Next episode
+                    {{#if $lt (show.nextEpisodeInterval ($getStorageItem 'SelectedTranslationType')) 0}}
+                      should have aired
+                    {{else}}
+                      airs
+                    {{/if}}
+                    {{displayInterval (show.nextEpisodeInterval ($getStorageItem 'SelectedTranslationType')) true}},
+                    <br>
+                    on {{displayUploadDate (show.nextEpisodeDate ($getStorageItem 'SelectedTranslationType'))}}.
+                  </div>
+                {{/if}}
+
+              </div>
+              <div class="col-md-2">
+
+                <button type="button" class="btn btn-primary reload-show-btn w-100 {{#if show.locked}}progress-bar-striped progress-bar-animated{{/if}}" data-showid="{{show._id}}" disabled="{{$not show.expired}}">
+                  Updat{{#if show.locked}}ing{{else}}e{{/if}} Show
+                </button>
 
               </div>
             </div>
           </li>
 
-        {{else}}
-          <li class="collection-item center">
-            <p class="flow-text">
-              No Items
-            </p>
+        {{else unless loading}}
+          <li class="list-group-item">
+            <div class="alert alert-info text-center w-100" role="alert">
+              No Entries
+            </div>
           </li>
         {{/each}}
 
-        <li class="collection-item center {{#unless loading}}removed{{/unless}}" id="load-more-items">
-          <div class="progress">
-            <div class="indeterminate"></div>
+        <li class="list-group-item {{#unless loading}}removed{{/unless}}" id="load-more-items">
+          <div class="alert alert-info text-center w-100" role="alert">
+            <div class="progress">
+              <div class="progress-bar progress-bar-striped progress-bar-animated w-100" role="progressbar"></div>
+            </div>
+            Loading More Entries ...
           </div>
-          <span>Loading More Items ...</span>
         </li>
       </ul>
     </div>
