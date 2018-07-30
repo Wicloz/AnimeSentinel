@@ -99,7 +99,12 @@ Template.registerHelper('displayInterval', (milliseconds, suffix) => {
     return suffix ? 'now' : 'zero seconds';
   }
 
-  return moment.duration(milliseconds).humanize(suffix).replaceStart('a ', '');
+  let niceDate = moment.duration(milliseconds).humanize(suffix);
+  if (!suffix) {
+    niceDate = niceDate.replaceStart('a ', '');
+  }
+
+  return niceDate;
 });
 
 Template.registerHelper('displayDuration', (milliseconds) => {
