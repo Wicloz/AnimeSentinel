@@ -72,6 +72,25 @@
     .card-header {
       flex: 1 0 auto;
       border-bottom: $card-border-width solid $card-border-color;
+
+      .badge.watching {
+        background-color: $mal-watching-color;
+        color: $dark;
+      }
+      .badge.completed {
+        background-color: $mal-completed-color;
+      }
+      .badge.held {
+        background-color: $mal-held-color;
+        color: $dark;
+      }
+      .badge.dropped {
+        background-color: $mal-dropped-color;
+      }
+      .badge.planned {
+        background-color: $mal-planned-color;
+        color: $dark;
+      }
     }
 
     .card-img-center {

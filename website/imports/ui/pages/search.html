@@ -69,7 +69,14 @@
 
           <a class="card card-show-item {{show.watchState.malStatus}}" href="{{pathFor 'show' showId=show._id}}">
             <div class="card-header">
-              <span class="card-text">{{show.name}}</span>
+              <span class="card-text">
+                {{#if show.watchState}}
+                  <span class="badge badge-pill {{show.watchState.malStatus}}">
+                    <abbr title="{{show.watchState.fancyStatus}}">{{show.watchState.shortStatus}}</abbr>
+                  </span>
+                {{/if}}
+                {{show.name}}
+              </span>
             </div>
             <div class="card-img-info">
               {{#if show.type}}

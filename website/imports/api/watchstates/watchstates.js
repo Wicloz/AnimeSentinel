@@ -78,6 +78,25 @@ WatchStates.helpers({
     } else {
       return WatchStates.makeFancyStatus(this.malStatus);
     }
+  },
+
+  shortStatus() {
+    if (this.malRewatching) {
+      return 'RW';
+    } else {
+      switch (this.malStatus) {
+        case 'watching':
+          return 'CW';
+        case 'completed':
+          return 'CMPL';
+        case 'held':
+          return 'HOLD';
+        case 'dropped':
+          return 'DROP';
+        case 'planned':
+          return 'PTW';
+      }
+    }
   }
 });
 
