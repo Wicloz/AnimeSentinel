@@ -31,30 +31,6 @@
     font-size: $font-size-sm;
     line-height: $line-height-sm;
 
-    &.watching, &.completed, &.held, &.dropped, &.planned {
-      border-width: 3px;
-
-      .card-header, .card-footer {
-        border-radius: 0;
-      }
-    }
-
-    &.watching {
-      border-color: $mal-watching-color;
-    }
-    &.completed {
-      border-color: $mal-completed-color;
-    }
-    &.held {
-      border-color: $mal-held-color;
-    }
-    &.dropped {
-      border-color: $mal-dropped-color;
-    }
-    &.planned {
-      border-color: $mal-planned-color;
-    }
-
     .card-header, .card-footer {
       color: $white;
       padding: 3px;

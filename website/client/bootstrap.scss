@@ -86,3 +86,33 @@ dl > dd:last-of-type {
 .card-img-center {
   width: 100%;
 }
+
+.card {
+  &.watching, &.completed, &.held, &.dropped, &.planned {
+    border-width: 3px;
+
+    & > * {
+      border-radius: 0;
+    }
+  }
+
+  &.watching {
+    border-color: $mal-watching-color;
+  }
+
+  &.completed {
+    border-color: $mal-completed-color;
+  }
+
+  &.held {
+    border-color: $mal-held-color;
+  }
+
+  &.dropped {
+    border-color: $mal-dropped-color;
+  }
+
+  &.planned {
+    border-color: $mal-planned-color;
+  }
+}
