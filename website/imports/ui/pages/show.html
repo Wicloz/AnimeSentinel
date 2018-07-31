@@ -322,20 +322,19 @@
       {{#each episode in (show.episodeList translationType)}}
         <a class="list-group-item list-group-item-action"
            href="{{pathFor 'episode' showId=episode.showId translationType=episode.translationType episodeNumStart=episode.episodeNumStart episodeNumEnd=episode.episodeNumEnd notes=episode.notesEncoded}}">
-          <div class="row">
-            <div class="col-sm-6">
-              Episode {{episode.fancyKey}}
-              <br>
+          <div class="row justify-content-between">
+            <div class="col-auto">
+              <h6>
+                {{#if episode.watched}}
+                  <span class="badge badge-success">
+                    <i class="fas fa-check"></i> Watched
+                  </span>
+                {{/if}}
+                Episode {{episode.fancyKey}}
+              </h6>
               {{displayUploadDate episode.uploadDate}}
             </div>
-            <div class="col-sm-3">
-              {{#if episode.watched}}
-                <div class="alert alert-success d-inline-block" role="alert">
-                  <i class="fas fa-check"></i> Watched
-                </div>
-              {{/if}}
-            </div>
-            <div class="col-sm-3 d-sm-flex justify-content-end">
+            <div class="col-auto">
               <ul>
                 {{#each streamer in episode.streamers}}
                   <li>
