@@ -82,6 +82,26 @@
           </div>
         </div>
 
+        {{#if show.watchState}}
+          <div class="card">
+            <div class="card-header">
+              MAL Status:
+            </div>
+            <div class="card-body">
+              <dl>
+                <dt>Status:</dt>
+                <dd>{{show.watchState.fancyStatus}}</dd>
+                <dt>Episodes Watched:</dt>
+                <dd>{{show.watchState.malWatchedEpisodes}}</dd>
+                {{#if $exists show.watchState.malScore}}
+                  <dt>Score:</dt>
+                  <dd>{{show.watchState.malScore}}</dd>
+                {{/if}}
+              </dl>
+            </div>
+          </div>
+        {{/if}}
+
         <div class="card">
           <div class="card-header">
             External Links:

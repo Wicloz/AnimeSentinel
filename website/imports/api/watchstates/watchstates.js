@@ -72,8 +72,12 @@ WatchStates.helpers({
     }
   },
 
-  getStatusFancy() {
-    return WatchStates.makeFancyStatus(this.malStatus);
+  fancyStatus() {
+    if (this.malRewatching) {
+      return 'Re-watching';
+    } else {
+      return WatchStates.makeFancyStatus(this.malStatus);
+    }
   }
 });
 
