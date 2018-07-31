@@ -92,7 +92,14 @@
                 <dt>Status:</dt>
                 <dd>{{show.watchState.fancyStatus}}</dd>
                 <dt>Episodes Watched:</dt>
-                <dd>{{show.watchState.malWatchedEpisodes}}</dd>
+                <dd>
+                  {{show.watchState.malWatchedEpisodes}} /
+                  {{#if $exists show.episodeCount}}
+                    {{show.episodeCount}}
+                  {{else}}
+                    ?
+                  {{/if}}
+                </dd>
                 {{#if $exists show.watchState.malScore}}
                   <dt>Score:</dt>
                   <dd>{{show.watchState.malScore}}</dd>
