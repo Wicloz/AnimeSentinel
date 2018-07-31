@@ -67,7 +67,7 @@
       <div class="card-body">
         {{#each show in shows}}
 
-          <a class="card card-show-item" href="{{pathFor 'show' showId=show._id}}">
+          <a class="card card-show-item {{show.watchState.malStatus}}" href="{{pathFor 'show' showId=show._id}}">
             <div class="card-header">
               <span class="card-text">{{show.name}}</span>
             </div>
