@@ -8,7 +8,7 @@
 
     <div class="card">
       <div class="card-body">
-        {{#autoForm schema='Schemas.Search' id='animeSearchFormQuery' autosave=true autosaveOnKeyup=true preserveForm=false}}
+        {{#autoForm schema='Schemas.Search' id='animeSearchFormQuery' autosave=true autosaveOnKeyup=true preserveForm=false trimStrings=false}}
           {{> afQuickField name='query' value=searchOptions.query}}
         {{/autoForm}}
       </div>

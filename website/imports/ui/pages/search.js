@@ -206,6 +206,17 @@ Template.pages_search.events({
 
 AutoForm.hooks({
   animeSearchFormQuery: {
+    formToDoc: function(doc) {
+      // Clean up query
+      if (typeof doc.query !== 'undefined') {
+        doc.query = doc.query.trimStart();
+        if (doc.query === '') {
+          doc.query = null;
+        }
+      }
+      return doc;
+    },
+
     onSubmit(insertDoc) {
       FlowRouter.withReplaceState(() => {
         FlowRouter.setQueryParams({
@@ -218,18 +229,21 @@ AutoForm.hooks({
   },
 
   animeSearchFormSorting: {
-    onSubmit(insertDoc) {
+    formToDoc: function(doc) {
       // Remove default parameters
-      Object.keys(insertDoc).forEach((key) => {
-        if (Schemas.Search._schema[key].defaultValue === insertDoc[key]) {
-          insertDoc[key] = null;
+      Object.keys(doc).forEach((key) => {
+        if (Schemas.Search._schema[key].defaultValue === doc[key]) {
+          doc[key] = null;
         }
       });
       // Remove sort direction for the default sort order
-      if (!insertDoc.sortBy) {
-        insertDoc.sortDirection = null;
+      if (!doc.sortBy) {
+        doc.sortDirection = null;
       }
+      return doc;
+    },
 
+    onSubmit(insertDoc) {
       FlowRouter.withReplaceState(() => {
         FlowRouter.setQueryParams({
           sortBy: insertDoc.sortBy,
@@ -242,20 +256,23 @@ AutoForm.hooks({
   },
 
   animeSearchFormOptions: {
-    onSubmit(insertDoc) {
+    formToDoc: function(doc) {
       // Remove missing parameters
       Object.keys(FlowRouter.current().queryParams).forEach((key) => {
-        if (!['query', 'sortBy', 'sortDirection'].includes(key) && !insertDoc.hasOwnProperty(key)) {
-          insertDoc[key] = null;
+        if (!['query', 'sortBy', 'sortDirection'].includes(key) && !doc.hasOwnProperty(key)) {
+          doc[key] = null;
         }
       });
       // Remove default parameters
-      Object.keys(insertDoc).forEach((key) => {
-        if (Schemas.Search._schema[key].defaultValue === insertDoc[key]) {
-          insertDoc[key] = null;
+      Object.keys(doc).forEach((key) => {
+        if (Schemas.Search._schema[key].defaultValue === doc[key]) {
+          doc[key] = null;
         }
       });
+      return doc;
+    },
 
+    onSubmit(insertDoc) {
       FlowRouter.withReplaceState(() => {
         FlowRouter.setQueryParams(insertDoc);
       });
