@@ -37,3 +37,31 @@
   white-space: normal;
   width: 100%;
 }
+
+.card-overview-entries {
+  border-left: none;
+
+  & > .list-group > .list-group-item {
+    border-left: 6px $dark solid;
+
+    &.watching {
+      border-left-color: $mal-watching-color;
+    }
+    &.completed {
+      border-left-color: $mal-completed-color;
+    }
+    &.held {
+      border-left-color: $mal-held-color;
+    }
+    &.dropped {
+      border-left-color: $mal-dropped-color;
+    }
+    &.planned {
+      border-left-color: $mal-planned-color;
+    }
+
+    &:nth-last-child(2) {
+      @include border-bottom-radius($list-group-border-radius);
+    }
+  }
+}

@@ -18,11 +18,11 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card card-overview-entries">
       <ul class="list-group list-group-flush">
         {{#each show in displayShows}}
 
-          <li class="list-group-item">
+          <li class="list-group-item {{show.watchState.malStatus}}">
             <div class="row">
               <div class="col-md-2 col-6 mb mb-md-0">
 
@@ -31,9 +31,9 @@
               </div>
               <div class="col-md-3 col-6 mb mb-md-0">
 
-                <h5>
+                <h6>
                   <a href="{{pathFor 'show' showId=show._id}}">{{show.name}}</a>
-                </h5>
+                </h6>
                 <dl>
                   <dt>Episodes:</dt>
                   <dd>
