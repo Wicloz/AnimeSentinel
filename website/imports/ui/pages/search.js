@@ -82,14 +82,23 @@ Template.pages_search.onCreated(function() {
     this.subscribe('shows.search', this.getSearchOptions(), this.state.get('searchLimit'), getStorageItem('SelectedTranslationType'));
   });
 
-  // Subscribe to thumbnails and episodes for all shows
+  // Subscribe to thumbnails, episodes, and watchStates for all shows
   this.autorun(() => {
     let thumbnailHashes = [];
+    let malIds = [];
+
     Shows.querySearch(this.getSearchOptions(), this.state.get('searchLimit'), getStorageItem('SelectedTranslationType')).forEach((show) => {
       thumbnailHashes = thumbnailHashes.concat(show.thumbnails);
+      if (typeof show.malId !== 'undefined') {
+        malIds.push(show.malId);
+      }
       this.subscribe('episodes.forTranslationType', show._id, getStorageItem('SelectedTranslationType'), 1);
     });
+
     this.subscribe('thumbnails.withHashes', thumbnailHashes);
+    if (Meteor.userId()) {
+      this.subscribe('watchStates.currentUserUniqueMultiple', malIds);
+    }
   });
 
   // Set 'LoadingBackground' parameter
@@ -142,6 +151,10 @@ Template.pages_search.helpers({
       episodeNumEnd: latestEpisode.episodeNumEnd,
       notes: latestEpisode.notesEncoded()
     });
+  },
+
+  latestEpisodeWatched(show) {
+    return show.latestEpisode(getStorageItem('SelectedTranslationType')).watched();
   },
 
   sortDirectionDisabled() {

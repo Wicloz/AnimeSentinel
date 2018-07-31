@@ -129,6 +129,30 @@ WatchStates.queryUnique = function(userId, malId) {
   });
 };
 
+WatchStates.queryUniqueMultiple = function(userId, malIds) {
+  // Validate
+  Schemas.WatchState.validate({
+    userId: userId
+  }, {
+    keys: ['userId']
+  });
+  malIds.forEach((malId) => {
+    Schemas.WatchState.validate({
+      malId: malId
+    }, {
+      keys: ['malId']
+    });
+  });
+
+  // Return results cursor
+  return WatchStates.find({
+    userId: userId,
+    malId: {
+      $in: malIds
+    }
+  });
+};
+
 WatchStates.queryWithStatuses = function(userId, statuses) {
   // Validate
   Schemas.WatchState.validate({

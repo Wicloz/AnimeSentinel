@@ -4,6 +4,10 @@ Meteor.publish('watchStates.currentUserUnique', function(malId) {
   return WatchStates.queryUnique(this.userId, malId);
 });
 
+Meteor.publish('watchStates.currentUserUniqueMultiple', function(malIds) {
+  return WatchStates.queryUniqueMultiple(this.userId, malIds);
+});
+
 Meteor.publish('watchStates.currentUserWithStatuses', function(statuses) {
   return WatchStates.queryWithStatuses(this.userId, statuses);
 });

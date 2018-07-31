@@ -107,7 +107,14 @@
             </div>
             {{#if hasLatestEpisode show}}
               <a class="card-footer" href="{{latestEpisodeLink show}}">
-                <p class="card-text">Episode {{latestEpisodeNumbers show}}</p>
+                <p class="card-text">
+                  {{#if latestEpisodeWatched show}}
+                    <span class="badge badge-pill badge-success">
+                      <i class="fas fa-check"></i>
+                    </span>
+                  {{/if}}
+                  Episode {{latestEpisodeNumbers show}}
+                </p>
                 {{#if latestEpisodeNotes show}}
                   <p class="card-text">{{latestEpisodeNotes show}}</p>
                 {{/if}}
