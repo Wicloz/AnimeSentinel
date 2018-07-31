@@ -93,7 +93,7 @@
               </div>
               <div class="col-md-2">
 
-                <button type="button" class="btn btn-primary reload-show-btn w-100 {{#if show.locked}}progress-bar-striped progress-bar-animated{{/if}}" data-showid="{{show._id}}" disabled="{{$not show.expired}}">
+                <button type="button" class="btn btn-primary reload-show-btn {{#if show.locked}}progress-bar-striped progress-bar-animated{{/if}}" data-showid="{{show._id}}" disabled="{{$not show.expired}}">
                   Updat{{#if show.locked}}ing{{else}}e{{/if}} Show
                 </button>
 
@@ -103,14 +103,14 @@
 
         {{else unless loading}}
           <li class="list-group-item">
-            <div class="alert alert-info text-center w-100" role="alert">
+            <div class="alert alert-info text-center" role="alert">
               No Entries
             </div>
           </li>
         {{/each}}
 
         <li class="list-group-item {{#unless loading}}removed{{/unless}}" id="load-more-items">
-          <div class="alert alert-info text-center w-100" role="alert">
+          <div class="alert alert-info text-center" role="alert">
             <div class="progress">
               <div class="progress-bar progress-bar-striped progress-bar-animated w-100" role="progressbar"></div>
             </div>
