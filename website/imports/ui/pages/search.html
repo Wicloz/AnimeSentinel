@@ -69,7 +69,7 @@
 
           <a class="card card-show-item" href="{{pathFor 'show' showId=show._id}}">
             <div class="card-header">
-              <p class="card-text">{{show.name}}</p>
+              <span class="card-text">{{show.name}}</span>
             </div>
             <div class="card-img-info">
               {{#if show.type}}
@@ -107,23 +107,23 @@
             </div>
             {{#if hasLatestEpisode show}}
               <a class="card-footer" href="{{latestEpisodeLink show}}">
-                <p class="card-text">
+                <span class="card-text">
                   {{#if latestEpisodeWatched show}}
                     <span class="badge badge-pill badge-success">
                       <abbr title="Watched"><i class="fas fa-check"></i></abbr>
                     </span>
                   {{/if}}
                   Episode {{latestEpisodeNumbers show}}
-                </p>
+                </span>
                 {{#if latestEpisodeNotes show}}
-                  <p class="card-text">{{latestEpisodeNotes show}}</p>
+                  <span class="card-text">{{latestEpisodeNotes show}}</span>
                 {{/if}}
               </a>
             {{else}}
               <div class="card-footer">
-                <p class="card-text">
+                <span class="card-text">
                   {{$capitalize (displayUploadDate (show.nextEpisodeDate ($getStorageItem 'SelectedTranslationType')) true)}}
-                </p>
+                </span>
               </div>
             {{/if}}
           </a>
