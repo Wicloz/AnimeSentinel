@@ -11,7 +11,6 @@
           {{> layouts_main_nav_link_internal routeName='welcome' routeTitle='Home' activeWhen='welcome'}}
           {{> layouts_main_nav_link_internal routeName='search' routeTitle='Anime' activeWhen='search|show|episode'}}
           {{> layouts_main_nav_link_external href='https://github.com/Wicloz/AnimeSentinel/tree/meteor' title='GitHub'}}
-          {{> layouts_main_nav_link_external href='https://animeold.wilcodeboer.me' title='Old Version'}}
         </ul>
 
         <ul class="navbar-nav">
@@ -69,8 +68,13 @@
               <i class="fas fa-link"></i>
               Connect
             </h5>
-            <iframe src="https://ghbtns.com/github-btn.html?user=Wicloz&repo=AnimeSentinel&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
-            <iframe src="https://ghbtns.com/github-btn.html?user=Wicloz&repo=AnimeSentinel&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+            <div>
+              <iframe title="Star on GitHub" src="https://ghbtns.com/github-btn.html?user=Wicloz&repo=AnimeSentinel&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+              <iframe title="Watch on GitHub" src="https://ghbtns.com/github-btn.html?user=Wicloz&repo=AnimeSentinel&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+            </div>
+            <a role="button" class="btn btn-primary" href="mailto:animesentinel@wilcodeboer.me">
+              <i class="fas fa-envelope"></i> Mail Us
+            </a>
           </div>
 
           <div class="col-sm-2">
