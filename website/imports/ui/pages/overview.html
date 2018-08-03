@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <div class="card card-overview-entries">
+    <div class="card card-overview-entries {{#unless loading}}overview-entries-idle{{/unless}}">
       <ul class="list-group list-group-flush">
         {{#each show in displayShows}}
 

@@ -59,9 +59,9 @@
     &.planned {
       border-left-color: $mal-planned-color;
     }
+  }
 
-    &:nth-last-child(2) {
-      @include border-bottom-radius($list-group-border-radius);
-    }
+  &.overview-entries-idle > .list-group > .list-group-item:nth-last-child(2) {
+    @include border-bottom-radius($list-group-border-radius);
   }
 }
