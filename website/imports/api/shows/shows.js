@@ -592,7 +592,18 @@ Shows.helpers({
   nextEpisodeDate(translationType) {
     // Return start date if the show has not started
     if (this.airingState(translationType) === 'Not Yet Aired') {
-      return translationType === 'dub' ? undefined : this.airedStart;
+      switch (translationType) {
+        case 'dub':
+          return undefined;
+        case 'raw':
+          return this.airedStart;
+        case 'sub':
+          let startDateMoment = moment.utc(this.airedStart).add(1, 'hour');
+          return Object.keys(this.airedStart).reduce((startDateObject, key) => {
+            startDateObject[key] = startDateMoment.get(key);
+            return startDateObject;
+          }, {});
+      }
     }
 
     // Return next date if the show is airing
