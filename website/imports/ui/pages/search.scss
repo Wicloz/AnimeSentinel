@@ -20,6 +20,7 @@
     width: calc(100% - #{$spacer});
     @include media-breakpoint-up(sm) {
       width: min-content;
+      max-width: calc(100% - #{$spacer});
       @supports not (width: min-content) {
         width: auto;
         max-width: $thumbnail-height;
