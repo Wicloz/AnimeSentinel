@@ -8,7 +8,7 @@
     "@babel/runtime": "^7.0.0-beta.51",
     "@fortawesome/fontawesome-free": "^5.1.0",
     "autoprefixer": "^8.6.4",
-    "bcrypt": "^2.0.0",
+    "bcrypt": "^3.0.0",
     "bootstrap": "^4.1.1",
     "cheerio": "^1.0.0-rc.2",
     "cloudscraper": "^1.5.0",
