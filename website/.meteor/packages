@@ -35,6 +35,7 @@ dburles:collection-helpers
 
 cfs:standard-packages
 cfs:gridfs
+cfs:graphicsmagick
 
 accounts-password
 useraccounts:bootstrap

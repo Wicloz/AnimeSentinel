@@ -13,7 +13,6 @@
     "cheerio": "^1.0.0-rc.2",
     "cloudscraper": "^1.5.0",
     "crypto-js": "^3.1.9-1",
-    "gm": "^1.23.1",
     "jquery": "^3.3.1",
     "meteor-node-stubs": "^0.4.1",
     "moment-timezone": "^0.5.14",
@@ -23,11 +22,8 @@
     "request": "^2.83.0",
     "segfault-handler": "^1.0.0",
     "simpl-schema": "^1.4.2",
-    "spawn-sync": "^1.0.15",
     "string-score": "^1.0.1",
-    "supports-webp": "^1.0.5",
-    "thread-sleep": "^2.0.0",
-    "try-thread-sleep": "^1.0.2"
+    "supports-webp": "^1.0.5"
   },
   "postcss": {
     "plugins": {

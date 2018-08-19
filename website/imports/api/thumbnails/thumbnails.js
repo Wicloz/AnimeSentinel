@@ -1,5 +1,3 @@
-import gm from 'gm';
-
 // Stores
 let thumbnailStoreJpeg = new FS.Store.GridFS('thumbnailsJPEG', {
   beforeWrite(fileObj) {
