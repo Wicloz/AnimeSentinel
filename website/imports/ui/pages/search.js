@@ -209,7 +209,7 @@ AutoForm.hooks({
     formToDoc: function(doc) {
       // Clean up query
       if (typeof doc.query !== 'undefined') {
-        doc.query = doc.query.trimStart();
+        doc.query = doc.query.cleanWhitespace(true);
         if (doc.query === '') {
           doc.query = null;
         }

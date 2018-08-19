@@ -2,8 +2,9 @@ RegExp.escape = function(string) {
   return string.replace(/[-\/\\^$*+?.()|[\]{}!=:,]/g, '\\$&');
 };
 
-String.prototype.cleanWhitespace = function() {
-  return this.replace(/\s+/g, ' ').trim();
+String.prototype.cleanWhitespace = function(leaveEnd=false) {
+  let trimmed = leaveEnd ? this.trimStart() : this.trim();
+  return trimmed.replace(/\s+/g, ' ');
 };
 
 String.prototype.cleanQuery = function() {
