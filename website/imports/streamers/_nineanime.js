@@ -21,20 +21,27 @@ function determineAiringDateShowPage(partial, index) {
 }
 
 function getEpisodeData(episodeString) {
-  let episodeBits = episodeString.split(' - ');
-  let episodeBitsBits = episodeBits[0].split('-');
+  let episodeBits = episodeString.split('-').map((episodeBit) => {
+    return episodeBit.cleanWhitespace();
+  });
 
-  if (episodeBitsBits.some((episodeBit) => {
-    return !isNumeric(episodeBit) && episodeBit !== 'Full';
-  })) {
+  if (!isNumeric(episodeBits[0]) && episodeBits[0] !== 'Full') {
     return false;
   }
 
-  return {
-    start: episodeBitsBits[0],
-    end: episodeBitsBits.peek(),
-    notes: episodeBits[1] ? episodeBits[1].replaceFull('Uncen', 'Uncensored') : undefined
+  let data = {
+    start: episodeBits[0]
   };
+
+  let lastNumber = 0;
+  if (isNumeric(episodeBits[1])) {
+    lastNumber = 1;
+  }
+
+  data.end = episodeBits[lastNumber];
+  data.notes = episodeBits[lastNumber + 1] ? episodeBits[lastNumber + 1].replaceFull('Uncen', 'Uncensored') : undefined;
+
+  return data;
 }
 
 const validTypes = ['TV', 'OVA', 'Movie', 'Special', 'ONA'];
