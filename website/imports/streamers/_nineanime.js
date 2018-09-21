@@ -262,7 +262,7 @@ export let nineanime = {
         return getEpisodeData(partial.text()).notes;
       },
       translationType: function(partial, full) {
-        return getTypeFromName(full.find('div.widget.player div.widget-title h1.title').text());
+        return partial.attr('href').split('.')[0].endsWith('-dub') ? 'dub' : 'sub';
       },
       sources: function(partial, full) {
         let episodeString = partial.text();
@@ -283,18 +283,22 @@ export let nineanime = {
 
           server.find('ul li a').each((index, element) => {
             if (full.find(element).text() === episodeString) {
-              let dateBits = full.find(element).attr('data-title').split(' - ');
+              let uploadDate = undefined;
+              let dateString = full.find(element).attr('data-title');
+              if (dateString) {
+                uploadDate = ScrapingHelpers.buildAiringDateFromStandardStrings(
+                  'EST',
+                  undefined,
+                  dateString.split(' - ')[0],
+                  dateString.split(' - ')[1],
+                  undefined,
+                  undefined
+                );
+              }
               found.push({
                 sourceName: name,
                 sourceUrl: nineanime.homepage + full.find(element).attr('href'),
-                uploadDate: ScrapingHelpers.buildAiringDateFromStandardStrings(
-                  'EST',
-                  undefined,
-                  dateBits[0],
-                  dateBits[1],
-                  undefined,
-                  undefined
-                ),
+                uploadDate: uploadDate,
                 flags: ['OpenLoad', 'Streamango'].includes(name) ? ['requires-plugins'] : []
               });
             }
