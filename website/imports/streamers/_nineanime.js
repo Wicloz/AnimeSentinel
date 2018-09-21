@@ -46,9 +46,14 @@ const validGenres = ['Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demon
 
 const posterAttributes = {
   streamerUrls: function(partial, full) {
+    let type = getTypeFromName(partial.find('a.name').text());
+    let url = partial.find('a.name').attr('href');
     return [{
-      type: getTypeFromName(partial.find('a.name').text()),
-      url: partial.find('a.name').attr('href')
+      type: type,
+      url: url
+    }, {
+      type: 'episodes-' + type,
+      url: 'https://www1.9anime.to/ajax/film/servers/' + url.split('.').peek()
     }];
   },
   name: function(partial, full) {
@@ -81,7 +86,7 @@ export let nineanime = {
   name: '9anime',
   homepage: 'https://9anime.is',
   recentPage: 'https://9anime.is/updated',
-  minimalPageTypes: ['sub', 'dub'],
+  minimalPageTypes: ['sub', 'dub', 'episodes-sub', 'episodes-dub'],
 
   // Search page data
   search: {
@@ -149,10 +154,18 @@ export let nineanime = {
     // Show page attribute data
     attributes: {
       streamerUrls: function(partial, full) {
-        return [{
-          type: getTypeFromName(partial.find('div.widget.player div.widget-title h1.title').text()),
-          url: partial.find('head link').attr('href')
-        }];
+        let url = partial.find('head link').attr('href');
+        if (url) {
+          let type = getTypeFromName(partial.find('div.widget.player div.widget-title h1.title').text());
+          return [{
+            type: type,
+            url: url
+          }, {
+            type: 'episodes-' + type,
+            url: 'https://www1.9anime.to/ajax/film/servers/' + url.split('.').peek()
+          }];
+        }
+        return [];
       },
       name: function(partial, full) {
         return cleanName(partial.find('div.widget.player div.widget-title h1.title').text());
