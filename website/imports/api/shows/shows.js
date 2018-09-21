@@ -482,7 +482,7 @@ Shows.helpers({
 
   streamersCleaned() {
     return this.streamerUrls.filter((streamerUrl) => {
-      return !(streamerUrl.streamerId === 'myanimelist' && streamerUrl.type.startsWith('episodes-'));
+      return !streamerUrl.type.startsWith('episodes-');
     }).map((streamerUrl) => {
       return {...streamerUrl, ...Streamers.getSimpleStreamerById(streamerUrl.streamerId)};
     });

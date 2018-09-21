@@ -62,6 +62,9 @@ export default class Streamers {
       streamerUrl.streamerId = streamer.id;
       return streamerUrl;
     });
+    if (show.streamerUrls.empty()) {
+      return false; // No show data here
+    }
 
     // Get 'malId'
     if (streamer[type].attributes.malId) {
@@ -227,6 +230,9 @@ export default class Streamers {
   static processSearchPage(html, streamer, logData) {
     let results = [];
 
+    try {
+      html = JSON.parse(html).html;
+    } catch (e) {}
     if (!html) {
       return results;
     }
@@ -280,6 +286,9 @@ export default class Streamers {
       episodes: []
     };
 
+    try {
+      html = JSON.parse(html).html;
+    } catch (e) {}
     if (!html) {
       return results;
     }
@@ -355,6 +364,9 @@ export default class Streamers {
   static processRecentPage(html, streamer, logData) {
     let results = [];
 
+    try {
+      html = JSON.parse(html).html;
+    } catch (e) {}
     if (!html) {
       return results;
     }
