@@ -357,6 +357,9 @@ export let myanimelist = {
         return getMalIdFromUrl(partial.attr('href'));
       },
       streamerUrls: function(partial, full) {
+        if (!partial.text()) {
+          return [];
+        }
         return [{
           type: 'details',
           url: myanimelist.homepage + partial.attr('href')
