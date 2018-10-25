@@ -7,7 +7,6 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0-beta.51",
     "@fortawesome/fontawesome-free": "^5.1.0",
-    "async_hooks": "^1.0.0",
     "autoprefixer": "^8.6.4",
     "bcrypt": "^3.0.0",
     "bootstrap": "^4.1.1",
