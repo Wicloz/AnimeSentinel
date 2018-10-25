@@ -1,5 +1,5 @@
-if (Meteor.isServer && Meteor.isProduction) {
+if (Meteor.isServer) {
   require('elastic-apm-node').start({
     serviceName: 'AnimeSentinel',
-  });
+  })
 }
