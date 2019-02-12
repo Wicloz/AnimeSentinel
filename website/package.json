@@ -5,25 +5,25 @@
     "start": "meteor run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0-beta.51",
-    "@fortawesome/fontawesome-free": "^5.1.0",
+    "@babel/runtime": "^7.3.1",
+    "@fortawesome/fontawesome-free": "^5.7.1",
     "autoprefixer": "^8.6.4",
-    "bcrypt": "^3.0.0",
-    "bootstrap": "^4.1.1",
+    "bcrypt": "^3.0.4",
+    "bootstrap": "^4.3.0",
     "cheerio": "^1.0.0-rc.2",
-    "cloudscraper": "^1.5.0",
+    "cloudscraper": "^1.5.1",
     "crypto-js": "^3.1.9-1",
     "jquery": "^3.3.1",
     "meteor-node-stubs": "^0.4.1",
-    "moment-timezone": "^0.5.14",
-    "popper.js": "^1.14.3",
+    "moment-timezone": "^0.5.23",
+    "popper.js": "^1.14.7",
     "postcss": "^6.0.23",
     "postcss-load-config": "^1.2.0",
-    "request": "^2.83.0",
+    "request": "^2.88.0",
     "segfault-handler": "^1.0.0",
-    "simpl-schema": "^1.4.2",
+    "simpl-schema": "^1.5.5",
     "string-score": "^1.0.1",
-    "supports-webp": "^1.0.5"
+    "supports-webp": "^1.0.7"
   },
   "postcss": {
     "plugins": {
