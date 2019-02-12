@@ -234,51 +234,51 @@ export let kissanime = {
       sources: function(partial, full) {
         let sourceUrl = kissanime.homepage + partial.find('td:first-of-type a').attr('href');
         let dateBits = partial.find('td:last-of-type').text().split('/');
+        let uploadDate = {
+          year: dateBits[2],
+          month: dateBits[0] - 1,
+          date: dateBits[1]
+        };
         return [{
-          sourceName: 'Alpha Server',
-          sourceUrl: sourceUrl + '&s=alpha',
-          uploadDate: {
-            year: dateBits[2],
-            month: dateBits[0] - 1,
-            date: dateBits[1]
-          },
-          flags: ['cloudflare', 'mixed-content']
-        }, {
-          sourceName: 'Beta Server',
-          sourceUrl: sourceUrl + '&s=beta',
-          uploadDate: {
-            year: dateBits[2],
-            month: dateBits[0] - 1,
-            date: dateBits[1]
-          },
-          flags: ['cloudflare', 'mixed-content']
-        }, {
           sourceName: 'RapidVideo',
           sourceUrl: sourceUrl + '&s=rapidvideo',
-          uploadDate: {
-            year: dateBits[2],
-            month: dateBits[0] - 1,
-            date: dateBits[1]
-          },
+          uploadDate: uploadDate,
+          flags: ['cloudflare', 'mixed-content']
+        }, {
+          sourceName: 'Mp4Upload',
+          sourceUrl: sourceUrl + '&s=mp4upload',
+          uploadDate: uploadDate,
           flags: ['cloudflare', 'mixed-content']
         }, {
           sourceName: 'Openload',
           sourceUrl: sourceUrl + '&s=openload',
-          uploadDate: {
-            year: dateBits[2],
-            month: dateBits[0] - 1,
-            date: dateBits[1]
-          },
+          uploadDate: uploadDate,
           flags: ['cloudflare', 'mixed-content', 'requires-plugins']
         }, {
           sourceName: 'Streamango',
           sourceUrl: sourceUrl + '&s=streamango',
-          uploadDate: {
-            year: dateBits[2],
-            month: dateBits[0] - 1,
-            date: dateBits[1]
-          },
+          uploadDate: uploadDate,
           flags: ['cloudflare', 'mixed-content', 'requires-plugins']
+        }, {
+          sourceName: 'P2P Server',
+          sourceUrl: sourceUrl + '&s=p2p',
+          uploadDate: uploadDate,
+          flags: ['cloudflare', 'mixed-content']
+        }, {
+          sourceName: 'Nova Server',
+          sourceUrl: sourceUrl + '&s=nova',
+          uploadDate: uploadDate,
+          flags: ['cloudflare', 'mixed-content']
+        }, {
+          sourceName: 'Beta Server',
+          sourceUrl: sourceUrl + '&s=beta',
+          uploadDate: uploadDate,
+          flags: ['cloudflare', 'mixed-content']
+        }, {
+          sourceName: 'Beta2 Server',
+          sourceUrl: sourceUrl + '&s=beta2',
+          uploadDate: uploadDate,
+          flags: ['cloudflare', 'mixed-content']
         }];
       },
     },
