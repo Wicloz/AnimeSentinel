@@ -91,8 +91,8 @@ export let nineanime = {
   // General data
   id: 'nineanime',
   name: '9anime',
-  homepage: 'https://9anime.is',
-  recentPage: 'https://9anime.is/updated',
+  homepage: 'https://9anime.to',
+  recentPage: 'https://9anime.to/updated',
   minimalPageTypes: ['sub', 'dub', 'episodes-sub', 'episodes-dub'],
 
   // Search page data
