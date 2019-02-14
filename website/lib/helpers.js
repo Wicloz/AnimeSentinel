@@ -124,3 +124,11 @@ Array.prototype.peek = function() {
 Number.prototype.mod = function(n) {
   return ((this % n) + n) % n;
 };
+
+tryGetProperty = function(object, property) {
+  if (_.isObject(object) && object.hasOwnProperty(property)) {
+    return object[property];
+  } else {
+    return undefined;
+  }
+};

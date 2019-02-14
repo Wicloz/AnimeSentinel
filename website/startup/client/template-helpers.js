@@ -20,11 +20,7 @@ Template.registerHelper('$getStorageItem', (key) => {
 });
 
 Template.registerHelper('$dot', (object, key) => {
-  if (_.isObject(object) && object.hasOwnProperty(key)) {
-    return object[key];
-  } else {
-    return undefined;
-  }
+  return tryGetProperty(object, key);
 });
 
 Template.registerHelper('$in', (item, ...list) => {
