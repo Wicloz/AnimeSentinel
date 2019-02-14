@@ -645,7 +645,7 @@ Shows.helpers({
 
   watchedEpisodes() {
     let watchState = this.watchState();
-    return watchState ? watchState.malWatchedEpisodes : 0;
+    return watchState ? watchState.episodesWatched : 0;
   },
 
   afterNewEpisode(translationType) {

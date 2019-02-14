@@ -22,18 +22,18 @@ Schemas.WatchState = new SimpleSchema({
     index: true
   },
 
-  malStatus: {
+  status: {
     type: String,
     allowedValues: WatchStates.validStatuses,
     index: true
   },
-  malWatchedEpisodes: {
-    type: SimpleSchema.Integer
-  },
-  malRewatching: {
+  rewatching: {
     type: Boolean
   },
-  malScore: {
+  episodesWatched: {
+    type: SimpleSchema.Integer
+  },
+  score: {
     type: SimpleSchema.Integer,
     optional: true
   }
@@ -73,18 +73,18 @@ WatchStates.helpers({
   },
 
   fancyStatus() {
-    if (this.malRewatching) {
+    if (this.rewatching) {
       return 'Re-watching';
     } else {
-      return WatchStates.makeFancyStatus(this.malStatus);
+      return WatchStates.makeFancyStatus(this.status);
     }
   },
 
   shortStatus() {
-    if (this.malRewatching) {
+    if (this.rewatching) {
       return 'RW';
     } else {
-      switch (this.malStatus) {
+      switch (this.status) {
         case 'watching':
           return 'CW';
         case 'completed':
@@ -181,16 +181,16 @@ WatchStates.queryWithStatuses = function(userId, statuses) {
   });
   statuses.forEach((status) => {
     Schemas.WatchState.validate({
-      malStatus: status
+      status: status
     }, {
-      keys: ['malStatus']
+      keys: ['status']
     });
   });
 
   // Return results cursor
   return WatchStates.find({
     userId: userId,
-    malStatus: {
+    status: {
       $in: statuses
     }
   });

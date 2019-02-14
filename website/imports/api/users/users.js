@@ -228,18 +228,18 @@ Meteor.users.helpers({
                 userId: this._id,
                 malId: entry.anime_id,
 
-                malStatus: entry.status,
-                malWatchedEpisodes: entry.num_watched_episodes,
-                malRewatching: entry.is_rewatching === 1,
-                malScore: entry.score === 0 ? undefined : entry.score,
+                status: entry.status,
+                episodesWatched: entry.num_watched_episodes,
+                rewatching: entry.is_rewatching === 1,
+                score: entry.score === 0 ? undefined : entry.score,
               };
 
-              if (watchState.malRewatching) {
-                watchState.malStatus = 'watching'
-              } else if (watchState.malStatus === 6) {
-                watchState.malStatus = WatchStates.validStatuses[4];
+              if (watchState.rewatching) {
+                watchState.status = 'watching'
+              } else if (watchState.status === 6) {
+                watchState.status = WatchStates.validStatuses[4];
               } else {
-                watchState.malStatus = WatchStates.validStatuses[watchState.malStatus - 1];
+                watchState.status = WatchStates.validStatuses[watchState.status - 1];
               }
 
               Schemas.WatchState.clean(watchState, {

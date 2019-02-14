@@ -146,7 +146,7 @@ Episodes.helpers({
       let show = Shows.findOne(this.showId);
       if (show && typeof show.malId !== 'undefined') {
         let watchState = WatchStates.queryUnique(Meteor.userId(), show.malId).fetch()[0];
-        return watchState && watchState.malWatchedEpisodes >= this.episodeNumEnd;
+        return watchState && watchState.episodesWatched >= this.episodeNumEnd;
       }
     }
     return false;
