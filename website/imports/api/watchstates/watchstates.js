@@ -6,6 +6,22 @@ export const WatchStates = new Mongo.Collection('watchstates');
 // Constants
 WatchStates.validStatuses  = ['watching', 'completed', 'held', 'dropped', 'planned'];
 
+// Helpers
+WatchStates.makeFancyStatus = function(statusId) {
+  switch (statusId) {
+    case 'watching':
+      return 'Currently Watching';
+    case 'completed':
+      return 'Completed';
+    case 'held':
+      return 'On Hold';
+    case 'dropped':
+      return 'Dropped';
+    case 'planned':
+      return 'Plan to Watch';
+  }
+};
+
 // Schema
 Schemas.WatchState = new SimpleSchema({
   _id: {
@@ -25,17 +41,32 @@ Schemas.WatchState = new SimpleSchema({
   status: {
     type: String,
     allowedValues: WatchStates.validStatuses,
-    index: true
+    index: true,
+    defaultValue: 'watching',
+    autoform: {
+      options: WatchStates.validStatuses.map((statusId) => {
+        return {
+          label: WatchStates.makeFancyStatus(statusId),
+          value: statusId
+        };
+      }),
+      firstOption: false
+    }
   },
   rewatching: {
-    type: Boolean
+    type: Boolean,
+    defaultValue: false
   },
   episodesWatched: {
-    type: SimpleSchema.Integer
+    type: SimpleSchema.Integer,
+    defaultValue: 0,
+    min: 0
   },
   score: {
     type: SimpleSchema.Integer,
-    optional: true
+    optional: true,
+    min: 1,
+    max: 10
   }
 }, { tracker: Tracker });
 
@@ -100,22 +131,7 @@ WatchStates.helpers({
   }
 });
 
-WatchStates.makeFancyStatus = function(statusId) {
-  switch (statusId) {
-    case 'watching':
-      return 'Currently Watching';
-    case 'completed':
-      return 'Completed';
-    case 'held':
-      return 'On Hold';
-    case 'dropped':
-      return 'Dropped';
-    case 'planned':
-      return 'Plan to Watch';
-  }
-};
-
-WatchStates.addWatchState = function(watchState) {
+WatchStates.addWatchState = function(watchState, fromUser=false) {
   let others = WatchStates.queryUnique(watchState.userId, watchState.malId);
 
   // Update existing watch state
@@ -129,7 +145,28 @@ WatchStates.addWatchState = function(watchState) {
   else {
     WatchStates.insert(watchState);
   }
+
+  // Send update to MAL
+  if (fromUser) {
+    console.warn('TODO: propagate update to MAL');
+  }
 };
+
+// Methods
+Meteor.methods({
+  'watchStates.addWatchState'(watchState) {
+    new SimpleSchema({
+      userId: {
+        type: String,
+        allowedValues: [this.userId]
+      }
+    }).validate({
+      userId: watchState.userId
+    });
+    Schemas.WatchState.validate(watchState);
+    WatchStates.addWatchState(watchState, true);
+  }
+});
 
 // Queries
 WatchStates.queryUnique = function(userId, malId) {

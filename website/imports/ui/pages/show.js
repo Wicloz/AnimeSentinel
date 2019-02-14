@@ -189,3 +189,26 @@ Template.pages_show_episodes.helpers({
     return !Template.parentInstance().subscriptionsReady() || Template.parentInstance().isUpdating();
   }
 });
+
+AutoForm.hooks({
+  malStatusForm: {
+    formToDoc: function(doc) {
+      // Remove score if empty
+      if (!doc.hasOwnProperty('score')) {
+        doc.score = null;
+      }
+      // Add required ids
+      doc.malId = Shows.findOne(FlowRouter.getParam('showId')).malId;
+      doc.userId = Meteor.userId();
+      // Return
+      return doc;
+    },
+
+    onSubmit: function(insertDoc) {
+      Meteor.call('watchStates.addWatchState', insertDoc, (error) => {
+        this.done(error);
+      });
+      return false;
+    }
+  }
+});

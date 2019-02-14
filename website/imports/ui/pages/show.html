@@ -82,29 +82,21 @@
           </div>
         </div>
 
-        {{#if show.watchState}}
+        {{#if show.canHaveWatchState}}
           <div class="card {{show.watchState.status}}">
             <div class="card-header">
               MAL Status:
             </div>
             <div class="card-body">
-              <dl>
-                <dt>Status:</dt>
-                <dd>{{show.watchState.fancyStatus}}</dd>
-                <dt>Episodes Watched:</dt>
-                <dd>
-                  {{show.watchState.malWatchedEpisodes}} /
-                  {{#if $exists show.episodeCount}}
-                    {{show.episodeCount}}
-                  {{else}}
-                    ?
-                  {{/if}}
-                </dd>
-                {{#if $exists show.watchState.malScore}}
-                  <dt>Score:</dt>
-                  <dd>{{show.watchState.malScore}}</dd>
-                {{/if}}
-              </dl>
+              {{#autoForm schema='Schemas.WatchState' id='malStatusForm' autosave=show.hasWatchState autosaveOnKeyup=show.hasWatchState}}
+                {{> afQuickField name='status' value=show.watchState.status}}
+                {{> afQuickField name='rewatching' value=show.watchState.rewatching}}
+                {{> afQuickField name='episodesWatched' value=show.watchState.episodesWatched}}
+                {{> afQuickField name='score' value=show.watchState.score}}
+                {{#unless show.hasWatchState}}
+                  <button type="submit" class="btn btn-primary btn-block">Add To List</button>
+                {{/unless}}
+              {{/autoForm}}
             </div>
           </div>
         {{/if}}

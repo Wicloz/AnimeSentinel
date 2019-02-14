@@ -448,10 +448,18 @@ Shows.helpers({
   },
 
   watchState() {
-    if (Meteor.userId() && typeof this.malId !== 'undefined') {
+    if (this.canHaveWatchState()) {
       return WatchStates.queryUnique(Meteor.userId(), this.malId).fetch()[0];
     }
     return undefined;
+  },
+
+  canHaveWatchState() {
+    return Meteor.userId() && typeof this.malId !== 'undefined';
+  },
+
+  hasWatchState() {
+    return WatchStates.queryUnique(Meteor.userId(), this.malId).count() > 0;
   },
 
   latestEpisode(translationType) {
