@@ -54,3 +54,48 @@ $card-alt-names-shadow-size: $line-height-base * $font-size-base + $card-spacer-
     margin: 2px 0;
   }
 }
+
+.mal-widget-body {
+  padding: 10px 0 0;
+  overflow: hidden;
+
+  > .mal-widget-container {
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto 10px;
+
+    > iframe {
+      position: absolute;
+      width: 1000px;
+      height: 1000px;
+      border: none;
+    }
+  }
+
+  > .mal-widget-status {
+    width: 100px;
+    height: 24px;
+    > iframe {
+      top: -287px;
+      left: -259px;
+    }
+  }
+
+  > .mal-widget-episodes {
+    width: 142.4375px;
+    height: 24px;
+    > iframe {
+      top: -287px;
+      left: -513px;
+    }
+  }
+
+  > .mal-widget-score {
+    width: 138px;
+    height: 24px;
+    > iframe {
+      top: -287px;
+      left: -367px;
+    }
+  }
+}

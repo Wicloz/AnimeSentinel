@@ -447,6 +447,12 @@ Shows.helpers({
     return this.lastUpdateStart && (!this.lastUpdateEnd || this.lastUpdateStart > this.lastUpdateEnd);
   },
 
+  malUrl() {
+    return tryGetProperty(this.streamerUrls.find((streamerUrl) => {
+      return streamerUrl.streamerId === 'myanimelist' && streamerUrl.type === 'details';
+    }), 'url');
+  },
+
   watchState() {
     if (this.canHaveWatchState()) {
       return WatchStates.queryUnique(Meteor.userId(), this.malId).fetch()[0];

@@ -101,6 +101,25 @@
           </div>
         {{/if}}
 
+        {{#if $exists show.malUrl}}
+          <div class="card">
+            <div class="card-header">
+              MAL Status:
+            </div>
+            <div class="card-body mal-widget-body">
+              <div class="mal-widget-container mal-widget-status">
+                <iframe src="{{show.malUrl}}" scrolling="no"></iframe>
+              </div>
+              <div class="mal-widget-container mal-widget-episodes">
+                <iframe src="{{show.malUrl}}" scrolling="no"></iframe>
+              </div>
+              <div class="mal-widget-container mal-widget-score">
+                <iframe src="{{show.malUrl}}" scrolling="no"></iframe>
+              </div>
+            </div>
+          </div>
+        {{/if}}
+
         <div class="card">
           <div class="card-header">
             External Links:
