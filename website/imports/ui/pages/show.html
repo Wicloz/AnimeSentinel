@@ -99,9 +99,7 @@
               {{/autoForm}}
             </div>
           </div>
-        {{/if}}
-
-        {{#if $exists show.malUrl}}
+        {{else if $exists show.malUrl}}
           <div class="card">
             <div class="card-header">
               MAL Status:
