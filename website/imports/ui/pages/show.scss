@@ -60,13 +60,13 @@ $card-alt-names-shadow-size: $line-height-base * $font-size-base + $card-spacer-
   overflow: hidden;
 
   > .mal-widget-container {
-    height: 24px;
+    height: 26px;
     overflow: hidden;
     position: relative;
     margin: 0 auto 10px;
 
     > iframe {
-      top: -287px;
+      top: -286px;
       position: absolute;
       width: 1000px;
       height: 1000px;
@@ -75,23 +75,23 @@ $card-alt-names-shadow-size: $line-height-base * $font-size-base + $card-spacer-
   }
 
   > .mal-widget-status {
-    width: 100px;
+    width: 102px;
     > iframe {
-      left: -259px;
+      left: -258px;
     }
   }
 
   > .mal-widget-episodes {
-    width: 142.4375px;
+    width: 144px;
     > iframe {
-      left: -513px;
+      left: -512px;
     }
   }
 
   > .mal-widget-score {
-    width: 138px;
+    width: 140px;
     > iframe {
-      left: -367px;
+      left: -366px;
     }
   }
 }
