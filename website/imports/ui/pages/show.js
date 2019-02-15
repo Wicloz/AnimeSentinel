@@ -146,6 +146,24 @@ Template.pages_show.events({
 
   'show.bs.collapse #relatedShowsCollapse'(event) {
     setStorageItem('RelatedShowsCollapsed', false);
+  },
+
+  'mouseout .mal-widget-status'(event) {
+    $('.mal-widget-episodes > iframe, .mal-widget-score > iframe').attr('src', (index, attr) => {
+      return attr;
+    });
+  },
+
+  'mouseout .mal-widget-episodes'(event) {
+    $('.mal-widget-status > iframe, .mal-widget-score > iframe').attr('src', (index, attr) => {
+      return attr;
+    });
+  },
+
+  'mouseout .mal-widget-score'(event) {
+    $('.mal-widget-status > iframe, .mal-widget-episodes > iframe').attr('src', (index, attr) => {
+      return attr;
+    });
   }
 });
 
