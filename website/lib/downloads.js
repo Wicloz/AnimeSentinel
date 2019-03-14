@@ -57,7 +57,7 @@ function downloadWithCallback(url, callback, tries=1) {
       url: url,
     };
 
-    cloudScraper.request(options, Meteor.bindEnvironment((error, response, body) => {
+    cloudScraper(options, Meteor.bindEnvironment((error, response, body) => {
       if (error) {
         switch (error.errorType) {
           case 0:
