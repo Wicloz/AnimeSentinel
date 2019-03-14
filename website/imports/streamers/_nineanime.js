@@ -25,7 +25,7 @@ function getEpisodeData(episodeString) {
     return episodeBit.cleanWhitespace();
   });
 
-  if (!isNumeric(episodeBits[0]) && episodeBits[0] !== 'Full') {
+  if ((!isNumeric(episodeBits[0]) && episodeBits[0] !== 'Full') || episodeBits.peek() === 'Preview') {
     return false;
   }
 
