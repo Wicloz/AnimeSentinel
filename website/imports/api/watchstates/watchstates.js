@@ -155,11 +155,6 @@ WatchStates.addWatchState = function(watchState) {
   else {
     WatchStates.insert(watchState);
   }
-
-  // Send update to MAL
-  if (fromUser) {
-    console.warn('TODO: propagate update to MAL');
-  }
 };
 
 // Methods
