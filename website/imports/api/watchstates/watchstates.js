@@ -164,7 +164,7 @@ WatchStates.addWatchState = function(watchState) {
 
 // Methods
 Meteor.methods({
-  'watchStates.addWatchState'(watchState) {
+  'watchStates.changeWatchState'(watchState) {
     new SimpleSchema({
       userId: {
         type: String,
