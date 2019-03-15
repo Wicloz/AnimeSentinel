@@ -58,7 +58,7 @@ function cleanThumbnailUrl(thumbnailUrl) {
   if (!thumbnailUrl.includes('/images/anime/')) {
     return undefined;
   } else {
-    return thumbnailUrl.replace(/^.*\/images\/anime\/(\d+\/\d+\.[A-Za-z]+).*$/, 'https://myanimelist.cdn-dena.com/images/anime/$1');
+    return thumbnailUrl.replace(/^.*\/images\/anime\/(\d+\/\d+\.[A-Za-z]+).*$/, 'https://cdn.myanimelist.net/images/anime/$1');
   }
 }
 
