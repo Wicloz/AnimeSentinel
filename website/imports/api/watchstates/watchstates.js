@@ -132,17 +132,26 @@ WatchStates.helpers({
   }
 });
 
-WatchStates.addWatchState = function(watchState, fromUser=false) {
+WatchStates.addWatchState = function(watchState) {
+  // Find existing watch states
   let others = WatchStates.queryUnique(watchState.userId, watchState.malId);
 
-  // Update existing watch state
+  // Update existing watch states
   if (others.count()) {
+    let firstOther = undefined;
+
     others.forEach((other) => {
-      other.mergeWatchState(watchState);
+      if (!firstOther) {
+        firstOther = other;
+      } else {
+        firstOther.mergeWatchState(other);
+      }
     });
+
+    firstOther.mergeWatchState(watchState);
   }
 
-  // Add new watch state
+  // Add new watch state otherwise
   else {
     WatchStates.insert(watchState);
   }
