@@ -303,7 +303,6 @@ Template.pages_episode.helpers({
 
 Template.pages_episode.events({
   'click .btn-source'(event) {
-    console.log(event);
     if (event.target.tagName === 'I') {
       event.target = event.target.parentElement;
     }
