@@ -446,12 +446,6 @@ export let myanimelist = {
       name: function(partial, full) {
         return partial.find('div.video-info-title a:last-of-type').text();
       },
-      episodeDuration: function(partial, full) {
-        // TODO
-      },
-      rating: function(partial, full) {
-        // TODO
-      },
     },
 
     // Recent show thumbnail data
