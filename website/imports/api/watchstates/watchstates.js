@@ -56,7 +56,6 @@ Schemas.WatchState = new SimpleSchema({
   rewatching: {
     type: Boolean,
     defaultValue: false
-    // TODO: Force status to 'watching' while this is on
   },
   episodesWatched: {
     type: SimpleSchema.Integer,
