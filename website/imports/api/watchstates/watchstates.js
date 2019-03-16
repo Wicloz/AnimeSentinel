@@ -160,16 +160,26 @@ WatchStates.addWatchState = function(watchState) {
 // Methods
 Meteor.methods({
   'watchStates.changeWatchState'(watchState) {
+    // Validate received data
+    Schemas.WatchState.validate(watchState);
     new SimpleSchema({
       userId: {
         type: String,
         allowedValues: [this.userId]
+      },
+      malCanWrite: {
+        type: Boolean,
+        allowedValues: [true]
       }
     }).validate({
-      userId: watchState.userId
+      userId: watchState.userId,
+      malCanWrite: Meteor.users.findOne(watchState.userId).malCanWrite
     });
-    Schemas.WatchState.validate(watchState);
-    WatchStates.addWatchState(watchState, true);
+
+    // Send data to MAL and add to DB on success
+    WatchStates.sendWatchStateToMAL(watchState, () => {
+      WatchStates.addWatchState(watchState);
+    });
   }
 });
 
