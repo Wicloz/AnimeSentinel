@@ -241,98 +241,157 @@ Meteor.users.helpers({
     return jar;
   },
 
-  updateWatchStates(userNameChanged=false) {
-    if (!userNameChanged && !this.malCanRead) {
-      // Can't get MAL list
-      return;
-    }
-    if (userNameChanged) {
-      // User name has changed
-      WatchStates.remove({
-        userId: this._id
-      });
-    }
-    if (!this.profile.malUsername) {
-      // No MAL username
-      this.setMalCanReadWrite(false, false);
-      return;
-    }
+  updateMalSession() {
+    return new Promise((resolve, reject) => {
+      // Make empty cookie jar and CSRF token
+      let jar = request.jar();
+      let tokenCSRF = '';
 
+      // Get CSRF token
+      rp('GET', {
+        url: 'https://myanimelist.net/login.php',
+        jar: jar,
+      })
+
+      // Send login request
+      .then((body) => {
+        tokenCSRF = Cheerio.load(body)('meta[name=csrf_token]').attr('content');
+        return rp('POST', {
+          url: 'https://myanimelist.net/login.php',
+          jar: jar,
+          form: {
+            'user_name': this.profile.malUsername,
+            'password': this.profile.malPassword,
+            'csrf_token': tokenCSRF,
+            'submit': 1,
+          },
+        }, [badLoginError, 'Too many failed login attempts.']);
+      })
+
+      // On successful login
+      .then(() => {
+        jar.getCookies('https://myanimelist.net').forEach((cookie) => {
+          if (cookie.key === 'MALSESSIONID') {
+            this.malSessionId1 = cookie.value;
+          } else if (cookie.key === 'MALHLOGSESSID') {
+            this.malSessionId2 = cookie.value;
+          }
+        });
+        this.malTokenCSRF = tokenCSRF;
+        Meteor.users.update(this._id, {
+          $set: {
+            malSessionId1: this.malSessionId1,
+            malSessionId2: this.malSessionId2,
+            malTokenCSRF: this.malTokenCSRF,
+          }
+        });
+        this.setMalCanReadWrite(undefined, true);
+        resolve();
+      })
+
+      // When something goes wrong
+      .catch((error) => {
+        if (error === badLoginError) {
+          this.setMalCanReadWrite(undefined, false);
+        } else if (error) {
+          console.error(error);
+        }
+        reject(error);
+      });
+    });
+  },
+
+  updateWatchStates() {
     let baseUrl = 'https://myanimelist.net/animelist/' + encodeURIComponent(this.profile.malUsername) + '/load.json?offset=';
     let offset = 0;
     let entries = [];
 
-    let temp = () => {
-      startDownloadWithCallback(baseUrl + offset, (json) => {
-        if (json) {
-          json = JSON.parse(json);
-          // Get all entries
-          entries = entries.concat(json);
-          if (entries.length > offset) {
-            offset = entries.length;
-            temp();
-          } else {
+    let doneCallback = () => {
+      this.setMalCanReadWrite(true, undefined);
+      let malIds = [];
 
-            this.setMalCanReadWrite(true, undefined);
-            let malIds = [];
-
-            entries.forEach((entry, index) => {
-              // Add the show
-              try {
-                let show = Streamers.convertCheerioToShow(entry, entries, Streamers.getStreamerById('myanimelist'), 'showApi');
-                if (show) {
-                  Shows.addPartialShow(show);
-                }
-              } catch (e) {
-                console.error('Failed to process show api page for user: \'' + this.profile.malUsername + '\' and streamer: \'myanimelist\'.');
-                console.error('Failed to process entry number ' + index + '.');
-                console.error(e);
-              }
-
-              // Add the watch state
-              let watchState = {
-                userId: this._id,
-                malId: entry.anime_id,
-
-                status: entry.status,
-                episodesWatched: entry.num_watched_episodes,
-                rewatching: entry.is_rewatching === 1,
-                score: entry.score === 0 ? undefined : entry.score,
-              };
-
-              if (watchState.rewatching) {
-                watchState.status = 'watching'
-              } else if (watchState.status === 6) {
-                watchState.status = WatchStates.validStatuses[4];
-              } else {
-                watchState.status = WatchStates.validStatuses[watchState.status - 1];
-              }
-
-              Schemas.WatchState.clean(watchState, {
-                mutate: true
-              });
-              Schemas.WatchState.validate(watchState);
-
-              malIds.push(watchState.malId);
-              WatchStates.addWatchState(watchState);
-            });
-
-            // Remove missing watch states
-            WatchStates.remove({
-              userId: this._id,
-              malId: {
-                $nin: malIds
-              }
-            });
-
+      entries.forEach((entry, index) => {
+        // Add the show
+        try {
+          let show = Streamers.convertCheerioToShow(entry, entries, Streamers.getStreamerById('myanimelist'), 'showApi');
+          if (show) {
+            Shows.addPartialShow(show);
           }
+        } catch (e) {
+          console.error('Failed to process show api page for user: \'' + this.profile.malUsername + '\' and streamer: \'myanimelist\'.');
+          console.error('Failed to process entry number ' + index + '.');
+          console.error(e);
+        }
+
+        // Add the watch state
+        let watchState = {
+          userId: this._id,
+          malId: entry.anime_id,
+
+          status: entry.status,
+          episodesWatched: entry.num_watched_episodes,
+          rewatching: entry.is_rewatching === 1,
+          score: entry.score === 0 ? undefined : entry.score,
+        };
+
+        if (watchState.rewatching) {
+          watchState.status = 'watching'
+        } else if (watchState.status === 6) {
+          watchState.status = WatchStates.validStatuses[4];
         } else {
-          // Invalid MAL username
-          this.setMalCanReadWrite(false, false);
+          watchState.status = WatchStates.validStatuses[watchState.status - 1];
+        }
+
+        Schemas.WatchState.clean(watchState, {
+          mutate: true
+        });
+        Schemas.WatchState.validate(watchState);
+
+        malIds.push(watchState.malId);
+        WatchStates.addWatchState(watchState);
+      });
+
+      // Remove missing watch states
+      WatchStates.remove({
+        userId: this._id,
+        malId: {
+          $nin: malIds
         }
       });
     };
-    temp();
+
+    let repeatCallback = () => {
+      rp('GET', {
+        url: baseUrl + offset,
+        jar: this.getMalCookieJar(),
+      })
+      .then((json) => {
+        entries = entries.concat(JSON.parse(json));
+        if (entries.length > offset) {
+          offset = entries.length;
+          repeatCallback();
+        } else {
+          doneCallback();
+        }
+      })
+      .catch((error) => {
+        if (error === 400) {
+          if (this.malCanWrite) {
+            this.updateMalSession().then(repeatCallback).catch((error) => {
+              if (error === badLoginError) {
+                this.setMalCanReadWrite(false, undefined);
+              }
+            });
+          } else {
+            this.setMalCanReadWrite(false, undefined);
+          }
+        } else if (error) {
+          console.error(error);
+        }
+      });
+    };
+
+    repeatCallback();
   }
 });
 
