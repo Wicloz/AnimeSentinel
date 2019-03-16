@@ -157,6 +157,67 @@ WatchStates.addWatchState = function(watchState) {
   }
 };
 
+WatchStates.sendWatchStateToMAL = function(watchState, successCallback) {
+  // Get related user
+  let user = Meteor.users.findOne(watchState.userId);
+
+  // Determine the url to use (add/edit)
+  let url = '';
+  if (WatchStates.queryUnique(watchState.userId, watchState.malId).count() > 0) {
+    url = 'https://myanimelist.net/ownlist/anime/' + watchState.malId + '/edit';
+  } else {
+    url = 'https://myanimelist.net/ownlist/anime/add?selected_series_id=' + watchState.malId;
+  }
+
+  // Create form data for the watching state
+  let states = {};
+  if (watchState.rewatching) {
+    states = {
+      'add_anime[status]': 2,
+      'add_anime[is_rewatching]': 1,
+    };
+  } else {
+    states = {
+      'add_anime[status]': watchState.status === WatchStates.validStatuses[4] ? 6 : WatchStates.validStatuses.indexOf(watchState.status) + 1,
+    };
+  }
+
+  // Make POST request
+  rp('POST', {
+    url: url,
+    jar: user.getMalCookieJar(),
+    form: Object.assign({
+      'anime_id': watchState.malId,
+      'csrf_token': user.malTokenCSRF,
+      'add_anime[priority]': 0,
+      'add_anime[is_asked_to_discuss]': 0,
+      'add_anime[sns_post_type]': 0,
+      'add_anime[num_watched_episodes]': watchState.episodesWatched,
+      'add_anime[score]': watchState.score,
+    }, states),
+  }, ['Invalid submission.', 'Failed to edit the series.', 'Failed to add the series.'])
+
+  .then(() => {
+    // On successful update
+    if (successCallback) {
+      successCallback();
+    }
+  })
+
+  .catch((error) => {
+    // Handle authentication errors
+    if (error === 400) {
+      user.updateMalSession().then(() => {
+        WatchStates.sendWatchStateToMAL(watchState, successCallback);
+      }).catch(() => {});
+    }
+    // Handle generic errors
+    else if (error) {
+      console.error(error);
+    }
+  });
+};
+
 // Methods
 Meteor.methods({
   'watchStates.changeWatchState'(watchState) {
