@@ -82,7 +82,7 @@
           </div>
         </div>
 
-        {{#if show.canHaveWatchState}}
+        {{#if $and show.canHaveWatchState currentUser.malCanWrite}}
           <div class="card {{show.watchState.status}}">
             <div class="card-header">
               MAL Status:
@@ -99,9 +99,7 @@
               {{/autoForm}}
             </div>
           </div>
-        {{/if}}
-
-        {{#if $exists show.malUrl}}
+        {{else if $exists show.malUrl}}
           <div class="card">
             <div class="card-header">
               MAL Status:

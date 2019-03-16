@@ -223,7 +223,7 @@ AutoForm.hooks({
     },
 
     onSubmit: function(insertDoc) {
-      Meteor.call('watchStates.addWatchState', insertDoc, (error) => {
+      Meteor.call('watchStates.changeWatchState', insertDoc, (error) => {
         this.done(error);
       });
       return false;

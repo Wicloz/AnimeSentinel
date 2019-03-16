@@ -12,7 +12,7 @@ function isStatusCodeSuccess(statusCode) {
 function preProcessUrl(url, tries) {
   url = encodeURI(url).replace(/%25/g, '%');
 
-  if (Meteor.isDevelopment) {
+  if (Meteor.isDevelopment && typeof tries !== 'undefined') {
     console.log('Downloading: url \'' + url + '\', try \'' + tries + '\'');
   }
 
@@ -39,7 +39,6 @@ startDownloadWithCallback = async function(url, callback) {
 function downloadWithCallback(url, callback, tries=1) {
   // TODO: Fix database stuff so the client can download too
   // if (Meteor.isServer || Session.get('AddOnInstalled')) {
-
   if (Meteor.isServer) {
     url = preProcessUrl(url, tries);
     if (!url) {
@@ -105,7 +104,6 @@ startDownloadToStream = async function(url, callback) {
 function downloadToStream(url, callback, tries=1) {
   // TODO: Fix database stuff so the client can download too
   // if (Meteor.isServer || Session.get('AddOnInstalled')) {
-
   if (Meteor.isServer) {
     url = preProcessUrl(url, tries);
     if (!url) {
@@ -148,3 +146,42 @@ function tryNextDownloadToStream(url, callback, tries, err) {
     _.delay(Meteor.bindEnvironment(downloadToStream), 200 + Math.random() * 800, url, callback, tries + 1);
   }
 }
+
+rp = function(method, config, bodyFailures=[]) {
+  return new Promise((resolve, reject) => {
+    config.url = preProcessUrl(config.url);
+    config.method = method;
+    config.followAllRedirects = true;
+
+    // TODO: Fix database stuff so the client can download too
+    // if (config.url && (Meteor.isServer || Session.get('AddOnInstalled'))) {
+    if (config.url && Meteor.isServer) {
+      if (Meteor.isDevelopment) {
+        console.log('Sending \'' + config.method + '\' request to \'' + config.url + '\'');
+      }
+
+      request(config, (error, res, body) => {
+        if (error) {
+          reject(error);
+        } else if (!isStatusCodeSuccess(res.statusCode)) {
+          reject(res.statusCode);
+        } else {
+          let bodyFailed = false;
+          bodyFailures.forEach((bodyFailure) => {
+            if (body.includes(bodyFailure)) {
+              reject(bodyFailure);
+              bodyFailed = true;
+            }
+          });
+          if (!bodyFailed) {
+            resolve(body);
+          }
+        }
+      });
+    }
+
+    else {
+      reject(false);
+    }
+  });
+};

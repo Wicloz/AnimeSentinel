@@ -3,6 +3,11 @@ import {Searches} from '../searches/searches'; // REQUIRED TO FIX IMPORT CHAINS
 import {WatchStates} from '../watchstates/watchstates';
 import {Shows} from '../shows/shows';
 import Streamers from '../../streamers/streamers';
+import request from 'request';
+import Cheerio from 'cheerio';
+
+// Constants
+const badLoginError = 'Your username or password is incorrect.';
 
 // Schema
 Schemas.User = new SimpleSchema({
@@ -67,6 +72,18 @@ Schemas.User = new SimpleSchema({
     }
   },
 
+  malSessionId1: {
+    type: String,
+    optional: true
+  },
+  malSessionId2: {
+    type: String,
+    optional: true
+  },
+  malTokenCSRF: {
+    type: String,
+    optional: true
+  },
   malCanRead: {
     type: Boolean,
     defaultValue: false
@@ -97,6 +114,7 @@ Meteor.users.helpers({
   changeInfo(newInfo) {
     let oldEmailAddresses = this.emails.pluck('address');
     let oldMalUsername = this.profile.malUsername;
+    let oldMalPassword = this.profile.malPassword;
 
     // Mark changed email addresses as unverified
     newInfo.emails = newInfo.emails.map((email) => {
@@ -129,9 +147,28 @@ Meteor.users.helpers({
       }
     });
 
-    // Update watch states if MAL name changed
-    if (oldMalUsername !== newInfo.profile.malUsername) {
-      this.updateWatchStates(true);
+    // Update MAL connection if login info changed
+    if (oldMalUsername !== newInfo.profile.malUsername || oldMalPassword !== newInfo.profile.malPassword) {
+      this.updateMalConnection();
+    }
+  },
+
+  async updateMalConnection() {
+    this.setMalCanReadWrite(false, false);
+    this.setMalCanReadWrite(true, true);
+
+    if (this.profile.malUsername && this.profile.malPassword) {
+      try {
+        await this.updateMalSession();
+      } catch (e) {}
+    } else {
+      this.setMalCanReadWrite(undefined, false);
+    }
+
+    if (this.profile.malUsername) {
+      this.updateWatchStates();
+    } else {
+      this.setMalCanReadWrite(false, undefined);
     }
   },
 
@@ -158,7 +195,7 @@ Meteor.users.helpers({
   },
 
   setMalCanReadWrite(canRead, canWrite) {
-    // Modify this
+    // Update statuses
     if (typeof canRead !== 'undefined') {
       this.malCanRead = canRead;
     }
@@ -166,107 +203,195 @@ Meteor.users.helpers({
       this.malCanWrite = canWrite;
     }
 
-    // Modify database
+    // Send to database
     Meteor.users.update(this._id, {
       $set: {
         malCanRead: this.malCanRead,
         malCanWrite: this.malCanWrite,
       }
     });
-  },
 
-  updateWatchStates(userNameChanged=false) {
-    if (!userNameChanged && !this.malCanRead) {
-      // Can't get MAL list
-      return;
-    }
-    if (userNameChanged) {
-      // User name has changed
+    // Clear watch states if they don't work
+    if (canRead === false) {
       WatchStates.remove({
         userId: this._id
       });
     }
-    if (!this.profile.malUsername) {
-      // No MAL username
-      this.setMalCanReadWrite(false, false);
-      return;
-    }
 
+    // Clear tokens if they aren't needed
+    if (canWrite === false) {
+      this.malSessionId1 = undefined;
+      this.malSessionId2 = undefined;
+      this.malTokenCSRF = undefined;
+      Meteor.users.update(this._id, {
+        $unset: {
+          malSessionId1: true,
+          malSessionId2: true,
+          malTokenCSRF: true,
+        }
+      });
+    }
+  },
+
+  getMalCookieJar() {
+    let jar = request.jar();
+    jar.setCookie(request.cookie('MALSESSIONID=' + this.malSessionId1), 'https://myanimelist.net');
+    jar.setCookie(request.cookie('MALHLOGSESSID=' + this.malSessionId2), 'https://myanimelist.net');
+    jar.setCookie(request.cookie('is_logged_in=1'), 'https://myanimelist.net');
+    return jar;
+  },
+
+  updateMalSession() {
+    return new Promise((resolve, reject) => {
+      // Make empty cookie jar and CSRF token
+      let jar = request.jar();
+      let tokenCSRF = '';
+
+      // Get CSRF token
+      rp('GET', {
+        url: 'https://myanimelist.net/login.php',
+        jar: jar,
+      })
+
+      // Send login request
+      .then((body) => {
+        tokenCSRF = Cheerio.load(body)('meta[name=csrf_token]').attr('content');
+        return rp('POST', {
+          url: 'https://myanimelist.net/login.php',
+          jar: jar,
+          form: {
+            'user_name': this.profile.malUsername,
+            'password': this.profile.malPassword,
+            'csrf_token': tokenCSRF,
+            'submit': 1,
+          },
+        }, [badLoginError, 'Too many failed login attempts.']);
+      })
+
+      // On successful login
+      .then(() => {
+        jar.getCookies('https://myanimelist.net').forEach((cookie) => {
+          if (cookie.key === 'MALSESSIONID') {
+            this.malSessionId1 = cookie.value;
+          } else if (cookie.key === 'MALHLOGSESSID') {
+            this.malSessionId2 = cookie.value;
+          }
+        });
+        this.malTokenCSRF = tokenCSRF;
+        Meteor.users.update(this._id, {
+          $set: {
+            malSessionId1: this.malSessionId1,
+            malSessionId2: this.malSessionId2,
+            malTokenCSRF: this.malTokenCSRF,
+          }
+        });
+        this.setMalCanReadWrite(undefined, true);
+        resolve();
+      })
+
+      // When something goes wrong
+      .catch((error) => {
+        if (error === badLoginError) {
+          this.setMalCanReadWrite(undefined, false);
+        } else if (error) {
+          console.error(error);
+        }
+        reject(error);
+      });
+    });
+  },
+
+  updateWatchStates() {
     let baseUrl = 'https://myanimelist.net/animelist/' + encodeURIComponent(this.profile.malUsername) + '/load.json?offset=';
     let offset = 0;
     let entries = [];
 
-    let temp = () => {
-      startDownloadWithCallback(baseUrl + offset, (json) => {
-        if (json) {
-          json = JSON.parse(json);
-          // Get all entries
-          entries = entries.concat(json);
-          if (entries.length > offset) {
-            offset = entries.length;
-            temp();
-          } else {
+    let doneCallback = () => {
+      this.setMalCanReadWrite(true, undefined);
+      let malIds = [];
 
-            this.setMalCanReadWrite(true, undefined);
-            let malIds = [];
-
-            entries.forEach((entry, index) => {
-              // Add the show
-              try {
-                let show = Streamers.convertCheerioToShow(entry, entries, Streamers.getStreamerById('myanimelist'), 'showApi');
-                if (show) {
-                  Shows.addPartialShow(show);
-                }
-              } catch (e) {
-                console.error('Failed to process show api page for user: \'' + this.profile.malUsername + '\' and streamer: \'myanimelist\'.');
-                console.error('Failed to process entry number ' + index + '.');
-                console.error(e);
-              }
-
-              // Add the watch state
-              let watchState = {
-                userId: this._id,
-                malId: entry.anime_id,
-
-                status: entry.status,
-                episodesWatched: entry.num_watched_episodes,
-                rewatching: entry.is_rewatching === 1,
-                score: entry.score === 0 ? undefined : entry.score,
-              };
-
-              if (watchState.rewatching) {
-                watchState.status = 'watching'
-              } else if (watchState.status === 6) {
-                watchState.status = WatchStates.validStatuses[4];
-              } else {
-                watchState.status = WatchStates.validStatuses[watchState.status - 1];
-              }
-
-              Schemas.WatchState.clean(watchState, {
-                mutate: true
-              });
-              Schemas.WatchState.validate(watchState);
-
-              malIds.push(watchState.malId);
-              WatchStates.addWatchState(watchState);
-            });
-
-            // Remove missing watch states
-            WatchStates.remove({
-              userId: this._id,
-              malId: {
-                $nin: malIds
-              }
-            });
-
+      entries.forEach((entry, index) => {
+        // Add the show
+        try {
+          let show = Streamers.convertCheerioToShow(entry, entries, Streamers.getStreamerById('myanimelist'), 'showApi');
+          if (show) {
+            Shows.addPartialShow(show);
           }
+        } catch (e) {
+          console.error('Failed to process show api page for user: \'' + this.profile.malUsername + '\' and streamer: \'myanimelist\'.');
+          console.error('Failed to process entry number ' + index + '.');
+          console.error(e);
+        }
+
+        // Add the watch state
+        let watchState = {
+          userId: this._id,
+          malId: entry.anime_id,
+
+          status: entry.status,
+          episodesWatched: entry.num_watched_episodes,
+          rewatching: entry.is_rewatching === 1,
+          score: entry.score === 0 ? undefined : entry.score,
+        };
+
+        if (watchState.rewatching) {
+          watchState.status = 'watching'
+        } else if (watchState.status === 6) {
+          watchState.status = WatchStates.validStatuses[4];
         } else {
-          // Invalid MAL username
-          this.setMalCanReadWrite(false, false);
+          watchState.status = WatchStates.validStatuses[watchState.status - 1];
+        }
+
+        Schemas.WatchState.clean(watchState, {
+          mutate: true
+        });
+        Schemas.WatchState.validate(watchState);
+
+        malIds.push(watchState.malId);
+        WatchStates.addWatchState(watchState);
+      });
+
+      // Remove missing watch states
+      WatchStates.remove({
+        userId: this._id,
+        malId: {
+          $nin: malIds
         }
       });
     };
-    temp();
+
+    let repeatCallback = () => {
+      rp('GET', {
+        url: baseUrl + offset,
+        jar: this.getMalCookieJar(),
+      })
+      .then((json) => {
+        entries = entries.concat(JSON.parse(json));
+        if (entries.length > offset) {
+          offset = entries.length;
+          repeatCallback();
+        } else {
+          doneCallback();
+        }
+      })
+      .catch((error) => {
+        if (error === 400) {
+          if (this.malCanWrite) {
+            this.updateMalSession().then(repeatCallback).catch((error) => {
+              if (error === badLoginError) {
+                this.setMalCanReadWrite(false, undefined);
+              }
+            });
+          } else {
+            this.setMalCanReadWrite(false, undefined);
+          }
+        } else if (error) {
+          console.error(error);
+        }
+      });
+    };
+
+    repeatCallback();
   }
 });
 
