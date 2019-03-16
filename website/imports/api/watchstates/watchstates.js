@@ -207,9 +207,11 @@ WatchStates.sendWatchStateToMAL = function(watchState, successCallback) {
   .catch((error) => {
     // Handle authentication errors
     if (error === 400) {
-      user.updateMalSession().then(() => {
-        WatchStates.sendWatchStateToMAL(watchState, successCallback);
-      }).catch(() => {});
+      if (user.malCanWrite) {
+        user.updateMalSession().then(() => {
+          WatchStates.sendWatchStateToMAL(watchState, successCallback);
+        }).catch(() => {});
+      }
     }
     // Handle generic errors
     else if (error) {
