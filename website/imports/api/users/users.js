@@ -192,7 +192,7 @@ Meteor.users.helpers({
   },
 
   setMalCanReadWrite(canRead, canWrite) {
-    // Modify this
+    // Update statuses
     if (typeof canRead !== 'undefined') {
       this.malCanRead = canRead;
     }
@@ -200,13 +200,34 @@ Meteor.users.helpers({
       this.malCanWrite = canWrite;
     }
 
-    // Modify database
+    // Send to database
     Meteor.users.update(this._id, {
       $set: {
         malCanRead: this.malCanRead,
         malCanWrite: this.malCanWrite,
       }
     });
+
+    // Clear watch states if they don't work
+    if (canRead === false) {
+      WatchStates.remove({
+        userId: this._id
+      });
+    }
+
+    // Clear tokens if they aren't needed
+    if (canWrite === false) {
+      this.malSessionId1 = undefined;
+      this.malSessionId2 = undefined;
+      this.malTokenCSRF = undefined;
+      Meteor.users.update(this._id, {
+        $unset: {
+          malSessionId1: true,
+          malSessionId2: true,
+          malTokenCSRF: true,
+        }
+      });
+    }
   },
 
   updateWatchStates(userNameChanged=false) {
