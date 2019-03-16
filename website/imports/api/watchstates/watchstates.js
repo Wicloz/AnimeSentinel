@@ -98,7 +98,7 @@ WatchStates.helpers({
     });
 
     // Remove other from database
-    if (other._id) {
+    if (other._id && other._id !== this._id) {
       WatchStates.remove(other._id);
     }
   },

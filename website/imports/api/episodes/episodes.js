@@ -168,7 +168,7 @@ Episodes.helpers({
     });
 
     // Remove other from database
-    if (other._id) {
+    if (other._id && other._id !== this._id) {
       Episodes.remove(other._id);
     }
   },

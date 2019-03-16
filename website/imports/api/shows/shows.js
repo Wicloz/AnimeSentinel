@@ -827,7 +827,7 @@ Shows.helpers({
       })
     });
 
-    if (other._id) {
+    if (other._id && other._id !== this._id) {
       // Remove other from database
       Shows.remove(other._id);
       // Move episodes
