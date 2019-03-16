@@ -230,6 +230,14 @@ Meteor.users.helpers({
     }
   },
 
+  getMalCookieJar() {
+    let jar = request.jar();
+    jar.setCookie(request.cookie('MALSESSIONID=' + this.malSessionId1), 'https://myanimelist.net');
+    jar.setCookie(request.cookie('MALHLOGSESSID=' + this.malSessionId2), 'https://myanimelist.net');
+    jar.setCookie(request.cookie('is_logged_in=1'), 'https://myanimelist.net');
+    return jar;
+  },
+
   updateWatchStates(userNameChanged=false) {
     if (!userNameChanged && !this.malCanRead) {
       // Can't get MAL list
