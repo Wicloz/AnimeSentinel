@@ -6,6 +6,9 @@ import Streamers from '../../streamers/streamers';
 import request from 'request';
 import Cheerio from 'cheerio';
 
+// Constants
+const badLoginError = 'Your username or password is incorrect.';
+
 // Schema
 Schemas.User = new SimpleSchema({
   _id: {
