@@ -54,7 +54,7 @@ AccountsTemplates.configure({
       }
     });
 
-    Meteor.users.findOne(userId).updateWatchStates(true);
+    Meteor.users.findOne(userId).updateMalConnection();
   }
 });
 

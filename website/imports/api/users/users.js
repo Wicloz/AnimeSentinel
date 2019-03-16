@@ -109,6 +109,7 @@ Meteor.users.helpers({
   changeInfo(newInfo) {
     let oldEmailAddresses = this.emails.pluck('address');
     let oldMalUsername = this.profile.malUsername;
+    let oldMalPassword = this.profile.malPassword;
 
     // Mark changed email addresses as unverified
     newInfo.emails = newInfo.emails.map((email) => {
@@ -141,9 +142,28 @@ Meteor.users.helpers({
       }
     });
 
-    // Update watch states if MAL name changed
-    if (oldMalUsername !== newInfo.profile.malUsername) {
-      this.updateWatchStates(true);
+    // Update MAL connection if login info changed
+    if (oldMalUsername !== newInfo.profile.malUsername || oldMalPassword !== newInfo.profile.malPassword) {
+      this.updateMalConnection();
+    }
+  },
+
+  async updateMalConnection() {
+    this.setMalCanReadWrite(false, false);
+    this.setMalCanReadWrite(true, true);
+
+    if (this.profile.malUsername && this.profile.malPassword) {
+      try {
+        await this.updateMalSession();
+      } catch (e) {}
+    } else {
+      this.setMalCanReadWrite(undefined, false);
+    }
+
+    if (this.profile.malUsername) {
+      this.updateWatchStates();
+    } else {
+      this.setMalCanReadWrite(false, undefined);
     }
   },
 
