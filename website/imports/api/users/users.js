@@ -67,6 +67,18 @@ Schemas.User = new SimpleSchema({
     }
   },
 
+  malSessionId1: {
+    type: String,
+    optional: true
+  },
+  malSessionId2: {
+    type: String,
+    optional: true
+  },
+  malTokenCSRF: {
+    type: String,
+    optional: true
+  },
   malCanRead: {
     type: Boolean,
     defaultValue: false
