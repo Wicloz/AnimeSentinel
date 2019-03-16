@@ -3,6 +3,8 @@ import {Searches} from '../searches/searches'; // REQUIRED TO FIX IMPORT CHAINS
 import {WatchStates} from '../watchstates/watchstates';
 import {Shows} from '../shows/shows';
 import Streamers from '../../streamers/streamers';
+import request from 'request';
+import Cheerio from 'cheerio';
 
 // Schema
 Schemas.User = new SimpleSchema({
