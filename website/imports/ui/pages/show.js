@@ -83,7 +83,7 @@ Template.pages_show.onCreated(function() {
     if (show) {
       Session.set('PageTitle', show.name);
       this.subscribe('thumbnails.withHashes', show.thumbnails);
-      if (typeof show.malId !== 'undefined' && Meteor.userId()) {
+      if (show.canHaveWatchState()) {
         this.subscribe('watchStates.currentUserUnique', show.malId);
       }
     }
