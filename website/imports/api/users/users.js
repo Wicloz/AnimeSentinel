@@ -220,9 +220,9 @@ Meteor.users.helpers({
 
     // Clear tokens if they aren't needed
     if (canWrite === false) {
-      this.malSessionId1 = undefined;
-      this.malSessionId2 = undefined;
-      this.malTokenCSRF = undefined;
+      delete this.malSessionId1;
+      delete this.malSessionId2;
+      delete this.malTokenCSRF;
       Meteor.users.update(this._id, {
         $unset: {
           malSessionId1: true,
