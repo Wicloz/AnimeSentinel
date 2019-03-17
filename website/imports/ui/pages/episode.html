@@ -151,6 +151,17 @@
       </div>
     </div>
 
+    {{#if $and show.canHaveWatchState currentUser.malCanWrite}}
+    {{else if $exists show.malUrl}}
+      <div class="card">
+        <div class="card-body episode-mal-widget-body">
+          <div class="episode-mal-widget-container">
+            <iframe src="{{show.malUrl}}" scrolling="no"></iframe>
+          </div>
+        </div>
+      </div>
+    {{/if}}
+
     <div class="card">
       {{#each result in episodesByStreamer}}
         <div class="card-header">

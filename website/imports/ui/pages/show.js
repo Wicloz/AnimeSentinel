@@ -148,20 +148,20 @@ Template.pages_show.events({
     setStorageItem('RelatedShowsCollapsed', false);
   },
 
-  'mouseout .mal-widget-status'(event) {
-    $('.mal-widget-episodes > iframe, .mal-widget-score > iframe').attr('src', (index, attr) => {
+  'mouseout .show-mal-widget-status'(event) {
+    $('.show-mal-widget-episodes > iframe, .show-mal-widget-score > iframe').attr('src', (index, attr) => {
       return attr;
     });
   },
 
-  'mouseout .mal-widget-episodes'(event) {
-    $('.mal-widget-status > iframe, .mal-widget-score > iframe').attr('src', (index, attr) => {
+  'mouseout .show-mal-widget-episodes'(event) {
+    $('.show-mal-widget-status > iframe, .show-mal-widget-score > iframe').attr('src', (index, attr) => {
       return attr;
     });
   },
 
-  'mouseout .mal-widget-score'(event) {
-    $('.mal-widget-status > iframe, .mal-widget-episodes > iframe').attr('src', (index, attr) => {
+  'mouseout .show-mal-widget-score'(event) {
+    $('.show-mal-widget-status > iframe, .show-mal-widget-episodes > iframe').attr('src', (index, attr) => {
       return attr;
     });
   }

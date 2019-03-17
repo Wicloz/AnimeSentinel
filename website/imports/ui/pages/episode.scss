@@ -51,3 +51,24 @@
     }
   }
 }
+
+.episode-mal-widget-body {
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  > .episode-mal-widget-container {
+    height: 26px;
+    overflow: hidden;
+    position: relative;
+    width: 398px;
+
+    > iframe {
+      top: -286px;
+      position: absolute;
+      width: 1000px;
+      height: 1000px;
+      border: none;
+      left: -258px;
+    }
+  }
+}

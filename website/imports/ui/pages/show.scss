@@ -55,7 +55,7 @@ $card-alt-names-shadow-size: $line-height-base * $font-size-base + $card-spacer-
   }
 }
 
-.mal-widget-body {
+.show-mal-widget-body {
   padding: 10px 0 0;
 
   > .show-mal-widget-container {
@@ -73,21 +73,21 @@ $card-alt-names-shadow-size: $line-height-base * $font-size-base + $card-spacer-
     }
   }
 
-  > .mal-widget-status {
+  > .show-mal-widget-status {
     width: 102px;
     > iframe {
       left: -258px;
     }
   }
 
-  > .mal-widget-episodes {
+  > .show-mal-widget-episodes {
     width: 144px;
     > iframe {
       left: -512px;
     }
   }
 
-  > .mal-widget-score {
+  > .show-mal-widget-score {
     width: 140px;
     > iframe {
       left: -366px;
