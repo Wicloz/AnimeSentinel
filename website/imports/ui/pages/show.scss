@@ -57,9 +57,8 @@ $card-alt-names-shadow-size: $line-height-base * $font-size-base + $card-spacer-
 
 .mal-widget-body {
   padding: 10px 0 0;
-  overflow: hidden;
 
-  > .mal-widget-container {
+  > .show-mal-widget-container {
     height: 26px;
     overflow: hidden;
     position: relative;
