@@ -45,6 +45,11 @@
   }
 }
 
+.form-inline .form-group .control-label {
+  margin-left: $spacer;
+  margin-right: $spacer/2;
+}
+
 ////////////////////////////
 // useraccounts:bootstrap //
 ////////////////////////////
