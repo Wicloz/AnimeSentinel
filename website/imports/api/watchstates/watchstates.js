@@ -222,6 +222,11 @@ WatchStates.sendWatchStateToMAL = function(watchState, successCallback) {
 // Methods
 Meteor.methods({
   'watchStates.changeWatchState'(watchState) {
+    // Clean received data
+    Schemas.WatchState.clean(watchState, {
+      mutate: true
+    });
+
     // Validate received data
     Schemas.WatchState.validate(watchState);
     new SimpleSchema({
