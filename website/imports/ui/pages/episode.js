@@ -306,6 +306,17 @@ Template.pages_episode.helpers({
 
   show() {
     return Shows.findOne(FlowRouter.getParam('showId'));
+  },
+
+  isCompletionEpisode() {
+    let show = Shows.findOne(FlowRouter.getParam('showId'));
+    let watchState = show.watchState();
+    return Template.instance().getEpisodeNumEnd() >= show.episodeCount && (!watchState || watchState.status !== 'completed');
+  },
+
+  episodeWatched() {
+    let watchState = Shows.findOne(FlowRouter.getParam('showId')).watchState();
+    return watchState && Template.instance().getEpisodeNumEnd() <= watchState.episodesWatched;
   }
 });
 
@@ -343,6 +354,26 @@ Template.pages_episode.events({
 
   'change #sandboxing-checkbox'(event) {
     setStorageItem('FrameSandboxingEnabled', event.target.checked);
+  },
+
+  'click .btn-watched'(event) {
+    let show = Shows.findOne(FlowRouter.getParam('showId'));
+    let watchState = show.watchState();
+
+    if (typeof watchState === 'undefined') {
+      watchState = {
+        malId: show.malId,
+        userId: Meteor.userId(),
+      };
+    }
+
+    watchState.episodesWatched = Template.instance().getEpisodeNumEnd();
+    if (watchState.episodesWatched >= show.episodeCount) {
+      watchState.status = 'completed';
+      watchState.rewatching = false;
+    }
+
+    Meteor.call('watchStates.changeWatchState', watchState);
   }
 });
 
@@ -352,6 +383,32 @@ AutoForm.hooks({
       let info = JSON.parse(decodeURIComponent(insertDoc.episodeNumber));
       this.template.view.parentView.parentView._templateInstance.goToEpisode(info.episodeNumStart, info.episodeNumEnd, info.notes);
       this.done();
+      return false;
+    }
+  },
+
+  scoreForm: {
+    formToDoc(doc) {
+      // Get current watch state
+      let watchState = Shows.findOne(FlowRouter.getParam('showId')).watchState();
+      // Remove score if empty
+      if (!doc.hasOwnProperty('score')) {
+        doc.score = null;
+      }
+      // Copy missing values
+      Object.keys(watchState).forEach((key) => {
+        if (!doc.hasOwnProperty(key)) {
+          doc[key] = watchState[key];
+        }
+      });
+      // Return
+      return doc;
+    },
+
+    onSubmit(insertDoc) {
+      Meteor.call('watchStates.changeWatchState', insertDoc, (error) => {
+        this.done(error);
+      });
       return false;
     }
   }

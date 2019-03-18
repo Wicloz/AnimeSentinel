@@ -152,6 +152,30 @@
     </div>
 
     {{#if $and show.canHaveWatchState currentUser.malCanWrite}}
+      <div class="card">
+        <div class="card-body">
+          {{#autoForm schema='Schemas.WatchState' id='scoreForm' autosave=true autosaveOnKeyup=true class='form-inline'}}
+            <button type="button" class="btn btn-primary btn-watched" disabled="{{episodeWatched}}">
+              {{#if show.hasWatchState}}
+                {{#if isCompletionEpisode}}
+                  Mark Show as Completed
+                {{else}}
+                  Mark Episode as Watched
+                {{/if}}
+              {{else}}
+                {{#if isCompletionEpisode}}
+                  Add Show as Completed
+                {{else}}
+                  Add Show as Watching
+                {{/if}}
+              {{/if}}
+            </button>
+            {{#if show.hasWatchState}}
+              {{> afQuickField name='score' value=show.watchState.score label='Score:'}}
+            {{/if}}
+          {{/autoForm}}
+        </div>
+      </div>
     {{else if $exists show.malUrl}}
       <div class="card">
         <div class="card-body episode-mal-widget-body">
