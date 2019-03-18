@@ -122,7 +122,8 @@ Template.pages_episode.onCreated(function() {
 
   // When a show is found
   this.autorun(() => {
-    if (Shows.findOne(FlowRouter.getParam('showId'))) {
+    let show = Shows.findOne(FlowRouter.getParam('showId'));
+    if (show) {
       Session.set('BreadCrumbs', JSON.stringify([{
         name: 'Anime',
         url: FlowRouter.path('search')
@@ -134,6 +135,9 @@ Template.pages_episode.onCreated(function() {
       }, {
         name: FlowRouter.getParam('translationType').capitalize()
       }]));
+      if (show.canHaveWatchState()) {
+        this.subscribe('watchStates.currentUserUnique', show.malId);
+      }
     }
   });
 
@@ -298,6 +302,10 @@ Template.pages_episode.helpers({
 
   nextEpisode() {
     return Episodes.getNextEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), Template.instance().getEpisodeNumStart(), Template.instance().getEpisodeNumEnd(), Template.instance().getNotes());
+  },
+
+  show() {
+    return Shows.findOne(FlowRouter.getParam('showId'));
   }
 });
 
