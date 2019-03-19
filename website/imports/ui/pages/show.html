@@ -90,7 +90,9 @@
             <div class="card-body">
               {{#autoForm schema='Schemas.WatchState' id='malStatusForm' autosave=show.hasWatchState autosaveOnKeyup=show.hasWatchState}}
                 {{> afQuickField name='status' value=show.watchState.status}}
-                {{> afQuickField name='rewatching' value=show.watchState.rewatching}}
+                {{#if $eq show.watchState.status 'watching'}}
+                  {{> afQuickField name='rewatching' value=show.watchState.rewatching}}
+                {{/if}}
                 {{> afQuickField name='episodesWatched' value=show.watchState.episodesWatched}}
                 {{> afQuickField name='score' value=show.watchState.score}}
                 {{#unless show.hasWatchState}}

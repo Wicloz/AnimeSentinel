@@ -55,7 +55,18 @@ Schemas.WatchState = new SimpleSchema({
   },
   rewatching: {
     type: Boolean,
-    defaultValue: false
+    autoValue: function() {
+      if (!this.value && (!this.isUpdate || this.isSet)) {
+        return false;
+      } else if (!this.isSet) {
+        return undefined;
+      }
+      if (this.field('status').value !== 'watching') {
+        return false;
+      } else {
+        return this.value;
+      }
+    }
   },
   episodesWatched: {
     type: SimpleSchema.Integer,
