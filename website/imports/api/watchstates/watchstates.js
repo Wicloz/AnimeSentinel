@@ -67,6 +67,11 @@ Schemas.WatchState = new SimpleSchema({
     optional: true,
     min: 1,
     max: 10
+  },
+
+  priority: {
+    type: SimpleSchema.Integer,
+    defaultValue: 0
   }
 }, { tracker: Tracker });
 
@@ -189,7 +194,7 @@ WatchStates.sendWatchStateToMAL = function(watchState) {
       form: Object.assign({
         'anime_id': watchState.malId,
         'csrf_token': user.malTokenCSRF,
-        'add_anime[priority]': 0,
+        'add_anime[priority]': watchState.priority,
         'add_anime[is_asked_to_discuss]': 0,
         'add_anime[sns_post_type]': 0,
         'add_anime[num_watched_episodes]': watchState.episodesWatched,

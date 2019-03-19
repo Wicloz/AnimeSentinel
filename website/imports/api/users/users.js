@@ -332,6 +332,8 @@ Meteor.users.helpers({
           episodesWatched: entry.num_watched_episodes,
           rewatching: entry.is_rewatching === 1,
           score: entry.score === 0 ? undefined : entry.score,
+
+          priority: ['Low', 'Medium', 'High'].indexOf(entry.priority_string),
         };
 
         if (watchState.rewatching) {

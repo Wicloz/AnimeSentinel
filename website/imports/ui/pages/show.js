@@ -211,13 +211,27 @@ Template.pages_show_episodes.helpers({
 AutoForm.hooks({
   malStatusForm: {
     formToDoc: function(doc) {
+      // Get current show and watch state
+      let show = Shows.findOne(FlowRouter.getParam('showId'));
+      let watchState = show.watchState();
+
       // Remove score if empty
       if (!doc.hasOwnProperty('score')) {
         doc.score = null;
       }
       // Add required ids
-      doc.malId = Shows.findOne(FlowRouter.getParam('showId')).malId;
+      doc.malId = show.malId;
       doc.userId = Meteor.userId();
+
+      // Copy missing values
+      if (watchState) {
+        Object.keys(watchState).forEach((key) => {
+          if (!doc.hasOwnProperty(key)) {
+            doc[key] = watchState[key];
+          }
+        });
+      }
+
       // Return
       return doc;
     },
