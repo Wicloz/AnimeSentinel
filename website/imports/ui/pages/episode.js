@@ -204,11 +204,11 @@ Template.pages_episode.helpers({
   },
 
   selectedStreamerHomepage() {
-    return Streamers.getSimpleStreamerById(Template.instance().state.get('selectedStreamerId')).homepage;
+    return tryGetProperty(Streamers.getSimpleStreamerById(Template.instance().state.get('selectedStreamerId')), 'homepage');
   },
 
   selectedStreamerName() {
-    return Streamers.getSimpleStreamerById(Template.instance().state.get('selectedStreamerId')).name;
+    return tryGetProperty(Streamers.getSimpleStreamerById(Template.instance().state.get('selectedStreamerId')), 'name');
   },
 
   selectedSourceName() {
