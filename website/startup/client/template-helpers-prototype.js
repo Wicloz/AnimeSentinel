@@ -15,8 +15,8 @@ Template.parentInstance = function(levels) {
   return Template.instance().parentTemplate(levels);
 };
 
-Template.findState = function() {
-  let instance = Template.instance();
+Template.findState = function(scope) {
+  let instance = Template.instance() || scope;
   while (instance && !instance.hasOwnProperty('state')) {
     instance = instance.parentTemplate();
   }
