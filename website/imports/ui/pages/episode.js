@@ -81,8 +81,7 @@ Template.pages_episode.onCreated(function() {
   };
 
   // Create local variables
-  this.state = new ReactiveDict();
-  this.state.setDefault({
+  Template.makeState({
     selectedStreamerId: undefined,
     selectedSourceName: undefined,
     iframeErrors: []

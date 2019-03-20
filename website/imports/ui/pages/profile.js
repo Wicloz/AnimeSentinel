@@ -6,8 +6,7 @@ Template.pages_profile.onCreated(function () {
   Session.set('PageTitle', 'Manage Profile');
 
   // Local variables
-  this.state = new ReactiveDict();
-  this.state.setDefault({
+  Template.makeState({
     updateProfileFormError: undefined
   });
 });

@@ -70,8 +70,7 @@ Template.pages_overview.onCreated(function() {
   };
 
   // Local variables
-  this.state = new ReactiveDict();
-  this.state.setDefault({
+  Template.makeState({
     displayLimit: 10
   });
 

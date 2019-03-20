@@ -22,8 +22,7 @@ Template.components_tooltippedIcon.events({
 
 Template.components_tooltippedIcon.onCreated(function () {
   // Local variables
-  this.state = new ReactiveDict();
-  this.state.setDefault({
+  Template.makeState({
     id: undefined,
     shown: false
   });

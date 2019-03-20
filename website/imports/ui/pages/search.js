@@ -11,9 +11,7 @@ Template.pages_search.onCreated(function() {
 
   // Local variables
   this.limitIncrement = 20;
-
-  this.state = new ReactiveDict();
-  this.state.setDefault({
+  Template.makeState({
     searchLimit: this.limitIncrement
   });
 

@@ -30,8 +30,7 @@ Template.components_image.events({
 
 Template.components_image.onCreated(function () {
   // Local variables
-  this.state = new ReactiveDict();
-  this.state.setDefault({
+  Template.makeState({
     appeared: false,
     loaded: false,
     id: undefined
