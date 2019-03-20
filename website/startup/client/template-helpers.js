@@ -1,7 +1,3 @@
-Template.parentInstance = function(levels) {
-  return this.instance().parentTemplate(levels);
-};
-
 Blaze.TemplateInstance.prototype.parentTemplate = function(levels) {
   let view = this.view;
   if (typeof levels === 'undefined') {
@@ -13,6 +9,24 @@ Blaze.TemplateInstance.prototype.parentTemplate = function(levels) {
     }
     view = view.parentView;
   }
+};
+
+Template.parentInstance = function(levels) {
+  return Template.instance().parentTemplate(levels);
+};
+
+Template.findState = function() {
+  let instance = Template.instance();
+  while (!instance.hasOwnProperty('state')) {
+    instance = instance.parentTemplate();
+  }
+  return instance.state;
+};
+
+Template.makeState = function(content) {
+  let instance = Template.instance();
+  instance.state = new ReactiveDict();
+  instance.state.setDefault(content);
 };
 
 Template.registerHelper('$getStorageItem', (key) => {
