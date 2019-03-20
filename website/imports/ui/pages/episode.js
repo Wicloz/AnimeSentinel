@@ -30,8 +30,8 @@ Template.pages_episode.onCreated(function() {
       this.getEpisodeNumStart(),
       this.getEpisodeNumEnd(),
       this.getNotes(),
-      this.state.get('selectedStreamerId'),
-      this.state.get('selectedSourceName')
+      Template.findState(this).get('selectedStreamerId'),
+      Template.findState(this).get('selectedSourceName')
     ).fetch()[0].flags.filter((flag) => {
       return Episodes.isFlagProblematic(flag);
     });
@@ -44,7 +44,7 @@ Template.pages_episode.onCreated(function() {
       problemFlags.push('add-on');
     }
 
-    this.state.set('iframeErrors', problemFlags);
+    Template.findState(this).set('iframeErrors', problemFlags);
   };
 
   this.startErrorsDelay = function() {
@@ -59,13 +59,13 @@ Template.pages_episode.onCreated(function() {
   };
 
   this.selectSource = function(streamerId, sourceName, manual) {
-    this.state.set('selectedStreamerId', streamerId);
-    this.state.set('selectedSourceName', sourceName);
+    Template.findState(this).set('selectedStreamerId', streamerId);
+    Template.findState(this).set('selectedSourceName', sourceName);
     if (manual) {
       setStorageItem(['SelectedSourceLastTime', streamerId, sourceName], moment.fromUtc().valueOf());
     }
 
-    this.state.set('iframeErrors', []);
+    Template.findState(this).set('iframeErrors', []);
     this.startErrorsDelay();
   };
 
@@ -154,7 +154,7 @@ Template.pages_episode.onCreated(function() {
 
   // When the episodes are found and the selection needs to change
   this.autorun(() => {
-    if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd(), this.getNotes()).count() && (!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName'))) {
+    if (Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd(), this.getNotes()).count() && (!Template.findState(this).get('selectedStreamerId') || !Template.findState(this).get('selectedSourceName'))) {
       let selectedSource = Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd(), this.getNotes()).fetch().reduce((total, episode) => {
         let thisTime = getStorageItem(['SelectedSourceLastTime', episode.streamerId, episode.sourceName]);
         if (thisTime && (!total || thisTime > total.time)) {
@@ -183,9 +183,9 @@ Template.pages_episode.onCreated(function() {
         }
 
         for (let i = flagsPreference.length; i >= 0; i--) {
-          if (!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName')) {
+          if (!Template.findState(this).get('selectedStreamerId') || !Template.findState(this).get('selectedSourceName')) {
             Episodes.queryForEpisode(FlowRouter.getParam('showId'), FlowRouter.getParam('translationType'), this.getEpisodeNumStart(), this.getEpisodeNumEnd(), this.getNotes()).forEach((episode) => {
-              if ((!this.state.get('selectedStreamerId') || !this.state.get('selectedSourceName')) && episode.flags.every((flag) => {
+              if ((!Template.findState(this).get('selectedStreamerId') || !Template.findState(this).get('selectedSourceName')) && episode.flags.every((flag) => {
                   return !flagsNever.includes(flag) && !flagsPreference.slice(0, i).includes(flag);
                 })) {
                 this.selectSource(episode.streamerId, episode.sourceName, false);
@@ -200,23 +200,23 @@ Template.pages_episode.onCreated(function() {
 
 Template.pages_episode.helpers({
   selectedStreamerId() {
-    return Template.instance().state.get('selectedStreamerId');
+    return Template.findState(this).get('selectedStreamerId');
   },
 
   selectedStreamerHomepage() {
-    return tryGetProperty(Streamers.getSimpleStreamerById(Template.instance().state.get('selectedStreamerId')), 'homepage');
+    return tryGetProperty(Streamers.getSimpleStreamerById(Template.findState(this).get('selectedStreamerId')), 'homepage');
   },
 
   selectedStreamerName() {
-    return tryGetProperty(Streamers.getSimpleStreamerById(Template.instance().state.get('selectedStreamerId')), 'name');
+    return tryGetProperty(Streamers.getSimpleStreamerById(Template.findState(this).get('selectedStreamerId')), 'name');
   },
 
   selectedSourceName() {
-    return Template.instance().state.get('selectedSourceName');
+    return Template.findState(this).get('selectedSourceName');
   },
 
   selectedSourceUrl() {
-    if (!Template.instance().state.get('selectedStreamerId') || !Template.instance().state.get('selectedSourceName') || !Template.instance().state.get('iframeErrors').empty()) {
+    if (!Template.findState(this).get('selectedStreamerId') || !Template.findState(this).get('selectedSourceName') || !Template.findState(this).get('iframeErrors').empty()) {
       return 'about:blank';
     }
     return Episodes.queryUnique(
@@ -225,8 +225,8 @@ Template.pages_episode.helpers({
       Template.instance().getEpisodeNumStart(),
       Template.instance().getEpisodeNumEnd(),
       Template.instance().getNotes(),
-      Template.instance().state.get('selectedStreamerId'),
-      Template.instance().state.get('selectedSourceName')
+      Template.findState(this).get('selectedStreamerId'),
+      Template.findState(this).get('selectedSourceName')
     ).fetch()[0].sourceUrl;
   },
 
@@ -264,7 +264,7 @@ Template.pages_episode.helpers({
   },
 
   iframeErrors() {
-    return Template.instance().state.get('iframeErrors');
+    return Template.findState(this).get('iframeErrors');
   },
 
   episodeSelectionOptions() {

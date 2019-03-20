@@ -27,7 +27,7 @@ Template.pages_search.onCreated(function() {
   };
 
   this.canLoadMoreShows = function() {
-    return Shows.querySearch(this.getSearchOptions(), this.state.get('searchLimit'), getStorageItem('SelectedTranslationType')).count() >= this.state.get('searchLimit');
+    return Shows.querySearch(this.getSearchOptions(), Template.findState(this).get('searchLimit'), getStorageItem('SelectedTranslationType')).count() >= Template.findState(this).get('searchLimit');
   };
 
   this.moveSeasonOption = function(offset) {
@@ -63,7 +63,7 @@ Template.pages_search.onCreated(function() {
   // Subscribe to searches based on search options
   this.autorun(() => {
     this.subscribe('searches.withSearch', this.getSearchOptions());
-    this.state.set('searchLimit', this.limitIncrement);
+    Template.findState(this).set('searchLimit', this.limitIncrement);
   });
 
   // Search when the subscription is ready
@@ -77,7 +77,7 @@ Template.pages_search.onCreated(function() {
 
   // Subscribe to shows based on search options and limit
   this.autorun(() => {
-    this.subscribe('shows.search', this.getSearchOptions(), this.state.get('searchLimit'), getStorageItem('SelectedTranslationType'));
+    this.subscribe('shows.search', this.getSearchOptions(), Template.findState(this).get('searchLimit'), getStorageItem('SelectedTranslationType'));
   });
 
   // Subscribe to thumbnails, episodes, and watchStates for all shows
@@ -85,7 +85,7 @@ Template.pages_search.onCreated(function() {
     let thumbnailHashes = [];
     let malIds = [];
 
-    Shows.querySearch(this.getSearchOptions(), this.state.get('searchLimit'), getStorageItem('SelectedTranslationType')).forEach((show) => {
+    Shows.querySearch(this.getSearchOptions(), Template.findState(this).get('searchLimit'), getStorageItem('SelectedTranslationType')).forEach((show) => {
       thumbnailHashes = thumbnailHashes.concat(show.thumbnails);
       if (typeof show.malId !== 'undefined') {
         malIds.push(show.malId);
@@ -115,7 +115,7 @@ Template.pages_search.onDestroyed(function() {
 
 Template.pages_search.helpers({
   shows() {
-    return Shows.querySearch(Template.instance().getSearchOptions(), Template.instance().state.get('searchLimit'), getStorageItem('SelectedTranslationType'));
+    return Shows.querySearch(Template.instance().getSearchOptions(), Template.findState(this).get('searchLimit'), getStorageItem('SelectedTranslationType'));
   },
 
   showsLoading() {
@@ -163,7 +163,7 @@ Template.pages_search.helpers({
 Template.pages_search.events({
   'appear #load-more-results'(event) {
     if (Template.instance().subscriptionsReady() && Template.instance().canLoadMoreShows()) {
-      Template.instance().state.set('searchLimit', Template.instance().state.get('searchLimit') + Template.instance().limitIncrement);
+      Template.findState(this).set('searchLimit', Template.findState(this).get('searchLimit') + Template.instance().limitIncrement);
     }
   },
 

@@ -13,7 +13,7 @@ Template.pages_profile.onCreated(function () {
 
 Template.pages_profile.helpers({
   updateProfileFormError() {
-    return Template.instance().state.get('updateProfileFormError');
+    return Template.findState(this).get('updateProfileFormError');
   },
 
   showMalUsernameError() {
@@ -32,7 +32,7 @@ Template.pages_profile.helpers({
 AutoForm.hooks({
   updateProfileForm: {
     onSubmit: function (insertDoc) {
-      this.template.view.parentView.parentView._templateInstance.state.set('updateProfileFormError', undefined);
+      Template.findState(this).set('updateProfileFormError', undefined);
       if (typeof insertDoc.profile === 'undefined') {
         insertDoc.profile = {};
       }
@@ -43,7 +43,7 @@ AutoForm.hooks({
     },
     onError: function (formType, error) {
       if (error.isClientSafe) {
-        this.template.view.parentView.parentView._templateInstance.state.set('updateProfileFormError', error.reason);
+        Template.findState(this).set('updateProfileFormError', error.reason);
       }
     }
   }

@@ -25,14 +25,14 @@ Template.pages_overview.events({
 
   'appear #load-more-items'(event) {
     if (Template.instance().subscriptionsReady()) {
-      Template.instance().state.set('displayLimit', Template.instance().state.get('displayLimit') + 10);
+      Template.findState(this).set('displayLimit', Template.findState(this).get('displayLimit') + 10);
     }
   }
 });
 
 Template.pages_overview.helpers({
   displayShows() {
-    return Shows.queryForOverview(Template.instance().getMalIds(), Template.instance().state.get('displayLimit'));
+    return Shows.queryForOverview(Template.instance().getMalIds(), Template.findState(this).get('displayLimit'));
   },
 
   episodesToWatch(show) {
@@ -53,7 +53,7 @@ Template.pages_overview.helpers({
 
   loading() {
     return !Template.instance().subscriptionsReady() ||
-      Shows.queryForOverview(Template.instance().getMalIds(), Template.instance().state.get('displayLimit')).count() >= Template.instance().state.get('displayLimit');
+      Shows.queryForOverview(Template.instance().getMalIds(), Template.findState(this).get('displayLimit')).count() >= Template.findState(this).get('displayLimit');
   }
 });
 
@@ -94,7 +94,7 @@ Template.pages_overview.onCreated(function() {
   // Subscribe to thumbnails and episodes based on displayed shows
   this.autorun(() => {
     let thumbnails = [];
-    Shows.queryForOverview(Template.instance().getMalIds(), Template.instance().state.get('displayLimit')).forEach((show) => {
+    Shows.queryForOverview(Template.instance().getMalIds(), Template.findState(this).get('displayLimit')).forEach((show) => {
       thumbnails = thumbnails.concat(show.thumbnails);
       this.subscribe('episodes.toWatch', show._id, getStorageItem('SelectedTranslationType'), show.watchedEpisodes());
     });
