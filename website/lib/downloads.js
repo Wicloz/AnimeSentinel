@@ -1,6 +1,6 @@
 import request from 'request';
 
-const userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0";
+const userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0";
 const cookieJar = new request.jar();
 const cloudScraper = require('cloudscraper');
 
