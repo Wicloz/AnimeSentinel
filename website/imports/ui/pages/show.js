@@ -250,6 +250,23 @@ AutoForm.hooks({
       }
       // Set missing values
       doc = Object.assign(Template.findState(this).get('malStatusDoc'), doc);
+
+      // Get the show and previous state
+      let show = Shows.findOne(FlowRouter.getParam('showId'));
+      let prevDoc = Template.findState(this).get('malStatusDoc');
+      // Set status based on episodes
+      if (doc.episodesWatched !== prevDoc.episodesWatched && doc.episodesWatched >= show.episodeCount) {
+        doc.status = 'completed';
+      }
+      // Set episodes based on status
+      else if (doc.status !== prevDoc.status && doc.status === 'completed' && doc.episodesWatched <= show.episodeCount) {
+        doc.episodesWatched = show.episodeCount;
+      }
+      // Reset episodes when rewatching
+      else if (doc.rewatching !== prevDoc.rewatching && doc.rewatching === true) {
+        doc.episodesWatched = 0;
+      }
+
       // Disable rewatching if needed
       if (doc.status !== 'watching') {
         doc.rewatching = false;
