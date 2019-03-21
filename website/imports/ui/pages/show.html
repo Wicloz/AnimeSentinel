@@ -88,15 +88,15 @@
               MAL Status:
             </div>
             <div class="card-body">
-              {{#autoForm schema='Schemas.WatchState' id='malStatusForm' autosave=show.hasWatchState autosaveOnKeyup=show.hasWatchState}}
-                {{> afQuickField name='status' value=show.watchState.status}}
-                {{#if $eq show.watchState.status 'watching'}}
-                  {{> afQuickField name='rewatching' value=show.watchState.rewatching}}
+              {{#autoForm schema='Schemas.WatchState' id='malStatusForm' doc=malStatusDoc autosave=true autosaveOnKeyup=true}}
+                {{> afQuickField name='status'}}
+                {{#if $eq malStatusDoc.status 'watching'}}
+                  {{> afQuickField name='rewatching'}}
                 {{/if}}
-                {{> afQuickField name='episodesWatched' value=show.watchState.episodesWatched}}
-                {{> afQuickField name='score' value=show.watchState.score}}
+                {{> afQuickField name='episodesWatched'}}
+                {{> afQuickField name='score'}}
                 {{#unless show.hasWatchState}}
-                  <button type="submit" class="btn btn-primary btn-block">Add To List</button>
+                  <button type="submit" class="btn btn-primary btn-block btn-submit-status">Add To List</button>
                 {{/unless}}
               {{/autoForm}}
             </div>

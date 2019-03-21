@@ -64,6 +64,21 @@ Template.pages_show.onCreated(function() {
     });
   };
 
+  // Local variables
+  Template.makeState({
+    malStatusDoc: Schemas.WatchState.clean({}),
+    malStatusInDB: false
+  });
+
+  // When the user is found
+  this.autorun(() => {
+    if (Meteor.userId()) {
+      Template.findState(this).set('malStatusDoc', Object.assign(Template.findState(this).get('malStatusDoc'), {
+        userId: Meteor.userId()
+      }));
+    }
+  });
+
   // Subscribe based on the show id
   this.autorun(() => {
     this.subscribe('shows.withId', FlowRouter.getParam('showId'));
@@ -77,14 +92,24 @@ Template.pages_show.onCreated(function() {
     }
   });
 
-  // When the show is found
   this.autorun(() => {
+    // When the show is found
     let show = Shows.findOne(FlowRouter.getParam('showId'));
     if (show) {
       Session.set('PageTitle', show.name);
+      Template.findState(this).set('malStatusDoc', Object.assign(Template.findState(this).get('malStatusDoc'), {
+        malId: show.malId
+      }));
       this.subscribe('thumbnails.withHashes', show.thumbnails);
       if (show.canHaveWatchState()) {
         this.subscribe('watchStates.currentUserUnique', show.malId);
+      }
+
+      // When the watchState is found
+      let watchState = show.watchState();
+      if (watchState) {
+        Template.findState(this).set('malStatusDoc', watchState);
+        Template.findState(this).set('malStatusInDB', true);
       }
     }
   });
@@ -164,6 +189,10 @@ Template.pages_show.events({
     $('.show-mal-widget-status > iframe, .show-mal-widget-episodes > iframe').attr('src', (index, attr) => {
       return attr;
     });
+  },
+
+  'click .btn-submit-status'(event) {
+    Template.findState(this).set('malStatusInDB', true);
   }
 });
 
@@ -195,6 +224,10 @@ Template.pages_show.helpers({
     let visitedIds = [];
     let mainShow = Shows.findOne(FlowRouter.getParam('showId'));
     return Template.instance().isRelatedUpdating(mainShow, 'prequel', visitedIds) || Template.instance().isRelatedUpdating(mainShow, 'sequel', visitedIds);
+  },
+
+  malStatusDoc() {
+    return Template.findState(this).get('malStatusDoc');
   }
 });
 
@@ -211,35 +244,25 @@ Template.pages_show_episodes.helpers({
 AutoForm.hooks({
   malStatusForm: {
     formToDoc: function(doc) {
-      // Get current show and watch state
-      let show = Shows.findOne(FlowRouter.getParam('showId'));
-      let watchState = show.watchState();
-
       // Remove score if empty
       if (!doc.hasOwnProperty('score')) {
         doc.score = null;
       }
-      // Add required ids
-      doc.malId = show.malId;
-      doc.userId = Meteor.userId();
-
-      // Copy missing values
-      if (watchState) {
-        Object.keys(watchState).forEach((key) => {
-          if (!doc.hasOwnProperty(key)) {
-            doc[key] = watchState[key];
-          }
-        });
-      }
-
+      // Set missing values
+      doc = Object.assign(Template.findState(this).get('malStatusDoc'), doc);
       // Return
       return doc;
     },
 
     onSubmit: function(insertDoc) {
-      Meteor.call('watchStates.changeWatchState', insertDoc, (error) => {
-        this.done(error);
-      });
+      Template.findState(this).set('malStatusDoc', insertDoc);
+      if (Template.findState(this).get('malStatusInDB')) {
+        Meteor.call('watchStates.changeWatchState', Template.findState(this).get('malStatusDoc'), (error) => {
+          this.done(error);
+        });
+      } else {
+        this.done();
+      }
       return false;
     }
   }
