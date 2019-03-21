@@ -1104,6 +1104,7 @@ Shows.querySearch = function(search, limit, translationType) {
         $options: 'i'
       };
     }
+    selector.altNames.$regex = RegExp.makeMatchWS(selector.altNames.$regex);
   }
 
   // Sort if the limit exists
