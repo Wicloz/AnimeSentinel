@@ -250,6 +250,10 @@ AutoForm.hooks({
       }
       // Set missing values
       doc = Object.assign(Template.findState(this).get('malStatusDoc'), doc);
+      // Disable rewatching if needed
+      if (doc.status !== 'watching') {
+        doc.rewatching = false;
+      }
       // Return
       return doc;
     },
