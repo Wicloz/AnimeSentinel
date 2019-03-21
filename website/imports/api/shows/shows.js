@@ -1093,7 +1093,7 @@ Shows.querySearch = function(search, limit, translationType) {
   if (search.query) {
     if (search.sortBy) {
       selector.altNames = {
-        $regex: '.*' + search.query + '.*',
+        $regex: '.*' + RegExp.escape(search.query) + '.*',
         $options: 'i'
       };
     } else {

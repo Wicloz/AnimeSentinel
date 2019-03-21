@@ -1,5 +1,5 @@
 RegExp.escape = function(string) {
-  return string.replace(/[-\/\\^$*+?.()|[\]{}!=:,]/g, '\\$&');
+  return string.replace(/[-\/\\^$*+?.()|\[\]{}!=:,]/g, '\\$&');
 };
 
 String.prototype.cleanWhitespace = function(leaveEnd=false) {
