@@ -3,7 +3,7 @@
   "name": "AnimeSentinel Companion AddOn",
   "version": "0.8",
 
-  "description": "Companion AddOn for AnimeSentinel. Improves performance and allows certain otherwise resticted features to be used.",
+  "description": "Companion AddOn for AnimeSentinel. Improves performance and allows certain otherwise restricted features to be used.",
 
   "permissions": [
     "webRequest",

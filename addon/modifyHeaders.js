@@ -1,6 +1,4 @@
 function modifyHeaders(response) {
-  // console.log(response);
-
   let origin = undefined;
   if (response.initiator) {
     origin = response.initiator;
@@ -35,7 +33,6 @@ function modifyHeaders(response) {
     });
   }
 
-  // console.log(response.responseHeaders);
   return {responseHeaders: response.responseHeaders};
 }
 
