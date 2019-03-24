@@ -73,8 +73,8 @@ export let kissanime = {
   // General data
   id: 'kissanime',
   name: 'KissAnime',
-  homepage: 'http://kissanime.ru',
-  recentPage: 'http://kissanime.ru',
+  homepage: 'https://kissanime.ru',
+  recentPage: 'https://kissanime.ru',
   minimalPageTypes: ['sub', 'dub'],
 
   // Search page data
@@ -243,42 +243,42 @@ export let kissanime = {
           sourceName: 'RapidVideo',
           sourceUrl: sourceUrl + '&s=rapidvideo',
           uploadDate: uploadDate,
-          flags: ['cloudflare', 'mixed-content']
+          flags: ['cloudflare']
         }, {
           sourceName: 'Mp4Upload',
           sourceUrl: sourceUrl + '&s=mp4upload',
           uploadDate: uploadDate,
-          flags: ['cloudflare', 'mixed-content']
+          flags: ['cloudflare']
         }, {
           sourceName: 'Openload',
           sourceUrl: sourceUrl + '&s=openload',
           uploadDate: uploadDate,
-          flags: ['cloudflare', 'mixed-content', 'requires-plugins']
+          flags: ['cloudflare', 'requires-plugins']
         }, {
           sourceName: 'Streamango',
           sourceUrl: sourceUrl + '&s=streamango',
           uploadDate: uploadDate,
-          flags: ['cloudflare', 'mixed-content', 'requires-plugins']
+          flags: ['cloudflare', 'requires-plugins']
         }, {
           sourceName: 'P2P Server',
           sourceUrl: sourceUrl + '&s=p2p',
           uploadDate: uploadDate,
-          flags: ['cloudflare', 'mixed-content']
+          flags: ['cloudflare']
         }, {
           sourceName: 'Nova Server',
           sourceUrl: sourceUrl + '&s=nova',
           uploadDate: uploadDate,
-          flags: ['cloudflare', 'mixed-content']
+          flags: ['cloudflare']
         }, {
           sourceName: 'Beta Server',
           sourceUrl: sourceUrl + '&s=beta',
           uploadDate: uploadDate,
-          flags: ['cloudflare', 'mixed-content']
+          flags: ['cloudflare']
         }, {
           sourceName: 'Beta2 Server',
           sourceUrl: sourceUrl + '&s=beta2',
           uploadDate: uploadDate,
-          flags: ['cloudflare', 'mixed-content']
+          flags: ['cloudflare']
         }];
       },
     },
