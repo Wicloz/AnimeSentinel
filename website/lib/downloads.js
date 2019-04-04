@@ -54,6 +54,7 @@ function downloadWithCallback(url, callback, tries=1) {
         'User-Agent': userAgent
       },
       url: url,
+      decodeEmails: true,
     };
 
     cloudScraper(options, Meteor.bindEnvironment((error, response, body) => {
