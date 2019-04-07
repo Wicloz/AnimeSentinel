@@ -1,7 +1,4 @@
 import request from 'request';
-
-const userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0";
-const cookieJar = new request.jar();
 const cloudScraper = require('cloudscraper');
 
 function isStatusCodeSuccess(statusCode) {
@@ -48,11 +45,6 @@ function downloadWithCallback(url, callback, tries=1) {
 
     let options = {
       method: 'GET',
-      encoding: null,
-      jar: cookieJar,
-      headers: {
-        'User-Agent': userAgent
-      },
       url: url,
       decodeEmails: true,
     };
@@ -114,12 +106,9 @@ function downloadToStream(url, callback, tries=1) {
 
     let options = {
       method: 'GET',
-      encoding: null,
-      jar: cookieJar,
-      headers: {
-        'User-Agent': userAgent
-      },
       url: url,
+      jar: cloudScraper.defaultParams.jar,
+      headers: cloudScraper.defaultParams.headers,
     };
 
     request.get(options).on('response', Meteor.bindEnvironment((response) => {
