@@ -131,6 +131,6 @@ url@1.2.0
 useraccounts:bootstrap@1.14.2
 useraccounts:core@1.14.2
 useraccounts:flow-routing@1.14.2
-webapp@1.7.3
+webapp@1.7.4
 webapp-hashing@1.0.9
 zimme:active-route@2.3.2
