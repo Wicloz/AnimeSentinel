@@ -95,9 +95,11 @@
                 {{/if}}
                 {{> afQuickField name='episodesWatched'}}
                 {{> afQuickField name='score'}}
-                {{#unless show.hasWatchState}}
+                {{#if show.hasWatchState}}
+                  <button type="button" class="btn btn-primary btn-block btn-remove-status">Remove From List</button>
+                {{else}}
                   <button type="submit" class="btn btn-primary btn-block btn-submit-status">Add To List</button>
-                {{/unless}}
+                {{/if}}
               {{/autoForm}}
             </div>
           </div>

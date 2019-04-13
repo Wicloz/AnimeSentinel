@@ -195,6 +195,10 @@ Template.pages_show.events({
 
   'click .btn-submit-status'(event) {
     Template.findState(this).set('malStatusInDB', true);
+  },
+
+  'click .btn-remove-status'(event) {
+    Meteor.call('watchStates.removeWatchState', Template.findState(this).get('malStatusDoc'));
   }
 });
 
