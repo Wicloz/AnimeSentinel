@@ -110,6 +110,8 @@ Template.pages_show.onCreated(function() {
       if (watchState) {
         Template.findState(this).set('malStatusDoc', watchState);
         Template.findState(this).set('malStatusInDB', true);
+      } else {
+        Template.findState(this).set('malStatusInDB', false);
       }
     }
   });
