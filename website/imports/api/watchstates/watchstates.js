@@ -172,14 +172,26 @@ WatchStates.addWatchState = function(watchState) {
   }
 };
 
-WatchStates.sendWatchStateToMAL = function(watchState) {
+WatchStates.removeWatchState = function(watchState) {
+  // Find existing watch states
+  let others = WatchStates.queryUnique(watchState.userId, watchState.malId);
+
+  // Remove existing watch states
+  others.forEach((other) => {
+    WatchStates.remove(other._id);
+  });
+};
+
+WatchStates.sendWatchStateToMAL = function(watchState, remove=false) {
   return new Promise((resolve, reject) => {
     // Get related user
     let user = Meteor.users.findOne(watchState.userId);
 
     // Determine the url to use (add/edit)
     let url = '';
-    if (WatchStates.queryUnique(watchState.userId, watchState.malId).count() > 0) {
+    if (remove) {
+      url = 'https://myanimelist.net/ownlist/anime/' + watchState.malId + '/delete';
+    } else if (WatchStates.queryUnique(watchState.userId, watchState.malId).count() > 0) {
       url = 'https://myanimelist.net/ownlist/anime/' + watchState.malId + '/edit';
     } else {
       url = 'https://myanimelist.net/ownlist/anime/add?selected_series_id=' + watchState.malId;
@@ -270,6 +282,38 @@ Meteor.methods({
     } else {
       await WatchStates.sendWatchStateToMAL(watchState).then(() => {
         WatchStates.addWatchState(watchState);
+      }).catch(() => {});
+    }
+  },
+
+  async 'watchStates.removeWatchState'(watchState) {
+    // Clean received data
+    Schemas.WatchState.clean(watchState, {
+      mutate: true
+    });
+
+    // Validate received data
+    Schemas.WatchState.validate(watchState);
+    new SimpleSchema({
+      userId: {
+        type: String,
+        allowedValues: [this.userId]
+      },
+      malCanWrite: {
+        type: Boolean,
+        allowedValues: [true]
+      }
+    }).validate({
+      userId: watchState.userId,
+      malCanWrite: Meteor.users.findOne(watchState.userId).malCanWrite
+    });
+
+    // Send data to MAL and add to DB on success
+    if (this.isSimulation) {
+      WatchStates.removeWatchState(watchState);
+    } else {
+      await WatchStates.sendWatchStateToMAL(watchState, true).then(() => {
+        WatchStates.removeWatchState(watchState);
       }).catch(() => {});
     }
   }
