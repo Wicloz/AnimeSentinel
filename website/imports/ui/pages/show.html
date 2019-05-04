@@ -334,7 +334,7 @@
 
       {{#each episode in (show.episodeList translationType)}}
         <a class="list-group-item list-group-item-action"
-           href="{{pathFor 'episode' showId=episode.showId translationType=episode.translationType episodeNumStart=episode.episodeNumStart episodeNumEnd=episode.episodeNumEnd notes=episode.notesEncoded}}">
+           href="{{pathFor 'episode' showId=episode.showId translationType=episode.translationType episodeNumStart=episode.safeEpisodeNumStart episodeNumEnd=episode.safeEpisodeNumEnd notes=episode.notesEncoded}}">
           <div class="row justify-content-between">
             <div class="col-auto">
               <h6>

@@ -119,6 +119,14 @@ Episodes.helpers({
     return ScrapingHelpers.makeTranslationTypeFancy(this.translationType);
   },
 
+  safeEpisodeNumStart() {
+    return this.episodeNumStart.toString();
+  },
+
+  safeEpisodeNumEnd() {
+    return this.episodeNumEnd.toString();
+  },
+
   notesEncoded() {
     if (this.notes) {
       return encodeBase64(this.notes);

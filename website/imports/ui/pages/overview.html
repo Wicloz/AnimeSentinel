@@ -59,7 +59,7 @@
                   <div class="card card-watch-episodes">
                     <div class="list-group list-group-flush">
                       {{#each episode in (episodesToWatch show)}}
-                        <a class="list-group-item list-group-item-action" href="{{pathFor 'episode' showId=episode.showId translationType=episode.translationType episodeNumStart=episode.episodeNumStart episodeNumEnd=episode.episodeNumEnd notes=episode.notesEncoded}}">
+                        <a class="list-group-item list-group-item-action" href="{{pathFor 'episode' showId=episode.showId translationType=episode.translationType episodeNumStart=episode.safeEpisodeNumStart episodeNumEnd=episode.safeEpisodeNumEnd notes=episode.notesEncoded}}">
                           Episode {{episode.fancyKey}}
                         </a>
                       {{/each}}
