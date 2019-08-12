@@ -69,7 +69,7 @@ Schemas.WatchState = new SimpleSchema({
     }
   },
   episodesWatched: {
-    type: SimpleSchema.Integer,
+    type: Number,
     defaultValue: 0,
     min: 0
   },
@@ -220,7 +220,7 @@ WatchStates.sendWatchStateToMAL = function(watchState, remove=false) {
         'add_anime[priority]': watchState.priority,
         'add_anime[is_asked_to_discuss]': 0,
         'add_anime[sns_post_type]': 0,
-        'add_anime[num_watched_episodes]': watchState.episodesWatched,
+        'add_anime[num_watched_episodes]': Math.floor(watchState.episodesWatched),
         'add_anime[score]': watchState.score,
       }, states),
     }, ['Invalid submission.', 'Failed to edit the series.', 'Failed to add the series.'])
