@@ -327,10 +327,6 @@ Meteor.users.helpers({
 
   updateWatchStates() {
     if (!this.malListUpdating()) {
-      let baseUrl = 'https://myanimelist.net/animelist/' + encodeURIComponent(this.profile.malUsername) + '/load.json?offset=';
-      let offset = 0;
-      let entries = [];
-
       // Mark update as started
       this.lastMalUpdateStart = moment.fromUtc().toDate();
       Meteor.users.update(this._id, {
@@ -338,6 +334,10 @@ Meteor.users.helpers({
           lastMalUpdateStart: this.lastMalUpdateStart
         }
       });
+
+      let baseUrl = 'https://myanimelist.net/animelist/' + encodeURIComponent(this.profile.malUsername) + '/load.json?offset=';
+      let offset = 0;
+      let entries = [];
 
       let doneCallback = () => {
         this.setMalCanReadWrite(true, undefined);
