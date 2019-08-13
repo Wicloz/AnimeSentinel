@@ -103,7 +103,9 @@ WatchStates.helpers({
   mergeWatchState(other) {
     // Update this
     Object.keys(other).forEach((key) => {
-      this[key] = other[key];
+      if (key !== 'episodesWatched' || Math.floor(this[key]) !== Math.floor(other[key])) {
+        this[key] = other[key];
+      }
     });
 
     // Update database
