@@ -6,7 +6,9 @@
         <div class="row">
           <div class="col-auto">
             <a target="_blank" rel="noopener" href="https://myanimelist.net/animelist/{{currentUser.profile.malUsername}}">Show On MAL</a>
-            <button type="button" class="btn btn-primary reload-mal-list-btn">Reload MAL List</button>
+            <button type="button" class="btn btn-primary reload-mal-list-btn {{#if currentUser.malListUpdating}}progress-bar-striped progress-bar-animated{{/if}}" disabled="{{currentUser.malListUpdating}}">
+              Reload MAL List
+            </button>
             <button type="button" class="btn btn-primary reload-all-shows-btn {{#if anyShowWorking}}progress-bar-striped progress-bar-animated{{/if}}" disabled="{{allShowsCached}}">
               Update All Shows
             </button>

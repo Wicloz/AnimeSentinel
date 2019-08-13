@@ -6,7 +6,9 @@ Meteor.publish(null, function() {
     fields: {
       storage: true,
       malCanRead: true,
-      malCanWrite: true
+      malCanWrite: true,
+      lastMalUpdateStart: true,
+      lastMalUpdateEnd: true
     }
   });
 });

@@ -5,6 +5,7 @@ import {Shows} from '../shows/shows';
 import Streamers from '../../streamers/streamers';
 import request from 'request';
 import Cheerio from 'cheerio';
+import moment from 'moment-timezone';
 
 // Constants
 const badLoginError = 'Your username or password is incorrect.';
@@ -91,6 +92,14 @@ Schemas.User = new SimpleSchema({
   malCanWrite: {
     type: Boolean,
     defaultValue: false
+  },
+  lastMalUpdateStart: {
+    type: Date,
+    optional: true
+  },
+  lastMalUpdateEnd: {
+    type: Date,
+    optional: true
   }
 }, { tracker: Tracker });
 
@@ -109,8 +118,23 @@ Meteor.users.deny({
   update() { return true; }
 });
 
+// Constants
+Meteor.users.maxMalUpdateTime = 600000; // 10 minutes
+if (Meteor.isDevelopment) {
+  Meteor.users.maxMalUpdateTime = 60000; // 60 seconds
+}
+
 // Helpers
 Meteor.users.helpers({
+  malListUpdating() {
+    if (Meteor.isClient) {
+      invalidateSecond.depend();
+    }
+    return this.lastMalUpdateStart
+      && (!this.lastMalUpdateEnd || this.lastMalUpdateStart > this.lastMalUpdateEnd)
+      && moment.fromUtc(this.lastMalUpdateStart).add(Meteor.users.maxMalUpdateTime).isAfter();
+  },
+
   changeInfo(newInfo) {
     let oldEmailAddresses = this.emails.pluck('address');
     let oldMalUsername = this.profile.malUsername;
@@ -306,6 +330,14 @@ Meteor.users.helpers({
     let offset = 0;
     let entries = [];
 
+    // Mark update as started
+    this.lastMalUpdateStart = moment.fromUtc().toDate();
+    Meteor.users.update(this._id, {
+      $set: {
+        lastMalUpdateStart: this.lastMalUpdateStart
+      }
+    });
+
     let doneCallback = () => {
       this.setMalCanReadWrite(true, undefined);
       let malIds = [];
@@ -358,6 +390,14 @@ Meteor.users.helpers({
         userId: this._id,
         malId: {
           $nin: malIds
+        }
+      });
+
+      // Mark update as done
+      this.lastMalUpdateEnd = moment.fromUtc().toDate();
+      Meteor.users.update(this._id, {
+        $set: {
+          lastMalUpdateEnd: this.lastMalUpdateEnd
         }
       });
     };
