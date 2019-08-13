@@ -350,7 +350,7 @@ Meteor.users.helpers({
         Schemas.WatchState.validate(watchState);
 
         malIds.push(watchState.malId);
-        WatchStates.addWatchState(watchState);
+        WatchStates.addWatchState(watchState, true);
       });
 
       // Remove missing watch states

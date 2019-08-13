@@ -100,10 +100,10 @@ if (Meteor.isServer) {
 
 // Helpers
 WatchStates.helpers({
-  mergeWatchState(other) {
+  mergeWatchState(other, fromMal) {
     // Update this
     Object.keys(other).forEach((key) => {
-      if (key !== 'episodesWatched' || Math.floor(this[key]) !== Math.floor(other[key])) {
+      if (!fromMal || key !== 'episodesWatched' || Math.floor(this[key]) !== Math.floor(other[key])) {
         this[key] = other[key];
       }
     });
@@ -149,7 +149,7 @@ WatchStates.helpers({
   }
 });
 
-WatchStates.addWatchState = function(watchState) {
+WatchStates.addWatchState = function(watchState, fromMal) {
   // Find existing watch states
   let others = WatchStates.queryUnique(watchState.userId, watchState.malId);
 
@@ -161,11 +161,11 @@ WatchStates.addWatchState = function(watchState) {
       if (!firstOther) {
         firstOther = other;
       } else {
-        firstOther.mergeWatchState(other);
+        firstOther.mergeWatchState(other, fromMal);
       }
     });
 
-    firstOther.mergeWatchState(watchState);
+    firstOther.mergeWatchState(watchState, fromMal);
   }
 
   // Add new watch state otherwise
@@ -280,10 +280,10 @@ Meteor.methods({
 
     // Send data to MAL and add to DB on success
     if (this.isSimulation) {
-      WatchStates.addWatchState(watchState);
+      WatchStates.addWatchState(watchState, false);
     } else {
       await WatchStates.sendWatchStateToMAL(watchState).then(() => {
-        WatchStates.addWatchState(watchState);
+        WatchStates.addWatchState(watchState, false);
       }).catch(() => {});
     }
   },
