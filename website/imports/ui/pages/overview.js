@@ -54,6 +54,18 @@ Template.pages_overview.helpers({
   loading() {
     return !Template.instance().subscriptionsReady() ||
       Shows.queryForOverview(Template.instance().getMalIds(), Template.findState(this).get('displayLimit')).count() >= Template.findState(this).get('displayLimit');
+  },
+
+  anyShowWorking() {
+    return Shows.queryForOverview(Template.instance().getMalIds()).fetch().some((show) => {
+      return show.locked();
+    });
+  },
+
+  allShowsCached() {
+    return Shows.queryForOverview(Template.instance().getMalIds()).fetch().every((show) => {
+      return !show.expired();
+    });
   }
 });
 
