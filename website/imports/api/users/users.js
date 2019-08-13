@@ -326,114 +326,116 @@ Meteor.users.helpers({
   },
 
   updateWatchStates() {
-    let baseUrl = 'https://myanimelist.net/animelist/' + encodeURIComponent(this.profile.malUsername) + '/load.json?offset=';
-    let offset = 0;
-    let entries = [];
+    if (!this.malListUpdating()) {
+      let baseUrl = 'https://myanimelist.net/animelist/' + encodeURIComponent(this.profile.malUsername) + '/load.json?offset=';
+      let offset = 0;
+      let entries = [];
 
-    // Mark update as started
-    this.lastMalUpdateStart = moment.fromUtc().toDate();
-    Meteor.users.update(this._id, {
-      $set: {
-        lastMalUpdateStart: this.lastMalUpdateStart
-      }
-    });
-
-    let doneCallback = () => {
-      this.setMalCanReadWrite(true, undefined);
-      let malIds = [];
-
-      entries.forEach((entry, index) => {
-        // Add the show
-        try {
-          let show = Streamers.convertCheerioToShow(entry, entries, Streamers.getStreamerById('myanimelist'), 'showApi');
-          if (show) {
-            Shows.addPartialShow(show);
-          }
-        } catch (e) {
-          console.error('Failed to process show api page for user: \'' + this.profile.malUsername + '\' and streamer: \'myanimelist\'.');
-          console.error('Failed to process entry number ' + index + '.');
-          console.error(e);
-        }
-
-        // Add the watch state
-        let watchState = {
-          userId: this._id,
-          malId: entry.anime_id,
-
-          status: entry.status,
-          episodesWatched: entry.num_watched_episodes,
-          rewatching: entry.is_rewatching === 1,
-          score: entry.score === 0 ? undefined : entry.score,
-
-          priority: ['Low', 'Medium', 'High'].indexOf(entry.priority_string),
-        };
-
-        if (watchState.rewatching) {
-          watchState.status = 'watching'
-        } else if (watchState.status === 6) {
-          watchState.status = WatchStates.validStatuses[4];
-        } else {
-          watchState.status = WatchStates.validStatuses[watchState.status - 1];
-        }
-
-        Schemas.WatchState.clean(watchState, {
-          mutate: true
-        });
-        Schemas.WatchState.validate(watchState);
-
-        malIds.push(watchState.malId);
-        WatchStates.addWatchState(watchState, true);
-      });
-
-      // Remove missing watch states
-      WatchStates.remove({
-        userId: this._id,
-        malId: {
-          $nin: malIds
-        }
-      });
-
-      // Mark update as done
-      this.lastMalUpdateEnd = moment.fromUtc().toDate();
+      // Mark update as started
+      this.lastMalUpdateStart = moment.fromUtc().toDate();
       Meteor.users.update(this._id, {
         $set: {
-          lastMalUpdateEnd: this.lastMalUpdateEnd
+          lastMalUpdateStart: this.lastMalUpdateStart
         }
       });
-    };
 
-    let repeatCallback = () => {
-      rp('GET', {
-        url: baseUrl + offset,
-        jar: this.getMalCookieJar(),
-      })
-      .then((json) => {
-        entries = entries.concat(JSON.parse(json));
-        if (entries.length > offset) {
-          offset = entries.length;
-          repeatCallback();
-        } else {
-          doneCallback();
-        }
-      })
-      .catch((error) => {
-        if (error === 400) {
-          if (this.malCanWrite) {
-            this.updateMalSession().then(repeatCallback).catch((error) => {
-              if (error === badLoginError) {
+      let doneCallback = () => {
+        this.setMalCanReadWrite(true, undefined);
+        let malIds = [];
+
+        entries.forEach((entry, index) => {
+          // Add the show
+          try {
+            let show = Streamers.convertCheerioToShow(entry, entries, Streamers.getStreamerById('myanimelist'), 'showApi');
+            if (show) {
+              Shows.addPartialShow(show);
+            }
+          } catch (e) {
+            console.error('Failed to process show api page for user: \'' + this.profile.malUsername + '\' and streamer: \'myanimelist\'.');
+            console.error('Failed to process entry number ' + index + '.');
+            console.error(e);
+          }
+
+          // Add the watch state
+          let watchState = {
+            userId: this._id,
+            malId: entry.anime_id,
+
+            status: entry.status,
+            episodesWatched: entry.num_watched_episodes,
+            rewatching: entry.is_rewatching === 1,
+            score: entry.score === 0 ? undefined : entry.score,
+
+            priority: ['Low', 'Medium', 'High'].indexOf(entry.priority_string),
+          };
+
+          if (watchState.rewatching) {
+            watchState.status = 'watching'
+          } else if (watchState.status === 6) {
+            watchState.status = WatchStates.validStatuses[4];
+          } else {
+            watchState.status = WatchStates.validStatuses[watchState.status - 1];
+          }
+
+          Schemas.WatchState.clean(watchState, {
+            mutate: true
+          });
+          Schemas.WatchState.validate(watchState);
+
+          malIds.push(watchState.malId);
+          WatchStates.addWatchState(watchState, true);
+        });
+
+        // Remove missing watch states
+        WatchStates.remove({
+          userId: this._id,
+          malId: {
+            $nin: malIds
+          }
+        });
+
+        // Mark update as done
+        this.lastMalUpdateEnd = moment.fromUtc().toDate();
+        Meteor.users.update(this._id, {
+          $set: {
+            lastMalUpdateEnd: this.lastMalUpdateEnd
+          }
+        });
+      };
+
+      let repeatCallback = () => {
+        rp('GET', {
+          url: baseUrl + offset,
+          jar: this.getMalCookieJar(),
+        })
+          .then((json) => {
+            entries = entries.concat(JSON.parse(json));
+            if (entries.length > offset) {
+              offset = entries.length;
+              repeatCallback();
+            } else {
+              doneCallback();
+            }
+          })
+          .catch((error) => {
+            if (error === 400) {
+              if (this.malCanWrite) {
+                this.updateMalSession().then(repeatCallback).catch((error) => {
+                  if (error === badLoginError) {
+                    this.setMalCanReadWrite(false, undefined);
+                  }
+                });
+              } else {
                 this.setMalCanReadWrite(false, undefined);
               }
-            });
-          } else {
-            this.setMalCanReadWrite(false, undefined);
-          }
-        } else if (error) {
-          console.error(error);
-        }
-      });
-    };
+            } else if (error) {
+              console.error(error);
+            }
+          });
+      };
 
-    repeatCallback();
+      repeatCallback();
+    }
   }
 });
 
