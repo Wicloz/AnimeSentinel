@@ -339,6 +339,16 @@ Meteor.users.helpers({
       let offset = 0;
       let entries = [];
 
+      let finishCallback = () => {
+        // Mark update as done
+        this.lastMalUpdateEnd = moment.fromUtc().toDate();
+        Meteor.users.update(this._id, {
+          $set: {
+            lastMalUpdateEnd: this.lastMalUpdateEnd
+          }
+        });
+      };
+
       let doneCallback = () => {
         this.setMalCanReadWrite(true, undefined);
         let malIds = [];
@@ -394,13 +404,8 @@ Meteor.users.helpers({
           }
         });
 
-        // Mark update as done
-        this.lastMalUpdateEnd = moment.fromUtc().toDate();
-        Meteor.users.update(this._id, {
-          $set: {
-            lastMalUpdateEnd: this.lastMalUpdateEnd
-          }
-        });
+        // Finish
+        finishCallback();
       };
 
       let repeatCallback = () => {
@@ -424,12 +429,17 @@ Meteor.users.helpers({
                   if (error === badLoginError) {
                     this.setMalCanReadWrite(false, undefined);
                   }
+                  finishCallback();
                 });
               } else {
                 this.setMalCanReadWrite(false, undefined);
+                finishCallback();
               }
-            } else if (error) {
-              console.error(error);
+            } else {
+              if (error) {
+                console.error(error);
+              }
+              finishCallback();
             }
           });
       };
