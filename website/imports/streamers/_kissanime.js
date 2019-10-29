@@ -253,12 +253,12 @@ export let kissanime = {
           sourceName: 'Openload',
           sourceUrl: sourceUrl + '&s=openload',
           uploadDate: uploadDate,
-          flags: ['cloudflare', 'requires-plugins']
+          flags: ['cloudflare']
         }, {
           sourceName: 'Streamango',
           sourceUrl: sourceUrl + '&s=streamango',
           uploadDate: uploadDate,
-          flags: ['cloudflare', 'requires-plugins']
+          flags: ['cloudflare']
         }, {
           sourceName: 'P2P Server',
           sourceUrl: sourceUrl + '&s=p2p',
@@ -277,6 +277,11 @@ export let kissanime = {
         }, {
           sourceName: 'Beta2 Server',
           sourceUrl: sourceUrl + '&s=beta2',
+          uploadDate: uploadDate,
+          flags: ['cloudflare']
+        }, {
+          sourceName: 'HydraX',
+          sourceUrl: sourceUrl + '&s=hydrax',
           uploadDate: uploadDate,
           flags: ['cloudflare']
         }];
