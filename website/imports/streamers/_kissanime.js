@@ -253,12 +253,12 @@ export let kissanime = {
           sourceName: 'Openload',
           sourceUrl: sourceUrl + '&s=openload',
           uploadDate: uploadDate,
-          flags: ['cloudflare']
+          flags: ['cloudflare', 'requires-plugins']
         }, {
           sourceName: 'Streamango',
           sourceUrl: sourceUrl + '&s=streamango',
           uploadDate: uploadDate,
-          flags: ['cloudflare']
+          flags: ['cloudflare', 'requires-plugins']
         }, {
           sourceName: 'P2P Server',
           sourceUrl: sourceUrl + '&s=p2p',
