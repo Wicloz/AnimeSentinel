@@ -99,7 +99,7 @@ function downloadToStream(url, callback, tries=1) {
     let options = {
       url: url,
       jar: cloudScraper.defaultParams.jar,
-      headers: cloudScraper.defaultParams.headers,
+      headers: JSON.parse(JSON.stringify(cloudScraper.defaultParams.headers)),
     };
 
     request.get(options).on('response', Meteor.bindEnvironment((response) => {
