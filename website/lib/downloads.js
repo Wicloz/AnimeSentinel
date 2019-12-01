@@ -97,7 +97,6 @@ function downloadToStream(url, callback, tries=1) {
     }
 
     let options = {
-      method: 'GET',
       url: url,
       jar: cloudScraper.defaultParams.jar,
       headers: cloudScraper.defaultParams.headers,
