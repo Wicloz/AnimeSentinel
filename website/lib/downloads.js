@@ -21,14 +21,6 @@ function preProcessUrl(url, tries) {
   return url;
 }
 
-function callBackWithErrorHandling(callback, ...arguments) {
-  try {
-    callback(...arguments);
-  } catch (e) {
-    console.error(e);
-  }
-}
-
 startDownloadWithCallback = async function(url, callback) {
   _.delay(Meteor.bindEnvironment(downloadWithCallback), Math.random() * 200, url, callback);
 };
@@ -39,7 +31,7 @@ function downloadWithCallback(url, callback, tries=1) {
   if (Meteor.isServer) {
     url = preProcessUrl(url, tries);
     if (!url) {
-      callBackWithErrorHandling(callback, false);
+      callback(false);
       return;
     }
 
@@ -74,7 +66,7 @@ function downloadWithCallback(url, callback, tries=1) {
       }
 
       else {
-        callBackWithErrorHandling(callback, body.toString());
+        callback(body.toString());
       }
     }));
   }
@@ -84,7 +76,7 @@ function tryNextDownloadWithCallback(url, callback, tries, err) {
   if (tries >= 4) {
     console.error('Failed downloading ' + url + ' after ' + tries + ' tries.');
     console.error(err);
-    callBackWithErrorHandling(callback, false);
+    callback(false);
   } else {
     _.delay(Meteor.bindEnvironment(downloadWithCallback), 200 + Math.random() * 800, url, callback, tries + 1);
   }
@@ -100,7 +92,7 @@ function downloadToStream(url, callback, tries=1) {
   if (Meteor.isServer) {
     url = preProcessUrl(url, tries);
     if (!url) {
-      callBackWithErrorHandling(callback, false, false, false);
+      callback(false, false, false);
       return;
     }
 
@@ -113,7 +105,7 @@ function downloadToStream(url, callback, tries=1) {
 
     request.get(options).on('response', Meteor.bindEnvironment((response) => {
       if (isStatusCodeSuccess(response.statusCode)) {
-        callBackWithErrorHandling(callback, response, response.headers['content-type'].split('; ')[0], Number(response.headers['content-length']));
+        callback(response, response.headers['content-type'].split('; ')[0], Number(response.headers['content-length']));
       }
 
       else {
@@ -131,7 +123,7 @@ function tryNextDownloadToStream(url, callback, tries, err) {
   if (tries >= 4) {
     console.error('Failed downloading ' + url + ' after ' + tries + ' tries.');
     console.error(err);
-    callBackWithErrorHandling(callback, false, false, false);
+    callback(false, false, false);
   } else {
     _.delay(Meteor.bindEnvironment(downloadToStream), 200 + Math.random() * 800, url, callback, tries + 1);
   }
