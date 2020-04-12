@@ -9,7 +9,7 @@ function getMalIdFromUrl(url) {
 function determineAiringDateShowPage(partial, index) {
   let stringDay = undefined;
   let stringTime = undefined;
-  let broadcastBits = partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Broadcast:")').text().replace('Broadcast:', '').cleanWhitespace().split(' ');
+  let broadcastBits = partial.find('td.borderClass div[style~="width:"] div:contains("Broadcast:")').text().replace('Broadcast:', '').cleanWhitespace().split(' ');
   if (broadcastBits.length === 4) {
     stringDay = broadcastBits[0];
     stringTime = broadcastBits[2];
@@ -18,9 +18,9 @@ function determineAiringDateShowPage(partial, index) {
   return ScrapingHelpers.buildAiringDateFromStandardStrings(
     'Asia/Tokyo',
     index,
-    partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Aired:")').text().replace('Aired:', '').replace('Not available', '').cleanWhitespace().split(' to '),
+    partial.find('td.borderClass div[style~="width:"] div:contains("Aired:")').text().replace('Aired:', '').replace('Not available', '').cleanWhitespace().split(' to '),
     [stringTime, stringTime],
-    partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Premiered:") a').text(),
+    partial.find('td.borderClass div[style~="width:"] div:contains("Premiered:") a').text(),
     stringDay
   );
 }
@@ -237,7 +237,7 @@ export let myanimelist = {
         return header.text();
       },
       altNames: function(partial, full) {
-        return partial.find('td.borderClass div.js-scrollfix-bottom div.spaceit_pad').map((index, element) => {
+        return partial.find('td.borderClass div[style~="width:"] div.spaceit_pad').map((index, element) => {
           let altNames = partial.find(element);
           altNames.find('span').remove();
           return altNames.text().split(', ');
@@ -247,10 +247,10 @@ export let myanimelist = {
         return partial.find('td span[itemprop=description]').html();
       },
       type: function(partial, full) {
-        return partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Type:") a').text();
+        return partial.find('td.borderClass div[style~="width:"] div:contains("Type:") a').text();
       },
       genres: function(partial, full) {
-        return partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Genres:") a').map((index, element) => {
+        return partial.find('td.borderClass div[style~="width:"] div:contains("Genres:") a').map((index, element) => {
           return partial.find(element).text();
         }).get();
       },
@@ -261,7 +261,7 @@ export let myanimelist = {
         return determineAiringDateShowPage(partial, 1);
       },
       season: function(partial, full) {
-        let bits = partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Premiered:") a').text().split(' ');
+        let bits = partial.find('td.borderClass div[style~="width:"] div:contains("Premiered:") a').text().split(' ');
         if (bits.length === 2) {
           return {
             quarter: bits[0],
@@ -271,15 +271,15 @@ export let myanimelist = {
         return undefined;
       },
       episodeCount: function(partial, full) {
-        return partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Episodes:")').text()
+        return partial.find('td.borderClass div[style~="width:"] div:contains("Episodes:")').text()
           .replace('Episodes:', '').cleanWhitespace().replace('Unknown', '');
       },
       broadcastInterval: function(partial, full) {
-        let broadcast = partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Broadcast:")').text().cleanWhitespace();
+        let broadcast = partial.find('td.borderClass div[style~="width:"] div:contains("Broadcast:")').text().cleanWhitespace();
         return broadcast && /Broadcast: [A-Za-z]+ at [0-9:?]+/.test(broadcast) ? 604800000 : undefined;
       },
       episodeDuration: function(partial, full) {
-        let base = partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Duration:")')
+        let base = partial.find('td.borderClass div[style~="width:"] div:contains("Duration:")')
           .text().cleanWhitespace().split(' ')[1];
         if (isNumeric(base)) {
           return base * 60000;
@@ -288,7 +288,7 @@ export let myanimelist = {
         }
       },
       rating: function(partial, full) {
-        return partial.find('td.borderClass div.js-scrollfix-bottom div:contains("Rating:")')
+        return partial.find('td.borderClass div[style~="width:"] div:contains("Rating:")')
           .text().cleanWhitespace().split(' ')[1].replace('None', '');
       },
     },
