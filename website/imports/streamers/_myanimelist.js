@@ -297,7 +297,7 @@ export let myanimelist = {
     thumbnails: {
       rowSelector: 'div.picSurround a.js-picture-gallery img, img.ac',
       getUrl: function (partial, full) {
-        return cleanThumbnailUrl(partial.attr('src'));
+        return cleanThumbnailUrl(partial.attr('data-src'));
       },
     },
   },
