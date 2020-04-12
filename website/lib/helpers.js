@@ -96,6 +96,14 @@ String.prototype.replaceStart = function(from, to, caseInsensitive=false) {
   return this.replace(regex, to);
 };
 
+String.prototype.ensureStart = function(start) {
+  if (this.startsWith(start)) {
+    return this;
+  } else {
+    return start + this;
+  }
+};
+
 String.prototype.replaceFull = function(from, to, caseInsensitive=false) {
   if (from.source) {
     from = from.source;

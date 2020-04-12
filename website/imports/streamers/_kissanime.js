@@ -123,7 +123,7 @@ export let kissanime = {
     thumbnails: {
       rowSelector: 'td:first-of-type',
       getUrl: function (partial, full) {
-        return Cheerio.load(partial.attr('title'))('img').attr('src');
+        return Cheerio.load(partial.attr('title'))('img').attr('src').ensureStart('https:');
       },
     },
   },
