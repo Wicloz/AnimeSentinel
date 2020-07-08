@@ -103,14 +103,11 @@ Template.pages_overview.onCreated(function() {
     this.subscribe('shows.forOverview', this.getMalIds())
   });
 
-  // Subscribe to thumbnails and episodes based on displayed shows
+  // Subscribe to episodes based on displayed shows
   this.autorun(() => {
-    let thumbnails = [];
     Shows.queryForOverview(Template.instance().getMalIds(), Template.findState(this).get('displayLimit')).forEach((show) => {
-      thumbnails = thumbnails.concat(show.thumbnails);
       this.subscribe('episodes.toWatch', show._id, getStorageItem('SelectedTranslationType'), show.watchedEpisodes());
     });
-    this.subscribe('thumbnails.withHashes', thumbnails);
   });
 });
 

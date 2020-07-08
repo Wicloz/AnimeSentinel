@@ -3,7 +3,6 @@ import { Shows } from '/imports/api/shows/shows.js';
 import { myanimelist } from './_myanimelist';
 import { kissanime } from './_kissanime';
 import { nineanime } from './_nineanime';
-import {Thumbnails} from '../api/thumbnails/thumbnails';
 import {Searches} from '../api/searches/searches';
 import ScrapingHelpers from './scrapingHelpers';
 import moment from 'moment-timezone';
@@ -139,18 +138,12 @@ export default class Streamers {
 
       if (streamer[type].thumbnails.rowSelector) {
         cheerioRow.find(streamer[type].thumbnails.rowSelector).each((index, element) => {
-          let url = streamer[type].thumbnails.getUrl(cheerioRow.find(element), cheerioPage);
-          if (url) {
-            show.thumbnails.push(Thumbnails.addThumbnail(url));
-          }
+          show.thumbnails.push(streamer[type].thumbnails.getUrl(cheerioRow.find(element), cheerioPage));
         });
       }
 
       else {
-        let url = streamer[type].thumbnails.getUrl(cheerioRow, cheerioPage);
-        if (url) {
-          show.thumbnails.push(Thumbnails.addThumbnail(url));
-        }
+        show.thumbnails.push(streamer[type].thumbnails.getUrl(cheerioRow, cheerioPage));
       }
     }
 
@@ -763,12 +756,6 @@ export class TempShow {
       streamerUrlStarted.lastDownloadFailed = true;
       return streamerUrlStarted;
     }));
-
-    if (typeof this.newShow.thumbnails !== 'undefined') {
-      Thumbnails.removeWithHashes(this.oldShow.thumbnails.filter((thumbnail) => {
-        return !this.newShow.thumbnails.includes(thumbnail);
-      }));
-    }
 
     if (!Schemas.Show.newContext().validate(this.newShow)) {
       this.mergeShows(this.newShow, this.oldShow, {});

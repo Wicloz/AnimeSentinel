@@ -2,7 +2,6 @@ import Cheerio from 'cheerio';
 import SimpleSchema from 'simpl-schema';
 import {TempShow} from '../../streamers/streamers';
 import {Episodes} from "../episodes/episodes";
-import {Thumbnails} from '../thumbnails/thumbnails';
 import ScrapingHelpers from '../../streamers/scrapingHelpers';
 import moment from 'moment-timezone';
 import {WatchStates} from '../watchstates/watchstates';
@@ -475,23 +474,9 @@ Shows.helpers({
   thumbnailUrls() {
     if (!this.thumbnails || this.thumbnails.empty()) {
       return ['/media/unknown.png'];
+    } else {
+      return this.thumbnails;
     }
-
-    let urls = Thumbnails.queryWithHashes(this.thumbnails).fetch().map((thumbnail) => {
-      if (thumbnail.uploadedAt) {
-        return thumbnail.url({store: Session.get('FeatureSupportWebP') ? 'thumbnailsWEBP' : 'thumbnailsJPEG'});
-      } else {
-        return undefined;
-      }
-    }).filter((thumbnailUrl) => {
-      return thumbnailUrl;
-    });
-
-    while (urls.length < this.thumbnails.length) {
-      urls.push('/media/spinner.svg');
-    }
-
-    return urls;
   },
 
   streamersCleaned() {

@@ -100,7 +100,6 @@ Template.pages_show.onCreated(function() {
       Template.findState(this).set('malStatusDoc', Object.assign(Template.findState(this).get('malStatusDoc'), {
         malId: show.malId
       }));
-      this.subscribe('thumbnails.withHashes', show.thumbnails);
       if (show.canHaveWatchState()) {
         this.subscribe('watchStates.currentUserUnique', show.malId);
       }

@@ -80,20 +80,17 @@ Template.pages_search.onCreated(function() {
     this.subscribe('shows.search', this.getSearchOptions(), Template.findState(this).get('searchLimit'), getStorageItem('SelectedTranslationType'));
   });
 
-  // Subscribe to thumbnails, episodes, and watchStates for all shows
+  // Subscribe to episodes and watchStates for all shows
   this.autorun(() => {
-    let thumbnailHashes = [];
     let malIds = [];
 
     Shows.querySearch(this.getSearchOptions(), Template.findState(this).get('searchLimit'), getStorageItem('SelectedTranslationType')).forEach((show) => {
-      thumbnailHashes = thumbnailHashes.concat(show.thumbnails);
       if (typeof show.malId !== 'undefined') {
         malIds.push(show.malId);
       }
       this.subscribe('episodes.forTranslationType', show._id, getStorageItem('SelectedTranslationType'), 1);
     });
 
-    this.subscribe('thumbnails.withHashes', thumbnailHashes);
     if (Meteor.userId()) {
       this.subscribe('watchStates.currentUserUniqueMultiple', malIds);
     }

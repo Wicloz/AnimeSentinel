@@ -1,6 +1,3 @@
 [submodule "website/packages/useraccounts-core"]
 	path = website/packages/useraccounts-core
 	url = git@github.com:Wicloz/useraccounts-core.git
-[submodule "website/packages/cfs-graphicsmagick"]
-	path = website/packages/cfs-graphicsmagick
-	url = git@github.com:CollectionFS/Meteor-cfs-graphicsmagick.git

@@ -2,11 +2,11 @@ import './image.html';
 
 Template.components_image.helpers({
   showImage() {
-    return Template.findState(this).get('appeared') && Template.currentData().src !== '/media/spinner.svg';
+    return Template.findState(this).get('appeared');
   },
 
   showLoading() {
-    return !Template.findState(this).get('loaded') || Template.currentData().src === '/media/spinner.svg';
+    return !Template.findState(this).get('loaded');
   },
 
   getId() {
