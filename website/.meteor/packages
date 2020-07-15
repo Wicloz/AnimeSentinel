@@ -13,6 +13,7 @@ standard-minifier-js
 es5-shim
 ecmascript
 shell-server
+jquery
 
 session
 reactive-dict
