@@ -60,9 +60,11 @@ Schemas.Episode = new SimpleSchema({
         return undefined;
       }
       return this.value.reduce((total, value) => {
-        value = value.trim();
-        if (value && !total.includes(value)) {
-          total.push(value);
+        if (value) {
+          value = value.trim();
+          if (value && !total.includes(value)) {
+            total.push(value);
+          }
         }
         return total;
       }, []);
