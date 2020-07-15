@@ -266,16 +266,14 @@ Meteor.users.helpers({
       let tokenCSRF = '';
 
       // Get CSRF token
-      rp('GET', {
-        url: 'https://myanimelist.net/login.php',
+      rp('GET', 'https://myanimelist.net/login.php', false, {
         jar: jar,
       })
 
       // Send login request
       .then((body) => {
         tokenCSRF = Cheerio.load(body)('meta[name=csrf_token]').attr('content');
-        return rp('POST', {
-          url: 'https://myanimelist.net/login.php',
+        return rp('POST', 'https://myanimelist.net/login.php', false, {
           jar: jar,
           form: {
             'user_name': this.profile.malUsername,
@@ -403,8 +401,7 @@ Meteor.users.helpers({
       };
 
       let repeatCallback = () => {
-        rp('GET', {
-          url: baseUrl + offset,
+        rp('GET', baseUrl + offset, false, {
           jar: this.getMalCookieJar(),
         })
           .then((json) => {

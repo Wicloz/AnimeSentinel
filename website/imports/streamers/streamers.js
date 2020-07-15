@@ -434,21 +434,33 @@ export default class Streamers {
   }
 
   static getSearchResults(url, streamer, logData, resultCallback) {
-    startDownloadWithCallback(url, (html) => {
-      resultCallback(this.processSearchPage(html, streamer, logData));
-    });
+    rp('GET', url, true)
+      .then((html) => {
+        resultCallback(this.processSearchPage(html, streamer, logData))
+      })
+      .catch(() => {
+        resultCallback(this.processSearchPage(false, streamer, logData))
+      });
   }
 
   static getShowResults(url, streamer, logData, resultCallback) {
-    startDownloadWithCallback(url, (html) => {
-      resultCallback(this.processShowPage(html, streamer, logData));
-    });
+    rp('GET', url, true)
+      .then((html) => {
+        resultCallback(this.processShowPage(html, streamer, logData))
+      })
+      .catch(() => {
+        resultCallback(this.processShowPage(false, streamer, logData))
+      });
   }
 
   static getRecentResults(url, streamer, logData, resultCallback) {
-    startDownloadWithCallback(url, (html) => {
-      resultCallback(this.processRecentPage(html, streamer, logData));
-    });
+    rp('GET', url, true)
+      .then((html) => {
+        resultCallback(this.processRecentPage(html, streamer, logData))
+      })
+      .catch(() => {
+        resultCallback(this.processRecentPage(false, streamer, logData))
+      });
   }
 
   static doSearch(search, doneCallback, resultCallback, streamersIdsExcluded=[]) {

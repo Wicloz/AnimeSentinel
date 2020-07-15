@@ -213,8 +213,7 @@ WatchStates.sendWatchStateToMAL = function(watchState, remove=false) {
     }
 
     // Make POST request
-    rp('POST', {
-      url: url,
+    rp('POST', url, false, {
       jar: user.getMalCookieJar(),
       form: Object.assign({
         'anime_id': watchState.malId,
