@@ -67,7 +67,7 @@ const validGenres = ['Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demon
   'Fantasy', 'Game', 'Historical', 'Horror', 'Kids', 'Magic', 'Martial Arts', 'Mecha', 'Music', 'Parody', 'Samurai',
   'Romance', 'School', 'Sci-Fi', 'Shoujo', 'Shoujo Ai', 'Shounen', 'Shounen Ai', 'Space', 'Sports', 'Super Power',
   'Vampire', 'Yaoi', 'Yuri', 'Harem', 'Slice of Life', 'Supernatural', 'Military', 'Police', 'Psychological',
-  'Thriller', 'Seinen', 'Josei'];
+  'Thriller', 'Seinen', 'Josei', 'Isekai'];
 
 export let kissanime = {
   // General data
