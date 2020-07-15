@@ -452,9 +452,9 @@ export let myanimelist = {
 
     // Recent show thumbnail data
     thumbnails: {
-      rowSelector: 'div.episode',
+      rowSelector: 'div.video-list img',
       getUrl: function (partial, full) {
-        return cleanThumbnailUrl(partial.css('background-image').replace('url(\'', '').replace('\')', ''));
+        return cleanThumbnailUrl(partial.attr('data-src'));
       },
     },
   },
