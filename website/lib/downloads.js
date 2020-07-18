@@ -14,7 +14,7 @@ function failMessage(method, url, status) {
 rp = function (method, url, chisel, config = {}, bodyFailures = []) {
   return new Promise((resolve, reject) => {
     url = encodeURI(url).replace(/%25/g, '%');
-    config.url = (chisel ? 'https://chisel.wilcodeboer.me/' : '') + url;
+    config.url = (chisel ? 'https://chisel.wilcodeboer.me/api/' : '') + url;
     config.method = method;
     config.followAllRedirects = true;
 
