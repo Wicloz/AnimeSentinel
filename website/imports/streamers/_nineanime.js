@@ -60,7 +60,7 @@ const posterAttributes = {
       url: url
     }, {
       type: 'episodes-' + type,
-      url: 'https://www1.9anime.to/ajax/film/servers/' + url.split('.').peek()
+      url: 'https://www10.9anime.to/ajax/film/servers?id=' + url.split('.').peek()
     }];
   },
   name: function(partial, full) {
@@ -169,7 +169,7 @@ export let nineanime = {
             url: url
           }, {
             type: 'episodes-' + type,
-            url: 'https://www1.9anime.to/ajax/film/servers/' + url.split('.').peek()
+            url: 'https://www10.9anime.to/ajax/film/servers?id=' + url.split('.').peek()
           }];
         }
         return [];
