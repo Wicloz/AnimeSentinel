@@ -1,14 +1,13 @@
 import Cheerio from 'cheerio';
 import { Shows } from '/imports/api/shows/shows.js';
 import { myanimelist } from './_myanimelist';
-import { kissanime } from './_kissanime';
 import { nineanime } from './_nineanime';
 import {Searches} from '../api/searches/searches';
 import ScrapingHelpers from './scrapingHelpers';
 import moment from 'moment-timezone';
 import {Episodes} from '../api/episodes/episodes';
 
-let streamers = [myanimelist, kissanime, nineanime];
+let streamers = [myanimelist, nineanime];
 
 export default class Streamers {
   static getStreamers() {
