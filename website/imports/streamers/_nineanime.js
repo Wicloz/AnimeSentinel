@@ -60,7 +60,7 @@ const posterAttributes = {
       url: url
     }, {
       type: 'episodes-' + type,
-      url: 'https://www10.9anime.to/ajax/film/servers?id=' + url.split('.').peek()
+      url: 'https://www11.9anime.to/ajax/film/servers?id=' + url.split('.').peek()
     }];
   },
   name: function(partial, full) {
@@ -91,8 +91,8 @@ export let nineanime = {
   // General data
   id: 'nineanime',
   name: '9anime',
-  homepage: 'https://www10.9anime.to',
-  recentPage: 'https://www10.9anime.to/updated',
+  homepage: 'https://www11.9anime.to',
+  recentPage: 'https://www11.9anime.to/updated',
   minimalPageTypes: ['sub', 'dub', 'episodes-sub', 'episodes-dub'],
 
   // Search page data
@@ -169,7 +169,7 @@ export let nineanime = {
             url: url
           }, {
             type: 'episodes-' + type,
-            url: 'https://www10.9anime.to/ajax/film/servers?id=' + url.split('.').peek()
+            url: 'https://www11.9anime.to/ajax/film/servers?id=' + url.split('.').peek()
           }];
         }
         return [];
