@@ -2,7 +2,7 @@
   "name": "AnimeSentinel",
   "private": true,
   "scripts": {
-    "prestart": "meteor npm install",
+    "prestart": "meteor npm install && meteor npm audit fix",
     "start": "meteor run"
   },
   "dependencies": {
