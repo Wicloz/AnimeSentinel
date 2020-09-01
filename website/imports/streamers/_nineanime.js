@@ -57,10 +57,10 @@ const posterAttributes = {
     let url = partial.find('a.name').attr('href');
     return [{
       type: type,
-      url: url
+      url: url.replace(/www[0-9]*\./, '')
     }, {
       type: 'episodes-' + type,
-      url: 'https://www11.9anime.to/ajax/film/servers?id=' + url.split('.').peek()
+      url: 'https://9anime.to/ajax/film/servers?id=' + url.split('.').peek() + '&episode=8888888&_=888'
     }];
   },
   name: function(partial, full) {
@@ -91,8 +91,8 @@ export let nineanime = {
   // General data
   id: 'nineanime',
   name: '9anime',
-  homepage: 'https://www11.9anime.to',
-  recentPage: 'https://www11.9anime.to/updated',
+  homepage: 'https://9anime.to',
+  recentPage: 'https://9anime.to/updated',
   minimalPageTypes: ['sub', 'dub', 'episodes-sub', 'episodes-dub'],
 
   // Search page data
@@ -166,10 +166,10 @@ export let nineanime = {
           let type = getTypeFromName(partial.find('div.widget.player div.widget-title h1.title').text());
           return [{
             type: type,
-            url: url
+            url: url.replace(/www[0-9]*\./, '')
           }, {
             type: 'episodes-' + type,
-            url: 'https://www11.9anime.to/ajax/film/servers?id=' + url.split('.').peek()
+            url: 'https://9anime.to/ajax/film/servers?id=' + url.split('.').peek() + '&episode=8888888&_=888'
           }];
         }
         return [];
