@@ -346,7 +346,7 @@ export let myanimelist = {
 
   // Related shows data
   showRelated: {
-    rowSelector: 'table.anime_detail_related_anime tr > td > a[href^="/anime/"]',
+    rowSelector: 'table.anime_detail_related_anime tr > td > a[href*="/anime/"]',
     relation: function(partial, full) {
       return partial.parent().parent().find('td:first-of-type').text().replace(':', '').toLowerCase();
     },
@@ -362,10 +362,10 @@ export let myanimelist = {
         }
         return [{
           type: 'details',
-          url: myanimelist.homepage + partial.attr('href')
+          url: partial.attr('href')
         }, {
           type: 'pictures',
-          url: myanimelist.homepage + partial.attr('href') + '/pics'
+          url: partial.attr('href') + '/pics'
         }];
       },
       name: function(partial, full) {
