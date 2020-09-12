@@ -161,7 +161,7 @@ export let nineanime = {
     // Show page attribute data
     attributes: {
       streamerUrls: function(partial, full) {
-        let url = partial.find('head link').attr('href');
+        let url = partial.find('head link[rel="canonical"]').attr('href');
         if (url) {
           let type = getTypeFromName(partial.find('div.widget.player div.widget-title h1.title').text());
           return [{
