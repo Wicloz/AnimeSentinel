@@ -74,7 +74,7 @@ export let kissanime = {
   id: 'kissanime',
   name: 'KissAnime',
   homepage: 'https://kissanime.fr',
-  recentPage: 'https://kissanime.fr',
+  recentPage: 'https://kissanime.fr/kissanime.html',
   minimalPageTypes: ['sub', 'dub'],
 
   // Search page data
@@ -86,7 +86,7 @@ export let kissanime = {
       }
 
       if (search.query) {
-        return kissanime.homepage + '/Search/Anime?keyword=' + encodeURIComponentReplaceSpaces(search.completeQuery(2, search.query), '+');
+        return kissanime.homepage + '/Search/?s=' + encodeURIComponentReplaceSpaces(search.completeQuery(2, search.query), '+');
       }
 
       else if (search.getSingleType(validTypes)) {
