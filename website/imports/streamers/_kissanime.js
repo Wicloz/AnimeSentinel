@@ -29,7 +29,7 @@ function getEpisodeData(episodeString, showString) {
   };
 
   // Remove the show title and turn into a cleaned array
-  let episodeArray = episodeString.replace(showString, '').cleanWhitespace().split(' ');
+  let episodeArray = episodeString.replace(showString + ' - ', '').cleanWhitespace().split(' ');
   if (episodeArray[0] === 'Episode' || episodeArray[0] === '_Episode') {
     episodeArray.shift();
   }
@@ -101,29 +101,37 @@ export let kissanime = {
         return kissanime.homepage + '/AnimeList' + sortPage;
       }
     },
-    rowSelector: 'table.listing tbody tr:has(td)',
+    rowSelector: 'div.title_in_cat_container',
 
     // Search page attribute data
     attributes: {
       streamerUrls: function(partial, full) {
+        let element = Cheerio.load(partial.attr('title'));
         return [{
-          type: getTypeFromName(partial.find('td:first-of-type a').text()),
-          url: kissanime.homepage + partial.find('td:first-of-type a').attr('href')
+          type: getTypeFromName(element('div a').text()),
+          url: element('div a').attr('href')
         }];
       },
       name: function(partial, full) {
-        return cleanName(partial.find('td:first-of-type a').text());
+        let element = Cheerio.load(partial.attr('title'));
+        return cleanName(element('div a').text());
+      },
+      altNames: function(partial, full) {
+        let element = Cheerio.load(partial.attr('title'));
+        return [cleanName(element('div a').attr('data-jtitle'))];
       },
       description: function(partial, full) {
-        return ScrapingHelpers.replaceDescriptionCutoff(Cheerio.load(partial.find('td:first-of-type').attr('title'))('div p').text(), /\s\.\.\.\n\s*/);
+        let element = Cheerio.load(partial.attr('title'));
+        return ScrapingHelpers.replaceDescriptionCutoff(element('div p').text(), '...');
       },
     },
 
     // Search page thumbnail data
     thumbnails: {
-      rowSelector: 'td:first-of-type',
+      rowSelector: '',
       getUrl: function (partial, full) {
-        return Cheerio.load(partial.attr('title'))('img').attr('src').ensureStart('https:');
+        let element = Cheerio.load(partial.attr('title'));
+        return element('img').attr('src');
       },
     },
   },
@@ -138,12 +146,12 @@ export let kissanime = {
     attributes: {
       streamerUrls: function(partial, full) {
         return [{
-          type: getTypeFromName(partial.find('a.bigChar').text()),
-          url: kissanime.homepage + partial.find('a.bigChar').attr('href')
+          type: getTypeFromName(partial.find('strong.bigChar').text()),
+          url: partial.find('link[rel=canonical]').attr('href')
         }];
       },
       name: function(partial, full) {
-        return cleanName(partial.find('a.bigChar').text());
+        return cleanName(partial.find('strong.bigChar').text());
       },
       altNames: function(partial, full) {
         return partial.find('div.bigBarContainer div.barContent div:nth-of-type(2) p:has(span:contains("Other name:")) a').map((index, element) => {
@@ -187,7 +195,7 @@ export let kissanime = {
 
     // Show page thumbnail data
     thumbnails: {
-      rowSelector: 'div#rightside div.barContent div[style="text-align: center"] img',
+      rowSelector: 'div.rightBox div.barContent div.a_center img',
       getUrl: function (partial, full) {
         return partial.attr('src');
       },
@@ -214,26 +222,26 @@ export let kissanime = {
 
   // Episode list data
   showEpisodes: {
-    rowSelector: 'table.listing tbody tr:has(td)',
+    rowSelector: 'div.listing > div:has(a)',
     cannotCount: true,
 
     // Episode list attribute data
     attributes: {
       episodeNumStart: function(partial, full) {
-        return getEpisodeData(partial.find('td:first-of-type a').text(), full.find('a.bigChar').text()).start;
+        return getEpisodeData(partial.find('a').text(), full.find('strong.bigChar').text()).start;
       },
       episodeNumEnd: function(partial, full) {
-        return getEpisodeData(partial.find('td:first-of-type a').text(), full.find('a.bigChar').text()).end;
+        return getEpisodeData(partial.find('a').text(), full.find('strong.bigChar').text()).end;
       },
       notes: function(partial, full) {
-        return getEpisodeData(partial.find('td:first-of-type a').text(), full.find('a.bigChar').text()).notes;
+        return getEpisodeData(partial.find('a').text(), full.find('strong.bigChar').text()).notes;
       },
       translationType: function(partial, full) {
-        return getTypeFromName(full.find('a.bigChar').text());
+        return getTypeFromName(full.find('strong.bigChar').text());
       },
       sources: function(partial, full) {
-        let sourceUrl = kissanime.homepage + partial.find('td:first-of-type a').attr('href');
-        let dateBits = partial.find('td:last-of-type').text().split('/');
+        let sourceUrl = partial.find('a').attr('href');
+        let dateBits = partial.find('div:last-of-type').text().split('/');
         let uploadDate = {
           year: dateBits[2],
           month: dateBits[0] - 1,
