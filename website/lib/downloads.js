@@ -26,17 +26,19 @@ rp = function (method, url, chisel, config = {}, bodyFailures = []) {
       }
 
       request(config, (error, res, body) => {
+        let status = res ? res.statusCode : 'interrupted'
+
         if (error) {
-          failMessage(config.method, url, res.statusCode);
+          failMessage(config.method, url, status);
           reject(error);
-        } else if (!isStatusCodeSuccess(res.statusCode)) {
-          failMessage(config.method, url, res.statusCode);
-          reject(res.statusCode);
+        } else if (!isStatusCodeSuccess(status)) {
+          failMessage(config.method, url, status);
+          reject(status);
         } else {
           let bodyFailed = false;
           bodyFailures.forEach((bodyFailure) => {
             if (body.includes(bodyFailure)) {
-              failMessage(config.method, url, res.statusCode);
+              failMessage(config.method, url, status);
               reject(bodyFailure);
               bodyFailed = true;
             }
