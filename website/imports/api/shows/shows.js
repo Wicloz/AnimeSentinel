@@ -428,7 +428,7 @@ Shows.objectKeys = Schemas.Show._schemaKeys.filter((key) => {
   return !key.includes('.') && Schemas.Show._schema[key].type.definitions[0].type.toString().includes('Object()');
 });
 Shows.systemKeys = ['_id', 'lastUpdateStart', 'lastUpdateEnd'];
-Shows.descriptionCutoff = '&#x2026; (read more)';
+Shows.descriptionCutoff = ' …';
 Shows.timeUntilRecache = 86400000; // 1 day
 Shows.maxUpdateTime = 600000; // 10 minutes
 
