@@ -122,7 +122,7 @@ export let kissanime = {
       },
       description: function(partial, full) {
         let element = Cheerio.load(partial.attr('title'));
-        return ScrapingHelpers.replaceDescriptionCutoff(element('div p').text(), '...');
+        return ScrapingHelpers.replaceDescriptionCutoff(element('div p:last-of-type').html(), '...');
       },
     },
 
@@ -159,7 +159,7 @@ export let kissanime = {
         }).get();
       },
       description: function(partial, full) {
-        return partial.find('div.bigBarContainer div.barContent div:nth-of-type(2) p:nth-last-of-type(2)').html();
+        return partial.find('div.bigBarContainer div.barContent div.summary p').html();
       },
       type: function(partial, full) {
         let genres = partial.find('div.bigBarContainer div.barContent div:nth-of-type(2) p:has(span:contains("Genres:")) a').map((index, element) => {
@@ -248,50 +248,17 @@ export let kissanime = {
           date: dateBits[1]
         };
         return [{
-          sourceName: 'RapidVideo',
-          sourceUrl: sourceUrl + '&s=rapidvideo',
-          uploadDate: uploadDate,
-          flags: ['cloudflare']
+          sourceName: 'Gserver',
+          sourceUrl: sourceUrl + '&s=gserver',
+          uploadDate: uploadDate
         }, {
-          sourceName: 'Mp4Upload',
-          sourceUrl: sourceUrl + '&s=mp4upload',
-          uploadDate: uploadDate,
-          flags: ['cloudflare']
+          sourceName: 'Oserver',
+          sourceUrl: sourceUrl + '&s=oserver',
+          uploadDate: uploadDate
         }, {
-          sourceName: 'Openload',
-          sourceUrl: sourceUrl + '&s=openload',
-          uploadDate: uploadDate,
-          flags: ['cloudflare', 'requires-plugins']
-        }, {
-          sourceName: 'Streamango',
-          sourceUrl: sourceUrl + '&s=streamango',
-          uploadDate: uploadDate,
-          flags: ['cloudflare', 'requires-plugins']
-        }, {
-          sourceName: 'P2P Server',
-          sourceUrl: sourceUrl + '&s=p2p',
-          uploadDate: uploadDate,
-          flags: ['cloudflare']
-        }, {
-          sourceName: 'Nova Server',
-          sourceUrl: sourceUrl + '&s=nova',
-          uploadDate: uploadDate,
-          flags: ['cloudflare']
-        }, {
-          sourceName: 'Beta Server',
-          sourceUrl: sourceUrl + '&s=beta',
-          uploadDate: uploadDate,
-          flags: ['cloudflare']
-        }, {
-          sourceName: 'Beta2 Server',
-          sourceUrl: sourceUrl + '&s=beta2',
-          uploadDate: uploadDate,
-          flags: ['cloudflare']
-        }, {
-          sourceName: 'HydraX',
-          sourceUrl: sourceUrl + '&s=hydrax',
-          uploadDate: uploadDate,
-          flags: ['cloudflare']
+          sourceName: 'Hserver',
+          sourceUrl: sourceUrl + '&s=hserver',
+          uploadDate: uploadDate
         }];
       },
     },
