@@ -232,7 +232,7 @@ export let myanimelist = {
         return urls;
       },
       name: function(partial, full) {
-        return partial.find('div#contentWrapper div:first-of-type h1').text();
+        return partial.find('div#contentWrapper div:first-of-type h1 strong').text();
       },
       altNames: function(partial, full) {
         return partial.find('td.borderClass div[style~="width:"] div.spaceit_pad').map((index, element) => {
