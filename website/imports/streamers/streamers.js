@@ -333,7 +333,11 @@ export default class Streamers {
       // Fix episode numbers if required
       if (streamer.showEpisodes.cannotCount && !results.episodes.empty()) {
         let episodeCorrection = Math.max(results.episodes.reduce((total, episode) => {
-          return Math.min(total, episode.episodeNumStart);
+          if (Number.isInteger(episode.episodeNumStart)) {
+            return Math.min(total, episode.episodeNumStart);
+          } else {
+            return total;
+          }
         }, Infinity) - 1, 0);
         results.episodes = results.episodes.map((episode) => {
           episode.episodeNumStart -= episodeCorrection;
