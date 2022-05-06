@@ -104,19 +104,12 @@ export let myanimelist = {
         type = '&type=' + (validTypes.indexOf(search.getSingleType(validTypes)) + 1);
       }
 
-      let exclude = '&gx=1';
-      let genres = [12];
-      if (search.includeGenres && search.getSingleGenre(validGenres)) {
-        exclude = '';
-        genres = [validGenres.indexOf(search.getSingleGenre(validGenres)) + 1];
-      }
-      else if (!search.includeGenres && !search.genres.empty()) {
-        genres = genres.concat(search.genres.filter((genre) => {
-          return validGenres.includes(genre);
-        }).map((genre) => {
-          return validGenres.indexOf(genre) + 1;
-        }));
-      }
+      let genres = ['&genre_ex[]=12'];
+      genres = genres.concat(search.genres.filter((genre) => {
+        return validGenres.includes(genre);
+      }).map((genre) => {
+        return (search.includeGenres ? '&genre[]=' : '&genre_ex[]=') + (validGenres.indexOf(genre) + 1);
+      }));
 
       let startDate = '';
       if (typeof search.year !== 'undefined') {
@@ -141,7 +134,7 @@ export let myanimelist = {
           break;
       }
 
-      return myanimelist.homepage + '/anime.php?c[]=a&c[]=b&c[]=c&c[]=d&c[]=e&c[]=f&c[]=g' + sort + startDate + query + type + exclude + '&genre[]=' + genres.join('&genre[]=');
+      return myanimelist.homepage + '/anime.php?c[]=a&c[]=b&c[]=c&c[]=d&c[]=e&c[]=f&c[]=g' + sort + startDate + query + type + genres.join('');
     },
     rowSelector: '.js-block-list.list table tbody tr:has(td a.hoverinfo_trigger)',
 
