@@ -73,8 +73,8 @@ export let kissanime = {
   // General data
   id: 'kissanime',
   name: 'KissAnime',
-  homepage: 'https://kissanime.fr',
-  recentPage: 'https://kissanime.fr/kissanime.html',
+  homepage: 'https://kissanime.co',
+  recentPage: 'https://kissanime.co/kissanime.html',
   minimalPageTypes: ['sub', 'dub'],
 
   // Search page data
