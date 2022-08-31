@@ -16,7 +16,7 @@
     "crypto-js": "^3.1.9-1",
     "jquery": "^3.4.1",
     "meteor-node-stubs": "^0.4.1",
-    "moment-timezone": "^0.5.27",
+    "moment-timezone": "^0.5.35",
     "popper.js": "^1.16.0",
     "postcss": "^6.0.23",
     "postcss-load-config": "^1.2.0",
